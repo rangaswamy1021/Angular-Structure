@@ -1,0 +1,212 @@
+<div class="page-title-header wow fadeInDown">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">TVC</a></li>
+        <li class="active">Invoice</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1> Invoice </h1>
+        <div class="row">
+          <div class="text-right" *ngIf='!isBeforeSearch'>
+            <span id="" class="accno">Account #: {{longViolatorId}}</span>
+            <button type="submit" (click)="exit()" class="btn btn-default btn-reset">Exit</button>
+            <button type="submit" (click)="back()" class="btn btn-default btn-search">Back</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content wow fadeInUp">
+  <div class="row">
+    <div class="col-md-12 text-right">
+      <span class="info-blue"> <img src="assets/images/svg/info-blue.svg" class="icon-svg5" alt=""> </span> <span class="name">Enter input in any  of the fields below.</span>
+    </div>
+  </div>
+
+  <form role="form" name="createForm" [formGroup]="createForm">
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="InvoiceNo">Invoice #</label>
+        <input type="text" pattern="^[A-Za-z0-9]+$" id="InvoiceNo" name="InvoiceNo" formControlName="InvoiceNo" class="form-control"
+          placeholder="Invoice #">
+        <div class="msg" *ngIf="createForm.controls['InvoiceNo'].invalid && (createForm.controls['InvoiceNo'].dirty || createForm.controls['InvoiceNo'].touched)">
+          <div *ngIf="createForm.controls['InvoiceNo'].errors.pattern">
+            Only alphanumerics allowed.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group col-md-6">
+        <label for="InvoiceRefNo">Invoice Ref #</label>
+        <input type="text" pattern="^[A-Za-z0-9]+$" id="InvoiceRefNo" name="InvoiceRefNo" formControlName="InvoiceRefNo" class="form-control"
+          placeholder="Invoice Ref #">
+        <div class="msg" *ngIf="createForm.controls['InvoiceRefNo'].invalid && (createForm.controls['InvoiceRefNo'].dirty || createForm.controls['InvoiceRefNo'].touched)">
+          <div *ngIf="createForm.controls['InvoiceRefNo'].errors.pattern">
+            Only alphanumerics allowed.
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-md-6" [hidden]='isSearchFlag'>
+        <label for="AccountNo">Account #</label>
+        <input type="text" pattern="[0-9]*" id="AccountNo" name="AccountNo" formControlName="AccountNo" class="form-control" placeholder="Account #">
+        <div class="msg" *ngIf="createForm.controls['AccountNo'].invalid && (createForm.controls['AccountNo'].dirty || createForm.controls['AccountNo'].touched)">
+          <div *ngIf="createForm.controls['AccountNo'].errors.pattern">
+            Only numbers allowed.
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="PlateNo">Plate #</label>
+        <input type="text" pattern="^[A-Za-z0-9]+$" id="PlateNo" name="PlateNo" formControlName="PlateNo" class="form-control" placeholder="Plate #">
+        <div class="msg" *ngIf="createForm.controls['PlateNo'].invalid && (createForm.controls['PlateNo'].dirty || createForm.controls['PlateNo'].touched)">
+          <div *ngIf="createForm.controls['PlateNo'].errors.pattern">
+            Only alphanumerics allowed.
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-md-6" [hidden]='!isSearchFlag'>
+        <label for="invoice Status" class="focused">Invoice Status</label>
+        <select class="form-control" id="invoiceStatus" [(ngModel)]="preInvoiceStatus" name="invoiceStatus" formControlName="invoiceStatus"
+          required>
+                     <option selected="selected" value="--select--">--select--</option>
+                     <option *ngFor="let InvStatus of selectInvoiceStatus" value="{{InvStatus.Key}}">{{InvStatus.Key}}</option>
+                  </select>
+        <!--<div *ngIf="createForm.controls['invoiceStatus'].hasError('required')">required</div>-->
+      </div>
+
+      <div class="col-md-12 form-group">
+        <button type="submit" class="btn btn-primary btn-search" [disabled]="disableButton" (click)=onSubmit()>Search</button>
+        <button type="submit" class="btn btn-default btn-reset" (click)=reset()>Reset</button>
+      </div>
+    </div>
+  </form>
+
+  <div *ngIf='isVisible'>
+    <form role="form" [formGroup]="invoiceForm" name="invoiceForm">
+      <div *ngIf='searchResponse && searchResponse.length'>
+        <div class="table-bdr">
+          <h3>Invoice Details</h3>
+          <div class="pad-10 regVehDetails">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>
+                      <div class="checkbox">
+                        <input type="checkbox" (change)='checkAllClick($event)' [checked]="isParentSelected" id="checkAll" name="checkAll" formControlName="checkAll">
+                        <label for="checkAll">
+                            <span></span>
+                          </label>
+                      </div>
+                    </th>
+                    <th (click)="sortDirection('DUEDATE')" class="col-xs-1 nowrap sorting-handle"> Due Date
+                      <span *ngIf="gridArrowDUEDATE">
+                              <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                            </span>
+                    </th>
+                    <th (click)="sortDirection('INVOICENUMBER')" class="sorting-handle"> Invoice #
+                      <span *ngIf="gridArrowINVOICENUMBER">
+                              <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                            </span>
+                    </th>
+                    <th class="col-xs-1">Plate #</th>
+                    <th (click)="sortDirection('STEPDESC')" class="sorting-handle"> Stage
+                      <span *ngIf="gridArrowSTEPDESC">
+                              <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                            </span>
+                    </th>
+                    <th (click)="sortDirection('INVOICESTATUS')" class="sorting-handle"> Status
+                      <span *ngIf="gridArrowINVOICESTATUS">
+                              <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                            </span>
+                    </th>
+                    <th>Hold Type</th>
+                    <th>Hold status</th>
+                    <th>Invoice Amount</th>
+                    <th>Payment(s) / Adjustment(s)</th>
+                    <th>Outstanding Due</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let object of searchResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p , totalItems:totalRecordCount }"
+                    [ngClass]="object.IsDisputed? 'disputeBackground':''">
+
+                    <td>
+                      <div class="checkbox">
+                        <input type="checkbox" (change)='checkboxCheckedEvent(object, $event)' [id]="object.InvoiceId" name="indCheckBox" [attr.disabled]="object.isDisableInvoice?'':null"
+                          [checked]="object.isInvoiceSelected" formControlName="indCheckBox">
+                        <label for="{{object.InvoiceId}}">
+                            <span></span>
+                          </label>
+                      </div>
+                    </td>
+                    <td> {{object.DueDate | customDateFormat }} </td>
+                    <td> {{object.InvoiceNumber}} </td>
+                    <td class="nowrap"> {{object.PlateNumber}} </td>
+                    <td> {{object.StepDescription}} </td>
+                    <td> {{object.Status}} </td>
+                    <td> {{object.AgingHoldType | DisplayNA}} </td>
+                    <td>{{object.HoldStatus | DisplayNA}}</td>
+                    <td> {{object.BalanceDue | currencycustom}} </td>
+                    <td> <a (click)="goToRecentTxns(object.InvoiceId)"> {{object.TotalPmtAdjAmt | currencycustom}} </a> </td>
+                    <td> {{object.OutstandingDue | currencycustom}} </td>
+
+                    <td><a class="fa fa-file" title="View Details " (click)="goToBatchView(object)">  </a> </td>
+                    <td><a class="fa fa-history" title="View History" (click)="goToView(object.InvoiceId)"> </a> </td>
+                    <td><a class="fa fa-file-pdf-o" title="View PDF" (click)="downLoadFile(object.DocumentPath)"></a></td>
+                    <td><a class="fa fa-cog" title="Make Adjustment" (click)="goToAdjustment(object)"></a></td>
+                    <td>
+                      <a *ngIf='object.ProblemID>0' (click)='viewComplaintDetailsClick(object.ProblemID)'>
+										<img src="assets/images/svg/warnicon.svg" alt="view details" class="icon-svg3">
+									</a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="row page-info" *ngIf='isPaging'>
+              <div class="col-md-6 text-left">
+                <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+              </div>
+              <div class="col-md-6 text-right">
+                <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div id="" class="clear m-b-10 m-l-10" *ngIf='searchResponse && searchResponse.length'>
+      <button type="submit" class="btn btn-primary btn-search" (click)='makePayment()'>Make Payment</button>
+      <button type="submit" class="btn btn-primary btn-search" (click)='submitInquiryClick()'>Submit Inquiry</button>
+      <button type="submit" class="btn btn-primary btn-reset" (click)='submitDismiss()'>Dismiss</button>
+      <button *ngIf='!isBeforeSearch' type="submit" class="btn btn-primary btn-reset" (click)='submitDispute()'>Dispute</button>
+    </div>
+  </div>
+  <div *ngIf='!searchResponse|| searchResponse.length===0'>
+    <div class="table-bdr">
+      <h3>Invoice Details</h3>
+      <div class="pad-10 invoiceDetails">
+        <div>No invoice details to display</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf='isHistoryVisible'>
+  <app-invoice-history [invoiceId]="invoiceHistoryNo"></app-invoice-history>
+</div>
+<div *ngIf='isRecentTxns'>
+  <app-recent-transactions [invoiceId]="invoiceHistoryNo"></app-recent-transactions>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

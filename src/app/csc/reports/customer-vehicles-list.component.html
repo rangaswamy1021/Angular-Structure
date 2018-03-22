@@ -1,0 +1,153 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li class="active">Reports</li>
+        <li class="active">Customer Vehicle List</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Customer Vehicle List</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Search Form-->
+<div class="content">
+  <form name="vechicleListForm" [formGroup]="vechicleListForm">
+    <div class="panel panel-default">
+    
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-6 form-group">
+              <label for="accountNumber"> Account #</label>
+              <input type="text" id="accountNumber" name="accountNumber" tabindex="1" formControlName="accountNumber" class="form-control"
+               placeholder="Account #" maxlength="17">
+              <div class="msg" *ngIf="vechicleListForm.controls['accountNumber'].invalid && (vechicleListForm.controls['accountNumber'].dirty || vechicleListForm.controls['accountNumber'].touched)">
+                <div *ngIf="vechicleListForm.controls['accountNumber'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="vechicleListForm.controls['accountNumber'].errors.pattern">
+                  Only numbers allowed
+                </div>
+              </div>
+          </div>
+          <div class="col-md-6 m-t-10">
+            <button class="btn btn-primary btn-search" (click)="vechiclesListSearch()" [disabled]="btnSearchHistory">Search</button>
+            <button class="btn btn-default btn-reset" (click)="vechiclesListReset()">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+ 
+  <!--For Grid-->
+  <div class="panel panel-default" *ngIf="searchResultGrid">
+    <div class="panel-heading">
+      Search Results
+    </div>
+    <div class="panel-body table-bdr">
+    <table class="table" *ngIf='customerVehiclesListResponse && customerVehiclesListResponse.length>0;'>
+      <thead>
+        <tr>
+          <th (click)="sortDirection('VEHICLENUMBER')" class="sorting-handle">Plate #
+            <span *ngIf=gridArrowVEHICLENUMBER>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+            </span>
+          </th>
+          <th>Class</th>
+          <th (click)="sortDirection('YEAR')" class="sorting-handle">Year
+            <span *ngIf=gridArrowYEAR>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+            </span>
+          </th>
+
+          <th (click)="sortDirection('MAKE')" class="sorting-handle">Make
+            <span *ngIf=gridArrowMAKE>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+            </span>
+          </th>
+          <th (click)="sortDirection('MODEL')" class="sorting-handle">Model
+            <span *ngIf=gridArrowMODEL>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+            </span>
+          </th>
+          <th (click)="sortDirection('COLOR')" class="sorting-handle">Color
+            <span *ngIf=gridArrowCOLOR>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+            </span>
+          </th>
+          <th (click)="sortDirection('STATENAME')" class="sorting-handle">State
+            <span *ngIf=gridArrowSTATENAME>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+            </span>
+          </th>
+          <th (click)="sortDirection('COUNTRYNAME')" class="sorting-handle">Country
+            <span *ngIf=gridArrowCOUNTRYNAME>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+            </span>
+          </th>
+          <th (click)="sortDirection('STARTEFFECTIVEDATE')" class="sorting-handle">Start Date/Time
+            <span *ngIf=gridArrowSTARTEFFECTIVEDATE>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+            </span>
+          </th>
+          <th (click)="sortDirection('ENDEFFECTIVEDATE')" class="sorting-handle">End Date/Time
+            <span *ngIf=gridArrowENDEFFECTIVEDATE>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+            </span>
+          </th>
+        </tr>
+      </thead>
+     
+      <tbody>
+        <tr *ngFor="let vehiclesList of customerVehiclesListResponse| paginate: { itemsPerPage: pageItemNumber, currentPage: currentPage, totalItems:totalRecordCount }">
+          <td>{{vehiclesList.VehicleNumber}}</td>
+          <td>{{vehiclesList.VehicleClassDesc}}</td>
+          <td>{{vehiclesList.Year==""? "N/A":vehiclesList.Year}}</td>
+          <td>{{vehiclesList.Make==""? "N/A":vehiclesList.Make}}</td>
+          <td>{{vehiclesList.Model==""? "N/A":vehiclesList.Model}}</td>
+          <td>{{vehiclesList.Color==""? "N/A":vehiclesList.Color}}</td>
+          <td>{{vehiclesList.State}}</td>
+          <td>{{vehiclesList.Country}}</td>
+          <td>{{vehiclesList.StartEffectiveDate|customDateTimeFormat }}</td>
+          <td>{{vehiclesList.EndEffectiveDate|customDateTimeFormat}}</td>
+
+
+        </tr>
+      </tbody>
+    </table>
+   
+
+    <div *ngIf='!customerVehiclesListResponse || customerVehiclesListResponse.length==0'>
+
+      <div class="status-content">
+       No records to display
+    </div>
+    
+    <div class="row page-info" *ngIf='customerVehiclesListResponse && customerVehiclesListResponse[0].RecordCount>0'>
+      <div class="col-md-6 text-left">
+        <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+      </div>
+      <div class="col-md-6 text-right">
+        <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+      </div>
+    </div>
+
+
+
+    <div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="text-center">
+          <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+   </div>
+ 

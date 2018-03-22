@@ -1,0 +1,309 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">Tvc</a></li>
+        <li><a href="#">Violatordetails</a></li>
+        <li class="active">Address Information</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Update Status</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <h3>Address Information</h3>
+        <div class="pad-20">
+          <div class="form-horizontal">
+            <div class="form-group">
+              <label for="" class="col-sm-3 control-label">Address Type</label>
+              <div class="col-sm-4 popover-field">
+                <select class="form-control">
+                  <option>select</option>
+                </select>
+                <button type="button" class="pop-over" [popover]="popAddType" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popAddType>
+                  tool tip
+                </ng-template>
+              </div>
+            </div>
+          </div>
+          <div class="form-horizontal">
+            <div class="form-group">
+              <label for="" class="col-sm-3 control-label">Address Line1</label>
+              <div class="col-sm-4 popover-field">
+                <input type="Text" class="form-control" id="" placeholder="">
+                <button type="button" class="pop-over" [popover]="popAddline1" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popAddline1>
+                  tool tip
+                </ng-template>
+              </div>
+            </div>
+          </div>
+          <div class="form-horizontal">
+            <div class="form-group">
+              <label for="" class="col-sm-3 control-label">Address Line2</label>
+              <div class="col-sm-4 popover-field">
+                <input type="Text" class="form-control" id="" placeholder="">
+                <button type="button" class="pop-over" [popover]="popAddline2" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popAddline2>
+                  tool tip
+                </ng-template>
+              </div>
+            </div>
+          </div>
+          <div class="form-horizontal">
+            <div class="form-group">
+              <label for="" class="col-sm-3 control-label">Address Line3</label>
+              <div class="col-sm-4 popover-field">
+                <input type="Text" class="form-control" id="" placeholder="">
+                <button type="button" class="pop-over" [popover]="popAddline3" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popAddline3>
+                  tool tip
+                </ng-template>
+              </div>
+            </div>
+          </div>
+          <div class="form-horizontal">
+            <div class="form-group">
+              <label for="" class="col-sm-3 control-label">City</label>
+              <div class="col-sm-4 popover-field">
+                <input type="Text" class="form-control" id="" placeholder="">
+                <button type="button" class="pop-over" [popover]="popcity" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popcity>
+                  tool tip
+                </ng-template>
+              </div>
+            </div>
+          </div>
+           <div class="form-horizontal">
+            <div class="form-group">
+              <label for="" class="col-sm-3 control-label">Zip</label>
+              <div class="col-sm-2 popover-field">
+                <input type="Text" class="form-control" id="" placeholder="">
+                <button type="button" class="pop-over" [popover]="popzip" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popzip>
+                  tool tip
+                </ng-template>
+              </div>
+               <div class="col-sm-2 popover-field">
+                <input type="Text" class="form-control" id="" placeholder="">
+                <button type="button" class="pop-over" [popover]="popzip1" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popzip1>
+                  tool tip
+                </ng-template>
+              </div>
+            </div>
+          </div>
+          <div class="form-horizontal">
+            <div class="form-group">
+              <label for="" class="col-sm-3 control-label">State</label>
+              <div class="col-sm-4 popover-field">
+                <select class="form-control">
+                  <option>--select--</option>
+                </select>
+                <button type="button" class="pop-over" [popover]="popstate" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popstate>
+                  tool tip
+                </ng-template>
+              </div>
+            </div>
+          </div>
+          <div class="form-horizontal">
+            <div class="form-group">
+              <label for="" class="col-sm-3 control-label">Country</label>
+              <div class="col-sm-4 popover-field">
+                <select class="form-control">
+                  <option>Usa</option>
+                </select>
+                <button type="button" class="pop-over" [popover]="popcountry" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popcountry>
+                  tool tip
+                </ng-template>
+              </div>
+            </div>
+          </div>
+          <div class="form-horizontal">
+            <div class="form-group">
+              <div class="col-sm-offset-3 col-sm-9">
+                <div class="checkbox">
+                  <label>
+                  <input type="checkbox">Use As Primary Address
+                </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+              <div class="form-horizontal">
+                <button type="submit" class="btn btn-primary btn-search">Add</button>
+                <button type="reset" class="btn btn-default btn-reset">Reset</button>
+                <button type="submit" class="btn btn-primary btn-search">View Histroy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <h3>Contact Information</h3>
+        <div class="pad-20">
+
+          <div class="form-horizontal">
+            <div class="form-group">
+              <label for="" class="col-sm-3 control-label">Day Phone #</label>
+              <div class="col-sm-4 popover-field">
+                <input type="Text" class="form-control" id="" placeholder="">
+                <button type="button" class="pop-over" [popover]="popDphone" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popDphone>
+                  tool tip
+                </ng-template>
+              </div>
+              
+                <label class="radio-inline ">
+                   <input  id="" name="" type="radio" value="Fax"  class=""> Is Preferred?
+                   </label>
+             
+            </div>
+          </div>
+          <div class="form-horizontal">
+            <div class="form-group">
+              <label for="" class="col-sm-3 control-label">Evening Phone #</label>
+              <div class="col-sm-4 popover-field">
+                <input type="Text" class="form-control" id="" placeholder="">
+                <button type="button" class="pop-over" [popover]="popEphone" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popEphone>
+                  tool tip
+                </ng-template>
+              </div>
+             
+                <label class="radio-inline ">
+                   <input  id="" name="" type="radio" value="Fax"  class=""> Is Preferred?
+                   </label>
+             
+            </div>
+          </div>
+          <div class="form-horizontal">
+            <div class="form-group">
+              <label for="" class="col-sm-3 control-label">Mobile Phone #</label>
+              <div class="col-sm-4 popover-field">
+                <input type="Text" class="form-control" id="" placeholder="">
+                <button type="button" class="pop-over" [popover]="popMphone" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popMphone>
+                  tool tip
+                </ng-template>
+              </div>
+             
+                <label class="radio-inline ">
+                   <input  id="" name="" type="radio" value="Fax"  class=""> Is Preferred?
+                   </label>
+              
+            </div>
+          </div>
+          <div class="form-horizontal">
+            <div class="form-group">
+              <label for="" class="col-sm-3 control-label">Work Phone #</label>
+              <div class="col-sm-2 popover-field">
+                <input type="Text" class="form-control" id="" placeholder="">
+                <button type="button" class="pop-over" [popover]="popwphone" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popwphone>
+                  tool tip
+                </ng-template>
+              </div>
+              <label for="" class="col-sm-1 control-label">Exit #</label>
+              <div class="col-sm-1 popover-field">
+                <input type="Text" class="form-control" id="" placeholder="">
+                <button type="button" class="pop-over" [popover]="popwphone" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popwphone>
+                  tool tip
+                </ng-template>
+              </div>
+              <label class="radio-inline ">
+                   <input  id="" name="" type="radio" value="Fax"  class=""> Is Preferred?
+              </label>
+            </div>
+          </div>
+          <div class="form-horizontal">
+            <div class="form-group">
+              <label for="" class="col-sm-3 control-label">Fax #</label>
+              <div class="col-sm-4 popover-field">
+                <input type="Text" class="form-control" id="" placeholder="">
+                <button type="button" class="pop-over" [popover]="popfax" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popfax>
+                  tool tip
+                </ng-template>
+              </div>
+              
+                <label class="radio-inline ">
+                   <input  id="" name="" type="radio" value="Fax"  class=""> Is Preferred?
+                   </label>
+            
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+              <div class="form-horizontal">
+                <button type="submit" class="btn btn-primary btn-search">Add</button>
+                <button type="reset" class="btn btn-default btn-reset">Reset</button>
+                <button type="submit" class="btn btn-primary btn-search">View Histroy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="table-responce">
+    <div class="panel panel-default m-t-20">
+    <div class="panel-heading">Address History </div>
+    <div class="panel-body">
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Address</th>
+            <th>Is Prefefred</th>
+            <th>Updated By</th>
+            <th>Created Date</th>
+            <th>Updated Date</th>
+            <th>Action</th>
+          </tr>
+         </thead>
+        <tbody>
+          <tr>
+            <td>DmvAddr</td>
+            <td>AALE1,city.Fl,12345,Usa</td>
+            <td>Yes</td>
+            <td>tpsuperuser</td>
+            <td>11/08/2017 11:45:11 AM</td>
+            <td>11/13/2017 3:45:11 AM</td>
+            <td>Update</td>
+          </tr>
+          <tr>
+            <td>DmvAddr</td>
+            <td>41041CREST DR....HEMET,FL,92544-USA</td>
+            <td>Yes</td>
+            <td>TBOSVIOL</td>
+            <td>11/08/2017 11:45:11 AM</td>
+            <td>11/13/2017 3:45:11 AM</td>
+            <td>Add</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    </div>
+  </div>
+   </div>

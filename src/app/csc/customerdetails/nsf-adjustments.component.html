@@ -1,0 +1,63 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li><a href="#">CSC</a></li>
+            <li><a href="#"> Payments </a></li>
+            <li class="active">NSF Adjustments</li>
+          </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>NSF Adjustments</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-account-info></app-account-info>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+  <div class="panel panel-default">
+    <div class="panel-heading">NSF Check Details</div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-4">
+      <form role="form" name="nsfAdjustmentForm" [formGroup]="nsfAdjustmentForm">
+        <div class="form-group">
+          <label class="focused">Check Payments</label>
+          <select id="ddlReasonCode" placeholder="* ChequePayments" class="form-control" (change)="selectedCheque($event.target.value)"
+            formControlName="ddlChequePayments">
+            <option value="0" [selected]="true">--Select--</option>
+            <option *ngFor="let reasonCode of checkPaymentsddl; let i=index" value="{{reasonCode.id}}"> {{reasonCode.name}}</option>
+          </select>
+        </div>
+      </form>
+      <table class="table">
+        <tbody>
+          <tr>
+            <td class="text-left">Account Balance: </td>
+            <td class="text-right">{{accountBalance | currencycustom }}</td>
+          </tr>
+          <tr>
+            <td class="text-left">Reversal Amount:</td>
+            <td class="text-right">{{reversalAmount | currency:'USD':true:'1.2-2'}}</td>
+          </tr>
+          <tr>
+            <td class="text-left"> NSFFEE: </td>
+            <td class="text-right">{{nsfFee | currency:'USD':true:'1.2-2'}}</td>
+          </tr>
+          <tr>
+            <td class="text-left"> New Balance: </td>
+            <td class="text-right">{{newBalance | currencycustom}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <button type="submit" class="btn btn-primary btn-search" *ngIf="boolShowHide" [disabled]="disableSubmitButton" (click)="applyAdjustment()">Apply</button>
+            </div>
+        </div>
+    </div>
+  </div>
+  </div>
+  

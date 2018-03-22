@@ -1,0 +1,263 @@
+<div class="page-title-header">
+  <!--<div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Customer Accounts</a></li>
+        <li class="active">Profile</li>
+      </ol>
+    </div>
+  </div>-->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Profile</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <!--<div class="panel-body" *ngIf="errorMessage && errorMessage.length || successMessage && successMessage.length">
+    <div class="alert alert-danger" *ngIf='errorMessage && errorMessage.length'>
+      <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> {{errorMessage}}
+      <button type="button" class="close" (click)="close()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div class="alert alert-success" *ngIf='successMessage && successMessage.length'>
+      <i class="fa fa-check" aria-hidden="true"></i> {{successMessage}}
+      <button type="button" class="close" (click)="close()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+  </div>-->
+
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+
+  <form role="form" name="profileUpdateForm" [formGroup]="profileUpdateForm" novalidate>
+    <div class="row" *ngIf='showAlldata'>
+      <div class="col-md-12">
+        <div [ngClass]="{'table-bdr':!updatepassword}">
+          <h3 *ngIf="!updatepassword">{{title}}</h3>
+            <div class="pad-20" *ngIf='showProfile'>
+              <div class="row">
+                <!--<div class="col-md-9">-->
+                <!--<div class="row">-->
+                <!--<div class="col-md-12">-->
+                <div class="col-md-6 form-group popover-field">
+                  <label for="firstName">First Name</label>
+                  <input type="text" class="form-control" id="firstName" name="firstName" value="{{profileResponse.FirstName}}" formControlName="firstName">
+                  <div class="msg" *ngIf="profileUpdateForm.controls['firstName'].invalid && (profileUpdateForm.controls['firstName'].dirty || profileUpdateForm.controls['firstName'].touched)">
+                    <div *ngIf="profileUpdateForm.controls['firstName'].errors.required">
+                      *Required.
+                    </div>
+                    <div *ngIf="profileUpdateForm.controls['firstName'].errors.pattern">
+                      Only alphabets allowed
+                    </div>
+                    <div *ngIf="profileUpdateForm.controls['firstName'].errors.maxlength">
+                      Maximum 50 characters are allowed.
+                    </div>
+                    <div *ngIf="profileUpdateForm.controls['firstName'].errors.minlength">Minimum 2 characters are allowed.
+                    </div>
+                  </div>
+
+                  <ng-template #firstName>
+                    <ul>
+                      <li>First Name Is Required</li>
+                      <li>It allows only alphabets</li>
+                      <li>It should be minimum 2 characters and maximum 50 characters long</li>
+                    </ul>
+                  </ng-template>
+                  <button type="button" class="pop-over" [popover]="firstName" data-container="body" popoverTitle="Help" placement="left"
+                    triggers="mouseenter:mouseleave">
+                                ?
+                              </button>
+                </div>
+
+                <div class="col-md-6 form-group popover-field">
+                  <label for="lastName">Last Name</label>
+                  <input type="text" class="form-control" id="lastName" name="lastName" value="{{profileResponse.LastName}}" formControlName="lastName">
+                  <div class="msg" *ngIf="profileUpdateForm.controls['lastName'].invalid && (profileUpdateForm.controls['lastName'].dirty || profileUpdateForm.controls['lastName'].touched)">
+                    <div *ngIf="profileUpdateForm.controls['lastName'].errors.required">*Required</div>
+                    <div *ngIf="profileUpdateForm.controls['lastName'].errors.pattern">Only alphabets allowed</div>
+                    <div *ngIf="profileUpdateForm.controls['lastName'].errors.maxlength">Maximum 50 characters are allowed.</div>
+                    <div *ngIf="profileUpdateForm.controls['lastName'].errors.minlength">Minimum 2 characters are allowed.</div>
+                  </div>
+                  <ng-template #lastName>
+                    <ul>
+                      <li>Last Name is required</li>
+                      <li>It allows only alphabets</li>
+                      <li>It should be minimum 2 characters and maximum 50 characters long</li>
+                    </ul>
+                  </ng-template>
+                  <button type="button" class="pop-over" [popover]="lastName" data-container="body" popoverTitle="Help" placement="left" triggers="mouseenter:mouseleave">
+                               ?
+                              </button>
+                </div>
+                <div class="col-md-6 form-group popover-field">
+                  <label for="emailAddress">Email Address</label>
+                  <input type="text" class="form-control" id="emailAddress" name="emailAddress" value="{{profileResponse.Email}}" formControlName="emailAddress">
+                  <div class="msg" *ngIf="profileUpdateForm.controls['emailAddress'].invalid && (profileUpdateForm.controls['emailAddress'].dirty || profileUpdateForm.controls['emailAddress'].touched)">
+                    <div *ngIf="profileUpdateForm.controls['emailAddress'].errors.required">*Required</div>
+                    <div *ngIf="profileUpdateForm.controls['emailAddress'].errors.pattern">Invalid Format</div>
+                    <div *ngIf="profileUpdateForm.controls['emailAddress'].errors.maxlength">Maximum 50 characters are allowed.</div>
+                    <div *ngIf="profileUpdateForm.controls['emailAddress'].errors.minlength">Minimum 2 characters are allowed.</div>
+                  </div>
+
+                  <ng-template #emailAddress>
+                    <ul>
+                      <li>Email allows alphanumarics with special characters(@,_,-,.,+)</li>
+                      <li>It should be minimum 6 characters and maximum 100 characters long</li>
+                      <li>It should follow format yourname@domain.com</li>
+                    </ul>
+                  </ng-template>
+                  <button type="button" class="pop-over" [popover]="emailAddress" data-container="body" popoverTitle="Help" placement="left"
+                    triggers="mouseenter:mouseleave">
+                                ?
+                              </button>
+                </div>
+                <div class="col-md-6 form-group popover-field">
+                  <label for="" class="focused">Location </label>
+                  <select class="form-control" formControlName="location">
+                           <option selected="selected" label="--Select--" value="">--Select--</option>
+                          <option *ngFor='let loc of locationResponse' value="{{loc.LocationName}}">
+                            {{loc.LocationName}}
+                          </option>
+                           </select>
+                  <div class="msg" *ngIf="profileUpdateForm.controls['location'].invalid && (profileUpdateForm.controls['location'].dirty || profileUpdateForm.controls['location'].touched)">
+                    <div *ngIf="profileUpdateForm.controls['location'].errors.required">*Required</div>
+                  </div>
+
+                  <ng-template #location>
+                    Location required
+                  </ng-template>
+                  <button type="button" class="pop-over" [popover]="location" data-container="body" popoverTitle="Help" placement="left" triggers="mouseenter:mouseleave">
+                                ?
+                              </button>
+                </div>
+                <div class="form-group">
+                  <div class=" col-sm-8">
+                    <button class="btn btn-primary btn-search" type="submit" [disabled]="disableUpdateButton" (click)="updateProfile()">Update</button>
+                    <button class="btn btn-primary btn-reset" type="submit" (click)="profileReset()">Reset</button>
+                    <button class="btn btn-primary btn-reset" type="submit" (click)="cancelBtn();">Cancel</button>
+                  </div>
+                </div>
+                <!--</div>-->
+                <!--</div>-->
+                <!--</div>-->
+              </div>
+            </div>
+            <div class="*form-horizontal" *ngIf='updatepassword'>
+              <app-change-password (canclClick)="pwdChangeCanclClick()"></app-change-password>
+            </div>
+            <div class="pad-20" *ngIf='updatesettings'>
+                    <form role="form" [formGroup]="globalForm">
+                      <div class="row"> 
+                          <div class="col-md-6 form-group popover-field">
+                            <label  class="focused">Select Language</label>
+                            <select class="form-control" formControlName="language">
+                              <!--<option >--Select--</option>-->
+                              <option *ngFor="let lg of language" [value]="lg.LookUpTypeCode">{{lg.LookUpTypeCodeDesc}}</option>
+                            </select>
+                          </div>
+                          <div class="col-md-6 form-group popover-field">
+                            <label  class="focused">Select Theme</label>
+                            <select class="form-control" formControlName="theme">
+                              <!--<option >--Select--</option>-->
+                              <option *ngFor="let th of theme" [value]="th.LookUpTypeCode">{{th.LookUpTypeCodeDesc}}</option>
+                            </select>
+                          </div>  
+                          <div class="col-md-12">
+                        <div class="form-group">
+                            <button class="btn btn-primary btn-search" type="submit" [disabled]="disableUpdateButton" (click)="updateSettings()">Update</button>
+                            <button class="btn btn-primary btn-reset" type="submit" (click)="resetSettingsClick()">Reset</button>
+                            <button class="btn btn-primary btn-reset" type="submit" (click)="cancelBtn();">Cancel</button>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+            </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <h3>Profile
+          <a class="pull-right" [ngClass]="{'disabletextbox': disableUpdateButton}" (click)="editProfile(profileResponse)">Update Profile</a>
+        </h3>
+        <div class="pad-20">
+          <div class="table-responsive" *ngIf='profileResponse'>
+            <table class="table no-border profile-table">
+              <tbody>
+                <tr>
+                  <td width='150px'>First Name</td>
+                  <td width='10px'>:</td>
+                  <td>{{profileResponse.FirstName}}</td>
+                </tr>
+                <tr>
+                  <td>Last Name:</td>
+                  <td>:</td>
+                  <td>{{profileResponse.LastName}}</td>
+                </tr>
+                <tr>
+                  <td>Email Address:</td>
+                  <td>:</td>
+                  <td>{{profileResponse.Email}}</td>
+                </tr>
+                <tr>
+                  <td>Location</td>
+                  <td>:</td>
+                  <td>{{profileResponse.LocationName}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="table-bdr">
+        <h3>Password
+          <a class="pull-right" [ngClass]="{'disabletextbox': disableUpdateButton}" (click)="updatePassword()">Update Password</a>
+        </h3>
+        <div class="pad-20">
+          <div class="table-responsive">
+            <table class="table no-border profile-table">
+              <tbody>
+                <tr>
+                  <td width='150px'>Password</td>
+                  <td width='10px'>:</td>
+                  <td>*******</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="table-bdr">
+        <h3>Personalization
+          <a class="pull-right" [ngClass]="{'disabletextbox': disableUpdateButton}" (click)="editSettings(globalizationRes)">Edit Personalization Details</a>
+        </h3>
+        <div class="pad-20">
+          <div class="table-responsive">
+            <table class="table no-border profile-table">
+              <tbody *ngIf='globalizationRes'>
+                <tr>
+                  <td width='150px'>Language</td>
+                  <td width='10px'>:</td>
+                  <td>{{globalizationRes.Value=='en-US'?"English":"Spanish"}}</td>
+                </tr>
+                <tr>
+                  <td width='150px'>Theme</td>
+                  <td width='10px'>:</td>
+                  <td>{{globalizationRes.Key}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

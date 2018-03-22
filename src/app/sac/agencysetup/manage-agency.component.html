@@ -1,0 +1,120 @@
+<div class="page-title-header">
+    <div class="row no-gutters">
+        <div class="col-md-12">
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">SAC</a>
+                </li>
+                <li>
+                    <a href="#">Agency Setup</a>
+                </li>
+                <li class="active">Manage Agency</li>
+            </ol>
+        </div>
+        <div class="col-md-12">
+            <div class="page-header">
+                <h1>Manage Agency</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<form role="form" name="manageAgency" [formGroup]="manageAgency">
+    <div class="content">
+        <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+        <div class="table-bdr">
+            <div class="panel-body">
+                <div class="col-md-6">
+                    <div class="form-group col-md-12 popover-field">
+                        <label> Agency Code </label>
+                        <input type="text" class="form-control" formControlName="agencycode" name="agencycode" placeholder="Agency Code">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group col-md-12 popover-field">
+                        <label> Agency Name </label>
+                        <input type="text" class="form-control" formControlName="agencyname" name="agencyname" placeholder="Agency Name">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <button class="btn btn-default btn-search" (click)="searchClick()"> Search </button>
+                    <button class="btn btn-default btn-reset" (click)="resetClick()"> Reset </button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <!-- <a href='javascript:;' class="btn btn-default btn-search" (click)="addNewAgency()"> Add New Agency </a> -->
+                    <a (click)="addNewAgency()">
+                        <i class="fa fa-plus-square-o fa-lg fa-fw" aria-hidden="true"></i> Add New Agency </a>
+                </div>
+            </div>
+        </div>
+        <div class="table-bdr">
+            <h3>
+                Agency Details
+            </h3>
+            <div class="panel-body">
+                <div *ngIf='manageAgencyResp && manageAgencyResp.length;else NodetailsBlock'>
+                    <table class="table bordered">
+                        <thead>
+                            <tr>
+                                <th> Agency Code </th>
+                                <th> Agency Name </th>
+                                <th> Agency Description </th>
+                                <th> Status </th>
+                                <th> Edit </th>
+                                <th> Deactivate </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let agency of manageAgencyResp| paginate: { itemsPerPage: pageItemNumber, currentPage: currentPage }">
+                                <td> {{agency.AgencyCode}} </td>
+                                <td>{{agency.AgencyName}} </td>
+                                <td>{{agency.AgencyDescription}} </td>
+                                <td> {{agency.IsActive?'Active':'Inactive'}}</td>
+
+                                <td>
+                                    <a (click)='onEditClick(agency.AgencyId)' *ngIf='agency.IsActive'>
+                                        <i class="fa fa-pencil-square fa-2x"> </i>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a (click)='deleteClick(agency)'>
+                                        <i class="fa fa-ban fa-2x"> </i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row page-info ">
+                        <div class="col-md-6 text-left ">
+                            <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+                        </div>
+                        <div class="col-md-6 text-right ">
+                            <pagination-controls (pageChange)="pageChanged($event) "></pagination-controls>
+                        </div>
+                    </div>
+                </div>
+                <ng-template #NodetailsBlock>
+                    <div class="alert alert-info " role="alert ">No details to display</div>
+                </ng-template>
+                <div id="confirm-dialog" class="modal fade refund-request-modal" role="dialog">
+                    <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-body">
+                            <div class=" status-message">
+                                <div class="status-content">
+                                    <p>Are you sure you want to Active/Deactivate the agency?</p>
+                                    <button class="btn btn-warning btn-search" (click)="confirmClick()">OK</button>
+                                    <button class="btn btn-default btn-search" data-dismiss="modal">Cancel</button>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,157 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li>
+          <a href="#">Customer Accounts</a>
+        </li>
+        <li class="active"> Split Account Payment </li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Split Account Payment</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="content">
+  <app-account-info></app-account-info>
+  <div class="clear"></div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="payment-steps">
+        <div class="row">
+          <div class="col-md-12">
+            <ul>
+              <li class="done">
+                <span>1</span>Account Information</li>
+              <li class="done">
+                <span>2</span>Plan(s) Selection</li>
+              <li class="done">
+                <span>3</span>Vehicle Information</li>
+              <li class="active">
+                <span>4</span>Payment</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="payment-steps-2">
+        <ul>
+          <li class="active">
+            <span>1</span>Payment Mode</li>
+          <li>
+            <span>2</span>Verify & Submit</li>
+          <li>
+            <span>3</span>Payment Receipt</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="plan-message">
+    <div class="block">
+      <strong>Plan Name:</strong> {{planName}} {{isTagMessage}}
+    </div>
+    <div class="block">
+      <strong>Fee:</strong> {{fee}}</div>
+    <div class="block">
+      <strong>Discount:</strong>{{discount}}</div>
+    <div class="block">
+      <strong>Payable Amount:</strong> ${{txnAmount}}</div>
+
+  </div>
+
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)" (onOk)="userAction($event)"></app-success-failure-alerts-message>
+
+  <form role="form" name="Create_form" [formGroup]="splitPayForm">
+    <div class="panel panel-default m-t-10">
+      <div class="panel-body">
+        <div class="col-md-10">
+          <div class="form-group">
+            <div class="checkbox">
+              
+                <input class="checkbox" id="chkBalanceTrasferClick" type="checkbox" [checked]="chkBalanceTran" (click)="chkBalanceTrasferClick($event)" formControlName="chkBalTran">
+                <label for="chkBalanceTrasferClick"><span></span> Balance Transfer </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="form-group">
+            <label class="text-right"> Amount to be paid $
+              <strong> {{splitReq.totAmount}} </strong>
+            </label>
+          </div>
+        </div>
+
+        <div *ngIf="enableBalTranGrid">
+
+          <div class="col-md-6">
+            <div class="form-group col-md-12">
+              <label> Available Amount </label>
+              <input type="text" class="form-control" [(ngModel)]="availAmount" formControlName="txtavailAmount" disabled>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group col-md-12">
+              <label> Transferable Amount </label>
+              <input type="text" class="form-control" [(ngModel)]="maxtransfAmount" formControlName="txtmaxtransfAmount" disabled>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group col-md-12">
+              <label> Amount to be transfer </label>
+              <input type="text" class="form-control" [(ngModel)]="amountTransfering" (keyup)="validateAmount()" formControlName="txtamountTransfering">
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group col-md-12">
+              <label> Amount to pay </label>
+              <input type="text" class="form-control" disabled [(ngModel)]="payAmount" formControlName="txtpayAmount">
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div *ngIf="isCreditCardAdd">
+      <app-credit-card-information [IsSaveCheckBox]="false" [Customerid]="splitReq.CustInfo.AccountId"></app-credit-card-information>
+      <button type="button" (click)="saveCC()" class="btn btn-primary btn-search">Add</button>
+      <button type="button" (click)="cancelCC()" class="btn btn-primary btn-search">Cancel</button>
+    </div>
+    <div *ngIf="isACHAdd">
+      <app-bank-information></app-bank-information>
+      <button type="button" (click)="saveACH()" class="btn btn-primary btn-search">Add</button>
+      <button type="button" (click)="cancelACH()" class="btn btn-primary btn-search">Cancel</button>
+    </div>
+    <div #Payment>
+      <app-make-payment (onValidationChanges)='onValidationChanged($event)'></app-make-payment>
+    </div>
+    <div class="col-md-12">
+      <button type="button" (click)="gBackToVehicles()" class="btn btn-primary btn-search">Vehicle Information</button>
+      <button type="button" (click)="goToVerifyPayment()" class="btn btn-default btn-search">Verify Payment</button>
+      <button type="reset" (click)="cancel()" class="btn btn-default btn-reset">Cancel</button>
+    </div>
+    <div class="clear">
+    </div>
+  </form>
+</div>
+
+<app-blocked-list [blockListArray]="objBlockListRes" (status)="allowMakePayment()"></app-blocked-list>

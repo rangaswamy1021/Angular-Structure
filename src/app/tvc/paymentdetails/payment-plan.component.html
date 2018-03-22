@@ -1,0 +1,569 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">TVC</a>
+        </li>
+        <li class="active">Payments</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Payment Plan</h1>
+        <div class="text-right">
+          <span id="" class="accno">Account #: {{accountId}}</span>
+          <button class="btn btn-primary btn-reset" (click)='exitClick()' type="submit">Exit</button>
+          <button class="btn btn-default btn-search" (click)='backClick()' type="reset">Back</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <form role="form" name="paymentPlanForm" [formGroup]="paymentPlanForm" novalidate>
+
+        <div [hidden]="!paymentPlanStatus">
+
+          <div class="panel panel-default">
+            <div class="panel-heading"> Invoice Details </div>
+            <div class="panel-body bordered" *ngIf="invoicesResponse?.length > 0">
+              <div class="table-responsive">
+                <table class="table  table-sm">
+                  <thead class="wrap">
+                    <tr>
+                      <th>
+                        <div class="checkbox">
+                          <input type="checkbox" (change)='checkAllClick($event)' [checked]="checkAll" id="checkAll" name="checkAll" formControlName="checkAll"
+                            [(ngModel)]="isParentSelected"><label for="checkAll"><span></span></label>
+                        </div>
+                      </th>
+                      <th>Due Date</th>
+                      <th>Invoice #</th>
+                      <th>Plate #</th>
+                      <th>Stage</th>
+                      <th>Status</th>
+                      <th class="text-right">Invoice Amount</th>
+                      <th class="text-right">Payment(s) / Adjustment(s)</th>
+                      <th class="text-right">Trip Amount in Court</th>
+                      <th class="text-right">Outstanding Due</th>
+                      <th>Hold Type</th>
+                      <th>Hold Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor='let rep of invoicesResponse; let i = index'>
+                      <td>
+                        <div class="checkbox">
+                          <input type="checkbox" id="filter{{i}}" name="check" [checked]='rep.IsChecked' [disabled]="!rep.InvoiceChecked" (change)="checkorUncheckInvoices(rep,$event)">
+                          <label for="filter{{i}}"><span></span></label>
+                        </div>
+                      </td>
+                      <td>{{rep.DueDate | customDateTimeFormat }}</td>
+                      <td>{{rep.InvoiceNumber}}</td>
+                      <td>{{rep.PlateNumber}}</td>
+                      <td>{{rep.StepDescription}}</td>
+                      <td>{{rep.Status}}</td>
+                      <td class="text-right">{{rep.BalanceDue | currencycustom}}</td>
+                      <td class="text-right">{{rep.UnbilledAmount | currencycustom}}</td>
+                      <td class="text-right">{{rep.TripAmtInCourt | currencycustom}}</td>
+                      <td class="text-right">{{rep.OutstandingDue | currencycustom}}</td>
+                      <td>{{rep.AgingHoldType | DisplayNA }}</td>
+                      <td>{{rep.HoldStatus | DisplayNA}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="panel-body" *ngIf="invoicesResponse?.length == 0">
+              <p>No records to display</p>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-bdr">
+                <h3>Amount Details</h3>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group col-md-12  ">
+                      <label for="txtDepositAmount">Amount to be Paid</label>
+                      <input type="text" class="form-control" id="txtDepositAmount" placeholder="" name="txtDepositAmount" formControlName="txtDepositAmount">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group col-md-12  popover-field">
+                      <label for="txtDownPaymentAmount">Down Payment</label>
+                      <input type="text" class="form-control" id="txtDownPaymentAmount" placeholder="" name="txtDownPaymentAmount" formControlName="txtDownPaymentAmount">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 col-md-offset-6" *ngIf="strDownPaymentPercentage && strMinimumPaymentPlanAmount">
+                    <strong>Note:</strong> {{ strDownPayNote }}
+                    <!-- Down payment 2% or $100.00 is required to establish payment plan -->
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 col-md-offset-6">
+                    <a data-toggle="modal" (click)="callUpdateDownPopUp()">Update down payment percentage</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row m-t-20" *ngIf="!isFullPaymentPlanBlock">
+            <div class="col-md-12">
+              <div class="table-bdr">
+                <h3>Plan Details</h3>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group col-md-12 popover-field">
+                      <label for="txtTotalPaymentPlanAmount">Payment Plan Amount</label>
+                      <input type="text" class="form-control" id="txtTotalPaymentPlanAmount" name="txtTotalPaymentPlanAmount" placeholder="" formControlName="txtTotalPaymentPlanAmount">
+                      <button type="button" class="pop-over" [popover]="popPPA" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                      <ng-template #popPPA>
+                        <ul>
+                          <li>Payment Plan Amount is required</li>
+                          <li>It allows numbers </li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="col-md-12">
+                      <label>Term Type:</label>
+                      <div class="display-inline">
+                        <div class="custom-control custom-radio radio-inline">
+                          <input type="radio" name="rdlTerm" id="rdlTermMonthly" value="Monthly" formControlName="rdlTerm" (click)="bindTermsDropDown($event);"
+                            class="custom-control-input">
+                          <label for="rdlTermMonthly" class="custom-control-description">  Monthly </label>
+                        </div>
+                        <div class="custom-control custom-radio radio-inline">
+                          <input type="radio" name="rdlTerm" id="rdlTermWeekly" value="BiWeekly" formControlName="rdlTerm" (click)="bindTermsDropDown($event);"
+                            class="custom-control-input">
+                          <label for="rdlTermWeekly" class="custom-control-description">     Bi Weekly </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group col-md-12 popover-field">
+                      <label for="terms" class="focused">Terms</label>
+                      <div style="width: calc(100% - 80px); display: inline-block; vertical-align: middle;">
+                        <select class="form-control" id="ddlMonthlyTerms" *ngIf="termsList" name="ddlMonthlyTerms" formControlName="ddlMonthlyTerms"
+                          (change)="ddlMonthlyTermsChange()">
+                        <option selected="selected" value="">--Select--</option>
+                        <option *ngFor="let term of termsList" value={{term}}>{{term}}</option>
+                      </select>
+                        <div class="msg" *ngIf="paymentPlanForm.controls['ddlMonthlyTerms'].invalid && (paymentPlanForm.controls['ddlMonthlyTerms'].dirty || paymentPlanForm.controls['ddlMonthlyTerms'].touched)">
+                          <div *ngIf="paymentPlanForm.controls['ddlMonthlyTerms'].errors.required">
+                            Required.
+                          </div>
+                        </div>
+                        <button type="button" class="pop-over" [popover]="popTerm" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                        <ng-template #popTerm>
+                          <ul>
+                            <li>Terms is required</li>
+                            <li>Select Terms </li>
+                          </ul>
+                        </ng-template>
+
+                      </div>
+                      <a style="display: inline-block; vertical-align: middle;" (click)="callTermsView()">View Terms</a>
+
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group col-md-12 popover-field">
+                      <label for="txtMobileNumber">Mobile #</label>
+                      <input type="text" class="form-control" id="txtMobileNumber" name="txtMobileNumber" placeholder="" formControlName="txtMobileNumber"
+                        (keydown)="formatPhone($event)" (change)="validateDayPhoneAllZeros()" maxlength="14">
+                      <div class="msg" *ngIf="paymentPlanForm.controls['txtMobileNumber'].invalid && (paymentPlanForm.controls['txtMobileNumber'].dirty || paymentPlanForm.controls['txtMobileNumber'].touched)">
+                        <div *ngIf="paymentPlanForm.controls['txtMobileNumber'].errors.required">
+                          Required.
+                        </div>
+                        <div *ngIf="paymentPlanForm.controls['txtMobileNumber'].errors.pattern">
+                          Invalid phone number.
+                        </div>
+                        <div *ngIf="paymentPlanForm.controls['txtMobileNumber'].errors.maxlength">
+                          Maximum 14 characters are allowed.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popMob" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                      <ng-template #popMob>
+                        <ul>
+                          <li>Mobile # is required</li>
+                          <li>It allows only numbers </li>
+                        </ul>
+                      </ng-template>
+                      <div *ngIf="isInvalidPhone">Invalid phone number</div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group col-md-12 popover-field">
+                      <label for="txtEmailId">Email Address #</label>
+                      <input type="text" class="form-control" id="txtEmailId" name="txtEmailId" placeholder="" formControlName="txtEmailId">
+                      <div class="msg" *ngIf="paymentPlanForm.controls['txtEmailId'].invalid && (paymentPlanForm.controls['txtEmailId'].dirty || paymentPlanForm.controls['txtEmailId'].touched)">
+                        <div *ngIf="paymentPlanForm.controls['txtEmailId'].errors.pattern">
+                          Invalid email format.
+                        </div>
+                        <div *ngIf="paymentPlanForm.controls['txtEmailId'].errors.minlength">
+                          Minimum 6 characters are required.
+                        </div>
+                        <div *ngIf="paymentPlanForm.controls['txtEmailId'].errors.maxlength">
+                          Maximum 100 characters are allowed.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popEmail" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                      <ng-template #popEmail>
+                        <ul>
+                          <li>It allows alphanumerics with special characters (@ , . , _, -, +).</li>
+                          <li>Spaces are not allowed.</li>
+                          <li>It should be minimum 6 characters and maximum 100 characters long.</li>
+                          <li>It should follow the format yourname@domain.com</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class=" col-md-12 ">
+
+                      <label></label>
+                      <div class="col-md-6">
+                        <div class="checkbox">
+
+                          <input data-toggle="modal" type="checkbox" name="chkAutoDebit" formControlName="chkAutoDebit" id="chkAutoDebit" [(ngModel)]='isAutoDebit'
+                            (change)="callAutoDebit($event)">
+                          <label for="chkAutoDebit"><span></span> Auto Debit  </label>
+                        </div>
+                      </div>
+                      <div class="col-md-6" [hidden]="!autoCardDetails">
+                        <a style="margin-top: 10px; display: inline-block;" (click)="callAutoDebitDetails()">View Account Details</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row m-t-20">
+            <div class="col-md-6">
+              <app-make-payment></app-make-payment>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 text-right">
+              <div class="btns-group">
+                <button class="btn btn-primary btn-search" type="submit" [disabled]="disableButtonADD" (click)="doPayment()" autofocus>Make Payment</button>
+                <button class="btn btn-primary btn-reset" type="submit" (click)="doPaymentReset()">Reset</button>
+                <button class="btn btn-primary btn-reset" type="submit" (click)="doPaymentCancel()">Cancel</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div [hidden]="paymentPlanStatus">
+          <div class="status-message" style="position: static;">
+            <div class="status-img">
+              <img src='assets/images/svg/warning.svg'>
+            </div>
+            <div class="status-content">
+              <h3>{{paymentPlanErrormsg}}</h3>
+            </div>
+            <div class="clear"></div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="termsView" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="terms">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Payment Plan Terms</h4>
+      </div>
+      <div class="modal-body" style='padding-left: 15px; padding-right: 15px;'>
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Term</th>
+                <th>Term Amount</th>
+                <th>Due Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let rep of iEMIDetailsRequest;'>
+                <td>{{rep.EMITermNumber}}</td>
+                <td class="text-right">{{rep.EMITermAmount | currencycustom }}</td>
+                <td class="text-right">{{rep.EMITermDuedate | customDateFormat }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-reset" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="updateDown" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="terms">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Update Down Payment Percentage</h4>
+      </div>
+      <div class="modal-body" style='padding-left: 15px; padding-right: 15px;'>
+        <div class="form-horizontal">
+          <div class="form-group">
+            <label for="" class="col-sm-4 control-label">Down Payment %</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" id="txtEditDownPayPercentage" placeholder="" [(ngModel)]="strEditDownPayPercentage">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-search" (click)="UpdateDownPayPercentage()">Update</button>
+        <button type="button" class="btn btn-primary btn-reset" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="autoDebit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="terms">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Credit Card Information</h4>
+      </div>
+      <div class="modal-body" style='padding-left: 15px; padding-right: 15px;' *ngIf="isCreditCardPopUp">
+        <div class="payment-details">
+          <form role="form" name="createForm" [formGroup]="createForm">
+            <div class="*form-horizontal">
+
+              <div class="form-group" *ngIf="iSNewCreditCard == 'true'">
+                <input type="checkbox" formControlName="NewCreditCard" name="NewCreditCard">
+                <span>New Credit Card</span>
+              </div>
+
+              <div class="row">
+                <div class="form-group col-sm-12 popover-field">
+                  <label for="name">Name on Card</label>
+                  <input type="text" class="form-control" pattern="^[a-zA-Z ]*" maxlength="25" id="name" placeholder="Name  Card" formControlName="Name"
+                    name="Name" style="text-transform:uppercase;">
+                  <div class="msg" *ngIf="createForm.controls['Name'].invalid && (createForm.controls['Name'].dirty || createForm.controls['Name'].touched)">
+                    <div *ngIf="createForm.controls['Name'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="createForm.controls['Name'].errors.pattern">
+                      Only alphabets and spaces are allowed !
+                    </div>
+                  </div>
+                  <button type="button" data-container="body" class="pop-over" [popover]="popNonC" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                    placement="left">?</button>
+                  <ng-template #popNonC>
+                    <ul>
+                      <li>Name On Card is required</li>
+                      <li>It allows only alphabets and spaces </li>
+                      <li>It should contain minimum 1 and maximum 25 characters</li>
+                    </ul>
+                  </ng-template>
+                  <!--<button type="button" class="tool-tip" data-toggle="tooltip" data-placement="top" title="{{tootltipName}}">?</button>-->
+                </div>
+                <div class="form-group col-sm-12 popover-field">
+                  <label class="focused">Credit Card Type:</label>
+
+                  <select class="form-control" formControlName="CardType" name="CardType" tabindex="2">
+                    <option selected='selected' value="">--Select--</option>
+                    <option *ngFor="let type of cardType" value="{{type.Key}}">{{type.Value}}</option>
+                  </select>
+                  <div class="msg" *ngIf="createForm.controls['CardType'].invalid && (createForm.controls['CardType'].dirty || createForm.controls['CardType'].touched)">
+                    <div *ngIf="createForm.controls['CardType'].errors.required">
+                      Required.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popCCT" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popCCT>
+                    <ul>
+                      <li>Credit Card Type is required</li>
+                      <li>Select Credit Card Type</li>
+                    </ul>
+                  </ng-template>
+                  <!--<button type="button" tabindex="-1" class="tool-tip" data-toggle="tooltip" data-placement="top" title="{{tooltipCardType}}">?</button>-->
+                </div>
+
+                <div class="col-sm-12 card-number" formGroupName="CCNumbers">
+                  <div style="display: inline-block; vertical-align: top; width: calc(100% - 30px);">
+                    <label for="inputEmail3" class="label-color">Credit Card #</label>
+                    <div class="row card-number-fields">
+                      <div class="form-group popover-field col-sm-12">
+                        <input type="text" pattern="[0-9]*" class="form-control" id="txtCredit1" placeholder="" formControlName="CCNumber1" name="CCNumber1"
+                          #inputField minlength="4" maxlength="4" tabindex="3" (keyup)="moveToNextTab($event, 'txtCredit2','txtCredit1')">
+                        <div class="msg" *ngIf="createForm.get('CCNumbers.CCNumber1').invalid && (createForm.get('CCNumbers.CCNumber1').dirty || createForm.get('CCNumbers.CCNumber1').touched)">
+                          <div *ngIf="createForm.get('CCNumbers.CCNumber1').errors.required">
+                            Required.
+                          </div>
+                          <div *ngIf="createForm.get('CCNumbers.CCNumber1').errors.pattern">
+                            Only numbers allowed.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group popover-field col-sm-12">
+                        <input type="text" pattern="[0-9]*" class="form-control" id="txtCredit2" placeholder="" formControlName="CCNumber2" name="CCNumber2"
+                          #inputField minlength="4" maxlength="4" tabindex="4" (keyup)="moveToNextTab($event, 'txtCredit3','txtCredit1')">
+                        <div class="msg" *ngIf="createForm.get('CCNumbers.CCNumber2').invalid && (createForm.get('CCNumbers.CCNumber2').dirty || createForm.get('CCNumbers.CCNumber2').touched)">
+                          <div *ngIf="createForm.get('CCNumbers.CCNumber2').errors.required">
+                            Required.
+                          </div>
+                          <div *ngIf="createForm.get('CCNumbers.CCNumber2').errors.pattern">
+                            Only numbers allowed.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group popover-field col-sm-12">
+                        <input type="text" pattern="[0-9]*" class="form-control" id="txtCredit3" placeholder="" formControlName="CCNumber3" name="CCNumber3"
+                          #inputField minlength="4" maxlength="4" tabindex="5" (keyup)="moveToNextTab($event, 'txtCredit4','txtCredit2')">
+                        <div class="msg" *ngIf="createForm.get('CCNumbers.CCNumber3').invalid && (createForm.get('CCNumbers.CCNumber3').dirty || createForm.get('CCNumbers.CCNumber3').touched)">
+                          <div *ngIf="createForm.get('CCNumbers.CCNumber3').errors.required">
+                            Required.
+                          </div>
+                          <div *ngIf="createForm.get('CCNumbers.CCNumber3').errors.pattern">
+                            Only numbers allowed.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group popover-field col-sm-12">
+                        <input type="text" pattern="[0-9]*" class="form-control" id="txtCredit4" placeholder="" formControlName="CCNumber4" name="CCNumber4"
+                          #inputField maxlength="4" tabindex="6" (keyup)="moveToNextTab($event, 'txtCredit4','txtCredit3')">
+                        <div class="msg" *ngIf="createForm.get('CCNumbers.CCNumber4').invalid && (createForm.get('CCNumbers.CCNumber4').dirty || createForm.get('CCNumbers.CCNumber4').touched)">
+                          <div *ngIf="createForm.get('CCNumbers.CCNumber4').errors.required">
+                            Required.
+                          </div>
+                          <div *ngIf="createForm.get('CCNumbers.CCNumber4').errors.pattern">
+                            Only numbers allowed.
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <button type="button" data-container="body" class="pop-over" [popover]="popCCN" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                    placement="left">?</button>
+                  <ng-template #popCCN>
+                    <ul>
+                      <li>Credit Card # is required</li>
+                      <li>It allows only numbers</li>
+                      <li>It should contain minimum 13 and maximum 16 numbers</li>
+                    </ul>
+                  </ng-template>
+                </div>
+
+                <div class="form-group col-sm-12 popover-field">
+                  <label for="expiry" class="focused">Expiry Date:</label>
+                  <div class="row">
+                    <div class="col-xs-6 popover-field">
+                      <select class="form-control" id="expiry-monthCredit" formControlName="Month" name="Month" tabindex="7">
+                        <option selected="selected" value="">--MONTH--</option>
+                        <option *ngFor="let month of months" value={{month}}>{{month}}</option>
+                      </select>
+                      <div class="msg" *ngIf="createForm.controls['Month'].invalid && (createForm.controls['Month'].dirty || createForm.controls['Month'].touched)">
+                        <div *ngIf="createForm.controls['Month'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" data-container="body" [popover]="popED" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                        placement="left">?</button>
+                      <ng-template #popED>
+                        <ul>
+                          <li>Card Expiration Month is required</li>
+                          <li>Card Expiration Month should not be less than current month of the current year</li>
+                        </ul>
+                      </ng-template>
+                      <!--<button type="button" tabindex="-1" class="tool-tip" data-toggle="tooltip" data-placement="top" title="{{tootipMonth}}">?</button>-->
+                    </div>
+                    <div class="col-xs-6 popover-field">
+                      <select class="form-control" formControlName="Year" name="Year" tabindex="8">
+                        <option selected="selected" value="">--YEAR--</option>
+                        <option *ngFor="let year of years" value={{year}}>{{year}}</option>
+                      </select>
+                      <div class="msg" *ngIf="createForm.controls['Year'].invalid && (createForm.controls['Year'].dirty || createForm.controls['Year'].touched)">
+                        <div *ngIf="createForm.controls['Year'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popYear" data-container="body" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                        placement="left">?</button>
+                      <ng-template #popYear>
+                        <ul>
+                          <li>Card Expiration Year is required</li>
+                          <li>Select Year</li>
+                        </ul>
+                      </ng-template>
+                      <div *ngIf="isInvalidExpirationDate" style="color: red;">Invalid Expiration Date</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </form>
+
+          <div class="row">
+            <div class="col-md-12 m-t-20">
+              <div class="pad-20-bdr">
+                <h3>Address Details</h3>
+                <div class="custom-control custom-radio radio-inline">
+                  <input type="radio" class="custom-control-input" [checked]="!isAddressEnable" name="addressRadioOptions" id="inlineRadio1"
+                    value="exist" (change)="addressChange($event.target.value)">
+                  <label for="inlineRadio1" class="custom-control-description"> Use Existing Address</label>
+                </div>
+                <div class="custom-control custom-radio radio-inline">
+                  <input type="radio" class="custom-control-input" [checked]="isAddressEnable" name="addressRadioOptions" id="inlineRadio2"
+                    value="new" (change)="addressChange($event.target.value)">
+                  <label for="inlineRadio2" class="custom-control-description"> New Address</label>
+                </div>
+                <div>
+                  <div class="m-t-20" *ngIf="!isAddressEnable && accountId">
+                    <app-add-address [customerID]="accountId" [isEnable]="true"></app-add-address>
+                  </div>
+                  <div class="m-t-20" *ngIf="isAddressEnable">
+                    <app-add-address [addressObject]="addressResponse" [customerID]="0" [isEnable]="false"></app-add-address>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-search" (click)="submitCreditCardPopUp();">Submit</button>
+        <button type="button" class="btn btn-primary btn-reset" (click)="resetCreditCardPopUp();">Reset</button>
+        <button type="button" class="btn btn-primary btn-reset" (click)="cancelCreditCardPopUp();">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

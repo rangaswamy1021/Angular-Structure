@@ -1,0 +1,364 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">TVC</a></li>
+        <li><a href="#">Trip</a></li>
+        <li class="active">Create New Correspondence for Trip(s)</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row m-b-10">
+    <div class="col-md-6">
+      <div class="page-header">
+        <h1>Create New Correspondence for Trip(s)</h1>
+      </div>
+    </div>
+    <div class="col-md-6 text-right">
+      <span id="" class="accno">Account #: {{longViolatorId}}</span>
+      <button class="btn btn-default btn-search" (click)='backClick()' type="reset">Back</button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="row">
+      <div class="col-md-12">
+        <span id="" class="accno">Trip #:{{tripIdCSV}}</span>
+      </div>
+      <div class="col-md-12 m-t-20">
+        <div class="table-bdr">
+          <h3> Create New Correspondence</h3>
+          <div class="pad-20">
+            <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+            <form [formGroup]='correspondenceForm'>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="form-group col-md-12 popover-field">
+                      <label for="actionType" class="focused">Action Type</label>
+                      <select class="form-control" (change)='changeActionType()' formControlName="actionType" id="actionType">
+                   <option value="" selected>--Select--</option>                         
+                   <option *ngFor='let action of actionType' value="{{action.Key}}">{{action.Value}}</option>
+                 </select>
+                      <div class="msg" *ngIf="correspondenceForm.controls['actionType'].invalid && (correspondenceForm.controls['actionType'].dirty || correspondenceForm.controls['actionType'].touched)">
+                        <div *ngIf="correspondenceForm.controls['actionType'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="poppAType" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #poppAType>
+                        <ul>
+                          <li>Select Action Type</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="form-group col-md-12 popover-field">
+                      <label for="correspondenceTypes" class="focused">Correspondence Type</label>
+                      <select class="form-control" [attr.disabled]="isCorrespondenceType?'':null" formControlName="correspondenceTypes" id="correspondenceTypes">
+                   <option value="" selected>--Select--</option>                         
+                   <option *ngFor='let correspondence of correspondenceTypes' value="{{correspondence.Key}}">{{correspondence.Value}}</option>
+                 </select>
+                      <div class="msg" *ngIf="correspondenceForm.controls['correspondenceTypes'].invalid && (correspondenceForm.controls['correspondenceTypes'].dirty || correspondenceForm.controls['correspondenceTypes'].touched)">
+                        <div *ngIf="correspondenceForm.controls['correspondenceTypes'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="poppCType" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #poppCType>
+                        <ul>
+                          <li>Select Correspondence Type</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="form-group col-sm-12 popover-field">
+                      <label for="effectedDate" id="focused">Effective Date</label>
+                      <!--<input type="text" placeholder="Effective Date" #dp="bsDatepicker" bsDatepicker formControlName="effectedDate" class="form-control"
+                        id="effectedDate">-->
+                      <my-date-picker name="mydate" [options]="myDatePickerOptions" (inputFieldChanged)='onDateChanged($event)' formControlName="effectedDate"
+                        placeholder="MM/DD/YYYY"></my-date-picker>
+                      <div class="show-error" *ngIf="invalidDate">
+                        <div> Invalid Date</div>
+                      </div>
+                      <button type="button" data-container="body" class="pop-over" [popover]="popCD" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                        placement="left">?</button>
+                      <ng-template #popCD>
+                        <ul>
+                          <li>
+                            Select Date
+                          </li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="form-group col-md-12 popover-field">
+                      <label for="addressType" class="focused">Address Type</label>
+                      <select class="form-control" (change)='addressChange()' [attr.disabled]="isAddressTypeDisabled?'':null" formControlName="addressType"
+                        id="addressType">
+                   <option value="" selected>--Select--</option>                         
+                   <option *ngFor='let addresstype of addressTypes' value="{{addresstype.Key}}">{{addresstype.Value}}</option>
+                 </select>
+                      <div class="msg" *ngIf="correspondenceForm.controls['addressType'].invalid && (correspondenceForm.controls['addressType'].dirty || correspondenceForm.controls['addressType'].touched)">
+                        <div *ngIf="correspondenceForm.controls['addressType'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="poppAddT" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #poppAddT>
+                        <ul>
+                          <li>Select Address Type</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 clear">
+                  <div class="row">
+                    <div class=" form-group col-md-12 popover-field">
+                      <label for="addresline1">Address Lane 1</label>
+                      <input type="text" [attr.disabled]="isDisabled?'':null" class="form-control" formControlName="addressLine1" placeholder="Address Line 1"
+                        id="addresline1">
+                      <div class="msg" *ngIf="correspondenceForm.controls['addressLine1'].invalid && (correspondenceForm.controls['addressLine1'].dirty || correspondenceForm.controls['addressLine1'].touched)">
+                        <div *ngIf="correspondenceForm.controls['addressLine1'].errors.required">
+                          Required.
+                        </div>
+                        <div *ngIf="correspondenceForm.controls['addressLine1'].errors.pattern">
+                          Special characters are not allowed.
+                        </div>
+                        <div *ngIf="correspondenceForm.controls['addressLine1'].errors.maxlength">
+                          Maximum 50 characters are allowed.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="poppAddL1" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #poppAddL1>
+                        <ul>
+                          <li>Address Line 1 is required</li>
+                          <li>It allows alphanumerics, spaces and all special characters.</li>
+                          <li>It should be minimum 1 character and maximum 50 characters long</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="form-group col-md-12 popover-field">
+                      <label for="addresline2">Address Lane 2</label>
+                      <input type="text" [attr.disabled]="isDisabled?'':null" class="form-control" formControlName="addressLine2" placeholder="Address Line 2"
+                        id="addresline2">
+                      <div class="msg" *ngIf="correspondenceForm.controls['addressLine2'].invalid && (correspondenceForm.controls['addressLine2'].dirty || correspondenceForm.controls['addressLine2'].touched)">
+                        <div *ngIf="correspondenceForm.controls['addressLine2'].errors.required">
+                          Required.
+                        </div>
+                        <div *ngIf="correspondenceForm.controls['addressLine1'].errors.pattern">
+                          Special characters are not allowed.
+                        </div>
+                        <div *ngIf="correspondenceForm.controls['addressLine1'].errors.maxlength">
+                          Maximum 50 characters are allowed.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="poppAddL2" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #poppAddL2>
+                        <ul>
+                          <li>Address Line 2 allows alphanumeric with special characters and space.</li>
+                          <li>It should be minimum 1 characters and maximum 50 characters long</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="form-group col-md-12 popover-field">
+                      <label for="addresline3">Address Lane 3</label>
+                      <input type="text" [attr.disabled]="isDisabled?'':null" class="form-control" formControlName="addressLine3" placeholder="Address Line 3"
+                        id="addresline1">
+                      <div class="msg" *ngIf="correspondenceForm.controls['addressLine3'].invalid && (correspondenceForm.controls['addressLine3'].dirty || correspondenceForm.controls['addressLine3'].touched)">
+                        <div *ngIf="correspondenceForm.controls['addressLine3'].errors.pattern">
+                          Special characters are not allowed.
+                        </div>
+                        <div *ngIf="correspondenceForm.controls['addressLine3'].errors.maxlength">
+                          Maximum 50 characters are allowed.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="poppAddL3" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #poppAddL3>
+                        <ul>
+                          <li>Address Line 3 allows alphanumeric with special characters and space.</li>
+                          <li>It should be minimum 1 characters and maximum 50 characters long</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="form-group col-md-12 popover-field">
+                      <label for="city">City</label>
+                      <input type="text" [attr.disabled]="isDisabled?'':null" class="form-control" id="city" placeholder="City" formControlName="city"
+                        pattern="[A-z]*" id="city">
+                      <div class="msg" *ngIf="correspondenceForm.controls['city'].invalid && (correspondenceForm.controls['city'].dirty || correspondenceForm.controls['city'].touched)">
+                        <div *ngIf="correspondenceForm.controls['city'].errors.required">
+                          Required.
+                        </div>
+                        <div *ngIf="correspondenceForm.controls['city'].errors.pattern">
+                          Only alphanumerics and space are allowed.
+                        </div>
+                        <div *ngIf="correspondenceForm.controls['city'].errors.maxlength">
+                          Maximum 50 characters are allowed.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popCity" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popCity>
+                        <ul>
+                          <li>City is required.</li>
+                          <li>It allows alphanumerics and space.</li>
+                          <li>Special Characters are not allowed.</li>
+                          <li>It should be minimum 1 characters and maximum 50 characters long</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="form-group col-md-12 popover-field">
+                      <label class="focused" for="state">State</label>
+                      <select class="form-control" [attr.disabled]="isDisabled?'':null" formControlName="state" id="state">
+                          <option value="" selected>* State</option>
+                          <option *ngFor='let state of states' value="{{state.StateCode}}">{{state.StateName}}</option>
+                        </select>
+                      <div class="msg" *ngIf="correspondenceForm.controls['state'].invalid && (correspondenceForm.controls['state'].dirty || correspondenceForm.controls['state'].touched)">
+                        <div *ngIf="correspondenceForm.controls['state'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popState" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popState>
+                        <ul>
+                          <li>State is required.</li>
+                          <li>Select State</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="col-md-6 form-group popover-field">
+                      <label for="inputEmail3" class="focused">Zip</label>
+                      <input type="text" [attr.disabled]="isDisabled?'':null" class="form-control" placeholder="Zip Code" formControlName="zip1">
+                      <div class="msg" *ngIf="correspondenceForm.controls['zip1'].invalid && (correspondenceForm.controls['zip1'].dirty || correspondenceForm.controls['zip1'].touched)">
+                        <div *ngIf="correspondenceForm.controls['zip1'].errors.required">
+                          Required.
+                        </div>
+                        <div *ngIf="correspondenceForm.controls['zip1'].errors.pattern && !correspondenceForm.controls['zip1'].errors.minlength && !correspondenceForm.controls['zip1'].errors.maxlength">
+                          Only numerics are allowed.
+                        </div>
+                        <div *ngIf="correspondenceForm.controls['zip1'].errors.minlength">
+                          Minimum {{zipMinlength}} characters are required.
+                        </div>
+                        <div *ngIf="correspondenceForm.controls['zip1'].errors.maxlength">
+                          Maximum {{zipMaxlength}} characters are allowed.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popZip1" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popZip1>
+                        <ul>
+                          <li>Zip Code 1 is required.</li>
+                          <li>It allows only numbers.</li>
+                        </ul>
+                      </ng-template>
+
+                    </div>
+
+                    <div class="form-group col-md-6 popover-field">
+                      <input type="text" [attr.disabled]="isDisabled?'':null" class="form-control" placeholder="Zip Code 2" formControlName="zip2"
+                        pattern="[0-9]*" maxlength="4">
+                      <div class="msg" *ngIf="correspondenceForm.controls['zip2'].invalid && (correspondenceForm.controls['zip2'].dirty || correspondenceForm.controls['zip2'].touched)">
+                        <div *ngIf="correspondenceForm.controls['zip2'].errors.pattern">
+                          Only numerics are allowed.
+                        </div>
+                        <div *ngIf="correspondenceForm.controls['zip2'].errors.maxlength">
+                          Maximum 4 characters are allowed.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popZip2" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popZip2>
+                        <ul>
+                          <li>Zip Code 2 allows only numbers.</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="form-group col-md-12 popover-field">
+                      <label for="country" class="focused">Country</label>
+                      <select class="form-control" [attr.disabled]="isDisabled?'':null" formControlName="country" (change)='countrySelected($event.target.value)'
+                        id="country">
+                          <option value="selected" >* Country</option>                          
+                          <option *ngFor='let country of countries' value="{{country.CountryCode}}">{{country.CountryName}}</option>
+                        </select>
+                      <div class="msg" *ngIf="correspondenceForm.controls['country'].invalid && (correspondenceForm.controls['country'].dirty || correspondenceForm.controls['country'].touched)">
+                        <div *ngIf="correspondenceForm.controls['country'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popCountry" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popCountry>
+                        <ul>
+                          <li>Country is required.</li>
+                          <li>Select Country.</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group col-md-offset-3 col-md-9">
+                    <div class="checkbox">
+                      <input type="checkbox" id="chk" [attr.disabled]="isDisabled?'':null" formControlName="isPreferred">
+                      <label for="isPreferred">  <span></span>Use as Primary Address
+                       </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-12 text-right">
+                    <button type="submit" class="btn btn-primary btn-search" *ngIf="isAddButton" (click)="addressAdd()">Add</button>
+                    <button type="submit" class="btn btn-primary btn-search" [disabled]="disableUpdatetbtn" *ngIf="!isAddButton" (click)="updateDetails()">Update</button>
+                    <button type="submit" class="btn btn-primary btn-reset" (click)="resetClick()">Reset</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

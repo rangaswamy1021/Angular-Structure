@@ -1,0 +1,161 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li>
+          <a href="#">Exception List </a>
+        </li>
+        <li class="active"> Exception List Review</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1> Exception List Review</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <label>Enter Review Count</label>
+          <input type="text" id="count" class="form-control" [(ngModel)]='count' name='count' [disabled]="disableButton" (keyup)="getCountValue(count)">
+          <div class="show-error" *ngIf="showError" style="margin-bottom: 0;">
+            <div *ngIf="showCountRequired">
+              Required.
+            </div>
+            <div *ngIf="showPatternError">
+              Only numerics allowed
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <button type="submit" class="btn btn-primary btn-search" (click)="getAllTransactions(count)" [disabled]='disableButton'>Getdata</button>
+      <button type="submit" class="btn btn-primary btn-search" [disabled]='!disableButton || addDisableButton' (click)="checkChanges()">Commit</button>
+      <button type="submit" class="btn btn-primary btn-reset" [disabled]='!disableButton' (click)=releaseBtn()>Release</button>
+    </div>
+  </div>
+  <div class="row m-t-20" *ngIf='showImageSec'>
+    <div class="col-md-12">
+      <ngx-gallery [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
+      <div class="row">
+        <div class="col-md-6">
+          <ul class="image-view-options">
+            <li>
+              <a (click)="zoomIn()" (keyup)="getKeyCode($event)" tabindex="1">
+                  <img src="assets/images/svg/zoom-tool.svg" alt="">
+                  <span>Zoom in
+                    <strong>F1</strong>
+                  </span>
+                </a>
+            </li>
+            <li>
+              <a (click)="zoomOut()" (keyup)="getKeyCode($event)" tabindex="2">
+                  <img src="assets/images/svg/zoom-out1.svg" alt="">
+                  <span>Zoom Out
+                    <strong>F2</strong>
+                  </span>
+                </a>
+            </li>
+            <li>
+              <a (click)="resetImageProperties()" (keyup)="getKeyCode($event)" tabindex="3">
+                  <img src="assets/images/svg/reload.svg" alt="">
+                  <span> Reset
+                    <strong>F3</strong>
+                  </span>
+                </a>
+            </li>
+            <li>
+              <a (click)="darken()" (keyup)="getKeyCode($event)" tabindex="4">
+                  <img src="assets/images/svg/dark.svg" alt="">
+                  <span>Darken
+                    <strong>F4</strong>
+                  </span>
+                </a>
+            </li>
+            <li>
+              <a (click)="brighten()" (keyup)="getKeyCode($event)" tabindex="5">
+                  <img src="assets/images/svg/brigth.svg" alt="">
+                  <span>Brighten
+                    <strong>F5 </strong>
+                  </span>
+                </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="table-bdr m-t-20">
+        <h3> Transaction Data</h3>
+        <div class="pad-10">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Transaction Id</th>
+                <th>Plaza Id</th>
+                <th>Lane Id</th>
+                <th>Date</th>
+                <th>Class</th>
+                <th>Vehicle State</th>
+                <th>Vehicle Number</th>
+                <th>Serial Number</th>
+                <th>Comments</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{selectedException.TPTRIPID}}</td>
+                <td>{{selectedException.ENTRYPLAZAID}}</td>
+                <td>{{selectedException.ENTRYLANEID}}</td>
+                <td>{{selectedException.TripDateTime}}</td>
+                <td>{{selectedException.VEHICLECLASS}}</td>
+                <td>{{selectedException.VEHICLESTATE}}</td>
+                <td>{{selectedException.VEHICLENUMBER}}</td>
+                <td>{{selectedException.TAGREFID =="" ? "N/A":selectedException.TAGREFID}}</td>
+                <td>{{selectedException.COMMENTS}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 m-t-20">
+      <div class="row">
+        <div class="col-md-4 form-group">
+          <input type="text" class="form-control" [(ngModel)]="status" name='status' [disabled]="disableText" (keyup)="selectStatus($event,status)">
+          <div class="show-error" *ngIf="showRequired" style="margin-bottom: 0;">
+            <div *ngIf="showRequired">
+              Required.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <progressbar [max]="maxValue" [value]="progressIndex" type="success">
+            <i>{{progressIndex}} / {{maxValue}}</i>
+          </progressbar>
+        </div>
+        <div class="col-md-12 m-t-20">
+          <p> Result('ACCEPT' OR 'REJECT')</p>
+          <p> Press a for 'ACCEPT' and r for 'REJECT')</p>
+          <p> Press 'Enter' to make changes</p>
+        </div>
+        <div class="col-md-12 m-t-10">
+          <button type='button' class='btn btn-primary btn-search' (click)="prev()" [disabled]='disablePrev'>Go to Previous</button>
+          <button type='button' class='btn btn-primary btn-search' (click)="next()" [disabled]='disableNext'>Go to Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event, 1000)" (onOk)="userAction($event)"></app-success-failure-alerts-message>
+  <div class="divcaliberimgSuperUser" id="divcaliberimg">
+    <div class="imgCaliberFullImg"></div>
+  </div>

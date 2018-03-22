@@ -1,0 +1,214 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">IMC</a>
+        </li>
+        <li class="active">Manage Items</li>
+        <li class="active">Bulk Manage Tags</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Bulk Manage Tags</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <form role="form" [formGroup]="manageBulkForm">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group " name="manageBulkForm">
+              <label class="focused"> Item Status</label>
+              <select class="form-control" id="itemStatus" name="itemStatus" formControlName="itemStatus">
+                <option selected="selected" value="">--Select--</option>
+                <option *ngFor='let itemStatus of  responseItemStatus' value="{{itemStatus.TagStatus}}">{{itemStatus.TagStatus}}</option>
+              </select>
+              <div class="msg" *ngIf="manageBulkForm.controls['itemStatus'].invalid && (manageBulkForm.controls['itemStatus'].dirty || manageBulkForm.controls['itemStatus'].touched)">
+                <div *ngIf="manageBulkForm.controls['itemStatus'].errors.required">
+                  Required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 form-group">
+            <label for="Date Range" class="focused">Time Period</label>
+            <my-date-range-picker name="mydaterange" (inputFieldChanged)='onDateRangeFieldChanged($event)' [options]="myDateRangePickerOptions"
+              formControlName="timePeriod" placeholder="MM/DD/YYYY-MM/DD/YYYY"></my-date-range-picker>
+            <div class="show-error" *ngIf="invalidDate">
+              <div>Invalid Date Range.</div>
+            </div>
+          </div>
+
+          <!--<div class="col-md-6">
+            <div class="form-group">
+              Time Period
+              <input class="form-control disbale-to-write"   placeholder="MM/DD/YYYY - MM/DD/YYYY" bsDaterangepicker #dpr="bsDaterangepicker" 
+(bsValueChange)='bsValueChange($event)'  name="timePeriod" formControlName="timePeriod" [(ngModel)]="timePeriod">
+            </div>
+          </div>-->
+
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-primary btn-search" [disabled]="disableSearchButton" (click)="searchItemsClick()" title="Search">Search</button>
+            <button type="reset" class="btn btn-default btn-reset" (click)="searchReset()">Reset </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </form>
+
+
+
+  <div *ngIf="bulkManage">
+    <div class="row">
+      <div *ngIf="clickManage">
+        <div *ngIf="showRmaTextbox">
+          <div class="col-md-4 form-group">
+            <form role="form" name="rmaForm" [formGroup]="rmaForm">
+              <label class="focused">RMA Number</label>
+              <input type="text" class="form-control" id="rmaNumber" name="rmaNumber" formControlName="rmaNumber" class="form-control" style="float:left;" maxlength="15">
+            </form>
+          </div>
+        </div>
+        <form role="form" [formGroup]="statusTagForm">
+          <div class="row">
+            <div class="col-md-2 pull-right">
+              <div class="form-group">
+                <button class="btn btn-primary btn-search" (click)="updateTagStatusWithDropdown()">Change Status</button>
+              </div>
+            </div>
+
+            <div class="col-md-4 pull-right form-group">
+              <select class="form-control" #tag name="status" (change)="dropdownselectedValue(tag.value)" formControlName="status">
+                <option selected="selected" value="">--Select--</option>
+                <option *ngFor="let res of getTagStatusbyMatrixResponse">{{res.ColumnName}}</option>
+              </select>
+              <div class="msg" *ngIf="statusTagForm.controls['status'].invalid && (statusTagForm.controls['status'].dirty || statusTagForm.controls['status'].touched)">
+                <div *ngIf="statusTagForm.controls['status'].errors.required">
+                  Required
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-12" *ngIf="btnManage">
+        <div class="form-group">
+          <button class="btn btn-primary btn-search pull-right" (click)="manageItems($event)" [disabled]="disableManageButton" title={{tooltip}}>Manage </button>
+          <div class="clear"> </div>
+        </div>
+      </div>
+    </div>
+    <div class="table-bdr">
+      <h3>Search Details</h3>
+      <div class="pad-10">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>
+                  <div class="checkbox">
+                    <input type="checkbox" [(ngModel)]="selectedAll1" (change)="selectAll();" [attr.disabled]="readOnly" id="selectedAll1" />
+                    <label for="selectedAll1">
+                      <span></span>
+                    </label>
+                  </div>
+                </th>
+                <th (click)="sortDirection('SERIALNUMBER')" class="sorting-handle">Serial #
+                  <span *ngIf="gridArrowSERIALNUMBER">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+                <th (click)="sortDirection('CustomerId')" class="sorting-handle">Assigned to Account #
+                  <span *ngIf="gridArrowCustomerId">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+                <th (click)="sortDirection('FULLNAME')" class="sorting-handle">Customer Name
+                  <span *ngIf="gridArrowFULLNAME">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+                <th>Item Status </th>
+                <th (click)="sortDirection('TAGTYPE')" class="sorting-handle">Item Name
+                    <span *ngIf="gridArrowTAGTYPE">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+                  </th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let inventory of searchResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: currentPage, totalItems:totalRecordCount }; let i=index ">
+                <td>
+                  <div class="checkbox">
+                    <input type="checkbox" [(ngModel)]="inventory.isSelected" (change)="checkIfAllSelected();checkBoxChange($event,i)" [attr.disabled]="readOnly"
+                      id="{{i}}">
+                    <label for="{{i}}">
+                      <span></span>
+                    </label>
+                  </div>
+
+                </td>
+                <td>{{inventory.SerialNumber}}</td>
+                <td>{{inventory.CustomerId== "" ? "N/A":inventory.CustomerId}}</td>
+                <td>{{inventory.CustomerName=="" ? "N/A":inventory.CustomerName}}</td>
+                <td>{{inventory.TagStatus.toUpperCase()}}</td>
+                <td>{{inventory.TagName}}</td>
+                <td>
+                  <i *ngIf="disableViewButton" class="fa fa-file-text-o fa-lg fa-fw link-disabled" aria-hidden="true"></i>
+                  <span *ngIf="!disableViewButton">
+                    <a (click)="historyClick(inventory.SerialNumber)" title="View History">
+                      <i class="fa fa-file-text-o fa-lg"></i>
+                    </a>
+                  </span>
+                </td>
+                <td> </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row page-info" *ngIf='searchResponse && searchResponse[0].RecCount'>
+          <div class="col-md-6 text-left">
+            <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="text-center">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-bdr" *ngIf='noRecordsToDisplay'>
+    <h3>Search Details</h3>
+    <div class="pad-10">
+      <div>
+        <div class="status-content">
+          <div class="alert alert-success alert-dismissible" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign">&nbsp;</span>No details to display
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+</div>

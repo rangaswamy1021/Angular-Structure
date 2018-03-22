@@ -1,0 +1,174 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">IMC</a></li>
+        <li class="active">Reports</li>
+        <li class="active">Returned Purchase Order Items</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Returned Purchase Order Items</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <form role="form" name="convertToHexatagForm" [formGroup]="POItemsReturnForm">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="col-ms-12 form-group">
+                  <label class="focused"> Time Period</label>
+                    <div class="show-error" *ngIf="!invalidDate && POItemsReturnForm.controls['timePeriod'].invalid && (POItemsReturnForm.controls['timePeriod'].dirty || POItemsReturnForm.controls['timePeriod'].touched)">
+                    <div *ngIf="POItemsReturnForm.controls['timePeriod'].errors.required">
+                      Required.
+                    </div>
+                  </div>
+                    <my-date-range-picker name="timePeriod" (inputFieldChanged)="onDateRangeFieldChanged($event)" [options]="myDateRangePickerOptions"
+                    formControlName="timePeriod"  tabindex="2"></my-date-range-picker>
+                     <div class="show-error" *ngIf="invalidDate">
+                    <div>Invalid Date Range</div>
+                    </div>
+                  <!--<input class="form-control  disbale-to-write" placeholder="Select Date Range"  bsDaterangepicker #dpr="bsDaterangepicker"
+                    name="timePeriod" formControlName="timePeriod" [(ngModel)]="timePeriod"  tabindex="2"
+                    placeholder="--Select--">
+                  <div class="msg" *ngIf="POItemsReturnForm.controls['timePeriod'].invalid && (POItemsReturnForm.controls['timePeriod'].dirty || POItemsReturnForm.controls['timePeriod'].touched)">
+                    <div *ngIf="POItemsReturnForm.controls['timePeriod'].errors.required">
+                      Required.
+                    </div>
+                  </div>-->
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="col-md-12 form-group">
+                  <label> Purchase Order #</label>
+                  <input type="text" id="purchaseOrderNumber" name="purchaseOrderNumber" formControlName="purchaseOrderNumber" class="form-control"
+                    placeholder="Purchase Order #">
+                  <div class="msg" *ngIf="POItemsReturnForm.controls['purchaseOrderNumber'].invalid && (POItemsReturnForm.controls['purchaseOrderNumber'].dirty || POItemsReturnForm.controls['purchaseOrderNumber'].touched)">
+
+                    <div *ngIf="POItemsReturnForm.controls['purchaseOrderNumber'].errors.pattern">
+                      Only numbers allowed
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-12">
+                <button type="submit" class="btn btn-primary btn-search" [disabled]="disableSearchButton" (click)="getReturnedPOItems()">Search</button>
+                <button type="submit" (click)="resetclick()" class="btn btn-default btn-reset">Reset</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </form>
+
+
+
+      <div class="row" *ngIf="isSearch">
+        <div class="col-md-12 m-t-20">
+          <div class="table-bdr">
+            <h3> Returned Purchase Order Items</h3>
+            <div *ngIf="returnedPOItemsResponse && returnedPOItemsResponse.length;else elseBlock">
+              <div class="pad-10 xs-thead" style="height:400px; overflow-y: auto;padding:18px 0;">
+                <div class="table-responsive">
+                <table class="table m-t-20">
+                  <thead style="position:absolute; top:34px;right:15px;left:15px">
+                    <tr>
+                      <th class="col-xs-1"> Purchase Order #</th>
+                      <th class="col-xs-3">Purchase Order Name</th>
+                      <th class="col-xs-3"> Purchase Order Date </th>
+                      <th class="col-xs-4"> Purchase Order Item Count</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td> </td>
+                      <td> </td>
+                      <td> </td>
+                      <td> </td>
+                    </tr>
+                    <tr *ngFor="let items of purchaseOrderDetails ; let idx = index">
+                      <td class="col-xs-1"> {{items.POId}} </td>
+                      <td colspan="3" class="col-xs-7">
+                        <table>
+                          <tr>
+                            <td class="col-xs-3"> <button class="btn btn-default collapsed btn1" data-toggle="collapse" [attr.data-target]="'#demo'+idx"></button>                              {{items.POName}} </td>
+                            <td class="col-xs-3"> {{items.PurchaseOrderDate | customDateFormat}} </td>
+                            <td class="col-xs-4"> {{items.POItemCount}} </td>
+                          </tr>
+                        </table>
+                        <table>
+                          <tr>
+                            <td colspan="3">
+
+                              <div id="demo{{idx}}" class="collapse">
+
+                                <table class="table table-condensed table-bordered">
+                                  <thead>
+                                    <tr>
+                                      <th> Return PO # </th>
+                                      <th> Return PO Name </th>
+                                      <th> Return PO Date </th>
+                                      <th> Returned Item Count </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody *ngFor="let returnItems of returnItemsDetails">
+                                    <tr *ngIf="items.POId==returnItems.POId">
+                                      <td> {{returnItems.ReturnPOId}} </td>
+                                      <td> {{returnItems.ReturnPOName}} </td>
+                                      <td> {{returnItems.ReturnPODate | customDateFormat}} </td>
+                                      <td> {{returnItems.ReturnItemCount}} </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+
+                                <table class="table table-condensed table-bordered">
+                                  <thead>
+                                    <tr>
+                                      <th> RMA No.</th>
+                                      <th> Serial No.</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody *ngFor="let detailItems of RMADetails">
+                                    <tr *ngIf="items.POId==detailItems.POId">
+                                      <td>{{detailItems.RMANumber == "" ? "N/A" : detailItems.RMANumber}} </td>
+                                      <td> {{detailItems.SerialNumber}} </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </tbody>
+
+                </table>
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #elseBlock>
+        <div class="pad-10">
+          No records to display
+        </div>
+      </ng-template>
+    </div>
+  </div>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+   (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+</div>

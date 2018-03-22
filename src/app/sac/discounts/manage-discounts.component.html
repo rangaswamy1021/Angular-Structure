@@ -1,0 +1,862 @@
+<div class="page-title-header container">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">SAC</a>
+        </li>
+        <li>
+          <a href="#">Manage Plans</a>
+        </li>
+        <li class="active">Discounts</li>
+      </ol>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Discounts</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+  <div class="row" *ngIf="!manageDiscounts">
+    <div class="col-md-12">
+      <a data-toggle="modal" (click)='addNewManageDiscounts()'>
+        <img src="assets/images/svg/add-file2.svg" class="icon-svg3">Add New Discounts</a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12" [hidden]="!manageDiscounts">
+      <h4 class="modal-title" id="myModalLabel">{{mode=='add'?'Add New':'Update'}} Discount</h4>  
+      <div class="table-bdr clear-col-2">
+        <h3>Discount Details </h3>
+        <div class="pad-10">
+          <div class="row p-b-10">
+            <form role="form" name="discntForm" [formGroup]="discntForm">
+
+              <div class="col-md-6 form-group popover-field">
+                  <label for="">Discount Code</label>
+                  <input type="text" class="form-control" pattern="^[a-zA-Z0-9]*" maxlength="50" placeholder="* Discount Code" formControlName="code">
+                  <div class="msg" *ngIf="discntForm.controls['code'].invalid && (discntForm.controls['code'].dirty || discntForm.controls['code'].touched)">
+                    <div *ngIf="discntForm.controls['code'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="discntForm.controls['code'].errors.pattern">
+                      Only alphanumerics are allowed !
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popDC" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popDC>
+                    <ul>
+                      <li>Discount Code is required.</li>
+                      <li>It allows only alphanumerics.</li>
+                      <li>Special characters and spaces are not allowed.</li>
+                      <li>It should be minimum 1 character and maximum 50 characters long</li>
+                    </ul>
+                  </ng-template>
+              </div>
+              <div class="col-md-6 form-group popover-field">
+                  <label for="">Discount Name</label>
+                  <input type="text" class="form-control" pattern="^[a-zA-Z0-9_ ]*" maxlength="50" placeholder="* Discount Name" formControlName="name">
+                  <div class="msg" *ngIf="discntForm.controls['name'].invalid && (discntForm.controls['name'].dirty || discntForm.controls['name'].touched)">
+                    <div *ngIf="discntForm.controls['name'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="discntForm.controls['name'].errors.pattern">
+                      Only alphanumerics, spaces and underscore are allowed !
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popDN" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popDN>
+                    <ul>
+                      <li>Discount Name is required.</li>
+                      <li>It allows only alphanumerics, spaces and underscore.</li>
+                      <li>Special characters are not allowed</li>
+                      <li>It should be minimum 1 character and maximum 50 characters long</li>
+                    </ul>
+                  </ng-template>
+              </div>
+              <div class="col-md-6 form-group popover-field" style="margin-bottom:0">
+                    <label for="" class="focused">Discount Description</label>
+                    <textarea rows="2" class="form-control" placeholder="* Discount Description" maxlength="255" formControlName="description"
+                      (keyup)="descriptionCharCount($event.target.value)"></textarea>
+                    <div class="msg" *ngIf="discntForm.controls['description'].invalid && (discntForm.controls['description'].dirty || discntForm.controls['description'].touched)">
+                      <div *ngIf="discntForm.controls['description'].errors.required">
+                        Required.
+                      </div>
+                      <div *ngIf="discntForm.controls['description'].errors.pattern">
+                        Only alphanumerics, spaces and underscore are allowed !
+                      </div>
+                    </div>
+                    <button type="button" class="pop-over" [popover]="popDDesc" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                      placement="left">?</button>
+                    <ng-template #popDDesc>
+                      <ul>
+                        <li>Description is required.</li>
+                        <li>It allows alplhanumerics, spaces and all special characters.</li>
+                        <li>It should be minimum 1 character and maximum 255 characters long</li>
+                      </ul>
+                    </ng-template>
+                  <small class="text-count" style="padding-right: 30px;">{{descCharLeft}} Characters Left</small>
+              </div>
+              <div class="col-md-6 m-t-20">
+                <div class="row">
+                  <div class="col-md-6 form-group popover-field">
+                      <label for="" id="focused">Dsicount Start Date</label>
+                      <my-date-picker id="startDate" name="startDate" [options]="myDatePickerOptions" placeholder="MM/DD/YYYY" formControlName="startDate" (inputFieldChanged)="changeDate($event)"
+                         [ngClass]="{'disabletextbox-bgcolor': !enableStartDate}"></my-date-picker>
+                      <div class="msg" style="color:red" *ngIf="invalidDate">
+                        Invalid Date Range.
+                      </div>
+                      <!-- <owl-date-time [dateFormat]='"MM/DD/YYYY"' [placeHolder]='"MM/DD/YYYY"' [min]='minStDate' autoClose=false [max]='discntForm.controls["endDate"].value'
+                            [type]='"calendar"' class="form-control" formControlName="startDate"></owl-date-time> -->
+
+                      <!--<input type="text" placeholder="MM/DD/YYYY" formControlName="startDate" [minDate]="minStDate" #dp="bsDatepicker" bsDatepicker
+                            class="form-control" [ngClass]="{'disabletextbox-bgcolor': !enableStartDate}">-->
+                      <div class="show-error" *ngIf="!invalidDate&&(discntForm.controls['startDate'].invalid && (discntForm.controls['startDate'].dirty || discntForm.controls['startDate'].touched))">
+                        <div *ngIf="discntForm.controls['startDate'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popDate1" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popDate1>
+                        <ul>
+                          <li>Start Effective Date is required.</li>
+                          <li>Select Start Effective Date.</li>
+                        </ul>
+                      </ng-template>
+                  </div>
+                  <div class="col-md-6 form-group popover-field">
+                      <label for="" id="focused">Dsicount End Date</label>
+                      <!-- <owl-date-time [dateFormat]='"MM/DD/YYYY"' [placeHolder]='"MM/DD/YYYY"' [type]='"calendar"' autoClose=false [min]='discntForm.controls["startDate"].value'
+                            class="form-control" formControlName="endDate"></owl-date-time> -->
+                      <!--<input type="text" placeholder="MM/DD/YYYY" formControlName="endDate" [minDate]='discntForm.controls["startDate"].value'
+                            #dp="bsDatepicker" bsDatepicker class="form-control" [ngClass]="{'disabletextbox-bgcolor': !enableEndDate}">-->
+                      <my-date-picker id="endDate" name="endDate" placeholder="MM/DD/YYYY" [options]="myDatePickerOptions1" formControlName="endDate"
+                        (inputFieldChanged)="onDateRangeFieldEndDate($event)" [ngClass]="{'disabletextbox-bgcolor': !enableEndDate}"></my-date-picker>
+                      <div class="msg" style="color:red" *ngIf="invalidEnd">
+                        Invalid Date Range.
+                      </div>
+                      <div class="show-error" *ngIf="!invalidEnd&&(discntForm.controls['endDate'].invalid && (discntForm.controls['endDate'].dirty || discntForm.controls['endDate'].touched))">
+                        <div *ngIf="discntForm.controls['endDate'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popDate2" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popDate2>
+                        <ul>
+                          <li>End Effective Date is required.</li>
+                          <li>Select End Effective Date.</li>
+                        </ul>
+                      </ng-template>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="col-md-6 form-group popover-field">
+                      <label class="focused">Discount Type:</label>
+                      <select class="form-control col-md-3" formControlName="discountType" name="CardType" tabindex="2" (change)="onChangeDiscountType($event)"
+                        [(ngModel)]="discountType">
+                        <option selected='selected' value="">--Select--</option>
+                        <option *ngFor="let discountType of discountTypes" value="{{discountType.Key}}">{{discountType.Value}}</option>
+                      </select>
+                      <div class="msg" *ngIf="discntForm.controls['discountType'].invalid && (discntForm.controls['discountType'].dirty || discntForm.controls['discountType'].touched)">
+                        <div *ngIf="discntForm.controls['discountType'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popDisctype" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popDisctype>
+                        <ul>
+                          <li>Select Discount Type.</li>
+                        </ul>
+                      </ng-template>
+                  </div>
+                  <div class="col-md-6 form-group popover-field">
+                      <label class="focused">Criteria:</label>
+                      <select class="form-control col-md-3" formControlName="criteriaFormName" name="CardType" tabindex="2" [(ngModel)]="criteriasFormValue"
+                        (change)="onChangeCriteria($event.target.value)">
+                        <option selected='selected' selected="selected" value="">--Select--</option>
+                        <!--<option *ngFor="let criteria of criterias" value="{{criteria.CetegoryId}}">{{criteria.Criteria}}</option>-->
+                        <option *ngFor="let criteria of criterias" value="{{criteria.Criteria}}">{{criteria.Criteria}}</option>
+                      </select>
+                      
+                      <button type="button" class="pop-over" [popover]="popCriteria" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popCriteria>
+                        <ul>
+                          <li>Select Criteria.</li>
+                        </ul>
+                      </ng-template>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="col-md-12 form-group popover-field" *ngIf="isAgencies">
+                      <label class="focused">Agencies:</label>
+                      <select class="form-control" formControlName="agencies" name="agencies" tabindex="2" [(ngModel)]="agency" (change)="onChangeAgency($event)">
+                        <option selected="selected" value="">--Select--</option>
+                        <option *ngFor="let agency of agencies" value="{{agency.AgencyCode}}">{{agency.AgencyName}}</option>
+                      </select>
+                      <div class="show-error" *ngIf="discntForm.controls['agencies'].invalid && (discntForm.controls['agencies'].dirty || discntForm.controls['agencies'].touched)">
+                        <div *ngIf="discntForm.controls['agencies'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popAgencies" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popAgencies>
+                        <ul>
+                          <li>Select Agency.</li>
+                        </ul>
+                      </ng-template>
+                  </div>
+                  <div class="col-md-12 form-group " *ngIf="isFacilities">
+                    <div class="form-group popover-field">
+                      <label class="focused">Facility/Location/Roadway:</label>
+                      <select class="form-control" formControlName="facility" name="facility" tabindex="2" [(ngModel)]="facility">
+                        <option selected='selected' value="">--Select--</option>
+                        <option *ngFor="let loc of locations" value="{{loc.LocationCode}}">{{loc.LocationName}}</option>
+                      </select>
+                      <div class="msg" *ngIf="discntForm.controls['facility'].invalid && (discntForm.controls['facility'].dirty || discntForm.controls['discountType'].touched)">
+                        <div *ngIf="discntForm.controls['facility'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popFacility" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popFacility>
+                        <ul>
+                          <li>Select Facility.</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 form-group popover-field" *ngIf="isPlaza">
+                  <label class="focused">Plazas:</label>
+                  <select class="form-control" formControlName="plazas" name="plazas" tabindex="2" [(ngModel)]="plazaValue" (change)="onChangePlaza($event.target.value)">
+                    <option selected='selected' value="">--Select--</option>
+                    <option *ngFor="let plaza of listOfPlazas" value="{{plaza.PlazaCode}}">{{plaza.PlazaName}}</option>
+                  </select>
+                  <button type="button" class="pop-over" [popover]="popPlaza" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popPlaza>
+                    <ul>
+                      <li>Select Plaza.</li>
+                    </ul>
+                  </ng-template>
+              </div>
+              <div class="col-md-6 form-group popover-field" *ngIf="isLanes">
+                  <label class="focused">Lane:</label>
+                  <select class="form-control" formControlName="laneType" name="lanes" tabindex="2" [(ngModel)]="laneValue" (change)="onChangeLanes($event)">
+                    <option selected='selected' value="">--Select--</option>
+                    <option *ngFor="let lanes of LanesByPlazaCode" value="{{lanes.LaneCode}}">{{lanes.LaneCode}}</option>
+                  </select>
+                  <button type="button" class="pop-over" [popover]="popLane" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popLane>
+                    <ul>
+                      <li>Select Lane.</li>
+                    </ul>
+                  </ng-template>
+              </div>
+              <div class="col-md-6">
+                <div class="row">
+                <div class="col-md-6 form-group popover-field">
+                    <label class="focused">Trip Method:</label>
+                    <select class="form-control" formControlName="tripMethodForm" name="tripMethodForm" tabindex="2" [(ngModel)]="tripMethod">
+                      <option selected='selected' value="">--Select--</option>
+                      <option *ngFor="let criteria of criteriasTripMethod" value="{{criteria.Criteria}}">{{criteria.Criteria}}</option>
+                    </select>
+                    <button type="button" class="pop-over" [popover]="popTrip" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                      placement="left">?</button>
+                    <ng-template #popTrip>
+                      <ul>
+                        <li>Select Trip Method.</li>
+                      </ul>
+                    </ng-template>
+                </div>
+                <div class="col-md-6 form-group popover-field">
+                    <label class="focused">Transaction Type:</label>
+                    <select class="form-control" formControlName="txnType" name="txnType" tabindex="2" [(ngModel)]="txnType">
+                      <option selected='selected' value="">--Select--</option>
+                      <option *ngFor="let criteria of criteriasTrxnType" value="{{criteria.Criteria}}">{{criteria.Criteria}}</option>
+                    </select>
+                    <button type="button" class="pop-over" [popover]="popTxnType" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                      placement="left">?</button>
+                    <ng-template #popTxnType>
+                      <ul>
+                        <li>Select Transaction Type.</li>
+                      </ul>
+                    </ng-template>
+                </div>
+                </div>
+              </div>
+              <div class="col-md-6 form-group popover-field">
+                  <label class="focused">Range:</label>
+                  <select class="form-control" formControlName="rangeCriteria" name="rangeCriteria" tabindex="2" [(ngModel)]="rangeValue" (change)="onChangeRangeCriteria($event.target.value)">
+                    <option selected="selected" value="">--Select--</option>
+                    <option *ngFor="let criteria of criteriasRange" value="{{criteria.Criteria}}">{{criteria.Criteria}}</option>
+                  </select>
+                  <button type="button" class="pop-over" [popover]="popRange" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popRange>
+                    <ul>
+                      <li>Select Range.</li>
+                    </ul>
+                  </ng-template>
+              </div>
+              <!--<div class="clearfix"></div>-->
+              <!-- <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Duration:</label>
+                    <input type="text" class="form-control col-md-4" formControlName="duration">
+                  </div>
+                </div> -->
+
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="col-md-6 form-group popover-field" *ngIf="transactionDateTime">
+                      <label for="startDate" class="focused"> Trxn Start Date</label>
+                      <my-date-picker id="startDate" name="startDate" [options]="myDatePickerOptions2" formControlName="startDateFactor" (inputFieldChanged)="changeDateTrxn($event)"
+                      placeholder="MM/DD/YYYY" [ngClass]="{'disabletextbox-bgcolor': !enableStartDate}"></my-date-picker>
+                      <div class="msg" style="color:red" *ngIf="invalidDate1">
+                        Invalid Date Range.
+                      </div>
+
+                      <!-- <owl-date-time [dateFormat]='"MM/DD/YYYY"' [placeHolder]='"MM/DD/YYYY"' [min]='minStDate' autoClose=false [max]='discntForm.controls["endDate"].value'
+                          [type]='"calendar"' class="form-control" formControlName="startDate"></owl-date-time> -->
+
+                      <!--<input type="text" placeholder="MM/DD/YYYY" formControlName="startDate" [minDate]="minStDate" #dp="bsDatepicker" bsDatepicker
+                          class="form-control" [ngClass]="{'disabletextbox-bgcolor': !enableStartDate}">-->
+                      <div class="show-error" *ngIf="!invalidDate1&&(discntForm.controls['startDateFactor'].invalid && (discntForm.controls['startDateFactor'].dirty || discntForm.controls['startDateFactor'].touched))">
+                        <div *ngIf="discntForm.controls['startDateFactor'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popSDate" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popSDate>
+                        <ul>
+                          <li>Select Start Date.</li>
+                        </ul>
+                      </ng-template>
+                  </div>
+                  <div class="col-md-6 form-group popover-field"  *ngIf="transactionDateTime">
+                      <!-- <owl-date-time [dateFormat]='"MM/DD/YYYY"' [placeHolder]='"MM/DD/YYYY"' [type]='"calendar"' autoClose=false [min]='discntForm.controls["startDate"].value'
+                          class="form-control" formControlName="endDate"></owl-date-time> -->
+                      <!--<input type="text" placeholder="MM/DD/YYYY" formControlName="endDate" [minDate]='discntForm.controls["startDate"].value'
+                          #dp="bsDatepicker" bsDatepicker class="form-control" [ngClass]="{'disabletextbox-bgcolor': !enableEndDate}">-->
+                      <label for="endDate" class="focused"> Trxn End Date</label>
+                      <my-date-picker id="endDate" name="endDate" [options]="myDatePickerOptions3" formControlName="endDateFactor"
+                        (inputFieldChanged)="onDateRangeFieldTrxn($event)" [ngClass]="{'disabletextbox-bgcolor': !enableEndDate}" placeholder="MM/DD/YYYY" ></my-date-picker>
+                      <div class="msg" style="color:red" *ngIf="invalidEnd1">
+                        Invalid Date Range.
+                      </div>
+                      <div class="show-error" *ngIf="!invalidEnd1&&(discntForm.controls['endDateFactor'].invalid && (discntForm.controls['endDateFactor'].dirty || discntForm.controls['endDateFactor'].touched))">
+                        <div *ngIf="discntForm.controls['endDateFactor'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popEDate" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popEDate>
+                        <ul>
+                          <li>Select End Date.</li>
+                        </ul>
+                      </ng-template>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="col-sm-6 popover-field">
+                    <div class="form-group col-md-12" *ngIf="transactionTime">
+                      <label for="startTime" class="focused">Trxn Start Time</label>
+                      <owl-date-time *ngIf="transactionTime" [type]="'timer'"   [dateFormat]="'HH:mm:ss'" [placeHolder]="'HH:mm:ss'"
+                        [showSecondsTimer]="true" formControlName="startTime" [(ngModel)]="startTime"></owl-date-time>
+                        <div class="show-error" *ngIf="discntForm.controls['startTime'].invalid && (discntForm.controls['startTime'].dirty || discntForm.controls['startTime'].touched)">
+                          <div *ngIf="discntForm.controls['startTime'].errors.required">
+                            Required.
+                          </div>
+                        </div>
+                      <button type="button" class="pop-over" [popover]="popSTime" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popSTime>
+                        <ul>
+                          <li>Select Start Time</li>
+
+                        </ul>
+                      </ng-template>
+                    </div>
+
+                  </div>
+                  <div class="col-sm-6 popover-field">
+                    <div class="form-group col-md-12" *ngIf="transactionTime">
+                      <label for="endTime" class="focused">Trxn End Time</label>
+                      <owl-date-time [type]="'timer'"  [dateFormat]="'HH:mm:ss'" [placeHolder]="'HH:mm:ss'" [showSecondsTimer]="true"
+                        formControlName="endTime" [(ngModel)]="endTime"></owl-date-time>
+                        <div class="show-error" *ngIf="discntForm.controls['endTime'].invalid && (discntForm.controls['endTime'].dirty || discntForm.controls['endTime'].touched)">
+                          <div *ngIf="discntForm.controls['endTime'].errors.required">
+                            Required.
+                          </div>
+                        </div>
+                      <button type="button" class="pop-over" [popover]="popETime" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popETime>
+                        <ul>
+                          <li>Select End Time</li>
+
+                        </ul>
+                      </ng-template>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 form-group  popover-field" *ngIf="subscription">
+                  <label class="focused">Fee:</label>
+                  <input type="text" class="form-control col-md-4" formControlName="fee">
+                  <div class="msg" *ngIf="discntForm.controls['fee'].invalid && (discntForm.controls['fee'].dirty || discntForm.controls['fee'].touched)">
+                    <div *ngIf="discntForm.controls['fee'].errors.required">
+                      Fee is required.
+                    </div>
+                    <div *ngIf="discntForm.controls['fee'].errors.pattern">
+                      Fee is invalid.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popFee" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popFee>
+                    <ul>
+                      <li>Provide Fee.</li>
+                    </ul>
+                  </ng-template>
+              </div>
+
+              <!--Start-->
+                <div class="col-md-6" style="margin-top: 20px; margin-bottom: 15px;">
+                    <label class="display-inline" style="padding-right: 10px; font-weight: 500; font-size: 14px; padding-right: 20px;">Applies On:</label>
+                    <div class="display-inline csc-search-radio">
+                    <div class="custom-control custom-radio radio-inline" *ngFor="let ff of feeFactors">
+                      <input type="radio" [id]="ff.Value" class="custom-control-input" formControlName="feeFactor" (change)="feeFactorChangeClick(ff)"
+                        value="{{ff.Key}}" [(ngModel)]="feeFactorValue">
+                      <label class="custom-control-discription" [for]="ff.Value">{{ff.Value}}
+                      </label>
+                    </div>
+                    </div>
+                    <button type="button" class="pop-over pull-right" [popover]="popACC" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                      tabindex="-1" placement="left">?</button>
+                    <ng-template #popACC>
+                      <ul>
+                        <li>Applies On is required.</li>
+                        <li>Select Applies On.</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                <div class="col-md-6 form-group popover-field" style="clear: left;">
+                    <label class="focused">Discount Factor:</label>
+                    <select class="form-control" formControlName="discountFactor" name="CardType" tabindex="2" [(ngModel)]="discountFactor" (change)="onChangeDiscountFactor($event.target.value)">
+                      <option selected='selected' value="">--Select--</option>
+                      <option *ngFor="let discountFactor of discountFactors" value="{{discountFactor.Key}}">{{discountFactor.Value}}</option>
+                    </select>
+                    <div class="show-error" *ngIf="discntForm.controls['discountFactor'].invalid && (discntForm.controls['discountFactor'].dirty || discntForm.controls['discountFactor'].touched)">
+                      <div *ngIf="discntForm.controls['discountFactor'].errors.required">
+                        Required.
+                      </div>
+                    </div>
+                    <button type="button" class="pop-over" [popover]="popDiscFactor" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                      placement="left">?</button>
+                    <ng-template #popDiscFactor>
+                      <ul>
+                        <li>Select Discount Factor.</li>
+                      </ul>
+                    </ng-template>
+                </div>
+
+              <div class="col-md-6 form-group popover-field" *ngIf="fldMinTxn">
+                  <label for="">Min.Transaction Count</label>
+                  <input type="text" class="form-control" pattern="^[0-9]*" maxlength="8" placeholder="* Min.Transaction Count" formControlName="minTxn">
+                  <div class="msg" *ngIf="discntForm.controls['minTxn'].invalid && (discntForm.controls['minTxn'].dirty || discntForm.controls['minTxn'].touched)">
+                    <div *ngIf="discntForm.controls['minTxn'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="discntForm.controls['minTxn'].errors.pattern">
+                      Only numbers are allowed !
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popmintr" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popmintr>
+                    <ul>
+                      <li>Min Transaction Count is required.</li>
+                      <li>It allows only numbers.</li>
+                      <li>It should be minimum 1 character and maximum 8 characters long</li>
+                    </ul>
+                  </ng-template>
+              </div>
+              <div class="col-md-6 form-group popover-field" *ngIf="fldMaxTxn">
+                  <label for="">Max.Transaction Count</label>
+                  <input type="text" class="form-control" pattern="^[0-9]*" maxlength="8" placeholder="* Max. Transaction Count" formControlName="maxTxn">
+                  <div class="msg" *ngIf="discntForm.controls['maxTxn'].invalid && (discntForm.controls['maxTxn'].dirty || discntForm.controls['maxTxn'].touched)">
+                    <div *ngIf="discntForm.controls['maxTxn'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="discntForm.controls['maxTxn'].errors.pattern">
+                      Only numbers are allowed !
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popmaxtr" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popmaxtr>
+                    <ul>
+                      <li>Max Transaction Count is required.</li>
+                      <li>It allows only numbers.</li>
+                      <li>It should be minimum 1 character and maximum 8 characters long</li>
+                    </ul>
+                  </ng-template>
+              </div>
+              <div class="col-md-6 form-group popover-field" *ngIf="fldMinDays">
+                  <label>Min. Number of Days</label>
+                  <input type="text" value="1" class="form-control" pattern="^[0-9]*" maxlength="8" placeholder="* Min. Number of Days" formControlName="minDays">
+                  <div class="msg" *ngIf="discntForm.controls['minDays'].invalid && (discntForm.controls['minDays'].dirty || discntForm.controls['minDays'].touched)">
+                    <div *ngIf="discntForm.controls['minDays'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="discntForm.controls['minDays'].errors.pattern">
+                      Only numbers are allowed !
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popmindays" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popmindays>
+                    <ul>
+                      <li>Min Number of Days is required.</li>
+                      <li>It allows only numbers.</li>
+                    </ul>
+                  </ng-template>
+              </div>
+              <div class="col-md-6 form-group popover-field" *ngIf="fldMaxDays">
+                  <label for="">Max. Number of Days</label>
+                  <input type="text" class="form-control" pattern="^[0-9]*" maxlength="8" placeholder="* Max. Number of Days" formControlName="maxDays">
+                  <div class="msg" *ngIf="discntForm.controls['maxDays'].invalid && (discntForm.controls['maxDays'].dirty || discntForm.controls['maxDays'].touched)">
+                    <div *ngIf="discntForm.controls['maxDays'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="discntForm.controls['maxDays'].errors.pattern">
+                      Only numbers are allowed !
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popmaxdays" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popmaxdays>
+                    <ul>
+                      <li>Max Number of Days is required.</li>
+                      <li>It allows only numbers.</li>
+                    </ul>
+                  </ng-template>
+              </div>
+              <div class="col-md-6 form-group popover-field" *ngIf="fldAmt">
+                  <label for="">Amount($)</label>
+                  <input type="text" class="form-control" pattern="^[0-9]*(\.)?[0-9]{1,2}$" maxlength="8" placeholder="* Amount($)" formControlName="amt">
+                  <div class="msg" *ngIf="discntForm.controls['amt'].invalid && (discntForm.controls['amt'].dirty || discntForm.controls['amt'].touched)">
+                    <div *ngIf="discntForm.controls['amt'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="discntForm.controls['amt'].errors.pattern">
+                      Invalid amount.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popAMT" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popAMT>
+                    <ul>
+                      <li>Amount is required.</li>
+                      <li>It allows only number with decimals.</li>
+                    </ul>
+                  </ng-template>
+              </div>
+              <div class="col-md-6 form-group popover-field" *ngIf="fldPercent">
+                  <label for="">Percent(%)</label>
+                  <input type="text" class="form-control" maxlength="6" placeholder="* Percent(%)" formControlName="percent">
+                  <div class="msg" *ngIf="discntForm.controls['percent'].invalid && (discntForm.controls['percent'].dirty || discntForm.controls['percent'].touched)">
+                    <div *ngIf="discntForm.controls['percent'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="discntForm.controls['percent'].errors.pattern">
+                      Invalid percentage.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popPercnt" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popPercnt>
+                    <ul>
+                      <li>Percent is required.</li>
+                      <li>It allows only number with decimals.</li>
+                      <li>It should allow up to 100 percentage.</li>
+                    </ul>
+                  </ng-template>
+              </div>
+              <div class="col-md-6 form-group popover-field" *ngIf="fldMaxDisc">
+                  <label for="">Max Availed Discount</label>
+                  <input type="text" class="form-control" maxlength="8" pattern="^[0-9]*(\.)?[0-9]{1,2}$" placeholder="* Max Availed Discount"
+                    formControlName="maxDisc">
+                  <div class="msg" *ngIf="discntForm.controls['maxDisc'].invalid && (discntForm.controls['maxDisc'].dirty || discntForm.controls['maxDisc'].touched)">
+                    <div *ngIf="discntForm.controls['maxDisc'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="discntForm.controls['maxDisc'].errors.pattern">
+                      Invalid discount.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popMxDisc" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popMxDisc>
+                    <ul>
+                      <li>Max Avalied Discount is required.</li>
+                      <li>It allows only number with decimals.</li>
+                      <li>It should be minimum 1 character and maximum 8 characters long</li>
+                    </ul>
+                  </ng-template>
+              </div>
+
+              <div class="col-md-6 form-group popover-field" *ngIf="minthresholdAmt">
+                  <label for="">Min. Amount Threshold</label>
+                  <input type="text" class="form-control" pattern="^[0-9]*" maxlength="8" placeholder="*Min. Amount Threshold" formControlName="minThreshold">
+                  <div class="msg" *ngIf="discntForm.controls['minThreshold'].invalid && (discntForm.controls['minThreshold'].dirty || discntForm.controls['minThreshold'].touched)">
+                    <div *ngIf="discntForm.controls['minThreshold'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="discntForm.controls['minThreshold'].errors.pattern">
+                      Only numbers are allowed !
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popmaxdays" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popmaxdays>
+                    <ul>
+                      <li>Threshold Amount is required.</li>
+                      <li>It allows only number.</li>
+                    </ul>
+                  </ng-template>
+              </div>
+              <div class="col-md-6 form-group popover-field" *ngIf="maxthresholdAmt">
+                  <label for="">Max. Amount Threshold</label>
+                  <input type="text" class="form-control" pattern="^[0-9]*(\.)?[0-9]{1,2}$" maxlength="8" placeholder="* Max. Amount Threshold"
+                    formControlName="maxThreshold">
+                  <div class="msg" *ngIf="discntForm.controls['maxThreshold'].invalid && (discntForm.controls['maxThreshold'].dirty || discntForm.controls['maxThreshold'].touched)">
+                    <div *ngIf="discntForm.controls['maxThreshold'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="discntForm.controls['maxThreshold'].errors.pattern">
+                      Invalid amount.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popAMT" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popAMT>
+                    <ul>
+                      <li>Threshold Amount is required.</li>
+                      <li>It allows only number.</li>
+                    </ul>
+                  </ng-template>
+              </div>
+              <div class="col-md-6 form-group popover-field" *ngIf="minAvailDiscount">
+                  <label for="">Availed Discount</label>
+                  <input type="text" class="form-control" maxlength="6" placeholder="* Availed Discount" formControlName="minAvailDiscount">
+                  <div class="msg" *ngIf="discntForm.controls['minAvailDiscount'].invalid && (discntForm.controls['minAvailDiscount'].dirty || discntForm.controls['minAvailDiscount'].touched)">
+                    <div *ngIf="discntForm.controls['minAvailDiscount'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="discntForm.controls['minAvailDiscount'].errors.pattern">
+                      Invalid percentage.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popPercnt" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popPercnt>
+                    <ul>
+                      <li>Availed Discount is required.</li>
+                      <li>It allows only number with decimals.</li>
+                      <li>It should allow up to 100 percentage.</li>
+                    </ul>
+                  </ng-template>
+              </div>
+              <div class="col-md-6 form-group popover-field" *ngIf="maxAvailDiscount">
+                  <label for="">Max. Availed Discount</label>
+                  <input type="text" class="form-control" maxlength="8" pattern="^[0-9]*(\.)?[0-9]{1,2}$" placeholder="* Max Availed Discount"
+                    formControlName="maxAvailDiscount">
+                  <div class="msg" *ngIf="discntForm.controls['maxAvailDiscount'].invalid && (discntForm.controls['maxAvailDiscount'].dirty || discntForm.controls['maxAvailDiscount'].touched)">
+                    <div *ngIf="discntForm.controls['maxAvailDiscount'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="discntForm.controls['maxAvailDiscount'].errors.pattern">
+                      Invalid discount.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popMxDisc" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popMxDisc>
+                    <ul>
+                      <li>Max Avalied Discount is required.</li>
+                      <li>It allows only number with decimals.</li>
+                      <li>It should be minimum 1 character and maximum 8 characters long</li>
+                    </ul>
+                  </ng-template>
+              </div>
+              <!--End-->
+              <div class="col-md-6 *m-t-20">
+                <label class="col-sm-2">Status:</label>
+                <!-- <label *ngFor="let status of statuses;let idx = index" class="custom-control custom-radio radio-inline">
+                      <input formControlName="status" type="radio" [(ngModel)]="defaultStatus" class="" [value]="status.id">
+                      <span class="custom-control-indicator"> </span>
+                      <span class="custom-control-description">{{status.Value}}
+                      </span>
+                    </label> -->
+                <div class="radio radio-inline">
+                  <input type="radio" name="status" [checked]="true" id="shipmentStatusActive" value="1" formControlName="status">
+                  <label class="radio-inline" for="shipmentStatusActive">Active
+                  </label>
+                </div>
+                <div class="radio radio-inline">
+                  <input type="radio" name="status" id="shipmentStatusInActive" value="0" formControlName="status">
+                  <label class="radio-inline" for="shipmentStatusInActive">Inactive </label>
+
+                </div>
+                <!--<label class="custom-control custom-radio radio-inline">
+                      <input type="radio" class="custom-control-input" value="false" (change)="rdoStatusChangeClick($event)" formControlName="status">
+                      <span class="custom-control-description">Inactive</span>
+                    </label>-->
+              </div>
+            </form>
+          </div>
+
+          <!--<table class="table" *ngIf="discntDtlsListDisp && discntDtlsListDisp.length">
+              <thead>
+                <tr>
+                  <th *ngIf="discntDtlsListDisp[0].DiscountType=='Period'">Min Number of Days</th>
+                  <th *ngIf="discntDtlsListDisp[0].DiscountType=='Period'">Max Number of Days</th>
+                  <th *ngIf="discntDtlsListDisp[0].DiscountType=='Volume'">Min Transaction Count</th>
+                  <th *ngIf="discntDtlsListDisp[0].DiscountType!='Period'">Max Transaction Count</th>
+                  <th>Applies On</th>
+                  <th>Max Availed Discount</th>
+                  <th>Discount Value</th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let dd of discntDtlsListDisp">
+                  <td *ngIf="discntDtlsListDisp[0].DiscountType=='Period'">{{dd.MinRange}}</td>
+                  <td *ngIf="discntDtlsListDisp[0].DiscountType=='Period'">{{dd.MaxRange}}</td>
+                  <td *ngIf="discntDtlsListDisp[0].DiscountType=='Volume'">{{dd.MinValue}}</td>
+                  <td *ngIf="discntDtlsListDisp[0].DiscountType!='Period'">{{dd.MaxValue}}</td>
+                  <td>{{getFeeFactorDesc(dd.Factor)}}</td>
+                  <td>{{dd.UpperLimit ? dd.UpperLimit : '0'}}</td>
+                  <td>{{dd.DiscountValue}}</td>
+                  <td>
+                    <img src="assets/images/svg/edit-blue.svg" (click)="editDiscountDtl(dd)" alt="Edit" title="Edit" class="icon-svg3">
+                  </td>
+                  <td>
+                    <img src="assets/images/svg/delete-blue.svg" (click)="deleteDiscountDtl(dd)" alt="Delete" title="Delete" class="icon-svg3">
+                  </td>
+                </tr>
+              </tbody>
+            </table>-->
+
+          <form role="form" name="discntForm" [formGroup]="discntForm">
+
+          </form>
+          <!--<div class="row">
+              <div class="col-md-12 text-right">
+                <button type="submit" class="btn btn-primary btn-search btn-small" (click)='createDetails()'>{{isEditDiscntDtl?'Update':'Add'}}</button>
+                <button type="button" class="btn btn-primary btn-reset btn-small" (click)="cancelDtlsClick()">Cancel</button>
+              </div>
+            </div>-->
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 text-right">
+          <button type="submit" class="btn btn-primary btn-search" (click)="createDiscount()" [disabled]="disableButton" *ngIf="addButton">Add </button>
+          <!--<button type="button" class="btn btn-primary btn-reset" (click)="resetDtls()">Reset </button>-->
+          <button type="button" *ngIf="updateButton" class="btn btn-primary btn-search" (click)="updateDiscount()">Update</button>
+          <button type="button" class="btn btn-primary btn-reset" data-toggle="modal" data-target="#myModal" (click)='cancelClick()'>Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="m-t-20">
+    <div class="panel panel-default">
+      <div class="panel-heading">Master Discount Details </div>
+      <div class="panel-body" *ngIf='discountList && discountList.length'>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Discount Code</th>
+                <th>Discount Name</th>
+                <th>Discount Description</th>
+                <th>Status</th>
+                <!--<th>Access Level</th>-->
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Edit</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let dis of discountList | paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems: dataLength }'>
+                <td>{{dis.DiscountCode}}</td>
+                <td>{{dis.DiscountName}}</td>
+                <td>{{dis.Description}}</td>
+                <td>
+                  {{dis.Isactive?'Active':'Inactive'}}
+                </td>
+                <!--<td>{{dis.AccessLevel}}</td>-->
+                <td>{{dis.StartEffectiveDate | customDateFormat}}</td>
+                <td>{{dis.EndEffectiveDate | customDateFormat}}</td>
+                <td>
+                  <img src="assets/images/svg/edit-blue.svg" data-toggle="modal" data-target="#myModal" (click)="editDiscount(dis.DiscountId)"
+                    alt="Edit" class="icon-svg3">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row page-info">
+          <div class="col-md-6 text-left">
+            <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+      </div>
+      <div class="status-content pad-20" *ngIf=' !discountList || discountList.length==0'>
+        <p class="alert alert-info">
+          <i class="fa fa-exclamation-circle" aria-hidden="true"></i> No master discount details available to display </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>

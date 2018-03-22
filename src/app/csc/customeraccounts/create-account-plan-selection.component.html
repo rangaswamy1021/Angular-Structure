@@ -1,0 +1,252 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Customer Accounts</a></li>
+        <li class="active">Plan Selection</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Plan Selection</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="payment-steps">
+        <div class="row">
+          <div class="col-md-12">
+            <ul>
+              <li class="done"><span>1</span>Account Information</li>
+              <li class="active"><span>2</span>Plan Selection</li>
+              <li><span>3</span>Vehicle Information</li>
+              <li><span>4</span>Preferences</li>
+              <li><span>5</span>Payment</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="content">
+    <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"
+      (onOk)="userAction($event)"></app-success-failure-alerts-message>
+    <div class="content" style="min-height:30px" #SuccessMessage>
+      <div class="row">
+        <div class="col-md-8">
+          <div class="accordion-mgc" style="padding: 0;">
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+              <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingOne">
+                  <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Plans</a>
+                  </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                  <div class="panel-body">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <!--<tabset>
+                      <tab *ngFor="let toll of tollTypes;let row=index" heading="{{toll.Key}}" [active]="row==0"  (select)="bindPlansData(toll.Value)">-->
+                        <div class="tab-title-div">
+                          <div *ngFor="let toll of tollTypes;let row=index">
+                            <div class="tab-title" [class.active]='toll.Key==accountType?"active":""' (click)="bindPlansData(toll.Value)">{{toll.Key}}</div>
+                          </div>
+                        </div>
+                        <div class="table-default table-responsive">
+                          <table class="table table-bordered" *ngIf="plansResponse && plansResponse.length>0">
+                            <thead>
+                              <tr>
+                                <th>Select</th>
+                                <th>Plan Name</th>
+                                <th>Fee ($)</th>
+                                <th>Discount</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let plan of plansResponse;let row_no=index">
+                                <td>
+                                  <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" name="planradio" id="planradio{{plan.PlanId}}" [checked]="plan.IsSelected"
+                                      (change)="planChange(plan)" />
+                                    <label class="custom-control-description" for="planradio{{plan.PlanId}}"></label>
+                                  </div>
+                                </td>
+                                <td>
+                                  <span class="icon-space" *ngIf="plan.IsTagRequired">
+                                      <img src="assets/images/svg/tag.svg" alt="" class="icon">
+                                   </span>
+                                  <span class="icon-space" *ngIf="!plan.IsTagRequired">
+                                      <img src="assets/images/svg/casino-cctv.svg" alt="" class="icon">
+                                   </span>
+                                  <span class="detail">
+                                      {{plan.Name}}<br>
+                                      <small>{{plan.Desc}} <span>Fee:{{plan.FeeDesc}}</span></small>
+                                  </span>
+                                </td>
+                                <td width="20%">{{plan.TotalFee}}</td>
+                                <td width="20%">{{plan.DiscountDesc}}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+
+                        <!--</tab>
+                    </tabset>-->
+                      </div>
+                      <div class="col-md-12 m-t-20">
+                        <div class="pad-20-bdr custom-control custom-radio">
+                          <h3 *ngIf="(accountType == 'POSTPAID')">Auto Debit Method</h3>
+                          <h3 *ngIf="(accountType == 'PREPAID')">Replenishment Type</h3>
+                           <div class="radio-inline">
+                          <input type="radio" class="custom-control-input" name="inlineRadioOptions" id="inlineRadio1" value="CREDITCARD" [checked]="(replenishType=='CREDITCARD')"
+                            (click)="onReplenishTypeChange($event.target.value)">
+                          <label class="custom-control-description" for="inlineRadio1">Credit Card
+                      </label>
+                           </div>
+                           <div class="radio-inline">
+                          <input type="radio" class="custom-control-input" name="inlineRadioOptions" id="inlineRadio2" value="ACH" [checked]="(replenishType=='ACH')"
+                            (click)="onReplenishTypeChange($event.target.value)">
+                          <label class="custom-control-description" for="inlineRadio2">ACH
+                      </label>
+                           </div>
+                           <div class="radio-inline">
+                          <input type="radio" class="custom-control-input" name="inlineRadioOptions" id="inlineRadio3" value="CASH" [checked]="(replenishType=='CASH')"
+                            (click)="onReplenishTypeChange($event.target.value)">
+                          <label class="custom-control-description" for="inlineRadio3">Cash
+                      </label>
+                           </div>
+                          <div class="Info" *ngIf="(accountType == 'PREPAID')">
+                            <h4>Replenishment Amount</h4>
+                            <ul>
+                              <li>- For Credit Card is {{creditCardReplnAmt|currency:'USD':true}} and Threshold Amount is {{creditCardThresAmt|currency:'USD':true}}</li>
+                              <li>- For ACH is {{bankReplnAmt|currency:'USD':true}} and Threshold Amount is {{bankThresAmt|currency:'USD':true}}</li>
+                              <li>- For Cash is {{cashReplnAmt|currency:'USD':true}} and Threshold Amount is {{cashThresAmt|currency:'USD':true}}</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-12 m-t-20">
+                        <div class="pad-20-bdr">
+                          <div class="table-bdr">
+                            <h3>Tag Details</h3>
+                            <div class="table-responsive">
+                              <table class="table table-type-2">
+                                <thead class="nowrap">
+                                  <tr *ngIf='tagconfigs && tagconfigs.length>0'>
+                                    <th>Protocol</th>
+                                    <th>Mounting</th>
+                                    <th>No. of Tags</th>
+                                    <th>Per Tag Fee ($)</th>
+                                    <th>Per Tag Deposit ($)</th>
+                                  </tr>
+                                </thead>
+                                <tbody class="nowrap">
+                                  <tr>
+                                    <tr *ngFor='let tagconfig of tagconfigs; let row_no = index'>
+                                      <td>{{tagconfig.Protocol}}</td>
+                                      <td>{{tagconfig.Mounting}}</td>
+                                      <td><input type="number" class="form-control input-sm" min="0" [(ngModel)]="tagconfig.Tagcount"
+                                          onkeypress="return event.charCode >= 48 && event.charCode <= 57 && this.value.length<3"
+                                          (change)="onTagConfigChange(tagconfig,$event.target.value)"
+                                          [disabled]="!isTagRequired" /></td>
+                                      <td>{{tagconfig.TagFee}}</td>
+                                      <td>{{tagconfig.TagDeposit}}</td>
+                                    </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-12 m-t-20">
+                        <div class="pad-20-bdr" *ngIf="isTagRequired">
+                          <div class="row">
+                            <div class="col-md-12 form-group">
+                              <label class="focused">Tag Delivery Method:</label>
+                              <select class="form-control" (change)="onPurchaseMethodChange($event.target.value)">
+                            <option value="{{method.Key}}" [selected]="method.Key == purchaseMethod" *ngFor='let method of tagPurchaseMethod;let row_no=index' >{{method.Value}}</option>
+                          </select>
+                            </div>
+                            <table class="table table-type-2 m-t-10" *ngIf="shipmentTypes && shipmentTypes.length>0">
+                              <thead>
+                                <tr>
+                                  <th>Service Type</th>
+                                  <th>Description</th>
+                                  <th>Amount ($)</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let service of shipmentTypes;let row=index">
+                                  <td>
+                                    <div class="custom-control custom-radio radio-inline">
+                                      <input type="radio" class="custom-control-input" name="serviceoptions" [id]="row" [checked]="service.IsSelected" value="service.ServiceTypeId"
+                                        (click)="onServiceTypeChange(service)">
+                                      <label [for]="row" class="custom-control-description">{{service.ServiceTypeName}}</label>
+                                    </div>
+                                  </td>
+                                  <td>{{service.ServiceDescription}}{{service.IsSelected}} </td>
+                                  <td>{{service.Cost|currency:'USD':true}}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-12 m-t-20" *ngIf="shipmentTypes && shipmentTypes.length>0 && isTagRequired">
+                        <div class="pad-20-bdr">
+                          <h3>Shipping Address</h3>
+                          <div class="custom-control custom-radio radio-inline">
+                            <input type="radio" [checked]="!isAddressEnable" name="addressRadioOptions" id="existingAdd" value="exist" (change)="addressChange($event.target.value)"
+                              class="custom-control-input">
+                            <label for="existingAdd" class="custom-control-description">Use Existing Address</label>
+                          </div>
+                          <div class="custom-control custom-radio radio-inline">
+                            <input type="radio" [checked]="isAddressEnable" name="addressRadioOptions" id="newAdd" value="new" (change)="addressChange($event.target.value)"
+                              class="custom-control-input">
+                            <label for="newAdd" class="custom-control-description">Add New Address</label>
+                          </div>
+                          <div>
+                            <div *ngIf="!isAddressEnable">
+                              <app-add-address [customerID]="customerId" [isEnable]="true"></app-add-address>
+                            </div>
+                            <div *ngIf="isAddressEnable">
+                              <app-add-address [addressObject]="addressResponse" [customerID]="0" [isEnable]="false"></app-add-address>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <app-amounts-summary-details [tollBalance]="tollBalance" [totalFee]="totalFee" [totalTagFee]="totalTagFee" [totalTagDeposit]="totalTagDeposit"
+            [totalServiceTax]="totalServiceTax" [totalShippingCharge]="totalShippingCharge" [planId]="planId"></app-amounts-summary-details>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <button class="btn btn-primary btn-search" type="submit" (click)="onPrevious()">Account Information</button>
+          <button class="btn btn-primary btn-search" type="submit" [disabled]="disableButton" (click)="onSubmit()">Vehicle Information </button>
+          <button class="btn btn-primary btn-reset" type="submit" (click)="onCancel()">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="text-center">
+          <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>

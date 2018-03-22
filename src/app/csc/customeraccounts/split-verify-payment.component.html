@@ -1,0 +1,199 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li><a href="#">CSC</a></li>
+            <li><a href="#">Customer Accounts</a></li>
+            <li class="active"> Split Account Verify Payment </li>
+          </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Split Account Verify Payment</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="content">
+  <app-account-info></app-account-info>
+  <div class="clear"></div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="payment-steps">
+        <div class="row">
+          <div class="col-md-12">
+            <ul>
+              <li class="done">
+                <span>1</span>Account Information</li>
+              <li class="done">
+                <span>2</span>Plan(s) Selection</li>
+              <li class="done">
+                <span>3</span>Vehicle Information</li>
+              <li class="active">
+                <span>4</span>Payment</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="payment-steps-2">
+        <ul>
+          <li class="done">
+            <span>1</span>Payment Mode</li>
+          <li class="active">
+            <span>2</span>Verify & Submit</li>
+          <li>
+            <span>3</span>Payment Receipt</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)" ></app-success-failure-alerts-message>
+
+  <div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="verify-details">
+          <div class="row" *ngIf='isCreditCard'>
+            <div class="col-md-4 title">Name on Card:</div>
+            <div class="col-md-8 field">{{splitReq.Payment.CreditCardPayment.NameOnCard}}</div>
+          </div>
+
+          <div class="row" *ngIf='isCreditCard'>
+            <div class="col-md-4 title">Card Type:</div>
+            <div class="col-md-8 field">{{splitReq.Payment.CreditCardPayment.CreditCardType}}</div>
+          </div>
+
+          <div class="row" *ngIf='isCreditCard'>
+            <div class="col-md-4 title">Credit Card#:</div>
+            <div class="col-md-8 field">{{creditCard}}</div>
+          </div>
+
+          <div class="row" *ngIf='isBankPayment'>
+            <div class="col-md-4 title">Bank Name:</div>
+            <div class="col-md-8 field">{{splitReq.Payment.BankName}}</div>
+          </div>
+
+          <div class="row" *ngIf='isBankPayment'>
+            <div class="col-md-4 title">Account Holder Name:</div>
+            <div class="col-md-8 field">{{splitReq.Payment.AccoutName}}</div>
+          </div>
+
+          <div class="row" *ngIf='isBankPayment'>
+            <div class="col-md-4 title">Bank Account #:</div>
+            <div class="col-md-8 field">
+              <span>XXXX_{{splitReq.Payment.AccountNumber.toString().substring(splitReq.Payment.AccountNumber.toString().length
+                - 4)}}</span>
+            </div>
+          </div>
+
+          <div class="row" *ngIf='isChequePayment'>
+            <div class="col-md-4 title">Check Date:</div>
+            <div class="col-md-8 field">{{splitReq.Payment.ChequeDate | customDateTimeFormat }}</div>
+          </div>
+
+          <div class="row" *ngIf='isChequePayment'>
+            <div class="col-md-4 title">Check #:</div>
+            <div class="col-md-8 field">{{splitReq.Payment.ChequeNumber}}</div>
+          </div>
+
+          <div class="row" *ngIf='isMoPayment'>
+            <div class="col-md-4 title">Money Order Date:</div>
+            <div class="col-md-8 field">{{splitReq.Payment.MODate | customDateTimeFormat}}</div>
+          </div>
+
+          <div class="row" *ngIf='isMoPayment'>
+            <div class="col-md-4 title"> Money Order#:</div>
+            <div class="col-md-8 field">{{splitReq.Payment.MONumber}}</div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 title">Replenishment Type:</div>
+            <div class="col-md-8 field">{{splitReq.Payment.ReplenishmentType}}</div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 title">Pay By:</div>
+            <div class="col-md-8 field">{{splitReq.payMethod}}</div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 title">Toll Balance:</div>
+            <div class="col-md-8 field">{{splitReq.TollBalance | currency:'USD':true:'1.2-2'}}</div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 title">Total Tag Fee:</div>
+            <div class="col-md-8 field">{{splitReq.TotalTagFee | currency:'USD':true:'1.2-2'}}</div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 title">Total Tag Deposit:</div>
+            <div class="col-md-8 field">{{splitReq.TagDeposit | currency:'USD':true:'1.2-2'}}</div>
+          </div>
+
+
+          <div class="row">
+            <div class="col-md-4 title">Service Tax:</div>
+            <div class="col-md-8 field">{{splitReq.ServiceTax | currency:'USD':true:'1.2-2'}}</div>
+          </div>
+
+
+          <div class="row">
+            <div class="col-md-4 title">Total Shipping Charge:</div>
+            <div class="col-md-8 field">{{splitReq.TotalShippingCharge | currency:'USD':true:'1.2-2'}}</div>
+          </div>
+
+          <div class="row" *ngIf='isCreditCard'>
+            <div class="col-md-4 title">Credit Card Service Tax:</div>
+            <div class="col-md-8 field">{{ccTax | currency:'USD':true:'1.2-2'}}</div>
+          </div>
+
+          <div class="row" *ngIf="isBalTran">
+            <div class="col-md-4 title">Balance Transferred:</div>
+            <div class="col-md-8 field">{{splitReq.tranAmount | currency:'USD':true:'1.2-2'}}</div>
+          </div>
+
+          <div class="row" *ngIf="displayFees">
+            <div class="col-md-4 title">{{fees.FeeName}}:</div>
+            <div class="col-md-8 field">{{fees.Amount | currency:'USD':true:'1.2-2'}}</div>
+          </div>
+
+          <div class="row total">
+            <div class="col-md-4 title">Total Amount To Pay:</div>
+            <div class="col-md-8 field">{{splitReq.payingAmount | currency:'USD':true:'1.2-2'}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class=" col-md-offset-2 col-md-10">
+      <div class="btns-group">
+        <button type="button" (click)="goBack()" class="btn btn-primary btn-search">Back</button>
+        <button type="submit" (click)="makePayment()" class="btn btn-primary btn-search">Continue</button>
+        <button type="reset" (click)="cancelPayment()" class="btn btn-default btn-reset">Cancel</button>
+      </div>
+    </div>
+    <div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="text-center">
+          <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>
+    <div class="clear">
+
+    </div>
+  </div>

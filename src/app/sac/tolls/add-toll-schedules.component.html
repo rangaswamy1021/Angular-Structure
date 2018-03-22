@@ -1,0 +1,476 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">SAC</a>
+        </li>
+        <li class="active"> Manage Tolls</li>
+        <li class="active">Manage Toll Schedules</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Toll Schedules</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="alert alert-danger alert-dismissible" role="alert" *ngIf="faileureMessge && faileureMessge.length">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (clcik)="faileureMessge=false">
+    <span aria-hidden="true">&times;</span>
+  </button> {{faileureMessge}}
+</div>
+<div class="alert alert-success alert-dismissible" role="alert" *ngIf="successMessage && successMessage.length">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (clcik)="successMessage=false">
+    <span aria-hidden="true">&times;</span>
+  </button> {{successMessage}}
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="alert alert-danger alert-dismissible" role="alert" *ngIf="errorBlock">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <strong>{{errorHeading}}</strong> {{errorMessage}}
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="panel panel-default m-t-20">
+    <div class="panel-heading ">Add Schedule</div>
+    <div class="panel-body bordered">
+      <form role="form" name="basicSearchForm" class="*form-horizontal" [formGroup]='tollScheduleForm'>
+        <div class="row">
+          <div class="col-md-6">
+            <!--<label for="inputPassword3" class="col-sm-3 control-label">Transaction Type:</label>-->
+            <div class="col-sm-12 popover-field form-group">
+              <label for="inputPassword3" class="focused">Transaction Type:</label>
+              <select class="form-control" formControlName='transcationType' (change)='transTypeChange($event.target.value)' [ngClass]="{'del-disabled': isDisabled }">
+                <option value="" selected disabled>Select</option>
+                <option *ngFor='let transType of transTypes' value="{{transType.TransactionType}}">{{transType.TransactionType}}</option>
+              </select>
+              <div class="msg" *ngIf="tollScheduleForm.controls['transcationType'].invalid && (tollScheduleForm.controls['transcationType'].dirty || tollScheduleForm.controls['transcationType'].touched)">
+                <div *ngIf="tollScheduleForm.controls['transcationType'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="tollScheduleForm.controls['transcationType'].errors.pattern">
+                  Only alphabets and spaces are allowed !
+                </div>
+              </div>
+              <button type="button" data-container="body" class="pop-over" [popover]="popNonC1" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                placement="left">?</button>
+              <ng-template #popNonC1>
+                <ul>
+                  <li>Transaction Type is required</li>
+                  <li>Select Transaction Type </li>
+                </ul>
+              </ng-template>
+              <!--<button type="button" class="tool-tip" data-toggle="tooltip" data-placement="top" title="{{tootltipName}}">?</button>-->
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!--<label for="inputPassword3" class="col-sm-3 control-label">Schedule Name:</label>-->
+            <div class="col-sm-12 popover-field form-group">
+              <label for="inputPassword3">Schedule Name:</label>
+              <input type="text" class="form-control" id="inputPassword3" formControlName='scheduleName' pattern="^[a-zA-Z0-9][\sa-zA-Z0-9]*"
+                maxlength="50" [ngClass]="{'del-disabled': isDisabled }">
+              <div class="msg" *ngIf="tollScheduleForm.controls['scheduleName'].invalid && (tollScheduleForm.controls['scheduleName'].dirty || tollScheduleForm.controls['scheduleName'].touched)">
+                <div *ngIf="tollScheduleForm.controls['scheduleName'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="tollScheduleForm.controls['scheduleName'].errors.pattern">
+                  Only alphanumerics and spaces are allowed ! Initial Space not allowed
+                </div>
+              </div>
+              <button type="button" data-container="body" class="pop-over" [popover]="popNonC2" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                placement="left">?</button>
+              <ng-template #popNonC2>
+                <ul>
+                  <li>Schedule Name Required</li>
+                  <li>Initial Spaces not allowed </li>
+                  <li>Special characters are not allowed </li>
+                  <li>It allows only alpha numerics and spaces </li>
+                  <li>It allows maximum of 50 characters length </li>
+                </ul>
+              </ng-template>
+              <!--<button type="button" class="tool-tip" data-toggle="tooltip" data-placement="top" title="{{tootltipName}}">?</button>-->
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="col-sm-12 popover-field form-group">
+              <label for="inputPassword3" class="focused">Plaza:</label>
+              <select class="form-control" formControlName='plaza' (change)="createExitPlaza($event.target.value)" [ngClass]="{'del-disabled': isDisabled }">
+                <option value='' selected disabled>Select</option>
+                <option *ngFor='let plazaType of plazaTypes' value="{{plazaType.PlazaCode}}">{{plazaType.PlazaName}}</option>
+              </select>
+              <div class="msg" *ngIf="tollScheduleForm.controls['plaza'].invalid && (tollScheduleForm.controls['plaza'].dirty || tollScheduleForm.controls['plaza'].touched)">
+                <div *ngIf="tollScheduleForm.controls['plaza'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="tollScheduleForm.controls['plaza'].errors.pattern">
+                  Only alphabets and spaces are allowed !
+                </div>
+              </div>
+              <button type="button" data-container="body" class="pop-over" [popover]="popNonC3" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                placement="left">?</button>
+              <ng-template #popNonC3>
+                <ul>
+                  <li>Plaza is required</li>
+                  <li>Select Plaza </li>
+                </ul>
+              </ng-template>
+              <!--<button type="button" class="tool-tip" data-toggle="tooltip" data-placement="top" title="{{tootltipName}}">?</button>-->
+            </div>
+          </div>
+          <div class="col-md-6" *ngIf='showExitPlaza'>
+            <div class="col-sm-12 popover-field form-group">
+              <label for="inputPassword3" class="focused">Exit Plaza:</label>
+              <select class="form-control" formControlName='exitPlaza' [ngClass]="{'del-disabled': isDisabled }">
+                <option value='' selected disabled>Select</option>
+                <option *ngFor='let plazaType of plazaTypes' value="{{plazaType.PlazaCode}}" [hidden]='plazaType.PlazaCode==exitPlaza'>{{plazaType.PlazaName}}</option>
+              </select>
+              <div class="msg" *ngIf="tollScheduleForm.controls['exitPlaza'].invalid && (tollScheduleForm.controls['exitPlaza'].dirty || tollScheduleForm.controls['exitPlaza'].touched)">
+                <div *ngIf="tollScheduleForm.controls['exitPlaza'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="tollScheduleForm.controls['exitPlaza'].errors.pattern">
+                  Only alphabets and spaces are allowed !
+                </div>
+              </div>
+              <button type="button" data-container="body" class="pop-over" [popover]="popNonC3" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                placement="left">?</button>
+              <ng-template #popNonC3>
+                <ul>
+                  <li>Plaza is required</li>
+                  <li>Select Plaza </li>
+                </ul>
+              </ng-template>
+              <!--<button type="button" class="tool-tip" data-toggle="tooltip" data-placement="top" title="{{tootltipName}}">?</button>-->
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="col-sm-12 popover-field form-group">
+              <label for="inputPassword3" class="focused">Lane Direction:</label>
+              <select class="form-control" formControlName='laneDirection' [ngClass]="{'del-disabled': isDisabled }">
+                <option value="" disabled selected>Select</option>
+                <option *ngFor='let laneDir of laneDirs' value="{{laneDir.LookUpTypeCode}}">{{laneDir.LookUpTypeCodeDesc}}</option>
+              </select>
+              <div class="msg" *ngIf="tollScheduleForm.controls['laneDirection'].invalid && (tollScheduleForm.controls['laneDirection'].dirty || tollScheduleForm.controls['laneDirection'].touched)">
+                <div *ngIf="tollScheduleForm.controls['laneDirection'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="tollScheduleForm.controls['laneDirection'].errors.pattern">
+                  Only alphabets and spaces are allowed !
+                </div>
+              </div>
+              <button type="button" data-container="body" class="pop-over" [popover]="popNonC4" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                placement="left">?</button>
+              <ng-template #popNonC4>
+                <ul>
+                  <li>Lane Direction is required</li>
+                  <li>Select Lane Direction </li>
+                </ul>
+              </ng-template>
+              <!--<button type="button" class="tool-tip" data-toggle="tooltip" data-placement="top" title="{{tootltipName}}">?</button>-->
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="col-sm-12 popover-field form-group">
+              <label for="inputPassword3" class="focused">Transaction Method:</label>
+              <select class="form-control" formControlName='transactionMethod' [ngClass]="{'del-disabled': isDisabled }">
+                <option value="" selected disabled>Select</option>
+                <option value="TAG">TAG</option>
+                <option value="PLATE">PLATE</option>
+              </select>
+              <div class="msg" *ngIf="tollScheduleForm.controls['transactionMethod'].invalid && (tollScheduleForm.controls['transactionMethod'].dirty || tollScheduleForm.controls['transactionMethod'].touched)">
+                <div *ngIf="tollScheduleForm.controls['transactionMethod'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="tollScheduleForm.controls['transactionMethod'].errors.pattern">
+                  Only alphabets and spaces are allowed !
+                </div>
+              </div>
+              <button type="button" data-container="body" class="pop-over" [popover]="popNonC5" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                placement="left">?</button>
+              <ng-template #popNonC5>
+                <ul>
+                  <li>Transaction Method is required</li>
+                  <li>Select Transaction Method </li>
+                </ul>
+              </ng-template>
+              <!--<button type="button" class="tool-tip" data-toggle="tooltip" data-placement="top" title="{{tootltipName}}">?</button>-->
+            </div>
+          </div>
+          <div class="col-md-6">
+
+            <div class="col-sm-12 popover-field form-group">
+              <label for="inputPassword3" class="focused">Lane Type:</label>
+              <select class="form-control" id="inputPassword3" formControlName='laneType' [ngClass]="{'del-disabled': isDisabled }">
+                <option value="" selected disabled>Select</option>
+                <option *ngFor='let laneType of laneTypes' value='{{laneType.LookUpTypeCode}}'>{{laneType.LookUpTypeCodeDesc}}</option>
+              </select>
+              <div class="msg" *ngIf="tollScheduleForm.controls['laneType'].invalid && (tollScheduleForm.controls['laneType'].dirty || tollScheduleForm.controls['laneType'].touched)">
+                <div *ngIf="tollScheduleForm.controls['laneType'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="tollScheduleForm.controls['laneType'].errors.pattern">
+                  Only alphabets and spaces are allowed !
+                </div>
+              </div>
+              <button type="button" data-container="body" class="pop-over" [popover]="popNonC6" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                placement="left">?</button>
+              <ng-template #popNonC6>
+                <ul>
+                  <li>Lane Type is required</li>
+                  <li>Select Lane Type </li>
+                </ul>
+              </ng-template>
+              <!--<button type="button" class="tool-tip" data-toggle="tooltip" data-placement="top" title="{{tootltipName}}">?</button>-->
+            </div>
+          </div>
+          <div class="col-md-6">
+
+            <div class="col-sm-12 popover-field form-group">
+              <label for="inputPassword3" class="focused">Schedule Type:</label>
+              <select class="form-control" formControlName='scheduleType' (change)='scheduleTypeChange($event.target.value)' [ngClass]="{'del-disabled': isDisabled }">
+                <option value="" selected disabled>Select</option>
+                <option *ngFor='let schedule of schedules; index as i' value="{{schedule.Key}}">{{schedule.Value}}</option>
+              </select>
+              <div class="msg" *ngIf="tollScheduleForm.controls['scheduleType'].invalid && (tollScheduleForm.controls['scheduleType'].dirty || tollScheduleForm.controls['scheduleType'].touched)">
+                <div *ngIf="tollScheduleForm.controls['scheduleType'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="tollScheduleForm.controls['scheduleType'].errors.pattern">
+                  Only alphabets and spaces are allowed !
+                </div>
+              </div>
+              <button type="button" data-container="body" class="pop-over" [popover]="popNonC7" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                placement="left">?</button>
+              <ng-template #popNonC7>
+                <ul>
+                  <li>Schedule Type is required</li>
+                  <li>Select Schedule Type </li>
+                </ul>
+              </ng-template>
+              <small class="red"  [hidden]='tollScheduleForm.controls["scheduleType"].value !== "WEEKEND"'>Note: Toll Schedule will be applicable automatically for all the weekends in the current year</small>
+              <a style="display: inline-block; margin-top: 10px;" href='javascript:;' *ngIf='showHoliday' (click)="showHolidayPopUp()">Holiday Dates</a>
+              <!--<button type="button" class="tool-tip" data-toggle="tooltip" data-placement="top" title="{{tootltipName}}">?</button>-->
+            </div>
+
+          </div>
+          <div class="col-md-6" [hidden]='scheduleTypeToggle'>
+            <!--<label for="inputPassword3" class="col-sm-3 control-label">Start and End Effective Date:</label>-->
+            <div class="col-sm-12 popover-field form-group">
+              <div class="msg" *ngIf="!invalidDate && tollScheduleForm.controls['date'].invalid && (tollScheduleForm.controls['date'].dirty || tollScheduleForm.controls['date'].touched)"
+                class="show-error">
+                <div *ngIf="tollScheduleForm.controls['date'].errors.required">
+                  Required.
+                </div>
+                <!--<div *ngIf="tollScheduleForm.controls['date'].errors.pattern">
+                    Only alphabets and spaces are allowed !
+                  </div>-->
+              </div>
+              <div class="show-error" *ngIf="invalidDate">
+                <div> Invalid Date Range</div>
+              </div>
+              <label for="inputPassword3" id="focused">Start and End Effective Date:</label>
+              <my-date-range-picker name="mydaterange" [options]="myDateRangePickerOptions" formControlName="date" [ngClass]="{'del-disabled': isDisabled }"
+                (inputFieldChanged)='onDateRangeFieldChanged($event)' placeholder="MM/DD/YYYY-MM/DD/YYYY"></my-date-range-picker>
+              <!--<owl-date-time [selectionMode]='"range"' [dateFormat]='"DD/MM/YYYY"' [placeHolder]='"DD/MM/YYYY"' [min]='minDate' [type]='"calendar"'
+                  class="form-control" formControlName='date' [ngClass]="{'del-disabled': isDisabled }"></owl-date-time>-->
+              <!-- <input type="text" class="form-control inputbg-white" [ngClass]="{'del-disabled': isDisabled }" placeholder="Select Time Period" readonly bsDaterangepicker formControlName="date" [minDate]="minDate"/> -->
+
+              <button type="button" data-container="body" class="pop-over" [popover]="popNonC8" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                placement="left">?</button>
+              <!--<div class="msg" style="color:red" *ngIf="invalidDate">
+              Invalid Date Range
+            </div>-->
+              <ng-template #popNonC8>
+                <ul>
+                  <li>Start Effective Date is required</li>
+                  <li>Start Effective Date should be greater than or equal to today's date </li>
+                  <li>End Effective Date is required</li>
+                  <li>End Effective Date should be greater than or equal to Start Effective Date</li>
+                </ul>
+              </ng-template>
+              <!--<button type="button" class="tool-tip" data-toggle="tooltip" data-placement="top" title="{{tootltipName}}">?</button>-->
+            </div>
+          </div>
+          <div class="col-md-6" [hidden]='!showHoliday'>
+            <div class="col-sm-12 popover-field form-group">
+              <!--<owl-date-time [selectionMode]='"single"' [disabledDates]="disabledDates" [dateFormat]='"DD/MM/YYYY"' [placeHolder]='"DD/MM/YYYY"'
+                  [type]='"calendar"' formControlName='holidayDate' class="form-control"></owl-date-time>-->
+              <div class="msg" *ngIf="!invalidHolidayDate && tollScheduleForm.controls['holidayDate'].invalid && (tollScheduleForm.controls['holidayDate'].dirty || tollScheduleForm.controls['holidayDate'].touched)"
+                class="show-error">
+                <div *ngIf="tollScheduleForm.controls['holidayDate'].errors.required">
+                  Required
+                </div>
+                <!--<div *ngIf="tollScheduleForm.controls['holidayDate'].errors.pattern">
+                    Only alphabets and spaces are allowed !
+                  </div>-->
+              </div>
+              <div class="show-error" *ngIf="invalidHolidayDate">
+                <div> Invalid Date</div>
+              </div>
+              <label for="inputPassword3" class="focused">Holiday Date:</label>
+              <my-date-picker name="mydate" [options]="myDatePickerOptions" formControlName='holidayDate' (inputFieldChanged)='onDateFieldChanged($event)'
+                placeholder="MM/DD/YYYY"></my-date-picker>
+              <button type="button" data-container="body" class="pop-over" [popover]="popNonC9" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                placement="left">?</button>
+              <!--<div class="msg" style="color:red" *ngIf="invalidHolidayDate">
+              Invalid Date
+            </div>-->
+              <ng-template #popNonC9>
+                <ul>
+                  <li>Holiday Date is required</li>
+
+                </ul>
+              </ng-template>
+              <!--<button type="button" class="tool-tip" data-toggle="tooltip" data-placement="top" title="{{tootltipName}}">?</button>-->
+            </div>
+          </div>
+          <div class="col-md-6" [hidden]='scheduleTypeToggle'>
+            <div class="col-sm-12 popover-field form-group">
+              <label for="inputPassword3" class="focused">Interval:</label>
+              <select class="form-control" formControlName='interval' [ngClass]="{'del-disabled': isDisabled }">
+                <option value="" selected disabled>--Select--</option>
+                <option *ngFor="let interval of timeIntervalArray" value="{{interval.Key}}">{{interval.Value}}</option>
+              </select>
+              <div class="msg" *ngIf="tollScheduleForm.controls['interval'].invalid && (tollScheduleForm.controls['interval'].dirty || tollScheduleForm.controls['interval'].touched)">
+                <div *ngIf="tollScheduleForm.controls['interval'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="tollScheduleForm.controls['interval'].errors.pattern">
+                  Only alphabets and spaces are allowed !
+                </div>
+              </div>
+              <button type="button" data-container="body" class="pop-over" [popover]="popNonC10" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                placement="left">?</button>
+              <ng-template #popNonC10>
+                <ul>
+                  <li>Interval is required</li>
+                  <li>Select Interval </li>
+                </ul>
+              </ng-template>
+              <!--<button type="button" class="tool-tip" data-toggle="tooltip" data-placement="top" title="{{tootltipName}}">?</button>-->
+            </div>
+          </div>
+
+          <div class="pull-right m-t-20 m-r-20">
+            <button class="btn btn-primary btn-search" [disabled]='disablePreview' (click)="addSchedule()">Preview</button>
+            <button class="btn btn-primary btn-search" [disabled]="tollRatesPreviewArray==null || addDisableButton" (click)="saveSchedule(type)">{{type}} &amp; Schedule</button>
+            <button type="reset" class="btn btn-default btn-reset" *ngIf="!previewVisible" (click)="resetTolls()">Reset</button>
+            <button type="reset" class="btn btn-default btn-reset" routerLink="/sac/tolls/manage-toll-schedules">Cancel</button>
+          </div>
+          <div class="clear"></div>
+        </div>
+      </form>
+    </div>
+
+  </div>
+  <!-- *ngIf="scheduleView" -->
+  <div class="row" *ngIf="showTollTable">
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <h3>Schedule View</h3>
+        <div class="pad-10">
+          <div class="table-responsive">
+            <table class="table" *ngIf='tollRatesPreviewArray'>
+              <thead>
+                <tr>
+                  <th>Interval</th>
+                  <th>Rate Name</th>
+                  <th>Rate ID</th>
+                  <th>Lane Type</th>
+                  <th *ngFor='let item of vehicleClasses.DicVehicleClass'>{{item.Code}}</th>
+
+                  <th [hidden]="previewVisible"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let tollRatesPreview of tollRatesPreviewArray; let i = index">
+                  <td>{{tollRatesPreview.TimeRange}}</td>
+                  <td>
+                    <select name="" id="" class="form-control" (change)="tollRateChanged($event.target.value, i)" [ngClass]="{'del-disabled': isDisabled }"
+                      [(ngModel)]="tollRatesPreview.TollHdrId">
+                      <option *ngFor="let tollRateLaneType of tollRateLaneTypes" value="{{tollRateLaneType.TollHdrId}}">{{tollRateLaneType.TollRateName}}</option>
+                    </select>
+                  </td>
+                  <td>{{tollRatesPreview.TollHdrId}}</td>
+                  <td>{{tollRatesPreview.LaneType}}</td>
+                  <td *ngFor='let item of tollRatesPreview.tollRates'>{{item.val}}</td>
+                  <td [hidden]="previewVisible" style="text-align: center;" routerLink="/sac/tolls/manage-toll-rates">
+                    <img src="assets/images/svg/add.svg" class="icon-svg3" alt="" style="opacity: 0.6;">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div id="holidayDetails" class="edit-modal  modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <a class="form-title">Holiday Details</a>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-10 col-md-offset-1">
+            <div class="form-horizontal m-b-10">
+              <div class="">
+
+                <div class="col-sm-9 popover-field form-group">
+                  <label for="inputPassword3" class="focused">Select Year:</label>
+                  <select class="form-control" (change)='getHolidayByYear(selectedYear)' [(ngModel)]='selectedYear'>
+                    <option *ngFor='let year of years; index as i' >{{year}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="table-responsive" *ngIf="holidayDetails">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Holiday Date</th>
+                <th>Holiday Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let item of holidayDetails'>
+                <td>{{item.HolidayDate | customDateFormat}}</td>
+                <td>{{item.HolidayDesc}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+          <div class="alert alert-danger alert-dismissible" role="alert" *ngIf='!holidayDetails'>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>No Details Found
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)" (onOk)="userAction($event)"></app-success-failure-alerts-message>

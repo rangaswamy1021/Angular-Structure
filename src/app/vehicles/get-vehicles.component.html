@@ -1,0 +1,249 @@
+<div class="page-title-header" *ngIf="!isCreateAccount">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li>
+          <a href="#">Vehicles</a>
+        </li>
+        <li class="active">Manage Vehicles</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Vehicles</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="content">
+  <app-account-info *ngIf="isManageVehicle"></app-account-info>
+  <!-- 
+  <div class="alert alert-danger alert-dismissible" role="alert" *ngIf="errorBlock">
+    <button type="button" class="close" data-dismiss="alert" (click)="errorBlock=false" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <strong>{{errorHeading}}</strong> {{errorMessage}}
+  </div>
+  <div class="alert alert-success alert-dismissible" role="alert" *ngIf="successBlock">
+    <button type="button" class="close" data-dismiss="alert" (click)="successBlock=false" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <strong>{{successHeading}}</strong> {{statusMessage}}
+  </div> -->
+
+  <div *ngIf="isBusinessCustomer">
+    <app-bulkupload [accountIDCreateAccount]="accountIdContext" [isCreateAccountbulklod]="isCreateAccount" (uploadClicked)='onUploadClicked($event)'>
+    </app-bulkupload>
+  </div>
+  <app-search-vehicle *ngIf="isManageVehicle" [customerAccountId]="accountIdContext" (searchClicked)='onSearchClicked($event)'></app-search-vehicle>
+  <!--Vehicles grid -->
+  <div *ngIf="isAddVehicle">
+    <app-add-vehicle (createClicked)='onCreateClicked($event)' [isCreateCustomerAccount]="isCreateAccount" [customerAccountId]="accountIdContext"
+      (cancelClicked)="onCancelClicked($event)"></app-add-vehicle>
+  </div>
+
+  <div *ngIf="isUpdateVehicle">
+    <app-update-vehicle [inputVehicleID]="ngModelVehicleId" [isCreateCustomerAccount]="isCreateAccount" [customerAccountId]="accountIdContext"
+      (updateClicked)='onEditClicked($event)' (updateCancelClicked)='onEditCancelClicked($event)'></app-update-vehicle>
+  </div>
+
+  <div *ngIf="isDeleteVehicle">
+    <app-delete-vehicle [inputVehicleID]="ngModelVehicleId" [inputOperation]="ngModelOperation" [isCreateCustomerAccount]="isCreateAccount"
+      [customerAccountId]="accountIdContext" (deactivateClicked)='onDeactivateClicked($event)' (deactivateCancelClicked)='onDeactivateCancelClicked($event)'></app-delete-vehicle>
+  </div>
+
+
+  <!-- <div class="panel" *ngIf="!isAddVehicle&&!isUpdateVehicle&&!isDeleteVehicle">
+    <a (click)="addButtonclick()" class="btn btn-default">Add New Vehicle</a>
+  </div> -->
+  <div class="row m-b-10" *ngIf="!isAddVehicle&&!isUpdateVehicle&&!isDeleteVehicle">
+    <div class="col-md-12">
+      <a [ngClass]="disableaddButton?'disabletextbox':''" (click)="addButtonclick()">
+        <img src="assets/images/svg/add-file2.svg" class="icon-svg3" alt="">Add New Vehicle</a>
+    </div>
+  </div>
+  <div class="table-bdr">
+    <h3>Registered Vehicles Details</h3>
+    <div *ngIf="!vehicles">
+      <table class="table">
+        <thead>
+          <tr>
+            <td>No details to display</td>
+          </tr>
+        </thead>
+      </table>
+    </div>
+    <div class="pad-10 regVehDetails" *ngIf="vehicles">
+      <div #vehiclediv>
+        <table class="table">
+          <thead class="nowrap">
+            <tr>
+              <th> Plate # </th>
+              <th> Class</th>
+              <th> Description</th>
+              <th> State </th>
+              <th> Start Effective Date </th>
+              <th> End Effective Date </th>
+              <th>Contractual</th>
+              <th>Is Non<br>Revenue</th>
+              <th>Status</th>
+              <th> </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let vehicle of vehicles | paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount }">
+              <td class="nowrap">
+                {{vehicle.VehicleNumber}}
+              </td>
+              <td>
+                {{vehicle.VehicleClassDesc}}
+              </td>
+
+              <td>
+                {{vehicle.VehicleDescription}}
+              </td>
+              <td>
+                {{vehicle.StateName}}
+              </td>
+              <td>
+                {{vehicle.StartEffectiveDate|customDateTimeFormat}}
+              </td>
+              <td>
+                {{vehicle.EndEffectiveDate|customDateTimeFormat}}
+              </td>
+              <td> {{vehicle.ContractType}}</td>
+              <td> {{(vehicle.IsExempted)?'Yes':'No'}}</td>
+              <td class="nowrap">{{vehicle.VehicleStatus}} </td>
+              <td>
+                <div class="display-inline">
+                  <img [ngClass]="disableupdateButton?'disabletextbox':''" title="{{vehicle.VehicleStatus=='Inactive'? 'Activate':'Edit'}}"
+                    src='assets/images/svg/{{vehicle.VehicleStatus=="Inactive"? "activate":"edit"}}.svg' (click)="displayoff(vehicle.VehicleId)"
+                    class='icon-svg3' style="margin-right: 3px;" />
+                </div>
+                <div class="display-inline">
+                  <!-- <a *ngIf="!isManageVehicle" class="btn btn-default btn-xs" (click)="approveDelete(vehicle)" name="{{vehicle.VehicleId}}">Delete</a> -->
+                  <img *ngIf="!isManageVehicle" src='assets/images/svg/delete.svg' title="Delete" (click)="approveDelete(vehicle)" class='icon-svg3'
+                    style="margin-right: 3px;" />
+                </div>
+
+                <div class="display-inline" *ngIf="isManageVehicle">
+                  <!-- <a *ngIf="vehicle.VehicleStatus!='Inactive'" class="btn btn-default btn-xs" (click)="approveDiactivate(vehicle)" name="{{vehicle.VehicleId}}">DeActivate</a> -->
+                  <img *ngIf="vehicle.VehicleStatus!='Inactive'" src='assets/images/svg/block.svg' [ngClass]="disabledeleteButton?'disabletextbox':''"
+                    title="Deactivate" (click)="approveDiactivate(vehicle)" class='icon-svg3' style="margin-right: 3px;" />
+                  <label *ngIf="vehicle.VehicleStatus=='Inactive'" class="text-nowrap">Inactive</label>
+
+                </div>
+
+
+                <!-- (click)="deactivateVehicle(vehicle.VehicleId)" -->
+
+                <!-- <a *ngIf="isManageVehicle" class="btn btn-default btn-xs" (click)="viewHistory(vehicle.VehicleId)">View History</a> -->
+                <div class="display-inline">
+                  <img *ngIf="isManageVehicle" [ngClass]="disableHistoryButton?'disabletextbox':''" src='assets/images/svg/history-black.svg'
+                    title="View History" (click)="viewHistory(vehicle.VehicleId)" class='icon-svg3' style="margin-right: 3px;"
+                  />
+                </div>
+                <!-- <a href="#" (click)='DeactivateVehicle(vehicle)'>{{vehicle.VehicleStatus=='Inactive'?"":"DeActivate"}}</a> -->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="row page-info" *ngIf='vehicles && vehicles.length'>
+          <div class="col-md-6 text-left">
+            <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (onOk)="userAction($event)" (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+  <!-- <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event, 1000)" (onOk)="deactivateVehicle($event)"></app-success-failure-alerts-message>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event, 1000)" (onOk)="deleteVehicle($event)"></app-success-failure-alerts-message> -->
+
+  <div class="panel panel-default" *ngIf="vehicleHistory">
+    <div class="panel-heading" #vehicleHistdiv> Vehicle History
+    </div>
+    <div class="panel-body">
+      <div *ngIf="vehicleHistory" #vehicleHistdiv>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>
+                Plate #
+              </th>
+              <th> Class</th>
+              <th>Color</th>
+              <th> Description</th>
+              <th>
+                State
+              </th>
+              <th>
+                Country
+              </th>
+
+              <th>
+                Start Effective Date
+              </th>
+              <th>
+                End Effective Date
+              </th>
+              <th>Contractual</th>
+              <th>Status</th>
+              <th>Updated Date Time </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let vehicle of vehicleHistory">
+              <td>
+                {{vehicle.VehicleNumber}}
+              </td>
+              <td>
+                {{vehicle.VehicleClassDesc}}
+              </td>
+              <td>
+                {{vehicle.Color}}
+              </td>
+              <td>
+                {{vehicle.VehicleDescription}}
+              </td>
+              <td>
+                {{vehicle.StateName}}
+              </td>
+              <td>
+                {{vehicle.CountryName}}
+              </td>
+              <td>
+                {{vehicle.StartEffectiveDate|customDateTimeFormat}}
+              </td>
+              <td>
+                {{vehicle.EndEffectiveDate|customDateTimeFormat}}
+              </td>
+              <td>{{vehicle.ContractType}} </td>
+              <td>
+                {{vehicle.VehicleStatus}}
+              </td>
+              <td>
+                {{vehicle.UpdatedDateTime|customDateTimeFormat}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,345 @@
+<div id="phoneEdit" class="edit-modal modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="form-title">{{title}}</h3>
+      </div>
+      <div class="modal-body">
+        <div class="row add-address">
+          <form [formGroup]='phoneForm' *ngIf='formType=="phone"'>
+
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-sm-8 popover-field popover-2field">
+                  <label for="">Day Phone</label>
+                  <input type="text" class="form-control" formControlName="DayPhone" (keydown)="formatPhone($event)" maxlength="14">
+                   
+                  <div class="msg" *ngIf="phoneForm.controls['DayPhone'].invalid && (phoneForm.controls['DayPhone'].dirty || phoneForm.controls['DayPhone'].touched)">
+                    <div *ngIf="phoneForm.controls['DayPhone'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="phoneForm.controls['DayPhone'].errors.pattern">
+                      Invalid phone format.
+                    </div>
+                    <div *ngIf="phoneForm.controls['DayPhone'].errors.maxlength">
+                      Maximum 14 characters are allowed.
+                    </div>
+                  </div>
+                  <button type="button" placement="left" class="pop-over" [popover]="popDPN" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1">?</button>
+                <ng-template #popDPN>
+                  <ul>
+                    <li>Any One Phone # is required</li>
+                    <li>Day Phone allows only numbers</li>
+                  </ul>
+                </ng-template>
+                </div>
+               
+                <div class="form-group col-sm-4 preferred-cont custom-control custom-radio">
+                  <input type="radio" class="preferred" id="dayPhone" name='phonePreference' value="DayPhone" formControlName="phonePreference" (change)="prefferedPhoneTypeChange($event.target.value)"> 
+             <label for="dayPhone" class="custom-control-description">Is Preferred</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-sm-8 popover-field popover-2field">
+                     <label for="">Evening Phone</label>
+                  <input type="text" class="form-control" formControlName="EveningPhone" (keydown)="formatPhone($event)" placeholder="Evening Phone"
+                    maxlength="14">
+                  
+                  <div class="msg" *ngIf="phoneForm.controls['EveningPhone'].invalid && (phoneForm.controls['EveningPhone'].dirty || phoneForm.controls['EveningPhone'].touched)">
+                    <div *ngIf="phoneForm.controls['EveningPhone'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="phoneForm.controls['EveningPhone'].errors.pattern">
+                      Invalid phone format.
+                    </div>
+                    <div *ngIf="phoneForm.controls['EveningPhone'].errors.maxlength">
+                      Maximum 14 characters are allowed.
+                    </div>
+                  </div>
+                  <button type="button" placement="left" class="pop-over" [popover]="popEP" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1">?</button>
+                <ng-template #popEP>
+                  <ul>
+                    <li>Any One Phone # is required</li>
+                    <li>Evening Phone allows only numbers</li>
+                  </ul>
+                </ng-template>
+                </div>
+               
+                <div class="form-group col-sm-4 preferred-cont nowrap  custom-control custom-radio">
+                  <input type="radio" class="preferred" id="eveningPhone" name='phonePreference' value="EveningPhone" formControlName="phonePreference" (change)="prefferedPhoneTypeChange($event.target.value)"> 
+                <label for="eveningPhone" class="custom-control-description">Is Preferred</label>  </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-sm-8 popover-field popover-2field">
+                    <label for="">Mobile Phone</label>
+                  <input type="text" placement="left" class="form-control" formControlName="MobileNo" (keydown)="formatPhone($event)" placeholder="Mobile Phone"
+                    maxlength="14">
+                  <div class="msg" *ngIf="phoneForm.controls['MobileNo'].invalid && (phoneForm.controls['MobileNo'].dirty || phoneForm.controls['MobileNo'].touched)">
+                    <div *ngIf="phoneForm.controls['MobileNo'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="phoneForm.controls['MobileNo'].errors.pattern">
+                      Invalid phone format.
+                    </div>
+                    <div *ngIf="phoneForm.controls['MobileNo'].errors.maxlength">
+                      Maximum 14 characters are allowed.
+                    </div>
+                  </div>
+                  <button type="button" placement="left" class="pop-over" [popover]="popMN" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1">?</button>
+                <ng-template #popMN>
+                  <ul>
+                    <li>Any One Phone # is required</li>
+                    <li>Mobile Phone allows only numbers</li>
+                  </ul>
+                </ng-template>
+                </div>
+                
+                <div class="form-group col-sm-4 preferred-cont custom-control custom-radio">
+                  <input type="radio" class="preferred"  id="mobileNo" name='phonePreference' value="MobileNo" formControlName="phonePreference" (change)="prefferedPhoneTypeChange($event.target.value)">
+                <label for="mobileNo" class="custom-control-description">Is Preferred</label>  </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-sm-5 popover-field popover-2field">
+               <label for="">Work Phone</label>
+                  <input type="text" class="form-control" formControlName="WorkPhone" (keydown)="formatPhone($event)" placeholder="Work Phone"
+                    maxlength="14">
+                  <div class="msg" *ngIf="phoneForm.controls['WorkPhone'].invalid && (phoneForm.controls['WorkPhone'].dirty || phoneForm.controls['WorkPhone'].touched)">
+                    <div *ngIf="phoneForm.controls['WorkPhone'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="phoneForm.controls['WorkPhone'].errors.pattern">
+                      Invalid phone format.
+                    </div>
+                    <div *ngIf="phoneForm.controls['WorkPhone'].errors.maxlength">
+                      Maximum 14 characters are allowed.
+                    </div>
+                  </div>
+                    <button type="button" placement="left" class="pop-over" [popover]="popEX" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1">?</button>
+                <ng-template #popEX>
+                  <ul>
+                    <li>Any One Phone # is required.</li>
+                    <li>Work Phone allows only numbers.</li>
+                  </ul>
+                </ng-template>
+                </div>
+                
+                <div class="form-group col-sm-3 popover-field popover-2field">
+                 <label for="">Extn</label>
+                  <input type="text" class="form-control" formControlName="extn" placeholder="Extn" maxlength="4">
+                  
+                  <div class="msg" *ngIf="phoneForm.controls['extn'].invalid && (phoneForm.controls['extn'].dirty || phoneForm.controls['extn'].touched)">
+                    <div *ngIf="phoneForm.controls['extn'].errors.pattern">
+                      Only numerics are allowed.
+                    </div>
+                    <div *ngIf="phoneForm.controls['extn'].errors.maxlength">
+                      Maximum 5 characters are allowed.
+                    </div>
+                  </div>
+                  <button type="button" placement="left" class="pop-over" [popover]="popWP" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1">?</button>
+                <ng-template #popWP>
+                  <ul>
+                    <li>Extension # allows only numbers</li>
+                  </ul>
+                </ng-template>
+                </div>
+                 
+                <div class="form-group col-sm-4 preferred-cont nowrap custom-control custom-radio">
+                  <input type="radio" class="preferred" id="workPhone" name='phonePreference' value="WorkPhone" formControlName="phonePreference" (change)="prefferedPhoneTypeChange($event.target.value)">
+                 <label for="workPhone" class="custom-control-description">Is Preferred</label>  </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-sm-10 popover-field popover-2field">
+                    <label for="">Fax</label>
+                  <input type="text" class="form-control" formControlName="Fax" (keydown)="formatPhone($event)" placeholder="Fax" maxlength="14">
+                  
+                  <div class="msg" *ngIf="phoneForm.controls['Fax'].invalid && (phoneForm.controls['Fax'].dirty || phoneForm.controls['Fax'].touched)">
+                    <div *ngIf="phoneForm.controls['Fax'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="phoneForm.controls['Fax'].errors.pattern">
+                      Invalid phone format.
+                    </div>
+                    <div *ngIf="phoneForm.controls['Fax'].errors.maxlength">
+                      Maximum 14 characters are allowed.
+                    </div>
+                  </div>
+                  <button type="button" placement="left" class="pop-over" [popover]="popFX" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1">?</button>
+                <ng-template #popFX>
+                  <ul>
+                    <li>Fax allows only numbers</li>
+                  </ul>
+                </ng-template>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 m-t-10">
+
+              <button type="submit" class="btn btn-primary btn-search" (click)=changePhone(true) [disabled]='disableButton'>Update</button>
+              <button type="button" class="btn btn-default btn-reset" (click)=resetForm()>Reset</button>
+              <button type="button" class="btn btn-default btn-reset" data-dismiss="modal">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="panel-heading" role="tab" id="headingTwo">
+  <h4 class="panel-title pull-left">
+    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false"
+      aria-controls="collapseTwo">Phone Numbers</a>
+  </h4>
+  <div class="edit-history-link pull-right">
+      <a href="javascript:;" (click)='editDetails("phone","edit")'>Edit</a>
+      <a href="javascript:;" [ngClass]="disableHistorybtn?'disabletextbox':''" (click)='showPhoneHistory()'>View History</a>
+    </div>
+    <div class="clear"></div>
+</div>
+<div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+  <div class="panel-body">
+    <div class="clear"></div>
+    <div class="row contact-item">
+      <div class="col-md-4">
+        <h3>Day Phone Number</h3>
+        <h4 *ngIf='phoneTypes.DayPhone'>{{phoneTypes.DayPhone.PhoneNumber}}
+          <a href="javascript:;" [ngClass]="disableDeletebtn?'disabletextbox':''" (click)="deletePhone(phoneTypes.DayPhone)" *ngIf='!phoneTypes.DayPhone.IsCommunication'>Delete</a>
+        </h4>
+        <h4 *ngIf='!phoneTypes.DayPhone'>No Details Found</h4>
+      </div>
+      <div class="col-md-4">
+        <h3>Evening Phone Number</h3>
+        <h4 *ngIf='phoneTypes.EveningPhone'>{{phoneTypes.EveningPhone.PhoneNumber}}
+          <a href="javascript:;" [ngClass]="disableDeletebtn?'disabletextbox':''" (click)="deletePhone(phoneTypes.EveningPhone)" *ngIf='!phoneTypes.EveningPhone.IsCommunication'>Delete</a>
+        </h4>
+        <h4 *ngIf='!phoneTypes.EveningPhone'>No Details Found</h4>
+      </div>
+      <div class="col-md-4">
+        <h3>Mobile Number</h3>
+        <h4 *ngIf='phoneTypes.MobileNo'>{{phoneTypes.MobileNo.PhoneNumber}}
+          <a href="javascript:;" (click)="verifyNumber(phoneTypes.MobileNo,false)" [ngClass]="disableVerifybtn?'disabletextbox':''" *ngIf='!phoneTypes.MobileNo.IsVerified'>Verify</a>
+          <a href="javascript:;" [ngClass]="disableDeletebtn?'disabletextbox':''" (click)="deletePhone(phoneTypes.MobileNo)" *ngIf='!phoneTypes.MobileNo.IsCommunication'>Delete</a>
+        </h4>
+        <h4 *ngIf='!phoneTypes.MobileNo'>No Details Found</h4>
+      </div>
+      <div class="col-md-4">
+        <h3>Work Phone Number</h3>
+
+        <h4 *ngIf='phoneTypes.WorkPhone'>{{phoneTypes.WorkPhone.PhoneNumber}}
+          <a href="javascript:;" [ngClass]="disableDeletebtn?'disabletextbox':''" (click)="deletePhone(phoneTypes.WorkPhone)" *ngIf='!phoneTypes.WorkPhone.IsCommunication'>Delete</a>
+        </h4>
+        <h4 *ngIf='!phoneTypes.WorkPhone'>No Details Found</h4>
+      </div>
+      <div class="col-md-4">
+        <h3>Fax Number</h3>
+
+        <h4 *ngIf='phoneTypes.Fax'>{{phoneTypes.Fax.PhoneNumber}}
+          <a href="javascript:;" [ngClass]="disableDeletebtn?'disabletextbox':''" (click)="deletePhone(phoneTypes.Fax)" *ngIf='!phoneTypes.Fax.IsCommunication'>Delete</a>
+        </h4>
+        <h4 *ngIf='!phoneTypes.Fax'>No Details Found</h4>
+      </div>
+      <div class="col-md-4">
+        <h3>Preference</h3>
+        <h4 *ngIf='preferredPhone'>{{preferredPhone.Description}}</h4>
+        <h4 *ngIf='!preferredPhone'>No Details Found</h4>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="phoneHistory" class="edit-modal  modal fade history-modal" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="form-title">Phone History</h3>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" *ngIf="showPhoneHistoryFlag">
+        <div class="table-bdr m-t-10">
+          <div class="table-default table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Phone Number</th>
+                  <th>Preference</th>
+                  <th>Created by</th>
+                  <th>Created Date/Time</th>
+                  <th>Updated by</th>
+                  <th>Update Date/Time</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor='let item of phoneHistory | paginate: { itemsPerPage: pageItemNumber, currentPage: p,totalItems:totalRecordCount }'>
+                  <td>{{item.Type}}</td>
+                  <td>{{item.PhoneNumber}}</td>
+                  <td>{{item.IsPreferred?"Yes":"No"}}</td>
+                  <td>{{item.CreatedUser}}</td>
+                  <td>{{item.CreatedDate | customDateTimeFormat}}</td>
+
+                  <td>{{item.UpdatedUser}}</td>
+                  <td>{{item.UpdatedDate | customDateTimeFormat}}</td>
+                  <td>{{item.HistoryAction}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class=" page-info">
+              <div class="col-md-6 text-left">
+                <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+              </div>
+              <div class="col-md-6 text-right">
+                <pagination-controls (pageChange)="phoneHistoryPageChanged($event)"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="verifyOtp" class="edit-modal  modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="form-title">Enter One Time Password (OTP)</h3>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>One Time Password(OTP) has been sent to your mobile , please enter OTP for mobile verification</p>
+        <div class="row">
+          <div class="col-md-12 m-t-20">
+            <div class="form-group">
+              <label for="inputPassword3" class="col-sm-4 control-label">One Time Password(OTP)</label>
+              <div class="col-sm-8 popover-field">
+                <input type="text" class="form-control" [(ngModel)]="strOTPNumber" maxlength="20">
+                <div class="msg" *ngIf="verifyStrOTPNumber">
+                    <div>
+                      Required.
+                    </div>
+                  </div>
+             </div>
+            </div>
+          </div>
+          <div class="col-md-12 text-center m-t-20 btn-sec">
+            <button class="btn btn-primary btn-search" (click)="verifyOTP();">Submit</button>
+            <button class="btn btn-primary btn-reset" data-dismiss="modal">Cancel</button>
+            <p class="resentOtp" *ngIf="isShowResend">Click To <a href='javascript:;'  (click)="verifyNumber(phoneTypes.MobileNo,true)">Resend OTP</a></p>
+          </div>
+          <p class="note"><strong>Note</strong>One Time Password (OTP) is valid for {{intMinutes}} minute(s)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

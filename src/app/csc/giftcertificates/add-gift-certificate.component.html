@@ -1,0 +1,59 @@
+<div class="page-title-header">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-header">
+                <h1>Add Gift Certificate</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="form-horizontal">
+    <form role="form" name="giftCertificate" [formGroup]="giftCertificate">
+        <div class="form-group">
+            <div class="col-sm-8 popover-field">
+                <input type="text" class="form-control" id="" pattern="[0-9-]*" maxlength="15" formControlName="certificate" placeholder="Gift Certificate">
+                <div class="msg" *ngIf="giftCertificate.controls['certificate'].invalid && (giftCertificate.controls['certificate'].dirty || giftCertificate.controls['certificate'].touched)">
+                    <div *ngIf="giftCertificate.controls['certificate'].errors.required">
+                        Required.
+                    </div>
+                    <div *ngIf="giftCertificate.controls['certificate'].errors.pattern">
+                        Only numbers and hyphen(-) allowed.
+                    </div>
+                </div>
+                <button type="button" class="tool-tip" data-toggle="tooltip" data-placement="right" title="{{certificateTootip}}">?</button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-8 popover-field">
+                <input type="text" class="form-control" id="" pattern="[0-9]*" maxlength="2" formControlName="range" placeholder="Range">
+                <div class="msg" *ngIf="giftCertificate.controls['range'].invalid && (giftCertificate.controls['range'].dirty || giftCertificate.controls['range'].touched)">
+                    <div *ngIf="giftCertificate.controls['range'].errors.required">
+                        Required.
+                    </div>
+                    <div *ngIf="giftCertificate.controls['range'].errors.pattern">
+                        Only numbers allowed.
+                    </div>
+                </div>
+                <button type="button" class="tool-tip" data-toggle="tooltip" data-placement="right" title="{{rangeTootip}}">?</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-8 popover-field">
+                <input type="text" class="form-control" id="" pattern="^[0-9]*(\.)?[0-9]{1,2}$" maxlength="10" formControlName="amount" placeholder="Face Value Amount($)">
+                <div class="msg" *ngIf="giftCertificate.controls['amount'].invalid && (giftCertificate.controls['amount'].dirty || giftCertificate.controls['amount'].touched)">
+                    <div *ngIf="giftCertificate.controls['amount'].errors.required">
+                        Required.
+                    </div>
+                    <div *ngIf="giftCertificate.controls['amount'].errors.pattern">
+                        Only numerics with two decimals allowed.
+                    </div>
+                </div>
+                <button type="button" class="tool-tip" data-toggle="tooltip" data-placement="right" title="{{amountTooltip}}">?</button>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-search" [disabled]="!giftCertificate.valid">Add</button>
+        <button type="reset" class="btn btn-default btn-reset">Reset</button>
+    </form>
+</div>

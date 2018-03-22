@@ -1,0 +1,102 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Customer Accounts</a></li>
+        <li class="active">Manage Referral </li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Referral</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <form role="form" [formGroup]="manageReferralFrom" name="manageReferralFrom" (ngSubmit)="submitManageReferralRequest()">
+
+        <!--<div class="alert alert-danger alert-dismissible" role="alert" *ngIf="errorBlock">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>      {{errorMessage}}
+    </div>
+
+    <div class="alert alert-success alert-dismissible" role="alert" *ngIf="successBlock">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>      {{successMessage}}
+    </div>-->
+
+        <div class="table-bdr" *ngIf='custAttributesResponse && custAttributesResponse.length; else NodetailsDiv'>
+          <h3>Referral Management</h3>
+          <div class="pad-10">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th> 
+                      <div class="checkbox">
+                      <input type="checkbox" id="checkAll" (change)='checkAllClick($event)' [checked]="isParentSelected" id="checkAll" name="checkAll"
+                        formControlName="checkAll"> 
+                        <label for="checkAll"><span></span></label></div>
+                      </th>
+                    <th> Account # </th>
+                    <th> Referral Account # </th>
+                    <th> Requested Date/Time </th>
+                    <th> Status </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let object of custAttributesResponse | paginate: { itemsPerPage:pageItemNumber, currentPage: p, totalItems:totalRecordCount}">
+                    <td> 
+                      <div class="checkbox">
+                      <input type="checkbox" id="{{object.AccountId}}" (change)='checkboxCheckedEvent(object, $event)' id="indCheckBox" name="indCheckBox"
+                        [checked]="object.isReferralAccountSelected" formControlName="indCheckBox"> 
+                      <label for="{{object.AccountId}}"><span></span></label></div>
+                    </td>
+                    <td> {{object.AccountId }} </td>
+                    <td> {{object.ReferralCustomerId}} </td>
+                    <td> {{object.RequestDate | customDateTimeFormat}} </td>
+                    <td>
+                      <select [(ngModel)]="object.RequestStatus" id="ststusDropDown" name="ststusDropDown" formControlName="ststusDropDown" class="form-control">
+                  <!--<option >--Select--</option>-->
+                  <option *ngFor="let status of dropDownList" value="{{status.LookUpTypeCodeDesc}}">{{status.LookUpTypeCodeDesc}}</option>                             
+                </select>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="row page-info" *ngIf='custAttributesResponse && custAttributesResponse.length > 0'>
+              <div class="col-md-6 text-left">
+                <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+              </div>
+              <div class="col-md-6 text-right">
+                <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #NodetailsDiv>
+          <div class="table-bdr">
+            <h3>Referral Management</h3>
+            <div class="pad-10">
+              <div>No records to display </div>
+            </div>
+          </div>
+        </ng-template>
+        <div class="row" *ngIf='custAttributesResponse && custAttributesResponse.length;'>
+          <div class="col-md-12 text-right">
+            <button type="submit" class="btn btn-primary btn-search" [disabled]="isDisableSubmitBtn">Submit </button>
+            <input type="reset" (click)='resetClick()' class="btn btn-default btn-reset" name="Reset">
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

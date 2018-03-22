@@ -1,0 +1,22 @@
+export interface ISpecialJournalResponse {
+    SpecialJournalId: number,
+    ChartOfAccountId: number,
+    CustomerId: number,
+    StartDate: Date,
+    EndDate: Date,
+    LinkId: number,
+    CreditAmount: number,
+    DebitAmount: number,
+    TxnType: string,
+    User: string,
+    PostedDate: Date,
+    JournalTypeId: number,
+    AccountGroupDescription: any,
+    GLAccount: null,
+    GLTransactionId: number,
+    SortColumn: null,
+    SortDir: number,
+    PageNumber: number,
+    PageSize: number,
+    ReCount: number
+}

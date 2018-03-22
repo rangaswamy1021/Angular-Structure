@@ -1,0 +1,528 @@
+
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { IActivityRequest } from '../../shared/models/activitesrequest';
+import { IActivityResponse } from '../../shared/models/activitiesresponse';
+import { ICustomerActivitesRequest } from './models/customeractivitiesrequest';
+import { ICustomerActivitesResponse } from './models/customeractivitesresponse';
+import { ActivityTypesService } from '../search/services/activities-service';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ISystemActivities } from '../../shared/models/systemactivitiesrequest';
+import { CustomerSearchService } from '../search/services/customer.search';
+import { DatePipe } from '@angular/common';
+import { IPaging } from '../../shared/models/paging';
+import { ICustomerContextResponse } from '../../shared/models/customercontextresponse';
+import { ActivitySource, SubSystem, Features, Actions } from '../../shared/constants';
+import { CustomerContextService } from '../../shared/services/customer.context.service';
+import { IUserresponse } from '../../shared/models/userresponse';
+import { SessionService } from '../../shared/services/session.service';
+import { IUserEvents } from '../../shared/models/userevents';
+import { Router } from '@angular/router';
+import { CommonService } from '../../shared/services/common.service';
+import { IMyDrpOptions,IMyInputFieldChanged } from 'mydaterangepicker';
+import { DatePickerFormatService } from "../../shared/services/datepickerformat.service";
+import { ICalOptions } from "../../shared/models/datepickeroptions";
+
+@Component({
+  selector: 'app-recent-activity',
+  templateUrl: './recent-activity.component.html',
+  styleUrls: ['./recent-activity.component.css']
+})
+export class RecentActivityComponent implements OnInit {
+  invalidDate: boolean;
+  myDateRangePickerOptions: ICalOptions = {
+    dateFormat: 'mm/dd/yyyy',
+    firstDayOfWeek: 'mo',
+    sunHighlight: false,
+    height: '34px',
+    width: '260px',
+    inline: false,
+    alignSelectorRight: false,
+    indicateInvalidDateRange: true,
+    showClearBtn: false,
+    showApplyBtn: false,
+    showClearDateRangeBtn: false
+
+  };
+  // myDateRangePickerOptions: IMyDrpOptions = { dateFormat: 'mm/dd/yyyy', firstDayOfWeek: 'mo', sunHighlight: true, height: '34px', width: '260px', inline: false, alignSelectorRight: false, indicateInvalidDateRange: true };
+  isShowAll: boolean = false;
+  activity: number = 1;
+  showRecentActivityBlock: boolean = true;
+  p: number;
+
+  msgFlag: boolean;
+  msgType: string;
+  msgDesc: string;
+  msgTitle: string;
+  createForm: FormGroup;
+  manageForm: FormGroup;
+  bsRangeValue: any;
+  selectedValue: string;
+  preSelectedValue: string;
+  disableButton: boolean;
+  getActivityTypeRequest: IActivityRequest;
+  getSelectedActivityType: IActivityResponse[] = <IActivityResponse[]>[];
+  getActivityTypeResponse: IActivityResponse[] = <IActivityResponse[]>[];
+  getPredefinedActivityResponse: IActivityResponse[] = <IActivityResponse[]>[];
+
+  getCustomerActivityRequest: ICustomerActivitesRequest;
+  getCustomerActivityResponse: ICustomerActivitesResponse[] = <ICustomerActivitesResponse[]>[];
+
+  paging: IPaging = <IPaging>{};
+
+  systemActivites: ISystemActivities;
+  customerContextResponse: ICustomerContextResponse;
+  sessionConstextResponse: IUserresponse;
+  descLength = 225;
+
+  constructor(private cdr: ChangeDetectorRef,private datePickerFormatService: DatePickerFormatService, private activityService: ActivityTypesService, private searchService: CustomerSearchService, private customerContext: CustomerContextService, public datepipe: DatePipe, private sessionContext: SessionService, private router: Router, private commonService: CommonService) { }
+  pageItemNumber: number = 10;
+  startItemNumber: number = 1;
+  endItemNumber: number = this.pageItemNumber;
+  totalRecordCount: number;
+
+
+  pageChanged(event) {
+    this.p = event;
+    this.startItemNumber = (((this.p) - 1) * this.pageItemNumber) + 1;
+    this.endItemNumber = ((this.p) * this.pageItemNumber);
+    if (this.endItemNumber > this.totalRecordCount)
+      this.endItemNumber = this.totalRecordCount;
+
+    this.customerActivitiesSearch(this.p, null);
+  }
+
+  ngOnInit() {
+    
+    // const strDateRange = new Date().toLocaleDateString().split('/');
+    // this.bsRangeValue = [new Date(Number(strDateRange[2]), Number(strDateRange[0]) - 1, Number(strDateRange[1])), new Date(Number(strDateRange[2]), Number(strDateRange[0]) - 1, Number(strDateRange[1]))];
+
+    this.customerContext.currentContext
+      .subscribe(customerContext => { this.customerContextResponse = customerContext; }
+      );
+    this.sessionConstextResponse = this.sessionContext.customerContext;
+
+
+    this.createForm = new FormGroup({
+      'bsRangeValue': new FormControl('', [Validators.required]),
+      'ActivityType': new FormControl('', []),
+    });
+    this.manageForm = new FormGroup({
+      'preActivity': new FormControl('', []),
+      'customtvalue': new FormControl('', []),
+      'specialvalue': new FormControl('', []),
+    });
+
+    this.patchValue();
+
+    let userEvents = <IUserEvents>{};
+    userEvents.FeatureName = Features[Features.ACTIVITIES];
+    userEvents.ActionName = Actions[Actions.VIEW];
+    userEvents.PageName = this.router.url;
+    userEvents.CustomerId = this.customerContextResponse.AccountId;
+    userEvents.RoleId = parseInt(this.sessionConstextResponse.roleID);
+    userEvents.UserName = this.sessionConstextResponse.userName;
+    userEvents.LoginId = this.sessionConstextResponse.loginId;
+    this.getActivityTypes(userEvents);
+    this.selectedValue = 'ALL';
+    this.getPredefinedActivityTypes();
+    this.preSelectedValue = '';
+    this.disableButton = !this.commonService.isAllowed(Features[Features.ACTIVITIES], Actions[Actions.SEARCH], '');
+    this.customerActivitiesSearch(1, null);
+
+  }
+
+  setradio(a: number) {
+    this.activity = a;
+    this.addRemoveConstrols();
+
+  }
+
+  addRemoveConstrols() {
+    if (this.activity === 1) {
+      this.manageForm.removeControl('customtvalue');
+      this.manageForm.removeControl('specialvalue');
+      this.manageForm.addControl('preActivity', new FormControl('', [Validators.required]));
+
+    }
+    if (this.activity === 2) {
+      this.manageForm.removeControl('preActivity');
+      this.manageForm.removeControl('specialvalue');
+      this.manageForm.addControl('customtvalue', new FormControl('', [Validators.required]));
+      this.descLength = 225;
+
+    }
+    if (this.activity === 3) {
+      this.manageForm.removeControl('customtvalue');
+      this.manageForm.removeControl('preActivity');
+      this.manageForm.addControl('specialvalue', new FormControl('', [Validators.required]));
+      this.descLength = 225;
+    }
+
+  }
+
+  getActivityTypes(userEvents: any): void {
+    this.getActivityTypeRequest = <IActivityRequest>{};
+    this.getActivityTypeRequest.LookUpTypeCode = 'Activity_Categories';
+    this.activityService.getActivityTypes(this.getActivityTypeRequest, userEvents).subscribe(
+      res => {
+        this.getActivityTypeResponse = res;
+        this.getActivityTypeResponse = this.getActivityTypeResponse.filter(element =>
+          element.LookUpTypeCode.toUpperCase() !== 'COURT' &&
+          element.LookUpTypeCode.toUpperCase() !== 'CSRACTIVITY' &&
+          element.LookUpTypeCode.toUpperCase() !== 'TRANSACTIONS' &&
+          element.LookUpTypeCode.toUpperCase() !== 'VIOLATIONS' &&
+          element.LookUpTypeCode.toUpperCase() !== 'STATEMENTS'
+        );
+        console.log(res);
+      }
+    );
+
+  }
+
+  getPredefinedActivityTypes(): void {
+    this.activityService.getActivityTypesByTypeDescription('Predefined').subscribe(
+      res1 => {
+        this.getPredefinedActivityResponse = res1;
+        console.log(res1);
+      }
+    );
+
+  }
+
+  createActivities(): void {
+    if (this.activity === 1) {
+      this.manageForm.controls['preActivity'].markAsTouched({ onlySelf: true });
+    } else if (this.activity === 2) {
+      this.manageForm.controls['customtvalue'].markAsTouched({ onlySelf: true });
+    } else {
+      this.manageForm.controls['specialvalue'].markAsTouched({ onlySelf: true });
+    }
+    if (this.manageForm.valid) {
+      this.getActivityTypeRequest = <IActivityRequest>{};
+      this.getActivityTypeRequest.CustomerId = this.customerContextResponse.AccountId;
+      this.getActivityTypeRequest.ActivitySource = ActivitySource[ActivitySource.Internal];
+      this.getActivityTypeRequest.User = this.sessionConstextResponse.userName;
+      this.getActivityTypeRequest.Subsystem = SubSystem[SubSystem.CSC];
+      this.getActivityTypeRequest.PerformedBy = this.sessionConstextResponse.userName;
+      this.systemActivites = <ISystemActivities>{};
+      this.systemActivites.LoginId = this.sessionConstextResponse.loginId;
+      this.systemActivites.UserId = this.sessionConstextResponse.userId;
+      this.systemActivites.SubSystem = SubSystem[SubSystem.CSC];
+      this.systemActivites.ActivitySource = ActivitySource[ActivitySource.Internal];
+      this.systemActivites.FeaturesCode = 'ACTIVITIES';
+      this.systemActivites.ActivityTypeDescription = '';
+      this.getActivityTypeRequest.SystemActivities = this.systemActivites;
+
+      let userEvents = <IUserEvents>{};
+      userEvents.FeatureName = Features[Features.ACTIVITIES];
+      userEvents.PageName = this.router.url;
+      userEvents.CustomerId = this.customerContextResponse.AccountId;
+      userEvents.RoleId = parseInt(this.sessionConstextResponse.roleID);
+      userEvents.UserName = this.sessionConstextResponse.userName;
+      userEvents.LoginId = this.sessionConstextResponse.loginId;
+      if (this.activity !== 3) {
+        if (this.activity === 1) {
+          userEvents.ActionName = Actions[Actions.PREDEFINED];
+          this.getActivityTypeRequest.Type = this.manageForm.controls['preActivity'].value;
+          this.getSelectedActivityType = this.getPredefinedActivityResponse.filter(element => element.Type === this.getActivityTypeRequest.Type);
+          this.getActivityTypeRequest.Activity = this.getSelectedActivityType[0].Activity;
+          this.systemActivites.ActionCode = 'PREDEFINED';
+        }
+        else if (this.activity === 2) {
+          userEvents.ActionName = Actions[Actions.CUSTOM];
+          this.getActivityTypeRequest.Activity = this.manageForm.controls['customtvalue'].value;
+          this.getActivityTypeRequest.Type = 'CUSTOMACTIVITY';
+          this.systemActivites.ActionCode = 'CUSTOM';
+
+        }
+
+        this.activityService.createActivities(this.getActivityTypeRequest, userEvents).subscribe(
+          res => {
+
+
+            this.showSucsMsg('Activity has been added successfully');
+            this.manageForm.reset();
+            this.preSelectedValue = '';
+          },
+          (err) => {
+            // this.showErrorMsg('Error while creating activity');
+            this.showErrorMsg(err.statusText);
+          }
+        );
+
+      } else {
+        userEvents.FeatureName = Features[Features.SPECIALALERTS];
+        userEvents.ActionName = Actions[Actions.CREATE];
+        this.getActivityTypeRequest.AlertDescription = this.manageForm.controls['specialvalue'].value;
+        this.getActivityTypeRequest.AlertStatus = 1;
+        this.activityService.createSpecialAlertActivities(this.getActivityTypeRequest, userEvents).subscribe(
+          res => {
+
+            this.showSucsMsg('Activity has been added successfully');
+            this.manageForm.reset();
+            this.preSelectedValue = '';
+          },
+          (err) => {
+            this.showErrorMsg('Error while creating activity');
+
+          }
+
+        );
+      }
+    }
+  }
+
+
+  resetClick() {
+    this.p = 1;
+    this.pageItemNumber = 10;
+    this.startItemNumber = 1;
+    this.endItemNumber = this.pageItemNumber;
+    this.manageForm.reset();
+    this.getActivityTypes(null);
+    this.selectedValue = 'ALL';
+    this.getPredefinedActivityTypes();
+    this.preSelectedValue = '';
+    this.getCustomerActivityResponse = null;
+    this.descLength = 225;
+    // const strDateRange = new Date().toLocaleDateString().split('/');
+    // this.bsRangeValue = [new Date(Number(strDateRange[2]), Number(strDateRange[0]) - 1, Number(strDateRange[1])), new Date(Number(strDateRange[2]), Number(strDateRange[0]) - 1, Number(strDateRange[1]))];
+   this.patchValue();
+    this.customerActivitiesSearch(this.p, null);
+
+  }
+
+  showAllResetClick() {
+    this.pageItemNumber = 10;
+    this.p = 1;
+    this.startItemNumber = 1;
+    this.manageForm.reset();
+    this.getActivityTypes(null);
+    this.selectedValue = 'ALL';
+    this.preSelectedValue = '';
+    this.getCustomerActivityResponse = null;
+    this.customerActivitiesSearch(this.p, null);
+  }
+
+  customerActivitiesSearch(pageNo: number, userEvents: any): void {
+
+    // if (this.createForm.valid) {
+    this.isShowAll = false;
+    this.getCustomerActivityRequest = <ICustomerActivitesRequest>{};
+    this.getCustomerActivityRequest = this.assignValuesToRecentActivitiesRequest(this.getCustomerActivityRequest);
+    this.getCustomerActivityRequest.PageSize = 10;
+    this.getCustomerActivityRequest.PageNumber = pageNo;
+    this.searchService.getRecentActivities(this.getCustomerActivityRequest, userEvents).subscribe(
+      res => {
+        this.getCustomerActivityResponse = res;
+        console.log(res);
+        this.totalRecordCount = this.getCustomerActivityResponse[0].Recount;
+        if (this.totalRecordCount < this.pageItemNumber) {
+          this.endItemNumber = this.totalRecordCount;
+        }
+
+      }
+    );
+    // }
+  }
+
+
+
+
+
+  showAllActivities(): void {
+    this.p = 1;
+    this.isShowAll = true;
+    this.pageItemNumber = this.totalRecordCount;
+    this.getCustomerActivityRequest = <ICustomerActivitesRequest>{};
+
+
+    this.getCustomerActivityRequest = this.assignValuesToRecentActivitiesRequest(this.getCustomerActivityRequest);
+    this.getCustomerActivityRequest.PageSize = this.totalRecordCount;
+    this.getCustomerActivityRequest.PageNumber = 1;
+    if(!this.invalidDate) 
+    this.searchService.getRecentActivities(this.getCustomerActivityRequest).subscribe(
+      res => {
+        this.getCustomerActivityResponse = res;
+        console.log(res);
+
+      }
+    );
+  }
+
+  assignValuesToRecentActivitiesRequest(getCustomerActivityRequest: ICustomerActivitesRequest): any {
+
+    let strDate;
+    if (this.createForm.controls['bsRangeValue'].value === '') {
+      strDate = this.bsRangeValue;
+    } else {
+      let parsedDate = this.datePickerFormatService.getFormattedDateRange(this.createForm.controls['bsRangeValue'].value);
+      strDate = parsedDate;
+    }
+    // const strDateRange = strDate.slice(',');
+    const fromDate = new Date(strDate[0]);
+    const toDate = new Date(strDate[1]);
+    this.getCustomerActivityRequest.CustomerId = this.customerContextResponse.AccountId;
+    const fromDateFormated = (new Date(this.datepipe.transform(strDate[0], 'MM/dd/yyyy')));
+    this.getCustomerActivityRequest.Activity = this.createForm.controls['ActivityType'].value === '' ? this.selectedValue : this.createForm.controls['ActivityType'].value;
+    this.getCustomerActivityRequest.Type = this.createForm.controls['ActivityType'].value === '' ? this.selectedValue : this.createForm.controls['ActivityType'].value;
+    this.getCustomerActivityRequest.IsSearchEventFired = true;
+    this.getCustomerActivityRequest.StartDate = fromDate.toLocaleDateString();
+    this.getCustomerActivityRequest.EndDate = toDate.toLocaleDateString();
+    this.getCustomerActivityRequest.PerformedBy = this.sessionConstextResponse.userName;
+    // this.getCustomerActivityRequest.PageNumber = 1;
+    this.getCustomerActivityRequest.SortColumn = 'ACTIVITYID';
+    this.getCustomerActivityRequest.SortDir = 1;
+    this.systemActivites = <ISystemActivities>{};
+    this.systemActivites.LoginId = this.sessionConstextResponse.loginId;
+    this.systemActivites.UserId = this.sessionConstextResponse.userId;
+    this.systemActivites.SubSystem = SubSystem[SubSystem.CSC];
+    this.systemActivites.ActivitySource = ActivitySource[ActivitySource.Internal];
+    this.getCustomerActivityRequest.SystemActivities = this.systemActivites;
+    return this.getCustomerActivityRequest;
+  }
+
+  hideRecentActivityPanel(visible: string): void {
+    this.manageForm.reset();
+    this.setradio(1);
+    this.p = 1;
+    if (visible === '0') {
+      this.showRecentActivityBlock = true;
+    } else {
+      this.showRecentActivityBlock = false;
+    }
+    this.getPredefinedActivityTypes();
+    this.customerActivitiesSearch(this.p, null);
+    this.descLength = 225;
+  }
+
+  callActivityPDFService(startDate: Date, endDate: Date) {
+
+    let strFilePath: string;
+    this.getCustomerActivityRequest = <ICustomerActivitesRequest>{};
+    this.getCustomerActivityRequest = this.assignValuesToRecentActivitiesRequest(this.getCustomerActivityRequest);
+    this.getCustomerActivityRequest.PageSize = 0;
+    this.activityService.getActivityHistory(this.getCustomerActivityRequest).subscribe(
+      res => {
+        strFilePath = res;
+        console.log(res);
+        if (strFilePath !== '') {
+          window.open(strFilePath);
+        } else {
+          this.showErrorMsg('Cannot generate PDF');
+        }
+      },
+      (err) => {
+        this.showErrorMsg(err.statusText);
+      }
+
+    );
+
+  }
+  generateActivityPDF() {
+    let strDate;
+    let parsedDate = this.datePickerFormatService.getFormattedDateRange(this.createForm.controls['bsRangeValue'].value);
+    strDate = parsedDate;
+    // const strDate = this.createForm.controls['bsRangeValue'].value;
+
+    if (strDate !== '' && strDate != null) {
+      //const strDateRange = strDate.slice(',');
+      const fromDate = new Date(strDate[0]);
+      const toDate = new Date(strDate[1]);
+      this.callActivityPDFService(fromDate, toDate);
+    } else {
+      const todayDate: Date = new Date();
+      const startDate: Date = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate(), 0, 0, 0, 0);
+      const endDate: Date = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate(), 23, 59, 59, 59);
+      this.callActivityPDFService(startDate, endDate);
+    }
+  }
+
+  onSubmit() {
+    if(this.createForm.valid)
+    {
+    this.p = 1;
+    this.startItemNumber = 1;
+    this.endItemNumber = 10;
+    let userEvents = <IUserEvents>{};
+    userEvents.FeatureName = Features[Features.ACTIVITIES];
+    userEvents.ActionName = Actions[Actions.SEARCH];
+    userEvents.PageName = this.router.url;
+    userEvents.CustomerId = this.customerContextResponse.AccountId;
+    userEvents.RoleId = parseInt(this.sessionConstextResponse.roleID);
+    userEvents.UserName = this.sessionConstextResponse.userName;
+    userEvents.LoginId = this.sessionConstextResponse.loginId;
+    this.customerActivitiesSearch(this.p, userEvents);
+  }
+  else{
+    this.validateAllFormFields(this.createForm);
+  }
+  }
+
+  // to show the how many characters are left for plan description
+  descEvent(event: any) {
+    this.descLength = 225 - event.target.value.length;
+  }
+
+  setOutputFlag(e) {
+    this.msgFlag = e;
+  }
+
+  showErrorMsg(msg: string): void {
+    this.msgFlag = true;
+    this.msgType = 'error';
+    this.msgDesc = msg;
+
+  }
+
+  showSucsMsg(msg: string): void {
+    this.msgFlag = true;
+    this.msgType = 'success';
+    this.msgDesc = msg;
+  }
+  validateAllFormFields(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach(controlName => {
+      const control = formGroup.get(controlName);
+      if (control instanceof FormControl) {
+        if (control.invalid) { }
+        control.markAsTouched({ onlySelf: true });
+      } else if (control instanceof FormGroup) {
+        this.validateAllFormFields(control);
+      }
+    });
+  }
+  patchValue():void
+  {
+     let date = new Date();
+    this.createForm.patchValue({
+      bsRangeValue: {
+        beginDate: {
+          year: date.getFullYear(),
+          month: date.getMonth() + 1,
+          day: date.getDate()
+        },
+        endDate: {
+          year: date.getFullYear(),
+          month: date.getMonth() + 1,
+          day: date.getDate()
+        }
+      }
+    });
+  }
+
+  ngAfterViewInit() {
+this.cdr.detectChanges();
+}
+
+onDateRangeFieldChanged(event: IMyInputFieldChanged) {
+let date = this.createForm.controls["bsRangeValue"].value;
+if (!event.valid && event.value != "") {
+this.invalidDate = true;
+
+return;
+}
+else
+this.invalidDate = false;
+
+}
+}

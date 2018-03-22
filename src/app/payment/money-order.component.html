@@ -1,0 +1,60 @@
+<div class="*form-horizontal">
+  <form role="form" name="createForm" [formGroup]="createForm">
+    <div class="row">      
+      <div class="form-group col-sm-12 popover-field">
+        <label for="inputPassword3">Money Order #</label>
+        <input type="text" class="form-control" pattern="[0-9]*" id="" maxlength="15" formControlName="moneyOrderNumber" name="moneyOrderNumber"
+          placeholder="Money Order #">
+        <div class="msg" *ngIf="createForm.controls['moneyOrderNumber'].invalid && (createForm.controls['moneyOrderNumber'].dirty || createForm.controls['moneyOrderNumber'].touched)">
+          <div *ngIf="createForm.controls['moneyOrderNumber'].errors.required">
+            Required.
+          </div>
+          <div *ngIf="createForm.controls['moneyOrderNumber'].errors.minlength&&!createForm.controls['moneyOrderNumber'].errors.pattern">
+            Enter at least 4 numbers.
+          </div>
+          <div *ngIf="createForm.controls['moneyOrderNumber'].errors.pattern">
+            Only numbers allowed.
+          </div>
+        </div>
+        <button type="button" data-container="body" class="pop-over" [popover]="popMON" popoverTitle="Help" triggers="mouseenter:mouseleave"
+          placement="left">?</button>
+        <ng-template #popMON>
+          <ul>
+            <li>Money Order# is required </li>
+            <li>It allows only numbers,it should be minimum 4 and maximum 15 numbers</li>
+          </ul>
+        </ng-template>
+        <!--<button type="button" tabindex="-1" class="tool-tip" data-toggle="tooltip" data-placement="right" title={{tooltipMoneyOrder}}>?</button>-->
+      </div>
+    </div>
+    <div class="row">      
+      <div class="form-group col-sm-12 popover-field">
+        <label id="focused">Money Order Date</label>
+        <my-date-picker placeholder="MM/DD/YYYY" name="moneyOrderDate" (inputFieldChanged)='onDateFieldChanged($event)' [options]="myDatePickerOptions"
+          formControlName="moneyOrderDate"></my-date-picker>
+        <!--<input type="text" placeholder="Money Order Date" [minDate]="minDate" [maxDate]="maxDate" #dp="bsDatepicker" bsDatepicker [(bsValue)]="bsValue"
+          formControlName="moneyOrderDate" class="form-control" placement='top'>-->
+        <div class="msg" *ngIf="!invalidDate && createForm.controls['moneyOrderDate'].invalid && (createForm.controls['moneyOrderDate'].dirty || createForm.controls['moneyOrderDate'].touched)">
+          <div *ngIf="createForm.controls['moneyOrderDate'].errors.required">
+            Required.
+          </div>
+        </div>
+        <div class="show-error" *ngIf="invalidDate">
+          <div>
+            Invalid Date Range
+          </div>
+        </div>
+        <button type="button" data-container="body" class="pop-over" [popover]="popMOD" popoverTitle="Help" triggers="mouseenter:mouseleave"
+          placement="left">?</button>
+        <ng-template #popMOD>
+          <ul>
+            <li>
+              Money Order Date is required
+            </li>
+          </ul>
+        </ng-template>
+        <!--<button type="button" tabindex="-1" class="tool-tip" data-toggle="tooltip" data-placement="right" title="{{tooltipMoneyOrderDate}}">?</button>-->
+      </div>
+    </div>
+  </form>
+</div>

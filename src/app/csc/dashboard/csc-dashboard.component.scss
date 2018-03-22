@@ -1,0 +1,45 @@
+.payment-and-adjustment{
+    h4{
+        font-size: 13px;
+        font-weight: 400;
+    }
+    
+    
+}
+.payment-adjst{
+    h3{
+        font-size: 15px;
+        font-weight: 500;
+        margin-bottom: 20px; 
+    }
+.left-sec{
+        width: 50%;
+        float: left;
+        padding: 0px 20px;
+        margin-bottom: 15px;
+    }
+    
+    .right-sec{
+        width: 50%;
+        float: right;
+        padding: 0px 20px;
+    }
+}
+.total-payment-amount{
+    border-top: 1px solid #aaa;
+    padding:15px 20px;
+    h3{
+        margin: 0px !important;
+    }
+}
+.payment-adjst {
+   height:  auto;
+}
+.payment-adjst .card-body,.cust-trending{
+    height: 377px;
+    overflow: auto;
+}
+.note{
+    background: #fff;
+    padding: 15px;
+}

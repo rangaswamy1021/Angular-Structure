@@ -1,0 +1,95 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li>
+          <a href="#">Customer Accounts</a>
+        </li>
+        <li class="active">Vehicle Information</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Vehicle Information</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="payment-steps">
+        <div class="row">
+          <div class="col-md-12">
+            <ul>
+              <li class="done">
+                <span>1</span>Account Information</li>
+              <li class="done">
+                <span>2</span>Plan Selection</li>
+              <li class="active">
+                <span>3</span>Vehicle Information</li>
+              <li>
+                <span>4</span>Preferences</li>
+              <li>
+                <span>5</span>Payment</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="plan-message">
+    <div class="block">
+      <strong>Plan Name:</strong> {{planName}} {{isTagMessage}}
+    </div>
+    <div class="block">
+      <strong>Fee:</strong> {{fee}}</div>
+    <div class="block">
+      <strong>Discount:</strong>{{discount}}</div>
+    <div class="block">
+      <strong>Payable Amount:</strong> ${{txnAmount}}</div>
+  </div>
+
+  <div class="row">
+
+    <div class="col-md-12" style="margin-top:-20px;">
+        <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+ 
+      <app-get-vehicles [accountID]="accountID" [isTagRequired]="isTagRequired" [isBusinessCust]="isBusinessCustomer" [isManageVeh]="isManageVehicle"
+        [isCreateAcc]="isCreateAccount">
+
+      </app-get-vehicles>
+    </div>
+
+    <div class="col-md-12">
+      <button type="submit" class="btn btn-primary btn-search" (click)="navigateToPlan()">Plan Selection</button>
+      <button type="submit" (click)="navigateToPrefrences()" class="btn btn-primary btn-search">Preferences</button>
+      <button  (click)="cancel()" class="btn btn-default btn-reset">Cancel</button>
+    </div>
+  </div>
+</div>
+
+  <!--Model For Alert-->
+
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+   (onOk)="cancelClick($event)"></app-success-failure-alerts-message>
+ 
+  <!-- <div id="confirm-dialog1" class="modal fade refund-request-modal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-body">
+        <div class=" status-message">
+          <div class="status-content">
+            <p>Your Information no longer exists, if you cancel your application.<br> Are you sure you want to Cancel?</p>
+            <button class="btn btn-warning btn-search" (click)="cancelClick()">OK</button>
+            <button class="btn btn-default btn-search" data-dismiss="modal">Cancel</button>
+          </div>
+          <div class="clear"></div>
+        </div>
+      </div>
+    </div>
+  </div> -->

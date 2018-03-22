@@ -1,0 +1,42 @@
+<div class="table-bdr">
+  <h3>Invoice History Details</h3>
+  <div class="pad-10">
+     <div class="alert alert-warning alert-dismissible" role="alert" *ngIf="errorBlock">
+            <button type="button" class="close" data-dismiss="alert" (click)="errorBlock = false;" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <p>{{errorMessage}}</p>
+          </div>
+    <div *ngIf='invoiceResponse && invoiceResponse.length'>
+      <table class="table">
+        <thead>
+          <tr>
+            <td>Due Date </td>
+            <td>Invoice #</td>
+            <td>Plate #</td>
+            <td>Stage</td>
+            <td>Status</td>
+            <td>Invoice Amount</td>
+            <td></td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let object of invoiceResponse">
+            <td> {{object.DueDate | customDateFormat }} </td>
+            <td> {{object.InvoiceNumber}} </td>
+            <td> {{object.PlateNumber}} </td>
+            <td> {{object.StepDescription}} </td>
+            <td> {{object.Status}} </td>
+            <td> {{object.BalanceDue | currencycustom}} </td>
+            <td>
+              <a *ngIf='isVisibleViewLink' class="fa fa-file" title="View Details" (click)="goToView(object)"></a>&nbsp; &nbsp;
+              <a class="fa fa-file-pdf-o" title="View PDF" (click)="downLoadFile(object.DocumentPath)"></a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+<div *ngIf='!invoiceResponse|| invoiceResponse.length===0'>
+      <div>No invoice history details to display</div>
+    </div>
+  </div>
+    
+</div>

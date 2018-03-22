@@ -1,0 +1,167 @@
+<div class="page-title-header wow fadeInDown">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li class="active">Search</li>
+        <li class="active">Advanced Pay Tolls</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Advanced Pay Tolls</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content wow fadeInUp">
+  <div class="row">
+    <div class="panel-body">
+      <form role="form" name="basicSearchForm" [formGroup]="payAdvanceTollForm">
+        <div class="col-md-6 form-group">
+          <label>Plate #</label>
+          <input type="text" class="form-control" placeholder="Plate #" name="AccountId" formControlName="VehicleNo">
+        </div>
+        <div class="col-md-6 form-group">
+          <label>Voucher #</label>
+          <input type="text" class="form-control" placeholder="Voucher #" name="TransponderNumber" formControlName="VoucherNum">
+        </div>
+        <!--<div class="col-md-6 form-group">
+          <label>Time Period #</label>
+          <input type="text" class="form-control" placeholder="Select Time Period" bsDaterangepicker formControlName="dateRange" (bsValueChange)='bsValueChange($event)'
+          />
+        </div>-->
+        <div class="col-md-6 form-group">
+          <label class="focused">Time Period #</label>
+          <div class="show-error" *ngIf="invalidDateRange">
+            <div>Invalid Date Range</div>
+          </div>
+          <my-date-range-picker name="mydaterange" [options]="myDateRangePickerOptions" placeholder="MM/DD/YYYY-MM/DD/YYYY" formControlName="dateRange"
+            (inputFieldChanged)='onDateRangeChanged($event)'></my-date-range-picker>
+        </div>
+        <div class="col-md-12">
+          <button type="submit" class="btn btn-primary btn-search" (click)="getOneTimeTollCustomers()" [disabled]="disableButton">Search</button>
+          <button type="reset" class="btn btn-default btn-reset" (click)='customerDetails=null'>Reset</button>
+        </div>
+      </form>
+    </div>
+    <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+    <!--<div class="message" [ngClass]="{'error':msgType=='Error','warning':msgType=='Warning'}" *ngIf='errorMsg'>
+      <div class="close-msg" (click)='errorMsg=false'>Close</div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="icon-msg">Icon</div>
+          <div class="msg-text">
+            <div class="title">{{msgType}}</div>
+            <div class="desc">{{msgDesc}}</div>
+          </div>
+        </div>
+      </div>
+    </div>-->
+    <div class="panel panel-default m-t-20 m-l-20 m-r-20" *ngIf='customerDetails'>
+      <div class="panel-heading"> Pay a advance toll </div>
+      <div class="panel-body">
+        <table class="table table-bordered table-sm">
+          <thead>
+            <tr>
+              <th>Account #</th>
+              <th>Plate #</th>
+              <th>First Name </th>
+              <th>Last Name </th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Advance</th>
+              <th>Current Balance</th>
+              <th>Due</th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let customer of customerDetails | paginate: { itemsPerPage: pageItemNumber, currentPage: p, id: "first" }'>
+              <td>{{customer.CustomerId}}</td>
+              <td>{{customer.VehicleNo}}</td>
+              <td>{{customer.FirstName}}</td>
+              <td>{{customer.LastName}}</td>
+              <td>{{customer.StartEffectiveDate | customDateFormat}}</td>
+              <td>{{customer.EndEffectiveDate | customDateFormat}}</td>
+              <td>{{customer.Amount}}</td>
+              <td>{{customer.CurrentBalance}}</td>
+              <td>{{customer.TollAmount}}</td>
+              <td>
+                <a href='javascript:;' (click)='payOrConvert(customer)'>Payment/Convert</a>
+              </td>
+              <td>
+                <a href='javascript:;' (click)='getOneTimeTollTransactions(customer.CustomerId)'>View Transactions</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="row page-info">
+          <div class="col-md-6 text-left">
+            <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls (pageChange)="pageChanged($event)" id="first"></pagination-controls>
+            <!--<div class="col-md-6">
+              <div class="form-group">
+                <label>Time Period #</label>
+                <input type="text" class="form-control" placeholder="Select Time Period" bsDaterangepicker formControlName="dateRange" />
+              </div>
+            </div>-->
+          </div>
+        </div>
+        <div id="viewTransactions" class="edit-modal  modal fade history-modal" role="dialog">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <a class="form-title">Transactions</a>
+                <button type="button" class="close" (click)='closeModal()'>&times;</button>
+              </div>
+              <div class="modal-body" *ngIf='transactionDetails'>
+                <div class="table-bdr m-t-10">
+                  <div class="table-default table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Transaction Id</th>
+                          <th>Location Name</th>
+                          <th>Transaction Type</th>
+                          <th>Txn Date/Time </th>
+                          <th>Txn Amount</th>
+                          <th>Outstanding</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor='let item of transactionDetails | paginate: { itemsPerPage: pageItemNumber, currentPage:mp,id:pageId }'>
+                          <td>{{item.CustomerTripId}}</td>
+                          <td>{{item.LocationName}}</td>
+                          <td>{{item.TransactionType}}</td>
+                          <td>{{item.TransactionDate | customDateTimeFormat}}</td>
+                          <td>$ {{item.TollAmount}}</td>
+                          <td>{{item.Amount}}</td>
+                          <td>{{item.PaidStatus}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div class=" page-info">
+                      <div class="col-md-6 text-left">
+                        <p>Display {{modalStartItemNumber}} - {{modalEndItemNumber}} Records of {{modalDataLength}}</p>
+                      </div>
+                      <div class="col-md-6 text-right">
+                        <pagination-controls (pageChange)="modalPageChanged($event)" [id]='pageId'></pagination-controls>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>

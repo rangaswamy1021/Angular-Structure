@@ -1,0 +1,272 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">TVC</a>
+        </li>
+        <li>
+          <a href="#">Account Summary</a>
+        </li>
+        <li class="active">View Disputes</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>View Disputes</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+<div class="content">
+  <div class="row">
+      <div class="text-right">
+          <h3 style="margin-top: 10px;margin-right:10px;">Account #: {{longAccountId}}</h3>
+        </div>
+
+    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+      <div class="panel-body table-bdr">
+        <div class="row">
+
+          <div class="col-md-12">
+            <div class="tab-title-div">
+              <!-- <div *ngFor="let toll of tollTypes;let row=index">
+            <div class="tab-title">tabone</div>
+          </div> -->
+            </div>
+            <ul class="nav nav-tabs" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#trip1" aria-controls="home" role="tab" data-toggle="tab">Trip Disputes
+                  <span *ngIf='tripLevelDisputeLst && tripLevelDisputeLst.length > 0'>
+                      ({{tripLevelDisputeLst.length}})
+                  </span>
+
+                </a>
+              </li>
+              <li role="presentation">
+                <a href="#invouce" aria-controls="profile" role="tab" data-toggle="tab">Invoice Disputes
+                    <span *ngIf='invoicesDisputeLst && invoicesDisputeLst.length>0'>
+                        ({{invoicesDisputeLst.length}})
+                    </span>
+                </a>
+              </li>
+            </ul>
+            <div class="tab-content">
+              <div class="tab-pane active" id="trip1" role="tabpanel">
+
+
+                <div class="panel panel-default">
+                  <div class="panel-heading"> Select dispute to process </div>
+                  <div class="panel-body bordered">
+                    <div *ngIf='tripLevelDisputeLst && tripLevelDisputeLst.length;else NodetailsBlock' class="table-default table-responsive">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th>Select</th>
+                            <th>Trip(s) #</th>
+                            <th>Non-iability Reason</th>
+                            <th>Comments</th>
+                            <th>File attached</th>
+                            <th>Start Effective Date</th>
+                            <th>End Effective Date</th>
+                            <th>View</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let object of tripLevelDisputeLst; let i = index">
+                            <td>
+                              <div class="custom-control custom-radio radio-inline">
+                                <input type="radio" name="selectradio" class="custom-control-input" [id]="i" (change)="selectDisputes(object.AffidavitID)"
+                                />
+                                <label class="custom-control-description" [for]="i"></label>
+                              </div>
+                            </td>
+                            <td>{{object.CitationCSV}}</td>
+                            <td>{{object.NonLiabilityReasonCode}}</td>
+                            <td>{{object.Comments=='' ? 'N/A' : object.Comments}}</td>
+                            <td>{{ object.DocumentPath=='' ?'No':'Yes'}}</td>
+                            <td>
+                              <div *ngIf="!object.isMinimumStartDate">
+                                {{ object.StartEffectiveDate | customDateTimeFormat}}
+                            </div>
+                            <div *ngIf="object.isMinimumStartDate">
+                              N/A
+                            </div></td>
+                            <td>
+                              <div *ngIf="!object.isMinimumEndDate">
+                                {{object.EndEffectiveDate | customDateTimeFormat}}
+                              </div>
+
+                              <div *ngIf="object.isMinimumEndDate">
+                                N/A
+                              </div>
+
+                            </td>
+                            <td>
+                              <a (click)='viewTripDetailsClick(object.AffidavitID)'>
+                                <!-- <img src="assets/images/svg/docicon.svg" alt="view details" class="icon-svg3"> -->
+                                view
+                              </a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+
+                </div>
+                <div *ngIf='disputedTripsList && disputedTripsList.length' class="panel panel-default">
+                  <div class="panel-heading"> Trip Details </div>
+                  <div class="panel-body bordered">
+                    <div class="table-default table-responsive" *ngIf='disputedTripsList && disputedTripsList.length;else NodetailsBlock'>
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th>Trip #</th>
+                            <th>Txn Date</th>
+                            <th>Location</th>
+                            <th>Plate #</th>
+                            <th>Stage/Status/Type</th>
+                            <th>Toll Fee</th>
+                            <th>Penalty</th>
+                            <th>Balance Due</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let object of disputedTripsList">
+                            <td>{{object.CitationId}}</td>
+                            <td>{{object.Entry_TripDateTime | customDateTimeFormat}}</td>
+                            <td>{{object.LocationName}}</td>
+                            <td>{{object.VehicleNumber}}</td>
+                            <td>{{object.AuditStatus}}</td>
+                            <td>{{object.TollAmount | currency:'USD':true:'1.2-2'}}</td>
+                            <td>{{object.FeeAmounts | currency:'USD':true:'1.2-2'}}</td>
+                            <td>{{object.OutstandingAmount | currency:'USD':true:'1.2-2'}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane" id="invouce" role="tabpanel">
+
+
+                  <div class="panel panel-default">
+                    <div class="panel-heading"> Select dispute to process </div>
+                    <div class="panel-body table-bdr">
+                      <div *ngIf='invoicesDisputeLst && invoicesDisputeLst.length>0;else NodetailsBlock' class="table-default table-responsive">
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th>Select</th>
+                              <th>Invoice(s) #</th>
+                              <th>Non-iability Reason</th>
+                              <th>Comments</th>
+                              <th>File attached</th>
+                              <th>Start Effective Date</th>
+                              <th>End Effective Date</th>
+                              <th>View</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let object of invoicesDisputeLst; let firstN = index">
+                              <td>
+                                <div class="custom-control custom-radio">
+                                  <input type="radio" name="selectradio" class="custom-control-input" [id]="firstN" (change)="selectInvoiceDisputes(object.AffidavitID)"
+                                  />
+                                  <label class="custom-control-description" [for]="firstN"></label>
+                                </div>
+                              </td>
+                              <td>{{object.CitationCSV}}</td>
+                              <td>{{object.NonLiabilityReasonCode}}</td>
+                              <td>{{object.Comments=='' ? 'N/A' : object.Comments}}</td>
+                              <td>{{ object.DocumentPath=='' ?'No':'Yes'}}</td>
+                              <td>
+                                <div *ngIf="!object.isMinimumStartDate">
+                                  {{ object.StartEffectiveDate | customDateTimeFormat}}
+                              </div>
+                              <div *ngIf="object.isMinimumStartDate">
+                                N/A
+                              </div></td>
+                              <td>
+                                <div *ngIf="!object.isMinimumEndDate">
+                                  {{object.EndEffectiveDate | customDateTimeFormat}}
+                                </div>
+
+                                <div *ngIf="object.isMinimumEndDate">
+                                  N/A
+                                </div>
+
+                              </td>
+                              <td>
+                                <a (click)='viewInvoiceDetailsClick(object.AffidavitID)'>
+                                  <!-- <img src="assets/images/svg/docicon.svg" alt="view details" class="icon-svg3"> -->
+                                  view
+                                </a>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                  </div>
+                  <div *ngIf='disputedInvoicesList && disputedInvoicesList.length' class="panel panel-default">
+                  <div class="panel-body">
+                       <h3>Invoice Details</h3>
+                      <div class="table-bdr" *ngIf='disputedInvoicesList && disputedInvoicesList.length>0;else NodetailsBlock'>
+                          <div class="table-responsive">
+                              <table class="table table-type-2">
+                                <thead>
+                                  <tr>
+                                    <th>Due Date</th>
+                                    <th>Invoice #</th>
+                                    <th>Plate #</th>
+                                    <th>Stage</th>
+                                    <th>Status</th>
+                                    <th>Invoice Amount</th>
+                                    <th>Payment(s) / Adjustments(s)</th>
+                                    <th>Outstanding Due</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor='let invoices of disputedInvoicesList; let row_no=index'>
+                                    <td>{{invoices.DueDate | customDateFormat}}</td>
+                                    <td>{{invoices.InvoiceNumber}}</td>
+                                    <td>{{invoices.PlateNumber}}</td>
+                                    <td>{{invoices.StepDescription}}</td>
+                                    <td>{{invoices.Status}}</td>
+                                    <td>{{invoices.BilledAmount | currencycustom}}</td>
+                                    <td>{{invoices.UnbilledTransactionAmount | currencycustom}}</td>
+                                    <td>{{invoices.OutstandingDue | currencycustom}}</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                          </div>
+                        </div>
+                  </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="col-md-12">
+              <div class="form-group pull-right">
+                <form role="form" name="addAddressForm">
+                  <button type="submit" class="btn btn-default btn-search" (click)="processDisputes()">Select Dispute</button>
+                  <button class="btn btn-default btn-reset" (click)="cancelDisputes()">Cancel</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-template #NodetailsBlock>
+        <div>No details to display</div>
+      </ng-template>
+    </div>
+  </div>

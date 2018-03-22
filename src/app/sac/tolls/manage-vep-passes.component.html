@@ -1,0 +1,348 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li><a href="#">SAC</a></li>
+            <li><a href="#">Manage Tolls</a></li>
+            <li class="active">Manage VEP Pass Types</li>
+          </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage VEP Pass Types</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row m-b-10">
+    <div class="col-md-12">
+      <a (click)="showAddVepPass()" *ngIf="!addVepPass" [ngClass]="disableButton?'disabletextbox':''"><i class="fa fa-plus-square-o fa-lg fa-fw" aria-hidden="true"></i>Add VEP Pass Type</a>
+    </div>
+  </div>
+  <div class="row" [hidden]='!addVepPass'>
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <h3>Add VEP Pass Type</h3>
+        <div class="pad-20">
+          <div class="*form-horizontal">
+            <form role="form" name="vepForm" [formGroup]="vepForm">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class=" col-md-6">                    
+                    <div class="col-sm-12 popover-field form-group">
+                      <label for="" class=" focused">Location</label>
+                      <select name="" id="" class="form-control" formControlName="location" (change)="changeLocation($event)">
+                        <option value="">--select--</option>
+                        <option *ngFor='let location of locationResponse'value="{{location.LocationCode}}">{{location.LocationName}}</option>
+                      </select>
+                      <div class="msg" *ngIf="vepForm.controls['location'].invalid && (vepForm.controls['location'].dirty || vepForm.controls['location'].touched)">
+                        <div *ngIf="vepForm.controls['location'].errors.required">
+                          Location is required
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popLocation" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                      <ng-template #popLocation>
+                        <ul>
+                          <li>Location is Required</li>
+                          <li>Select Location</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <div class=" col-md-6" *ngIf='dropdownList && dropdownList.length'>                    
+                    <div class="col-sm-12 popover-field form-group">
+                      <label for="" class="focused">Plaza</label>
+                      <angular2-multiselect [data]="dropdownList" [settings]="dropdownSettings" (onSelect)="onItemSelect($event)" [(ngModel)]="selectedItems"
+                        (onDeSelect)="OnItemDeSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)"
+                        formControlName="plaza">
+                      </angular2-multiselect>
+                      <!--<input type="text" class="form-control" *ngIf='!dropdownList&& dropdownList.length' placeholder="No Plaza Available" disabled="disabled" formControlName="plaza">-->
+                      <div class="msg" *ngIf="vepForm.controls['plaza'].invalid && (vepForm.controls['plaza'].dirty || vepForm.controls['plaza'].touched)">
+                        <div *ngIf="vepForm.controls['plaza'].errors.required">
+                          Plaza is required
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popPlaza" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                      <ng-template #popPlaza>
+                        <ul>
+                          <li>Plaza is Required</li>
+                          <li>Select Plaza</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <!--<div class="form-group">
+                    <label for="" class="col-sm-3 control-label">Plaza</label>
+                    <div class="col-sm-5 popover-field">
+                      <input type="text" class="form-control" placeholder="" formControlName="plaza">
+                      <div class="msg" *ngIf="vepForm.controls['plaza'].invalid && (vepForm.controls['plaza'].dirty || vepForm.controls['plaza'].touched)">
+                        <div *ngIf="vepForm.controls['plaza'].errors.required">
+                          Plaza is required
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popPlaza" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                      <ng-template #popPlaza>
+                        <ul>
+                          <li>Plaza is Required</li>
+                          <li>Select Plaza</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>-->
+                  <div class=" col-md-6">                   
+                    <div class="col-sm-12 popover-field form-group">
+                       <label for="" class="focused">Pass Type</label>
+                      <select name="" id="" class="form-control" formControlName="passType">
+                        <option value="">--select--</option>
+                         <option *ngFor='let passType of passTypeResponse'value="{{passType.Key}}">{{passType.Value}}</option>
+                      </select>
+                      <div class="msg" *ngIf="vepForm.controls['passType'].invalid && (vepForm.controls['passType'].dirty || vepForm.controls['passType'].touched)">
+                        <div *ngIf="vepForm.controls['passType'].errors.required">
+                          Pass Type is required
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popPType" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                      <ng-template #popPType>
+                        <ul>
+                          <li>Pass Type is Required</li>
+                          <li>Select Pass Type</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <div class=" col-md-6">                    
+                    <div class="col-sm-12 popover-field form-group">
+                      <label for="" class="focused">Vehicle Class</label>
+                      <select name="" id="" class="form-control" formControlName="vehicleClass">
+                        <option value="">--select--</option>
+                         <option *ngFor='let vehicleClass of vehicleClassResponse'value="{{vehicleClass.Code}}">{{vehicleClass.Name}}</option>
+                      </select>
+                      <div class="msg" *ngIf="vepForm.controls['vehicleClass'].invalid && (vepForm.controls['vehicleClass'].dirty || vepForm.controls['vehicleClass'].touched)">
+                        <div *ngIf="vepForm.controls['vehicleClass'].errors.required">
+                          Vehicle Class is required
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popVClass" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                      <ng-template #popVClass>
+                        <ul>
+                          <li>Vehicle Class is Required</li>
+                          <li>Select Vehicle Class</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+
+
+                  <div class="col-md-6 ">                    
+                    <div class="col-sm-12 popover-field form-group">
+                      <div class="show-error" *ngIf="!invalid&&(vepForm.controls['startDate'].invalid && (vepForm.controls['startDate'].dirty || vepForm.controls['startDate'].touched))">
+                        <div *ngIf="vepForm.controls['startDate'].errors.required">
+                          Required
+                        </div>
+                      </div>
+                      <label class="focused" for="Date Range">Start Effective Date:</label>
+                      <my-date-picker name="mydaterange" [options]="myDatePickerOptions1" (inputFieldChanged)='onDateChanged1($event)' formControlName="startDate"
+                        ></my-date-picker>
+                      <button type="button" class="pop-over" [popover]="popStartDate" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                      <ng-template #popStartDate>
+                        <ul>
+                          <li>Start Effective Date is Required</li>
+                          <li>Select Start Effective Date</li>
+                        </ul>
+                      </ng-template>
+                       <div class="show-error" *ngIf='invalid'><div> Invalid Date</div></div>
+
+                    </div>
+                  </div>
+
+
+                  <!--<div class="form-group col-md-6">
+                    <label for="" class="col-sm-4 control-label">Start Effective Date</label>
+                    <div class="col-sm-8 popover-field">
+                     
+                      <input type="text" [minDate]="minDate" #dp="bsDatepicker" bsDatepicker class="form-control disbale-to-write" id="startDate"
+                        placeHolder='DD/MM/YYYY' name="startDate" formControlName="startDate" readonly="readonly" (bsValueChange)='changeDate($event)'>
+                      <div class="msg" *ngIf="vepForm.controls['startDate'].invalid && (vepForm.controls['startDate'].dirty || vepForm.controls['startDate'].touched)">
+                        <div *ngIf="vepForm.controls['startDate'].errors.required">
+                          Start Effective Date is required
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popStartDate" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                      <ng-template #popStartDate>
+                        <ul>
+                          <li>Start Effective Date is Required</li>
+                          <li>Select Start Effective Date</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>-->
+
+                  <div class="col-md-6 ">                    
+                    <div class="col-sm-12 popover-field form-group">
+                      <label class="focused">End Effective Date:</label>
+                      <my-date-picker name="mydaterange" [options]="myDatePickerOptions2" (inputFieldChanged)='onDateChanged2($event)' formControlName="endDate"
+                       ></my-date-picker>
+                      <div class="show-error" *ngIf="!invalidDate&&(vepForm.controls['endDate'].invalid && (vepForm.controls['endDate'].dirty || vepForm.controls['endDate'].touched))">
+                        <div *ngIf="vepForm.controls['endDate'].errors.required">
+                          Required
+                        </div>
+                      </div>
+                      
+                      <button type="button" class="pop-over" [popover]="popEndDate" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                      <ng-template #popEndDate>
+                        <ul>
+                          <li>End Effective Date is Required</li>
+                          <li>Select End Effective Date</li>
+                        </ul>
+                      </ng-template>
+                      <div class="show-error" *ngIf='invalidDate'><div> Invalid Date</div></div>
+                    </div>
+                  </div>
+
+
+
+                  <!--<div class="form-group col-md-6">
+                    <label for="" class="col-sm-4 control-label">End Effective Date</label>
+                    <div class="col-sm-8 popover-field">
+                     
+                      <input type="text" [minDate]="maxDate" #dp="bsDatepicker" bsDatepicker class="form-control disbale-to-write" id="endDate"
+                        placeHolder='DD/MM/YYYY' name="endDate" formControlName="endDate" readonly="readonly">
+
+                      <div class="msg" *ngIf="vepForm.controls['endDate'].invalid && (vepForm.controls['endDate'].dirty || vepForm.controls['endDate'].touched)">
+                        <div *ngIf="vepForm.controls['endDate'].errors.required">
+                          End Effective Date is required
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popEndDate" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                      <ng-template #popEndDate>
+                        <ul>
+                          <li>End Effective Date is Required</li>
+                          <li>Select End Effective Date</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>-->
+
+
+                  <div class=" col-md-6">                    
+                    <div class="col-sm-12 popover-field form-group">
+                      <label for="amount">Amount</label>
+                      <input type="text" id="amount" class="form-control" maxlength="10" placeholder="Amount" formControlName="amount">
+                      <div class="msg" *ngIf="vepForm.controls['amount'].invalid && (vepForm.controls['amount'].dirty || vepForm.controls['amount'].touched)">
+                        <div *ngIf="vepForm.controls['amount'].errors.required">
+                          Amount is required
+                        </div>
+                        <div *ngIf="vepForm.controls['amount'].errors.pattern">
+                          Enter valid Amount format
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popAmount" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                      <ng-template #popAmount>
+                        <ul>
+                          <li>Amount is Required</li>
+                          <li>It should be minimun 1 character and maximum 10 characters long</li>
+                          <li>It allows number with decimals</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-sm-9">
+                      <button class="btn btn-primary btn-search" [disabled]="disableButton" (click)="addVepPasses()" type="submit">Add</button>
+                      <button class="btn btn-primary btn-reset" (click)="resetVepPass()" type="submit">Reset</button>
+                      <a href='javascript:;' class="btn btn-primary btn-reset" (click)="cancelVepPass()" type="submit">Cancel</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row m-t-20">
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <h3>VEP Pass Types</h3>
+        <div class="pad-10">
+          <div class="table-responsive">
+            <table class="table table-bordered table-sm" *ngIf='vepResponse && vepResponse.length'>
+              <thead>
+                <tr>
+                  <th (click)="sortDirection('LocationCode')" class="sorting-handle">Location
+                      <span *ngIf="gridArrowLocationCode">
+                          <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                        </span>
+                  </th>
+                  <th (click)="sortDirection('PlazaCode')" class="sorting-handle">Plaza
+                      <span *ngIf="gridArrowPlazaCode">
+                          <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                        </span>
+                  </th>
+                  <th (click)="sortDirection('PassTypeCode')" class="sorting-handle">Pass Type
+                      <span *ngIf="gridArrowPassTypeCode">
+                          <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                        </span>
+                  </th>
+                  <th (click)="sortDirection('VEHICLECLASS')" class="sorting-handle">Vehicle Class
+                      <span *ngIf="gridArrowVEHICLECLASS">
+                          <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                        </span>
+                  </th>
+                  <th (click)="sortDirection('StartEffectiveDate')" class="sorting-handle">Start Effective Date
+                      <span *ngIf="gridArrowStartEffectiveDate">
+                          <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                        </span>
+                  </th>
+                  <th (click)="sortDirection('EndEffectiveDate')" class="sorting-handle">End Effective Date 
+                      <span *ngIf="gridArrowEndEffectiveDate">
+                          <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                        </span>
+                  </th>
+                  <th>Amount</th>
+                  <th (click)="sortDirection('Status')" class="sorting-handle">Status
+                      <span *ngIf="gridArrowStatus">
+                          <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                        </span>
+                  </th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor='let vepRes of vepResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount }'>
+                  <td style="display: none;">{{vepRes.VEPPassId}} </td>
+                  <td>{{vepRes.Location =="" ? "N/A":vepRes.Location}}</td>
+                  <td>{{vepRes.Plaza =="" ? "N/A":vepRes.Plaza}}</td>
+                  <td>{{vepRes.PassType}}</td>
+                  <td>{{vepRes.VehicleClass}}</td>
+                  <td>{{vepRes.StartEffectiveDate | customDateTimeFormat}}</td>
+                  <td>{{vepRes.EndEffectiveDate | customDateTimeFormat}}</td>
+                  <td>{{vepRes.Amount | currency:'USD':true:'1.2-2'}}</td>
+                  <td>{{vepRes.IsActive == true ? "Active": "InActive"}}</td>
+                  <td>
+                    <a *ngIf="vepRes.IsActive" (click)="vepPassDelete(vepRes.VEPPassId)" [ngClass]="disableEditButton?'disabletextbox':''" title="You can't deactivate VEP Pass"> <span> <i class="fa fa-trash fa-2x" aria-hidden="true"></i> </span></a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="row page-info" *ngIf='vepResponse && vepResponse.length'>
+            <div class="col-md-6 text-left">
+              <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+            </div>
+            <div class="col-md-6 text-right">
+              <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+            </div>
+          </div>
+          <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+            (setFlag)="setOutputFlag($event)" (onOk)="vepPassDeleteBasedonId($event)"></app-success-failure-alerts-message>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

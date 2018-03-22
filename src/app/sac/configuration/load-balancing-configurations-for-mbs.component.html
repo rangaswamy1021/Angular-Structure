@@ -1,0 +1,164 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">SAC</a>
+        </li>
+        <li>
+          <a href="#">Configurations</a>
+        </li>
+        <li class="active">Load Balancing Configurations for MBS</li>
+      </ol>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Load Balancing Configurations for MBS</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"
+  (onOk)="userAction($event)"></app-success-failure-alerts-message>
+<div class="content">
+  <div class="col-md-12">
+    <button class="btn btn-default btn-search pull-right" (click)="viewAdd()" [disabled]="btnAddAllowed"> 
+      Add
+    </button>
+  </div>
+  <div class="clear"></div>
+
+  <div *ngIf='isAdd'>
+
+    <div class="col-md-12">
+      <div class="custom-control radio-inline custom-radio" *ngFor='let type of accountTypes'>
+        <input type="radio" class="custom-control-input" id="{{type.Key}}" name="accountType" id="accountType" (change)="accountTypeChange()"
+          [(ngModel)]="accountType" value="{{type.Key}}">
+        <label class="custom-control-description" for="{{type.Key}}"> {{type.Key}} </label>
+      </div>
+      <!--<div class="custom-control radio-inline custom-radio">
+      <input type="radio" class="custom-control-input" name="accountType" [value]="{{type.Value}}" id="Postpaid">
+      <label class="custom-control-description" for="Postpaid"> {{type.Key}} </label>
+    </div>-->
+
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <form role="form" [formGroup]="loadBalForm" name="loadBalForm">
+          <div class="col-md-6 form-group">
+            <label for="Set Period" class="focused">Set Period</label>
+            <select class="form-control" formControlName="period"> 
+          <option value="">--select--</option>
+          <option *ngFor='let cycle of cycleTypes' value='{{accountType=="PREPAID"?cycle.Value:cycle.CycleType}}'>{{accountType=="PREPAID"?cycle.Value:cycle.CycleType}}  </option>
+         </select>
+          </div>
+          <div class="col-md-6 form-group">
+            <label for="Set Period" class="focused">Set Category</label>
+            <select class="form-control" formControlName="category"> 
+           <option value=""> --Select-- </option>
+           <option *ngFor='let criteria of loadCriteria' value="{{criteria.Value}}">{{criteria.Value}}  </option>
+           </select>
+          </div>
+          <div class="col-md-6 form-group">
+            <label for="No of Sub Cycles">No of Sub Cycles</label>
+            <input type="text" formControlName="subcycles" class="form-control" placeholder="Account #" onkeypress="return event.charCode >= 48 && event.charCode <= 57 && this.value.length<2"
+              (change)="changeBinding($event.target.value)">
+          </div>
+
+        </form>
+        <div class="clear"> </div>
+
+        <div *ngFor="let sub of subCycles">
+          <div class="col-md-12 row">
+            <div class="col-md-2 form-group" *ngIf='loadBalForm.controls["category"].value == "LastName"'>
+              <label for="No of Sub Cycles">Starts with</label>
+              <input type="text" class="form-control" placeholder="Account #" onkeypress="return this.value.length<3" [(ngModel)]="sub.StartsWith">
+            </div>
+            <div class="col-md-2 form-group" *ngIf='loadBalForm.controls["category"].value == "AccountNumber"'>
+              <label for="No of Sub Cycles">Starts with</label>
+              <input type="text" class="form-control" placeholder="Account #" onkeypress="return event.charCode >= 48 && event.charCode <= 57 && this.value.length<12"
+                [(ngModel)]="sub.StartsWith">
+            </div>
+            <div class="col-md-2 form-group" *ngIf='loadBalForm.controls["category"].value == "AccountCreatedDay"'>
+              <label for="No of Sub Cycles">Starts with</label>
+              <input type="text" class="form-control" placeholder="Account #" onkeypress="return event.charCode >= 48 && event.charCode <= 57 && this.value.length<2"
+                [(ngModel)]="sub.StartsWith">
+            </div>
+            <div class="col-md-2 form-group" *ngIf='loadBalForm.controls["category"].value == "LastName"'>
+              <label for="No of Sub Cycles">Ends with </label>
+              <input type="text" class="form-control" placeholder="Account #" onkeypress="return this.value.length<3" [(ngModel)]="sub.EndsWith">
+            </div>
+            <div class="col-md-2 form-group" *ngIf='loadBalForm.controls["category"].value == "AccountNumber"'>
+              <label for="No of Sub Cycles">Ends with </label>
+              <input type="text" class="form-control" placeholder="Account #" onkeypress="return event.charCode >= 48 && event.charCode <= 57 && this.value.length<12"
+                [(ngModel)]="sub.EndsWith">
+            </div>
+            <div class="col-md-2 form-group" *ngIf='loadBalForm.controls["category"].value == "AccountCreatedDay"'>
+              <label for="No of Sub Cycles">Ends with </label>
+              <input type="text" class="form-control" placeholder="Account #" onkeypress="return event.charCode >= 48 && event.charCode <= 57 && this.value.length<2"
+                [(ngModel)]="sub.EndsWith">
+            </div>
+            <div class="col-md-2 form-group" *ngIf='accountType == "PREPAID"'>
+              <label for="No of Sub Cycles">Run Day </label>
+              <input type="text" class="form-control" placeholder="Account #" onkeypress="return event.charCode >= 48 && event.charCode <= 57 && this.value.length<2"
+                [(ngModel)]="sub.RunDay">
+              <span class="text-count">(Enter 1-28 only)</span>
+            </div>
+            <div class="col-md-6"> 
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <button class="btn btn-default btn-search" (click)="addLoadBalance(subCycles)"> 
+         {{isEdit ? "Update": "Add"}}
+         </button>
+          <button class="btn btn-default btn-reset" (click)="reset()"> 
+          Reset
+         </button>
+          <button class="btn btn-default btn-reset" (click)="cancel()"> 
+          Cancel
+         </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="panel panel-default m-t-10">
+    <div class="panel-heading">
+      Load Balances
+    </div>
+    <div *ngIf='loadBalTypes.length==0'>
+      No Records to display
+    </div>
+
+    <div class="panel-body table-bdr">
+      <table class="table table-bdr">
+        <thead *ngIf='loadBalTypes.length>0'>
+          <tr>
+            <th> Type </th>
+            <th> Period </th>
+            <th> Category </th>
+            <th> No of Sub Cycles </th>
+            <th> Edit </th>
+            <th> Delete </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor='let balType of loadBalTypes'>
+            <td> {{balType.StatementType}} </td>
+            <td> {{balType.CycleType}} </td>
+            <td> {{balType.CriteriaType}} </td>
+            <td> {{balType.SubCycles}} </td>
+            <td> <a *ngIf="!btnEditAllowed" (click)="editLoadBal(balType.LoadBalTypeId)" title="Edit"> <i class="fa fa-pencil-square-o fa-lg fa-fw"> </i> </a>
+              <a *ngIf="btnEditAllowed" class="link-disabled"> <i class="fa fa-pencil-square-o fa-lg fa-fw"> </i> </a> </td>
+            <td> <a title="Delete" (click)="deleteLoadBal(balType.LoadBalTypeId)">  <i class="fa fa-trash-o fa-fw fa-lg"> </i> </a>              </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

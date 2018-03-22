@@ -1,0 +1,49 @@
+<div class="page-title-header">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1> Correspondence History </h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class=" text-right">
+    <span id="" class="accno">Account #:{{accountId}}</span>
+    <button class="btn btn-default  btn-search" type="button" (click)='backClick()'>Back</button>
+  </div>
+  
+  <div class="panel panel-default m-t-10">
+    <div class="panel-heading">Correspondence History Details</div>
+
+    <div class="col-md-12">
+      <div class="well m-t-10">
+        <span id="" class="accno"> Trip #: {{citationId}} </span>
+      </div>
+    </div>
+
+    <div class="panel-body table-bdr">
+      <div *ngIf='tripResponse && tripResponse.length'>
+        <table class="table">
+          <thead>
+            <tr>
+              <td>Print Date </td>
+              <td>Template Name</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let object of tripResponse">
+              <td> {{object.PrintDate | customDateFormat }} </td>
+              <td> {{object.TemplateDesc}} </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf='!tripResponse|| tripResponse.length===0'>
+        <div class="alert alert-info" role="alert">No correspondence details to display</div>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,374 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">SAC</a></li>
+        <li><a href="#">Agency Setup</a></li>
+        <li class="active">Manage Plazas</li>
+      </ol>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Plazas</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <form name="plazaForm" [formGroup]="plazaForm" role="form" *ngIf="!previewPlazas">
+    <div class="table-bdr">
+      <h3>FTP Details</h3>
+      <div class="pad-10">
+        <div class="row">
+          <div class="col-md-6 form-group popover-field">
+            <label> PGP Key Id </label>
+            <input (change)="pgpValueChanged($event);" maxlength="20" pattern="^[A-Za-z0-9]([_\.\-\+]?[a-zA-Z0-9])*@([A-Za-z0-9]+)([\.\-]?[a-zA-Z0-9])*\.([A-Za-z]{2,6})$"
+              type="text" class="form-control" placeholder="PGP Key Id" formControlName="PGPKey" name="PGPKey">
+            <div class="msg" *ngIf="plazaForm.controls['PGPKey'].invalid && (plazaForm.controls['PGPKey'].dirty || plazaForm.controls['PGPKey'].touched)">
+              <div *ngIf="plazaForm.controls['PGPKey'].errors.required">
+                Required.
+              </div>
+              <div *ngIf="plazaForm.controls['PGPKey'].errors.minlength&&!plazaForm.controls['PGPKey'].errors.pattern">
+                Enter at least 6 numbers.
+              </div>
+              <div *ngIf="plazaForm.controls['PGPKey'].errors.pattern">
+                Invalid format
+              </div>
+            </div>
+            <button placement='left' type="button" class="pop-over" data-container="body" [popover]="popKeyId" placement='left' popoverTitle="Help"
+              triggers="mouseenter:mouseleave">?</button>
+            <ng-template #popKeyId>
+              <ul>
+                <li>PGP Key Id allows alphanumerics with special characters (@ , . , _)</li>
+                <li>Spaces are not allowed.</li>
+                <li>It should be minimum 6 characters and maximum 20 characters long</li>
+                <li>It should follow the format yourname@domain.com</li>
+              </ul>
+            </ng-template>
+        </div>
+          <div class="col-md-6 form-group popover-field">
+            <label> FTP URL </label>
+            <input type="text" maxlength="40" class="form-control" placeholder="FTP URL" formControlName="ftpUrl" name="ftpUrl">
+            <div class="msg" *ngIf="plazaForm.controls['ftpUrl'].invalid && (plazaForm.controls['ftpUrl'].dirty || plazaForm.controls['ftpUrl'].touched)">
+              <div *ngIf="plazaForm.controls['ftpUrl'].errors.required">
+                Required.
+              </div>
+            </div>
+            <button type="button" class="pop-over" data-container="body" [popover]="popURL" popoverTitle="Help" placement='left' triggers="mouseenter:mouseleave">?</button>
+            <ng-template #popURL>
+              <ul>
+                <li>FTP URL is required</li>
+                <li>It allows only alphabets, numbers, special characters and spaces</li>
+                <li>FTP URL should be minimum of 1 and maximum of 40 characters in length</li>
+              </ul>
+            </ng-template>
+          </div>
+          <div class="col-md-6 form-group popover-field">
+            <label> FTP Login </label>
+            <input type="text" pattern="^[a-zA-Z0-9]*$" class="form-control" formControlName="ftpLogin" name="ftpLogin" placeholder="FTP Login">
+            <div class="msg" *ngIf="plazaForm.controls['ftpLogin'].invalid && (plazaForm.controls['ftpLogin'].dirty || plazaForm.controls['ftpLogin'].touched)">
+              <div *ngIf="plazaForm.controls['ftpLogin'].errors.required">
+                Required.
+              </div>
+              <div *ngIf="plazaForm.controls['ftpLogin'].errors.pattern">
+                Only alphanumerics allowed
+              </div>
+            </div>
+            <button type="button" class="pop-over" data-container="body" [popover]="popLogin" popoverTitle="Help" placement='left' triggers="mouseenter:mouseleave">?</button>
+            <ng-template #popLogin>
+              <ul>
+                <li>FTP Login is required</li>
+                <li>It allows only alphabets and numbers</li>
+                <li>FTP Login should be minimum of 1 and maximum of 20 characters in length</li>
+              </ul>
+            </ng-template>
+        </div>
+          <div class="col-md-6 form-group popover-field">
+            <label> FTP Password </label>
+            <div [ngClass]="isPasword?'add-change':''">
+              <input type="password" (keyup)="passwordChange($event);" maxlength="20" [attr.disabled]="passDisabled==true?true:null" class="form-control"
+                formControlName="ftpPassword" name="ftpPassword" placeholder="FTP Password">
+              <div class="msg" *ngIf="(plazaForm.controls['ftpPassword'].invalid && (plazaForm.controls['ftpPassword'].dirty || plazaForm.controls['ftpPassword'].touched)) || passwordMessage!=''"
+                style='float: left;'>
+                <div *ngIf="passwordMessage=='' && plazaForm.controls['ftpPassword'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="passwordMessage=='' && plazaForm.controls['ftpPassword'].errors.minlength&&!plazaForm.controls['ftpPassword'].errors.pattern">
+                  Enter at least 7 numbers.
+                </div>
+                <div [ngClass]="passwordMessage!=''?'show-error':''" *ngIf="passwordMessage!=''">
+                  <div>{{passwordMessage}}</div>
+                </div>
+              </div>
+              <button type="button" class="pop-over" data-container="body" [popover]="popPassword" popoverTitle="Help" placement='left'
+                triggers="mouseenter:mouseleave">?</button>
+              <!--*ngIf="passwordMessage=='':false:true"-->
+              <ng-template #popPassword>
+                <ul>
+                  <li>FTP Password is required</li>
+                  <li>It allows alphanumeric with all special characters. It should be minimum 7 characters and maximum 20 characters
+                    long
+                  </li>
+                </ul>
+              </ng-template>
+            </div>
+            <!--<p ng-style="{color:passwordMessage=='Too short'?Red:Green}">{{passwordMessage}}</p>-->
+            <a class="change-btn" *ngIf="isPasword" (click)="chnagePassword();">Change</a>
+            <a class="change-btn pull-right" *ngIf="isCancelShow" (click)="cancelChnagePassword();">Cancel</a>
+          </div>
+          <div class="col-md-6 form-group popover-field">
+            <label> Port # </label>
+            <input formControlName="ftpPort" pattern="^[0-9]*$" maxlength="5" name="ftpPort" type="text" class="form-control" placeholder="Port #">
+            <div class="msg" *ngIf="plazaForm.controls['ftpPort'].invalid && (plazaForm.controls['ftpPort'].dirty || plazaForm.controls['ftpPort'].touched)">
+              <div *ngIf="plazaForm.controls['ftpPort'].errors.required">
+                Required.
+              </div>
+              <div *ngIf="plazaForm.controls['ftpPort'].errors.pattern">
+                Only numbers allowed
+              </div>
+            </div>
+            <button type="button" class="pop-over" data-container="body" [popover]="popPort" popoverTitle="Help" placement='left' triggers="mouseenter:mouseleave">?</button>
+            <ng-template #popPort>
+              <ul>
+                <li>Port # is required</li>
+                <li>It allows only numbers</li>
+                <li>It should not contain more than 5 digits</li>
+                <li>It should not begin with zero</li>
+              </ul>
+            </ng-template>
+        </div>
+        <div class="col-md-6 p-t-10">
+          <div class="checkbox">
+            <label class="sr-only"> Is Encrypt </label>
+            
+              <input type="checkbox" id="isEncrypt" formControlName="isEncrypt" name="isEncrypt">
+              <label for="isEncrypt"> <span></span>
+                 Is Encrypt 
+          </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </form>
+  <form name="bankForm" [formGroup]="bankForm" role="form" *ngIf="!previewPlazas">
+    <div class="table-bdr">
+      <h3>Bank Details</h3>
+      <div class="pad-10">
+        <div class="row">
+          <div class="col-md-6 form-group popover-field">
+            <label> Account # </label>
+            <input formControlName="accoutNo" pattern="^[0-9]*$" maxlength="50" name="accoutNo" type="text" class="form-control" placeholder="Account #">
+            <div class="msg" *ngIf="bankForm.controls['accoutNo'].invalid && (bankForm.controls['accoutNo'].dirty || bankForm.controls['accoutNo'].touched)">
+              <div *ngIf="bankForm.controls['accoutNo'].errors.required">
+                Required.
+              </div>
+              <div *ngIf="bankForm.controls['accoutNo'].errors.minlength&&!bankForm.controls['accoutNo'].errors.pattern">
+                Enter at least 9 numbers.
+              </div>
+              <div *ngIf="bankForm.controls['accoutNo'].errors.pattern">
+                Only numbers allowed
+              </div>
+            </div>
+            <button type="button" class="pop-over" data-container="body" [popover]="popAccount" popoverTitle="Help" placement='left'
+              triggers="mouseenter:mouseleave">?</button>
+            <ng-template #popAccount>
+              <ul>
+                <li>Account # is required</li>
+                <li>Account # allows only numbers</li>
+                <li>It should contain minimum 9 and maximum 50 characters.</li>
+              </ul>
+            </ng-template>
+          </div>
+          <div class="col-md-6 form-group popover-field">
+            <label class="focused"> Account Type </label>
+            <select class="form-control" formControlName="accoutType" name="accoutType"> 
+                 <option *ngFor="let accountType of bankAccountTypes" value="{{accountType.Key}}">{{accountType.Value}}</option>
+             </select>
+            <button type="button" class="pop-over" data-container="body" [popover]="popType" popoverTitle="Help" placement='left' triggers="mouseenter:mouseleave">?</button>
+            <ng-template #popType>
+              <ul>
+                <li>Account Type is required</li>
+                <li>Select your Account Type</li>
+              </ul>
+            </ng-template>
+          </div>
+          <div class="col-md-6 form-group popover-field">
+            <label> Account Name </label>
+            <input type="text" maxlength="50" pattern="^[a-zA-Z ]*$" formControlName="accountName" name="accountName" class="form-control"
+              placeholder="Account Name">
+            <div class="msg" *ngIf="bankForm.controls['accountName'].invalid && (bankForm.controls['accountName'].dirty || bankForm.controls['accountName'].touched)">
+              <div *ngIf="bankForm.controls['accountName'].errors.required">
+                Required.
+              </div>
+              <div *ngIf="bankForm.controls['accountName'].errors.pattern">
+                Only alphabets and spaces are allowed !
+              </div>
+            </div>
+            <button type="button" placement='left' class="pop-over" data-container="body" [popover]="popAccountName" popoverTitle="Help"
+              triggers="mouseenter:mouseleave">?</button>
+            <ng-template #popAccountName>
+              <ul>
+                <li>Account Name is required</li>
+                <li>It allows only alphabets and spaces</li>
+                <li>It should contain minimum 1 and maximum 50 characters</li>
+              </ul>
+            </ng-template>
+          </div>
+          <div class="col-md-6 form-group popover-field">
+            <label> Bank Name </label>
+            <input type="text" maxlength="20" pattern="^[a-zA-Z ]*$" formControlName="bankName" name="bankName" class="form-control"
+              placeholder="Bank Name">
+            <div class="msg" *ngIf="bankForm.controls['bankName'].invalid && (bankForm.controls['bankName'].dirty || bankForm.controls['bankName'].touched)">
+              <div *ngIf="bankForm.controls['bankName'].errors.required">
+                Required.
+              </div>
+              <div *ngIf="bankForm.controls['bankName'].errors.pattern">
+                Only alphabets and spaces are allowed !
+              </div>
+            </div>
+            <button type="button" class="pop-over" data-container="body" [popover]="popBank" popoverTitle="Help" placement='left' triggers="mouseenter:mouseleave">?</button>
+            <ng-template #popBank>
+              <ul>
+                <li>Bank Name is required</li>
+                <li>Bank Name allows alphabets and spaces</li>
+                <li>It should contain minimum 1 and maximum 20 characters</li>
+              </ul>
+            </ng-template>
+          </div>
+          <div class="col-md-6 form-group popover-field">
+            <label> IFSC Code </label>
+            <input type="text" maxlength="20" pattern="^[a-zA-Z0-9]*$" formControlName="ifscCode" name="ifscCode" class="form-control"
+              placeholder="IFSC Code">
+            <div class="msg" *ngIf="bankForm.controls['ifscCode'].invalid && (bankForm.controls['ifscCode'].dirty || bankForm.controls['ifscCode'].touched)">
+              <div *ngIf="bankForm.controls['ifscCode'].errors.required">
+                Required.
+              </div>
+              <div *ngIf="bankForm.controls['ifscCode'].errors.minlength&&!bankForm.controls['ifscCode'].errors.pattern">
+                Enter at least 9 numbers.
+              </div>
+              <div *ngIf="bankForm.controls['ifscCode'].errors.pattern">
+                Only alphanumerics allowed
+              </div>
+            </div>
+            <button type="button" class="pop-over" data-container="body" [popover]="popIFSC" popoverTitle="Help" placement='left' triggers="mouseenter:mouseleave">?</button>
+            <ng-template #popIFSC>
+              <ul>
+                <li>IFSC Code is required</li>
+                <li>IFSC Code allows only alphabets and numbers</li>
+                <li>It should contain minimum 9 and maximum 20 characters</li>
+              </ul>
+            </ng-template>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </form>
+  <div class="row" *ngIf="!previewPlazas">
+    <div class="col-md-12">
+      <button class="btn btn-default btn-search" (click)="saveAdditionalInfo();"> {{btnText}} </button>
+      <button class="btn btn-default btn-search" [disabled]="isDisabledPreview" (click)="previewClick();"> Preview </button>
+      <button class="btn btn-default btn-search" (click)="backClick();"> Back </button>
+      <button class="btn btn-default btn-reset" (click)="resetClick();"> Reset </button>
+      <button class="btn btn-default btn-reset" (click)="cancelClick();"> Cancel </button>
+    </div>
+  </div>
+
+
+
+  <div *ngIf="previewPlazas">
+    <div class="row">
+      <div class="col-md-12 text-right">
+        <button class="btn btn-primary btn-reset" (click)="previewBack();">Back</button>
+      </div>
+    </div>
+    <div class="panel panel-default m-t-20">
+      <div class="panel-heading">
+        Plaza Details
+      </div>
+      <div class="panel-body">
+        <div class="col-md-3">
+          <label>
+            <strong> Plaza Name: </strong>
+            <br/> {{plazaName | DisplayNA}} </label>
+        </div>
+        <div class="col-md-3">
+          <label>
+            <strong> Plaza Code: </strong>
+            <br/> {{plazCode | DisplayNA}} </label>
+        </div>
+        <div class="col-md-3">
+          <label>
+            <strong> Price Mode: </strong>
+            <br/> {{priceMode=='P'?"POINT BASED": (priceMode=='D'?"DISTANCE BASED":(priceMode=='C'?"CUSTOM BASED":priceMode))  | DisplayNA}} </label>
+        </div>
+      </div>
+    </div>
+
+    <!--Bank Details -->
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Bank Details
+      </div>
+      <div class="panel-body">
+        <div class="col-md-3">
+          <label>           
+            <strong> Account # </strong>
+            <br/> {{bankForm.controls['accoutNo'].value | DisplayNA}} </label>
+        </div>
+        <div class="col-md-3">
+          <label>
+            <strong> Account Type: </strong>
+            <br/> {{bankForm.controls['accoutType'].value | DisplayNA}} </label>
+        </div>
+        <div class="col-md-3">
+          <label>
+            <strong> Account Name: </strong>
+            <br/> {{bankForm.controls['accountName'].value | DisplayNA}} </label>
+        </div>
+        <div class="col-md-3">
+          <label>
+            <strong> Bank Name: </strong>
+            <br/> {{bankForm.controls['bankName'].value | DisplayNA}} </label>
+        </div>
+        <div class="col-md-3">
+          <label>
+            <strong> IFSC Code: </strong>
+            <br/> {{bankForm.controls['ifscCode'].value | DisplayNA}} </label>
+        </div>
+      </div>
+    </div>
+    <!-- Personal Information-->
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        SFTP Details
+      </div>
+      <div class="panel-body">
+
+        <div class="col-md-3">
+          <label>        
+            <strong> PGP key Id: </strong>
+            <br/> {{plazaForm.controls["PGPKey"].value | DisplayNA}} </label>
+        </div>
+        <div class="col-md-3">
+          <label>
+            <strong> FTP URL: </strong>
+            <br/> {{plazaForm.controls["ftpUrl"].value | DisplayNA}} </label>
+        </div>
+        <div class="col-md-3">
+          <label>
+            <strong> FTP Login: </strong>
+            <br/> {{plazaForm.controls["ftpLogin"].value | DisplayNA}} </label>
+        </div>
+        <div class="col-md-3">
+          <label>
+            <strong> Port #:</strong>
+            <br/> {{plazaForm.controls["ftpPort"].value | DisplayNA}} </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

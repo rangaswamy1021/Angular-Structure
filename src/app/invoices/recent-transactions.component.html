@@ -1,0 +1,43 @@
+<div class="table-bdr">
+  <h3>Invoice Transaction Details</h3>
+  <div class="pad-10">
+
+    <div *ngIf='invoiceResponse && invoiceResponse.length'>
+      <table class="table">
+        <thead>
+          <tr>
+            <td>Transaction Date/Time </td>
+            <td>Transaction Type </td>
+            <td>Description</td>
+            <td>Transaction Amount </td>
+            <td>User</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let object of invoiceResponse| paginate: { itemsPerPage: pageItemNumber, currentPage: p , totalItems:totalRecordCount }">
+            <td> {{object.TxnDate | customDateFormat }} </td>
+            <td> {{object.CustTxnCategory }} </td>
+            <td> {{object.Description }} </td>
+            <td> {{object.Amount | currencycustom}} </td>
+            <td class="nowrap"> {{object.Username }} </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf='invoiceResponse && invoiceResponse.length'>
+      <div class="row page-info">
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+
+      </div>
+    </div>
+
+    <div *ngIf='!invoiceResponse|| invoiceResponse.length===0'>
+      <div >No invoice transaction details to display</div>
+    </div>
+  </div>

@@ -1,0 +1,48 @@
+import { ISystemActivities } from './../../../shared/models/systemactivitiesrequest';
+import { IPaging } from "../../../shared/models/paging";
+export interface IManageUserRequest
+{
+    UserType:string;
+    UserId:number;
+    CustomerStatus:string;
+    IsPrimary:boolean;
+    IsActive:boolean;
+    IsDefault:boolean;
+    IsDomain:boolean;
+    UserName:string;
+    CreatedUser:string;
+    UpdatedUser:string;
+    Password:string;
+    RoleId:number;
+    SubSystems:string;
+    Email:string;
+    RoleName:string;
+    PrivilegesActions:string;
+    SubSystemURL:string;
+    SourceOfEntry:string;
+    NameType:string;
+    RevenueCategory:string;
+    FirstName:string;
+    MiddelName:string;
+    LastName:string;
+    ContactID:number;
+    EmailId:number;
+    DesignationLevels:string;
+    Subsystem:string;
+    ActivitySource:string;
+    LoginId:number;
+    IsSearch:boolean;    
+    IsViewed:boolean;
+    IsExist:boolean;
+    Active:string;
+    AccountId:number;
+    CurrentPasswordExpiryDate:Date;
+    SystemActivity:ISystemActivities;
+    LocationCode: string;
+    LocationName: string;
+    Paging: IPaging;
+    SortColumn: string;
+    SortDir: number;
+    PageNumber: number;
+    PageSize: number;
+}

@@ -1,0 +1,48 @@
+import { IPhoneResponse } from "./phoneresponse";
+import { IEmailResponse } from "./emailresponse";
+
+export interface ICustomerResponse {
+    AccountId: number;
+    FirstName: string;
+    MiddleName: string;
+    LastName: string;
+    Line1: string;
+    Line2: string;
+    Line3: string;
+    City: string;
+    State: string;
+    Country: string;
+    Zip1: string;
+    Zip2: string;
+    ParentPlanName: string;
+    FullName: string;
+    FullAddress: string;
+    AccountStatus: string;
+    AccountStatusDesc: string;
+    IsTagRequired: boolean;
+    RevenueCategory: string;
+    OrganizationName: string;
+    ParentId: number;
+    FullAddressWithAddressFormat: string;
+    FrequentCaller: boolean;
+    HearingImpairment: string;
+    KYCStatus: string;
+    PhoneList: IPhoneResponse[];
+    EmailList: IEmailResponse[];
+    UserName: string;
+    UserType: string;
+    DOB: Date;
+    Gender: string;
+    Title: string;
+    Suffix: string;
+    Alerts: boolean;
+    ContactId: number;
+    EmailAddress: string;
+    PhoneNumber: string;
+    PlanName: string;
+    TollType: string;
+    CreatedDate: Date;
+    isMergeAccountCheck: boolean;
+    RecordCount: number;
+    CustomerStatus: string;
+}

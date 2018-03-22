@@ -1,0 +1,147 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">{{menuHeading}}</a>
+        </li>
+        <li class="active">
+          {{menuSubSystem}}
+        </li>
+        <li class="active">Refund Request</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Refund Request</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<form role="form" name="refundSearchForm" [formGroup]="refundSearchForm" novalidate>
+<div class="content col-md-12">
+
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div class="row">
+
+          <div class="col-md-6">
+            <div class="row">
+              <div class="form-group col-md-12">
+                <label> Account # </label>
+                <input type="text" class="form-control" (keypress)="_keyPress($event)" maxlength="18" placeholder="Account #" id="accountId" name="accountId" formControlName="accountId">
+                <div class="msg" *ngIf="refundSearchForm.controls['accountId'].invalid && (refundSearchForm.controls['accountId'].dirty || refundSearchForm.controls['accountId'].touched)">
+                  <div *ngIf="refundSearchForm.controls['accountId'].errors.pattern">Only numbers are allowed !</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row">
+              <div class="form-group col-md-12">
+                <label> First Name </label>
+                <input type="text" class="form-control" placeholder="First Name" id="firstName" name="firstName" formControlName="firstName">
+                <!--<div class="msg" *ngIf="!refundSearchForm.controls['firstName'].valid && refundSearchForm.controls['firstName'].touched">required</div>-->
+              <div class="msg" *ngIf="refundSearchForm.controls['firstName'].invalid && (refundSearchForm.controls['firstName'].dirty || refundSearchForm.controls['firstName'].touched)">
+                  <div *ngIf="refundSearchForm.controls['firstName'].errors.pattern">
+                    Only alphabets and spaces are allowed !
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="row">
+              <div class="form-group col-md-12">
+                <label> Last Name </label>
+                <input type="text" class="form-control" placeholder="Last Name" id="lastName" name="lastName" formControlName="lastName">
+                <!--<div class="msg" *ngIf="!refundSearchForm.controls['lastName'].valid && refundSearchForm.controls['lastName'].touched">
+                  <div>required</div>
+                </div>-->
+                <div class="msg" *ngIf="refundSearchForm.controls['lastName'].invalid && (refundSearchForm.controls['lastName'].dirty || refundSearchForm.controls['lastName'].touched)">
+                  <div *ngIf="refundSearchForm.controls['lastName'].errors.pattern">
+                    It allows only alphabets, spaces and (-) !
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-primary btn-search" [disabled]="disableButtonSearch" (click)="serachRefund()">Search</button>
+            <button type="reset" class="btn btn-default btn-reset" (click)="resetRefunds()">Reset</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading"> Refund Request Details</div>
+      <div class="panel-body bordered" *ngIf="refundResponse?.length > 0">
+        <div class="table-responsive table-bdr">
+          <table class="table  table-sm">
+            <thead>
+              <tr>
+                <th>
+                  <div class="checkbox-inline checkbox">
+                    <input type="checkbox" [checked]="checkAll" id="checkAll" name="checkAll" formControlName="checkAll" (change)='getAllSelection($event)'>
+                    <label for="checkAll">
+                  <span></span>
+                </label>
+                  </div>
+                </th>
+                <th>Account #</th>
+                <th>Customer Name</th>
+                <th class="text-center" *ngIf='showCreditCardActive'>Credit Card Active</th>
+                <th class="text-right">Amount ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let rep of refundResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: pageNumber, totalItems:totalRecordCount }; let i = index'>
+                <td>
+                  <div class="checkbox checkbox-inline">
+                    <input type="checkbox" [checked]='rep.checked' id="{{rep.AccountID}}" name="check" (click)='getSelection(rep,$event)'>
+                    <label for="{{rep.AccountID}}">
+                  <span></span>
+                </label>
+                  </div>
+                </td>
+                <td>{{rep.AccountID}}</td>
+                <td>{{rep.AccountHolderName}}</td>
+                <td class="text-center" *ngIf='showCreditCardActive'>
+                  <img src='assets/images/svg/success.svg' *ngIf='rep.IsVoucherId' class="icon-svg3">
+                </td>
+                <td class="text-right">{{rep.Amount | currency:'USD':true:'1.2-2' }}</td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+        <div class="row page-info">
+          <div class="col-md-6 text-left">
+            <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+      </div>
+      <div class="panel-body bordered" *ngIf="!refundResponse">
+        No records to display
+      </div>
+    </div>
+    <div class="pull-right">
+      <button class="btn btn-primary btn-search" type="button" [disabled]="disableButtonCC" (click)="issueToCreditCard(refundResponseSelected)">Issue to Credit Card</button>
+      <button class="btn btn-primary btn-search" type="button" [disabled]="disableButtonCheck" (click)="issueToCheck(refundResponseSelected)">Issue to Check</button>
+    </div>
+
+</div>
+</form>
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)" (onOk)="userAction($event)"></app-success-failure-alerts-message>

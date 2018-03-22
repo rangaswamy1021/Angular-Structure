@@ -1,0 +1,26 @@
+export interface IAlertandCommunicationResponse {
+    Setting_option: string,
+    Setting_optionId: string,
+    Setting_optionDescription: string,
+    Setting_typecode: string,
+    User_currentsetting: string,
+    AlertType: string,
+    AlertTypeDesc: string,
+    AlertText: string,
+    AlertDate: Date,
+    AlertStatus: string,
+    LoggedUserID: number,
+    SMSFlag: number,
+    EMAILFLAG: number,
+    MAILFlag: number,
+    NONEFLAG: number,
+    AlertTypeId: number,
+    BITMAPVALUE: number,
+    CustomerId: number,
+    SMSBITMAPVALUE: number,
+    EMAILBITMAPVALUE: number,
+    MAILBITMAPVALUE: number,
+    NONEBITMAPVALUE: number,
+    UpdatedUser: string
+
+}

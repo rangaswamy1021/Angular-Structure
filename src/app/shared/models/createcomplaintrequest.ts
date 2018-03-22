@@ -1,0 +1,33 @@
+import { IAttachmentRequest } from './attachmentrequest';
+export interface ICreatecomplaintrequest {
+    ProblemId: number;
+    ProblemType: string;
+    ProblemSource: string;
+    ProblemTitle: string;
+    ProblemAbstract: string;
+    DateOccurred: any;
+    ReportedBy: number;
+    RecordedBy: number;
+    Severity: string;
+    Priority: string;
+    SubSystem: string;
+    UserName: string;
+    objILAttachment: IAttachmentRequest[];
+    CustomerId: number;
+    FirstName: string;
+    LastName: string;
+    Email: string;
+    Mobile: string;
+    Phone: string;
+    TicketId: string;
+    startEffectiveDate: Date;
+    endEffectiveDate: Date;
+    ExpectedResolveDate: Date;
+    Status: string;
+    CitationIdCSV: string;
+    ActivitySource: string;
+    UserId: number;
+    LoginId: number;
+    IsInternal: boolean;
+    InvoiceIdCSV: string;
+}

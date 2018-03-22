@@ -1,0 +1,40 @@
+import { ICustomerRequest } from './../../../shared/models/customerrequest';
+import { UserType, ActivitySource } from './../../../shared/constants';
+import { IPaging } from './../../../shared/models/paging';
+export interface IAgencyRequest {
+    AgencyId: number;
+    AgencyName: string;
+    AgencyCode: string;
+    AgencyDescription: string;
+    pPgpKeyId: string;
+    FTPURL: string;
+    FTPLogin: string;
+    FTPPwd: string;
+    IsActive: boolean;
+    PricingMode: string;
+    SshHostKey: string;
+    PortNumber: number;
+    ChartOfAccountID: number;
+    IFSCCode: string;
+    AccountType: string;
+    BankName: string;
+    AccountName: string;
+    AccountNumber: string;
+    StartEffectiveDate: Date;
+    EndEffectiveDate: Date;
+    CreatedDate: Date;
+    CreatedUser: string;
+    UpdatedDate: Date;
+    UpdatedUser: string;
+    Paging: IPaging;
+    PerformedBy: string;
+    RecordCount: number;
+    viewFlag: string;
+    UserId: number;
+   LoginId: number;
+   ActivityType:string;
+   UserType:string;
+   ActivitySource:ActivitySource;
+   CustomerDetails:ICustomerRequest;
+  
+}

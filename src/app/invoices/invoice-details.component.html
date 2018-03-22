@@ -1,0 +1,232 @@
+<div class="page-title-header wow fadeInDown">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li class="active">Invoice Details</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Invoice Details</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<!--<tabset>
+  <tab heading='Current Invoice Details'>-->
+<div class="content" id="invoice-details">
+  <div class="row">
+    <div class="col-md-12">
+      <div *ngIf='isViewInvoice'>
+        <div class="row">
+          <div class="col-md-6">
+            <h4>Invoice Deatils For Invoice# :{{invoiceResponse.InvoiceNumber}}</h4>
+          </div>
+          <div class="col-md-6 text-right"><button type="submit" (click)='goToSearch()' class="btn btn-primary btn-search btn-sm ">Back</button></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="col-md-4">
+            <table class="table">
+              <tr>
+                <td> Customer Name: </td>
+                <td> <strong> {{profileResponse.FirstName + " " + profileResponse.LastName}} </strong> </td>
+              </tr>
+              <tr>
+                <td class="text-left"> Account#: </td>
+                <td class="text-left"> <strong> {{invoiceRequest.AccountId}} </strong> </td>
+              </tr>
+            </table>
+          </div>
+          <div class="col-md-offset-4 col-md-4">
+            <table class="table">
+              <tr>
+                <td> Invoice#: </td>
+                <td> <strong> {{invoiceResponse.InvoiceNumber | DisplayNA}} </strong> </td>
+              </tr>
+              <tr>
+                <td> Invoice Date: </td>
+                <td>
+                  <div *ngIf='!isDefaultDate && invoiceResponse.InvoiceDate != undefined'>
+                    <strong> {{invoiceResponse.InvoiceDate |customDateTimeFormat}} </strong>
+                  </div>
+                  <div *ngIf='isDefaultDate'>
+                    <strong> N/A </strong>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td> Invoice Period: </td>
+                <td>
+                  <div *ngIf='!isDefaultDate && invoiceResponse.StartDate != undefined'>
+                    <strong> {{invoiceResponse.StartDate |customDateTimeFormat }} - {{invoiceResponse.EndDate |customDateTimeFormat }} </strong>
+                  </div>
+                  <div *ngIf='isDefaultDate'>
+                    <strong> N/A </strong>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td> Due Date: </td>
+                <td>
+                  <div *ngIf='!isDefaultDate && invoiceResponse.DueDate != undefined' class="col-md-12">
+                    <strong> {{invoiceResponse.DueDate |customDateFormat}} </strong>
+                    <my-date-picker id="startDate" [options]="myDatePickerOptions" name="scheduledDate" (inputFieldChanged)='onDateRangeFieldChanged($event)'
+                      name="startDate" *ngIf="isExtension" placeholder="MM/DD/YYYY" [(ngModel)]="dateModel"></my-date-picker>
+                    <div class="red" *ngIf="invalidDate">
+                      <div> Invalid Date.</div>
+                    </div>
+                    <!--<input *ngIf="isExtension" type="text" [minDate]="minDate" [maxDate]="maxDate" bsDatepicker [(bsValue)]="bsValue" id="startDate"
+                [(ngModel)]="invoiceResponse.DueDate" name="startDate" style="max-width: 90px;" class='table-input form-control'>-->
+                    <div class="anchor-links" *ngIf='isPayLinkVisible'>
+                      <a *ngIf='!isExtension' [ngClass]="{'disabletextbox': disableButton}" class="links" (click)="dueDateExtension()">Edit</a>
+                      <a *ngIf="isExtension" class="links" (click)="submit()">Submit</a>
+                      <a *ngIf="isExtension" class="links" (click)="cancel()">Cancel</a>
+                    </div>
+                  </div>
+                  <div *ngIf='isDefaultDate'>
+                    <strong> N/A </strong>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf='isPayLinkVisible'>
+                <td colspan="2"> <a *ngIf='isPayLink' class="btn btn-primary btn-xs" (click)="goToPayment()">Pay Now</a>
+                  <a *ngIf='isDownLoadLink' class="btn btn-primary btn-xs" (click)="downLoadFile()">DownLoad</a>
+                  <a *ngIf="invoiceResponse.ProblemID === 0" class="btn btn-primary btn-xs" (click)="goToComplaint()"> Create Complaint</a>
+                  <a *ngIf="invoiceResponse.ProblemID > 0" class="btn btn-primary btn-xs" (click)="viewComplaint(invoiceResponse.ProblemID)"> View Complaint</a>                  </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <table class="table" id="amount-panel">
+            <tbody>
+              <tr>
+                <td>
+                  <div class="panel panel-default">
+                    <div class="panel-body"> <span class="previous-balance"> Previous Balance </span> <br/>
+                      <span class="amount"> {{invoiceResponse.PreviousDue | currencycustom}} </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="amount-calc"> + </td>
+                <td>
+                  <div class="panel panel-default">
+                    <div class="panel-body"> <span class="billed-amount"> Billed Amount </span> <br/>
+                      <span class="amount">{{invoiceResponse.BilledAmount | currencycustom}} </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="amount-calc"> - </td>
+                <td>
+                  <div class="panel panel-default">
+                    <div class="panel-body"> <span style="color:#0068b3; font-size:14px; font-weight: bold;"> Payments </span> <br/>
+                      <span class="amount"> {{invoiceResponse.AmountPaid | currencycustom}} </span> </div>
+                  </div>
+                </td>
+                <td class="amount-calc"> + </td>
+                <td>
+                  <div class="panel panel-default">
+                    <div class="panel-body"> <span style="color:#0068b3; font-size:14px; font-weight: bold;"> Adjustments </span> <br/>
+                      <span class="amount">  {{invoiceResponse.AdjustmentAmount | currencycustom}} </span> </div>
+                  </div>
+                </td>
+                <td class="amount-calc"> = </td>
+                <td>
+                  <div class="panel panel-default">
+                    <div class="panel-body"> <span style="color:#f34352; font-size:14px; font-weight: bold;"> Amount Due </span> <br/> <span class="amount">{{invoiceResponse.BalanceDue | currencycustom}} </span>                      </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="table-bdr">
+        <h3>Fee Details</h3>
+        <div class="pad-10">
+          <div *ngIf='invoiceResponse.objFee && invoiceResponse.objFee.length'>
+            <table class="table">
+              <thead>
+                <tr>
+                  <td>Fee Type </td>
+                  <td>Amount </td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor='let fee of invoiceResponse.objFee'>
+                  <td> {{fee.Stmt_Literal}} </td>
+                  <td> {{fee.TotalAmount | currencycustom}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div *ngIf='!invoiceResponse.objFee || invoiceResponse.objFee.length==0'>
+            <div class="alert alert-info" role="alert">No details to display</div>
+          </div>
+        </div>
+      </div>
+      <div class="table-bdr">
+        <h3>Trip Details</h3>
+        <div class="pad-10">
+          <div *ngIf='invoiceResponse.objTrips && invoiceResponse.objTrips.length'>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th> Trip Date </th>
+                  <th> Trip Description </th>
+                  <th> Amount </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor='let trips of invoiceResponse.objTrips'>
+                  <td> {{trips.CreatedDate |customDateTimeFormat}} </td>
+                  <td> {{trips.Stmt_Literal}} </td>
+                  <td> {{trips.TotalAmount | currencycustom}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div *ngIf="tripCount >= 10 && isPayLinkVisible" style="float:right"><a routerLink='/csc/customerdetails/transaction-activities'> More </a></div>
+          </div>
+          <div *ngIf='!invoiceResponse.objTrips||invoiceResponse.objTrips.length==0'>
+            <div class="alert alert-info" role="alert">No trip details to display</div>
+          </div>
+        </div>
+      </div>
+      <div class="table-bdr">
+        <h3>Payments / Adjustments History</h3>
+        <div class="pad-10">
+          <div *ngIf='invoiceResponse.objPayments && invoiceResponse.objPayments.length'>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th> Payment Type </th>
+                  <th> AmountPaid </th>
+                  <th> Created Date </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor='let objpayment of invoiceResponse.objPayments'>
+                  <td> {{objpayment.TxnType}} </td>
+                  <td> {{objpayment.AmountPaid | currencycustom}} </td>
+                  <td> {{objpayment.CreatedDate |customDateTimeFormat}} </td>
+                </tr>
+              </tbody>
+            </table>
+            <div *ngIf="paymentCount >= 10 && isPayLinkVisible" style="float:right"><a routerLink='/csc/customerdetails/transaction-history'> More </a></div>
+          </div>
+          <div *ngIf='!invoiceResponse.objPayments || invoiceResponse.objPayments.length==0'>
+            <div class="alert alert-info" role="alert">No paymentdetails to display</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

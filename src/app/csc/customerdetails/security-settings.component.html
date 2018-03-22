@@ -1,0 +1,141 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Customer Service</a></li>
+        <li class="active">Security Settings</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Security Settings</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-account-info></app-account-info>
+  <div class="row">
+    <div class="col-md-10">
+      <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+          <div class="panel-heading" role="tab" id="verifySecurityQuestion">
+            <h4 class="panel-title">
+              <a role="button" data-toggle="collapse" data-parent="#accordion" href="#verify-security-Question" aria-expanded="true" aria-controls="collapseOne">
+                    Verify Security Question
+                  </a>
+            </h4>
+          </div>
+          <div id="verify-security-Question" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+            <div class="panel-body bordered">
+              <div *ngIf='securityQuestionsAnswers && securityQuestionsAnswers.length; else NoDataProvided'>
+                <ul *ngFor="let securityanswer of securityQuestionsAnswers; let i=index" class="list-group">
+                  <li class="list-group-item"> Security Question {{index}} : {{securityanswer.Question}}</li>
+                  <li class="list-group-item"> Security Answer {{index}} : {{securityanswer.Answer}}</li>
+                </ul>
+              </div>
+              <ng-template #NoDataProvided>
+                <ul class="list-group">
+                  <li class="list-group-item"> Security Question 1 : Not Provided </li>
+                  <li class="list-group-item"> Security Answer 1 : Not Provided </li>
+                  <li class="list-group-item"> Security Question 2: Not Provided </li>
+                  <li class="list-group-item"> Security Answer 2 : Not Provided </li>
+                  <li class="list-group-item"> Security Question 3: Not Provided </li>
+                  <li class="list-group-item"> Security Answer 3 : Not Provided </li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <form role="form" name="generatePassUser" [formGroup]="generatePassUser" novalidate>
+            <div class="panel-heading" role="tab" id="headingTwo">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#change-password-forgotusername"
+                  aria-expanded="false" aria-controls="collapseTwo">
+                      Change Password / Forgot Username
+                    </a>
+              </h4>
+            </div>
+            <div id="change-password-forgotusername" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+              <div class="panel-body bordered">
+                <div class="col-md-12">
+                  <div *ngIf="isHavingChildCustomer" class="form-group">
+                    <label class="focused">Select a User</label>
+                    <select class="form-control" id="selectUser" name="user" formControlName="user">
+                          <option selected="selected" value="">--Select--</option>
+                          <option *ngFor="let childCustomer of childCustomerDetails" value="{{childCustomer.AccountId}}">{{childCustomer.FirstName + ' ' + childCustomer.MiddleName + ' '+ childCustomer.LastName }}</option>
+                        </select>
+                    <div *ngIf="generatePassUser.controls['user'].hasError('required')">User is required
+                    </div>
+                  </div>
+                  <button type="submit" (click)="updateGeneratePassword()" [disabled]="disableResetPassword" class="btn btn-primary btn-search">Generate Password</button>
+                  <button type="submit" (click)="updateUsername()" [disabled]="disableForgotUserName" class="btn btn-primary btn-search">Forgot Username</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="panel panel-default">
+          <form role="form" name="generatePin" [formGroup]="generatePin" novalidate>
+            <div class="panel-heading" role="tab" id="headingThree">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#update-pin" aria-expanded="false"
+                  aria-controls="collapseThree">
+                      Update Pin
+                    </a>
+              </h4>
+            </div>
+            <div id="update-pin" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+              <div class="panel-body bordered">
+                <div class="col-md-6">
+                  <div *ngIf="isHavingChildCustomer" class="form-group">
+                    <label class="focused">Select a User</label>
+                    <select class="form-control" id="selectUser1" name="userpin" formControlName="userpin">
+                          <option selected="selected" value="">--Select--</option>
+                          <option *ngFor="let childCustomer of childCustomerDetails" value="{{childCustomer.AccountId}}">{{childCustomer.FirstName + ' ' + childCustomer.MiddleName + ' '+ childCustomer.LastName }}</option>
+                        </select>
+                    <div *ngIf="generatePin.controls['userpin'].hasError('required')">User is required
+                    </div>
+                  </div>
+                  <button type="submit" (click)="updateGeneratePin()" [disabled]="disableResetPin" class="btn btn-primary btn-search">Generate Pin</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading" role="tab" id="headingFour">
+            <h4 class="panel-title">
+              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#username" aria-expanded="false"
+                aria-controls="collapseFour">
+                    Username
+                  </a>
+            </h4>
+          </div>
+          <div id="username" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+            <div class="panel-body bordered">
+              <div class="col-md-6">
+                <div class="col-md-12">
+                  <label class="focused"> User Name </label>
+                  <div *ngIf="strUserNameStar && strUserName">
+                    <label> {{ !showUser ? strUserNameStar : strUserName }} </label>
+                    <div class="m-t-20">
+                      <button class='btn btn-primary' (click)='toggleUsername()'>
+                          {{showUser ? 'Hide' : 'Show'}}
+                        </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

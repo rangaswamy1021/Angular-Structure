@@ -1,0 +1,36 @@
+import { IPaging } from "../../../shared/models/paging";
+
+export interface ISearchCustomerResponse {
+
+AccountId:number,
+CustomerStatus:string,
+AccountStatus:string,
+RevenueCategoryID:number,
+UserType:string,
+UserTypeId:number,
+CreatedUser:string,
+CreatedDate:Date,
+UpdateUser:string,
+UpdateTime:Date,
+RevenueCategory:string,
+ParentUserid:number,
+TransponderNumber:string,
+EmailAddress:string,
+Address:string,
+FirstName:string,
+LastName:string,
+PhoneNumber:number,
+LoggedUserID:number,
+LoggedUserName:string,
+CCSuffix:string,
+VehicleNumber:string,
+PageIndex:IPaging,
+FullAddressWithAddressFormat: string,
+FullAddress: string,
+Phone:number,
+AccountStatusDesc:string,
+RecordCount :number,
+Email:string,
+IsOneTimeTollCustomer:boolean,
+
+}

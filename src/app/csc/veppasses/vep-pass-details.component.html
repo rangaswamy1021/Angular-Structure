@@ -1,0 +1,362 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li>
+          <a href="#">Vep Pass</a>
+        </li>
+        <li class="active">Issue Vep Pass</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Issue Vep Pass</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="payment-steps">
+        <div class="row">
+          <div class="col-md-12">
+            <ul>
+              <li class="active">
+                <span>1</span>VEP Vehicles</li>
+              <li>
+                <span>2</span>Verify Payment</li>
+              <li>
+                <span>3</span>Thank You</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <form role="form" name="vepPassForm" [formGroup]="vepPassForm">
+        <div class="accordion-mgc">
+          <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title">
+                  <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Vehicle Details</a>
+                </h4>
+              </div>
+              <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <div class="panel-body">
+                  <div class="row">
+                    <div class="form-group popover-field col-md-6">
+                      <label for="txtDriverName">DRIVER NAME</label>
+                      <input type="text" class="form-control" id="txtDriverName" [(ngModel)]="txtDriverName" name="driverName" formControlName="driverName"
+                        placeholder="Driver Name" style="text-transform:uppercase;" required>
+                      <div class="msg" *ngIf="vepPassForm.controls['driverName'].invalid && (vepPassForm.controls['driverName'].dirty || vepPassForm.controls['driverName'].touched)">
+                        <div *ngIf="vepPassForm.controls['driverName'].errors.required">
+                          Required.
+                        </div>
+                        <div *ngIf="vepPassForm.controls['driverName'].errors.pattern">
+                          Only alphabets and spaces are allowed.
+                        </div>
+                        <div *ngIf="vepPassForm.controls['driverName'].errors.minlength">
+                          Minimum 2 characters are required.
+                        </div>
+                        <div *ngIf="vepPassForm.controls['driverName'].errors.maxlength">
+                          Maximum 50 characters are allowed.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popdriverName" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popdriverName>
+                        <ul>
+                          <li>Driver Name is required</li>
+                          <li>It allows only alphabets and spaces</li>
+                          <li>It should be minimum 2 characters and maximum 50 characters long</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                    <div class="form-group popover-field col-md-6">
+                      <label for="txtDrivingLicenceno">DRIVING LICENCE NO.</label>
+                      <input type="text" class="form-control" id="txtDrivingLicenceno" [(ngModel)]="txtDrivingLicenceno" name="drivingLicNo" formControlName="drivingLicNo"
+                        placeholder="Driving Licence No." style="text-transform:uppercase;" required>
+                      <div class="msg" *ngIf="vepPassForm.controls['drivingLicNo'].invalid && (vepPassForm.controls['drivingLicNo'].dirty || vepPassForm.controls['drivingLicNo'].touched)">
+                        <div *ngIf="vepPassForm.controls['drivingLicNo'].errors.required">
+                          Required.
+                        </div>
+                        <div *ngIf="vepPassForm.controls['drivingLicNo'].errors.pattern">
+                          Only alphanumerics and (-) are allowed.
+                        </div>
+                        <div *ngIf="vepPassForm.controls['drivingLicNo'].errors.minlength">
+                          Minimum 1 characters are required.
+                        </div>
+                        <div *ngIf="vepPassForm.controls['drivingLicNo'].errors.maxlength">
+                          Maximum 20 characters are allowed.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popdrivingLicNo" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popdrivingLicNo>
+                        <ul>
+                          <li>Driving Licence # is required.</li>
+                          <li>It allows alphanumerics and (-).</li>
+                          <li>It should be minimum 1 character and maximum 20 characters long</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                    <div class="form-group popover-field col-md-6">
+                      <label for="txtPlateNum">PLATE NO.</label>
+                      <input type="text" class="form-control" id="txtPlateNum" [(ngModel)]="txtPlateNum" name="plateNo" formControlName="plateNo"
+                        placeholder="Plate No." style="text-transform:uppercase;" required>
+                      <div class="msg" *ngIf="vepPassForm.controls['plateNo'].invalid && (vepPassForm.controls['plateNo'].dirty || vepPassForm.controls['plateNo'].touched)">
+                        <div *ngIf="vepPassForm.controls['plateNo'].errors.required">
+                          Required.
+                        </div>
+                        <div *ngIf="vepPassForm.controls['plateNo'].errors.pattern">
+                          Only alphanumerics are allowed.
+                        </div>
+                        <div *ngIf="vepPassForm.controls['plateNo'].errors.minlength">
+                          Minimum 1 characters are required.
+                        </div>
+                        <div *ngIf="vepPassForm.controls['plateNo'].errors.maxlength">
+                          Maximum 10 characters are allowed.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popplateNo" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popplateNo>
+                        <ul>
+                          <li>Plate # is required.</li>
+                          <li>It allows alphanumerics only.</li>
+                          <li>It should be minimum 1 character and maximum 10 characters long</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                    <div class="form-group popover-field col-md-6">
+                      <label class="focused">Registered State</label>
+                      <select class="form-control" placeholder="Registered State" id="pltState" [(ngModel)]="pltState" name="pltState" formControlName="pltState">
+                          <option selected="selected" value="">--SELECT--</option>
+                          <option *ngFor="let state of states" value="{{state.StateCode}}">{{state.StateName}}</option>
+                        </select>
+                      <div class="msg" *ngIf="vepPassForm.controls['pltState'].invalid && (vepPassForm.controls['pltState'].dirty || vepPassForm.controls['pltState'].touched)">
+                        <div *ngIf="vepPassForm.controls['pltState'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="poppltState" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #poppltState>
+                        <ul>
+                          <li>Registered state is required. select registerd state</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                    <div class="form-group popover-field  col-md-6">
+                      <label class="focused">Registered Country</label>
+                      <select class="form-control" placeholder="Register Country" id="pltCountry" name="pltCountry" [(ngModel)]="pltCountry" (change)="getCountryBystate($event.target.value)"
+                        formControlName="pltCountry">
+                          <option selected="selected" value="">--SELECT--</option>
+                          <option *ngFor="let country of countries" value="{{country.CountryCode}}">{{country.CountryName}}</option>
+                        </select>
+                      <div class="msg" *ngIf="vepPassForm.controls['pltCountry'].invalid && (vepPassForm.controls['pltCountry'].dirty || vepPassForm.controls['pltCountry'].touched)">
+                        <div *ngIf="vepPassForm.controls['pltCountry'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="poppltCountry" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #poppltCountry>
+                        <ul>
+                          <li>Registerd country is required. select registerd country</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="headingTwo">
+                <h4 class="panel-title">
+                  <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">Pass details</a>
+                </h4>
+              </div>
+              <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                <div class="panel-body">
+                  <div class="row">
+                    <div class="form-group popover-field col-md-6">
+                      <label class="focused">Location</label>
+                      <select class="form-control" [(ngModel)]="ddlLocation" placeholder="Location" id="ddlLocation" name="ddlLocation" (change)="ddlLocationChange($event.target.value)"
+                        formControlName="ddlLocation">
+                          <option selected="selected" value="">--SELECT--</option>
+                          <option *ngFor="let loc of Locations" value="{{loc.LocationCode}}">{{loc.LocationName}}</option>
+                        </select>
+                      <div class="msg" *ngIf="vepPassForm.controls['ddlLocation'].invalid && (vepPassForm.controls['ddlLocation'].dirty || vepPassForm.controls['ddlLocation'].touched)">
+                        <div *ngIf="vepPassForm.controls['ddlLocation'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popddlLocation" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popddlLocation>
+                        <ul>
+                          <li>Location is required. select location</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                    <div class="form-group popover-field col-md-6">
+                      <label class="focused">Plaza</label>
+                      <select class="form-control" [(ngModel)]="ddlPlaza" placeholder="Registered State" id="ddlPlaza" name="ddlPlaza" (change)="ddlPlazaChange($event.target.value)"
+                        formControlName="ddlPlaza">
+                          <option selected="selected" value="">--SELECT--</option>
+                          <option *ngFor="let plz of Plazas" value="{{plz.PlazaCode}}">{{plz.PlazaName}}</option>
+                        </select>
+                      <div class="msg" *ngIf="vepPassForm.controls['ddlPlaza'].invalid && (vepPassForm.controls['ddlPlaza'].dirty || vepPassForm.controls['ddlPlaza'].touched)">
+                        <div *ngIf="vepPassForm.controls['ddlPlaza'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popddlPlaza" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popddlPlaza>
+                        <ul>
+                          <li>Plaza is required. Select plaza</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                    <div class="form-group popover-field col-md-6">
+                      <label class="focused">Vehicle Class</label>
+                      <select class="form-control" [(ngModel)]="ddlVehClass" placeholder="Vehicle Class" id="ddlVehicleClass" name="ddlVehicleClass"
+                        (change)="ddlVehicleClassChange($event.target.value)" formControlName="ddlVehicleClass">
+                          <option selected="selected" value="">--SELECT--</option>
+                          <option *ngFor="let vehClas of vehClass" value="{{vehClas.VehicleClass}}">{{vehClas.VehicleClassDesc}}</option>
+                        </select>
+                      <div class="msg" *ngIf="vepPassForm.controls['ddlVehicleClass'].invalid && (vepPassForm.controls['ddlVehicleClass'].dirty || vepPassForm.controls['ddlVehicleClass'].touched)">
+                        <div *ngIf="vepPassForm.controls['ddlVehicleClass'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popddlVehicleClass" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                        tabindex="-1" placement="left">?</button>
+                      <ng-template #popddlVehicleClass>
+                        <ul>
+                          <li>Vehicle Class is required. Select vehicle class</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                    <div class="form-group popover-field col-md-6">
+                      <label class="focused">Pass Type</label>
+                      <select class="form-control" [(ngModel)]="ddlPassType" placeholder="Pass Type" id="ddlPassType" name="ddlPassType" formControlName="ddlPassType"
+                        (change)="getAmountDetails($event.target.value)">
+                          <option selected="selected" value="">--SELECT--</option>
+                          <option *ngFor="let pst of passTypes" value="{{pst.PassType}}">{{pst.PassTypeDesc}}</option>
+                        </select>
+                      <div class="msg" *ngIf="vepPassForm.controls['ddlPassType'].invalid && (vepPassForm.controls['ddlPassType'].dirty || vepPassForm.controls['ddlPassType'].touched)">
+                        <div *ngIf="vepPassForm.controls['ddlPassType'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popddlPassType" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popddlPassType>
+                        <ul>
+                          <li>Pass Type is required. select Pass Type</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                    <div class="form-group popover-field col-md-6">
+                      <label id="focused">Start Effective Date</label>
+                      <my-date-picker name="strtDate" [options]="myDatePickerOptions" formControlName="strtDate" (inputFieldChanged)="getEndDate($event)"
+                        placeholder="MM/DD/YYYY"></my-date-picker>
+                      <div class="msg" *ngIf="vepPassForm.controls['strtDate'].invalid && (vepPassForm.controls['strtDate'].dirty || vepPassForm.controls['strtDate'].touched)">
+                        <div *ngIf="vepPassForm.controls['strtDate'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popstrtDate" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popstrtDate>
+                        <ul>
+                          <li>Start Effective Date is required. Select Start Effective Date</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                    <div class="form-group popover-field col-md-6">
+                      <label id="focused">End Effective Date</label>
+                      <my-date-picker name="endDate" [options]="myDatePickerOptions" formControlName="endDate" placeholder="MM/DD/YYYY"></my-date-picker>
+                      <button type="button" class="pop-over" [popover]="popendDate" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                        placement="left">?</button>
+                      <ng-template #popendDate>
+                        <ul>
+                          <li>Tooltip Message</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                    <div class="form-group popover-field col-md-6">
+                      <label for="amount" class="focused">Amount</label>
+                      <input type="text" [(ngModel)]="Amount" class="form-control" id="amount" name="amount" formControlName="amount" placeholder="Amount"
+                        disabled>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="headingThree">
+                <h4 class="panel-title">
+                  <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">Credit Card Information</a>
+                </h4>
+              </div>
+              <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                <div class="panel-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <app-credit-card-information [IsSaveCheckBox]="false" [IsAddressVisible]="false"></app-credit-card-information>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="headingFour">
+                <h4 class="panel-title">
+                  <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">Billing Address</a>
+                </h4>
+              </div>
+              <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                <div class="panel-body">
+                  <app-add-address></app-add-address>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-5">
+                <div class="Info">
+                  <h4>Information</h4>
+                  <ul>
+                    <li>- Service Tax {{sTax}}% applied on Credit Card Payment.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="row m-t-20">
+              <div class="col-md-12">
+                <button type="submit" (click)="continue()" [disabled]="disableVEP" class="btn btn-primary btn-search">Continue</button>
+                <button type="reset" (click)="reset()" class="btn btn-default btn-reset">Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+<!-- <app-blocked-list [blockListArray]="objBlockListRes" (status)="allowMakePayment()"></app-blocked-list> -->

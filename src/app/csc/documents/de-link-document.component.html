@@ -1,0 +1,166 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">Documents</a></li>
+        <li class="active">Delink Documents Search</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Delink Documents Search</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <form role="form" name="delinkDocumentForm" [formGroup]="delinkDocumentForm">
+    <div class="row">
+      <div class="col-md-12">
+        <p class="text-right m-b-10"> <span class="glyphicon glyphicon-exclamation-sign exclamation-color" aria-hidden="true"></span> Enter input in any
+          of the fields below...... </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label class="focused">Document Folder</label>
+        <select id="DocumentFolder" name="DocumentFolder" placeholder='' class="*custom-select form-control" formControlName="DocumentFolder"
+          (change)="documentFolderSelectionChange($event.target.value)">
+                  <option>--Select--</option>
+                  <option *ngFor="let scannedDocumentType of scannedDocumentTypes">{{scannedDocumentType}}</option> 
+              </select>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="AccountNo">Account #</label>
+        <input type="text" id="AccountNo" name="AccountNo" formControlName="AccountNo" class="form-control" placeholder="Account #">
+        <div class="msg" *ngIf="delinkDocumentForm.controls['AccountNo'].invalid && (delinkDocumentForm.controls['AccountNo'].dirty || delinkDocumentForm.controls['AccountNo'].touched)">
+          <div *ngIf="delinkDocumentForm.controls['AccountNo'].errors.pattern">
+            Only numbers allowed.
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="Keyword">Notice #</label>
+        <input type="text" pattern="^[A-Za-z0-9]+$" id="NoticeNo" name="NoticeNo" formControlName="NoticeNo" class="form-control"
+          placeholder="Notice #">
+        <div class="msg" *ngIf="delinkDocumentForm.controls['NoticeNo'].invalid && (delinkDocumentForm.controls['NoticeNo'].dirty || delinkDocumentForm.controls['NoticeNo'].touched)">
+          <div *ngIf="delinkDocumentForm.controls['NoticeNo'].errors.pattern">
+            Only alphanumerics allowed.
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="Keyword">Keyword</label>
+        <input type="text" pattern="^[\sa-zA-Z]+$" id="Keyword" name="Keyword" formControlName="Keyword" class="form-control" placeholder="Keyword">
+        <div class="msg" *ngIf="delinkDocumentForm.controls['Keyword'].invalid && (delinkDocumentForm.controls['Keyword'].dirty || delinkDocumentForm.controls['Keyword'].touched)">
+          <div *ngIf="delinkDocumentForm.controls['Keyword'].errors.pattern">
+            Only alphabets and spaces are allowed !
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <button type="submit" class="btn btn-primary btn-search" [disabled]="disableSearchButton" (click)="getDocumentDetailsByStatus(1,'onLoad')">View Files</button>
+        <button type="submit" class="btn btn-default btn-reset" (click)="documentdetailsReset()">Reset</button>
+      </div>
+    </div>
+    <div class="row m-t-20" *ngIf='getDelinkDocumentsResponse && getDelinkDocumentsResponse.length > 0'>
+      <div class="col-md-12">
+        <div class="table-bdr">
+          <h3>Search Results</h3>
+          <div class="pad-10">
+            <div class="table-responsive">
+              <table class="table">
+                <thead class="nowrap">
+                  <tr>
+                    <th>Account #</th>
+                    <th>Document Name</th>
+                    <th>Keywords</th>
+                    <th style="text-align: center">View</th>
+                    <th style="text-align: center">Delink</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor='let eachDoc of getDelinkDocumentsResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount }'>
+                    <td>{{eachDoc.CustomerId}}</td>
+                    <td>{{eachDoc.DocumentName}}</td>
+                    <td>{{eachDoc.Keywords}}</td>
+                    <td style="text-align: center; cursor: pointer">
+                      <span *ngIf="disableViewPDF"> <a (click) = "viewPDF(eachDoc)"><img src="assets/images/pdf.jpg" title="View PDF"></a></span>
+                      <span *ngIf="!disableViewPDF"><img src="assets/images/pdf.jpg" class="link-disabled" title="Do not have View Document Permissions"></span>
+                    </td>
+                    <td style="text-align: center; cursor: pointer">
+                      <span *ngIf="disableDlink"> <a (click)="enterComments(eachDoc)"><img src="assets/images/ext_web_ico_link.png" title="Dlink Selected Document"></a> </span>
+                      <span *ngIf="!disableDlink"><img src="assets/images/ext_web_ico_link.png" class="link-disabled" title="Do not have Dlink Permissions"></span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="page-info" *ngIf='getDelinkDocumentsResponse && getDelinkDocumentsResponse.length > 0'>
+                  <div class="col-md-6 text-left">
+                    <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+                  </div>
+                  <div class="col-md-6 text-right">
+                    <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row m-t-20" *ngIf='(!getDelinkDocumentsResponse || getDelinkDocumentsResponse.length==0) && afterSearch'>
+      <div class="col-md-12">
+        <div class="table-bdr">
+          <h3>Search Results</h3>
+          <div class="pad-10">
+            <p>No records to display</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="comments" class="modal fade delink-request-modal" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-body">
+          <div class="modal-content">
+            <div class="row">
+              <div class="col-md-12 form-group">
+                <label for="Comments" class="focused">Comments</label>
+                <textarea class="form-control" rows="3" placeholder="Comments" id="Comments" name="Comments" formControlName="Comments"></textarea>
+                <div class="msg2" *ngIf="delinkDocumentForm.controls['Comments'].invalid && delinkDocumentForm.controls['Comments'].touched">
+                  <div *ngIf="delinkDocumentForm.controls['Comments'].errors.required">
+                    Required.
+                  </div>
+                  <div *ngIf="delinkDocumentForm.controls['Comments'].errors.pattern">
+                    Initial Spaces are not allowed.
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12 form-group">
+                <button type="submit" class="btn btn-primary btn-search" (click)='delikDocument()'>OK</button>
+                <button class="btn btn-primary btn-search" data-dismiss="modal">CANCEL</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="text-center">
+          <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)">
+</app-success-failure-alerts-message>

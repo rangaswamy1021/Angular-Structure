@@ -1,0 +1,226 @@
+<div class="row">
+  <div class="col-md-12">
+    <form role="form" name="addAddressForm" [formGroup]="addAddressForm" novalidate>
+        <div class="add-address">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="form-group col-sm-12 popover-field">
+                  <label for="sddressLine1">Address Line1</label>
+                  <input type="text" class="form-control" placeholder="* Address Line 1" id="addressLine1" name="addressLine1" formControlName="addressLine1">
+                  <div class="msg" *ngIf="addAddressForm.controls['addressLine1'].invalid && (addAddressForm.controls['addressLine1'].dirty || addAddressForm.controls['addressLine1'].touched)">
+                    <div *ngIf="addAddressForm.controls['addressLine1'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="addAddressForm.controls['addressLine1'].errors.pattern">
+                      Special characters < > are not allowed.
+                    </div>
+                    <div *ngIf="addAddressForm.controls['addressLine1'].errors.maxlength">
+                      Maximum 50 characters are allowed.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popL1" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1" placement="left">?</button>
+                  <ng-template #popL1>
+                    <ul>
+                      <li>Address Line 1 is required</li>
+                      <li>It allows alphanumerics, spaces and all special characters except(
+                        <>).</li>
+                      <li>It should be minimum 1 character and maximum 50 characters long</li>
+                    </ul>
+                  </ng-template>
+                </div>
+                <!--<button class="tool-tip col-sm-1" data-placement="right" data-toggle="tooltip" title="" type="button" data-original-title="Line1 is required"
+                    aria-describedby="tooltip305026">?</button>-->
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="row">
+                <div class="form-group col-sm-12 popover-field">
+                  <label for="addressLine2"> Address Line2</label>
+                  <input type="text" class="form-control" placeholder="Address Line 2" id="addressLine2" name="addressLine2" formControlName="addressLine2">
+                  <div class="msg" *ngIf="addAddressForm.controls['addressLine2'].invalid && (addAddressForm.controls['addressLine2'].dirty || addAddressForm.controls['addressLine2'].touched)">
+                    <div *ngIf="addAddressForm.controls['addressLine2'].errors.pattern">
+                      Special characters < > are not allowed.
+                    </div>
+                    <div *ngIf="addAddressForm.controls['addressLine2'].errors.maxlength">
+                      Maximum 50 characters are allowed.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popL2" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1" placement="left">?</button>
+                  <ng-template #popL2>
+                    <ul>
+                      <li>Address Line 2 allows alphanumerics, spaces and all special characters except(
+                        <>) .</li>
+                      <li>It should be minimum 1 character and maximum 50 characters long.</li>
+                    </ul>
+                  </ng-template>
+                </div>
+                <!--<button class="tool-tip col-sm-1" data-placement="right" data-toggle="tooltip" title="" type="button" data-original-title="Line2 is required"
+                    aria-describedby="tooltip305026">?</button>-->
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="row">
+                <div class="form-group col-sm-12 popover-field">
+                  <label for="addressLine3">Address Line3</label>
+                  <input type="text" class="form-control" placeholder="Address Line 3" id="addressLine3" name="addressLine3" formControlName="addressLine3">
+                  <div class="msg" *ngIf="addAddressForm.controls['addressLine3'].invalid && (addAddressForm.controls['addressLine3'].dirty || addAddressForm.controls['addressLine3'].touched)">
+                    <div *ngIf="addAddressForm.controls['addressLine3'].errors.pattern">
+                      Special characters < > are not allowed.
+                    </div>
+                    <div *ngIf="addAddressForm.controls['addressLine3'].errors.maxlength">
+                      Maximum 50 characters are allowed.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popL3" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1" placement="left">?</button>
+                  <ng-template #popL3>
+                    <ul>
+                      <li>Address Line 3 allows alphanumerics, spaces and all special characters except(
+                        <>) .</li>
+                      <li>It should be minimum 1 character and maximum 50 characters long.</li>
+                    </ul>
+                  </ng-template>
+                </div>
+                <!--<button class="tool-tip col-sm-1" data-placement="right" data-toggle="tooltip" title="" type="button" data-original-title="Tooltip Message"
+                    aria-describedby="tooltip305026">?</button>-->
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-sm-12 popover-field">
+                  <label for="addressCity">City</label>
+                  <input type="text" class="form-control" placeholder="* City" id="addressCity" name="addressCity" formControlName="addressCity">
+                  <div class="msg" *ngIf="addAddressForm.controls['addressCity'].invalid && (addAddressForm.controls['addressCity'].dirty || addAddressForm.controls['addressCity'].touched)">
+                    <div *ngIf="addAddressForm.controls['addressCity'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="addAddressForm.controls['addressCity'].errors.pattern">
+                      Only alphanumerics and space are allowed.
+                    </div>
+                    <div *ngIf="addAddressForm.controls['addressCity'].errors.maxlength">
+                      Maximum 50 characters are allowed.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over popleft-20" [popover]="popC" popoverTitle="Help" triggers="mouseenter:mouseleave" data-container="body" tabindex="-1" placement="left">?</button>
+                  <ng-template #popC>
+                    <ul>
+                      <li>City is required.</li>
+                      <li>It allows alphanumerics and spaces.</li>
+                      <li>Special Characters are not allowed.</li>
+                      <li>It should be minimum 1 character and maximum 50 characters long</li>
+                    </ul>
+                  </ng-template>
+                </div>
+                <!--<button class="tool-tip col-sm-1" data-placement="right" data-toggle="tooltip" title="" type="button" data-original-title="Tooltip Message"
+                    aria-describedby="tooltip305026">?</button>-->
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-sm-12 popover-field">
+                   <label for="addressCountries" class="focused">Country</label>
+                  <select class="form-control" placeholder="addressCountries" id="addressCountries" name="addressCountries" formControlName="addressCountrySelected"
+                    (change)="changeCountry($event.target.value)">
+                      <option selected="selected" value="">--Select--</option>
+                      <option *ngFor="let country of addressCountries" value="{{country.CountryCode}}">{{country.CountryName}}</option>
+                    </select>
+                  <div class="msg" *ngIf="addAddressForm.controls['addressCountrySelected'].invalid && (addAddressForm.controls['addressCountrySelected'].dirty || addAddressForm.controls['addressCountrySelected'].touched)">
+                    <div *ngIf="addAddressForm.controls['addressCountrySelected'].errors.required">
+                      Required.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popSC" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1" placement="left">?</button>
+                  <ng-template #popSC>
+                    <ul>
+                      <li>Country is required.</li>
+                      <li> Select Country.</li>
+                    </ul>
+                  </ng-template>
+                </div>
+
+                <!--<button class="tool-tip col-sm-1" data-placement="right" data-toggle="tooltip" title="" type="button" data-original-title="Select Country"
+                    aria-describedby="tooltip305026">?</button>-->
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-sm-12 popover-field">
+                   <label for="addressState" class="focused">State</label>
+                  <select class="form-control" placeholder="addressState" id="addressState" name="addressState" formControlName="addressStateSelected">
+                      <option selected="selected" value="">--State--</option>
+                      <option *ngFor="let state of addressStates" value="{{state.StateCode}}">{{state.StateName}}</option>
+                    </select>
+                  <div class="msg" *ngIf="addAddressForm.controls['addressStateSelected'].invalid && (addAddressForm.controls['addressStateSelected'].dirty || addAddressForm.controls['addressStateSelected'].touched)">
+                    <div *ngIf="addAddressForm.controls['addressStateSelected'].errors.required">
+                      Required.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popSS" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1" placement="left">?</button>
+                  <ng-template #popSS>
+                    <ul>
+                      <li>State is required.</li>
+                      <li>Select State</li>
+                    </ul>
+                  </ng-template>
+                </div>
+                <!--<button class="tool-tip col-sm-1" data-placement="right" data-toggle="tooltip" title="" type="button" data-original-title="Select State"
+                    aria-describedby="tooltip305026">?</button>-->
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-md-6 popover-field popover-2field">
+                    <label for="addressZip1">Zip Code1</label>
+                    <input type="text" class="form-control" placeholder="* Zip1" id="addressZip1" name="addressZip1" formControlName="addressZip1" [maxlength]="zipMaxlength">
+                    <div class="msg" *ngIf="addAddressForm.controls['addressZip1'].invalid && (addAddressForm.controls['addressZip1'].dirty || addAddressForm.controls['addressZip1'].touched)">
+                      <div *ngIf="addAddressForm.controls['addressZip1'].errors.required">
+                        Required.
+                      </div>
+                      <div *ngIf="addAddressForm.controls['addressZip1'].errors.pattern">
+                        Only numerics are allowed.
+                      </div>
+                      <div *ngIf="addAddressForm.controls['addressZip1'].errors.minlength && !addAddressForm.controls['addressZip1'].errors.pattern">
+                        Minimum {{zipMinlength}} characters are required.
+                      </div>
+                      <div *ngIf="addAddressForm.controls['addressZip1'].errors.maxlength && !addAddressForm.controls['addressZip1'].errors.pattern">
+                        Maximum {{zipMaxlength}} characters are allowed.
+                      </div>
+                    </div>
+                    <button type="button" class="pop-over" data-container="body" [popover]="popZ1" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1" placement="left">?</button>
+                    <ng-template #popZ1>
+                      <ul>
+                        <li>Zip 1 is required</li>
+                        <li>It allows only numbers.</li>
+                      </ul>
+                    </ng-template>
+                </div>
+                
+                <!--<button class="tool-tip col-sm-1" data-placement="right" data-toggle="tooltip" title="" type="button" data-original-title="Zip"
+                    aria-describedby="tooltip305026">?</button>-->
+              <div class="form-group col-md-6 popover-field popover-2field">
+                    <label for="addressZip2">Zip Code2</label>
+                    <input type="text" class="form-control" placeholder="Zip2" id="addressZip2" name="addressZip2" formControlName="addressZip2" maxlength="4">
+                    <div class="msg" *ngIf="addAddressForm.controls['addressZip2'].invalid && (addAddressForm.controls['addressZip2'].dirty || addAddressForm.controls['addressZip2'].touched)">
+                      <div *ngIf="addAddressForm.controls['addressZip2'].errors.pattern">
+                        Only numerics are allowed.
+                      </div>
+                      <div *ngIf="addAddressForm.controls['addressZip2'].errors.maxlength">
+                        Maximum 4 characters are allowed.
+                      </div>
+                    </div>
+                    <button type="button" class="pop-over" data-container="body" [popover]="popZ2" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1" placement="left">?</button>
+                    <ng-template #popZ2>
+                      <ul>
+                        <li>Zip 2 allows only numbers.</li>
+                      </ul>
+                    </ng-template>
+                </div>
+                <!--<button class="tool-tip col-sm-1" data-placement="right" data-toggle="tooltip" title="" type="button" data-original-title="Tooltip Message"
+                    aria-describedby="tooltip305026">?</button>-->
+              </div>
+            </div>
+          </div>
+        </div>
+    </form>
+  </div>
+</div>

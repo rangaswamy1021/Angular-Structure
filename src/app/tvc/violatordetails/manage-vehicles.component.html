@@ -1,0 +1,273 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">TVC</a>
+        </li>
+        <li>
+          <a href="#">Violatordetails</a>
+        </li>
+        <li class="active">Manage Vehicles </li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Vehicles</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class=" col-md-12 text-right m-b-10 m-t-10">
+      <span id="" class="accno">Account #:{{violatorId}}</span>
+      <button class="btn btn-primary btn-reset" (click)="exit()" type="submit">Exit</button>
+      <button class="btn btn-primary btn-search" (click)="goToAccountSummary()" type="submit">Back</button>
+    </div>
+  </div>
+  <form role="form" name="searchVehicleForm" [formGroup]="searchVehicleForm" novalidate>
+    <!-- <div class="alert alert-warning alert-dismissible" role="alert" *ngIf="errorBlock">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <strong>{{errorHeading}}</strong> {{errorMessage}}
+    </div> -->
+    <div class="table-bdr">
+      <h3>Search Vehicle</h3>
+      <div class="pad-10">
+        <div class="row">
+          <div class="form-group col-sm-6 popover-field">
+            <label for="Plate No.">Plate #</label>
+            <input type="text" (keyup)="checkField()" class="form-control" placeholder="Plate #" name="pltNumber" formControlName="pltNumber"
+              id="Plate No">
+            <!-- <i *ngIf="searchVehicleForm.controls['pltNumber'].hasError('required')">Plate Number is required</i> -->
+            <div class="msg" *ngIf="searchVehicleForm.controls['pltNumber'].invalid && (searchVehicleForm.controls['pltNumber'].dirty || searchVehicleForm.controls['pltNumber'].touched)">
+              <!-- <div *ngIf="searchVehicleForm.controls['pltNumber'].errors.required">
+              Required.
+            </div> -->
+              <div *ngIf="searchVehicleForm.controls['pltNumber'].errors.maxlength">
+                Maximum 50 characters are allowed.
+              </div>
+              <div *ngIf="searchVehicleForm.controls['pltNumber'].errors.minlength">
+                Minimum 1 characters are allowed.
+              </div>
+              <div *ngIf="searchVehicleForm.controls['pltNumber'].errors.pattern">
+                Plate # allows alphanumerics only.
+              </div>
+            </div>
+            <div class="msg2" *ngIf="isbothFeildEmpty">
+              <div>At least 1 field is required.</div>
+            </div>
+            <button type="button" class="pop-over" [popover]="popAddline2" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+            <ng-template #popAddline2>
+              <ul>
+                <li>Plate # allows alphanumerics only </li>
+                <li>It should be minimum 1 character and maximum 50 characters long</li>
+              </ul>
+            </ng-template>
+
+          </div>
+          <div class="form-group col-md-6 popover-field">
+            <label class="focused" for="pltStatus">Status</label>
+            <select class="form-control" (change)="checkFieldOnchange()" id="pltContractual" name="pltStatus" formControlName="pltStatus"
+              id="pltStatus">
+                <option selected="selected" value="">--Select--</option>
+                <option>Active</option>
+                <option>Inactive</option>
+              </select>
+            <!-- <div class="msg" *ngIf="searchVehicleForm.controls['pltStatus'].invalid && (searchVehicleForm.controls['pltStatus'].dirty || searchVehicleForm.controls['pltStatus'].touched)">
+                <div *ngIf="searchVehicleForm.controls['pltStatus'].errors.required">
+                  Required.
+                </div>
+              </div> -->
+            <button type="button" class="pop-over" [popover]="popAddline1" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+            <ng-template #popAddline1>
+              <ul>
+                <li>Select status.</li>
+              </ul>
+            </ng-template>
+          </div>
+          <div class="col-md-12">
+            <button type="submit" [disabled]="isSearchAllowed" (click)="seacrhClick()" class="btn btn-primary btn-search">Search</button>
+            <button type="reset" (click)="resetClick()" class="btn btn-default btn-reset">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="table-bdr">
+      <h3>Registered Vehicles Details</h3>
+      <div class="pad-10">
+      <div class="table-responsive" *ngIf="!vehicles">
+        <table class="table">
+          <thead>
+            <tr>
+              <td>No vehicle details to display</td>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      <div class="table-responsive" *ngIf="vehicles">
+        <div #vehiclediv>
+          <table class="table">
+            <thead>
+              <tr>
+                <th (click)="sortDirection('VEHICLENUMBER')" class="sorting-handle"> Plate #
+                  <span *ngIf="gridArrowVEHICLENUMBER">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+                </th>
+                <th> Class</th>
+                <th>Color</th>
+                <th> Description</th>
+                <th>
+                  State
+                </th>
+                <th>
+                  Country
+                </th>
+                <th (click)="sortDirection('VehicleStatus')" class="sorting-handle"> Status
+                  <span *ngIf="gridArrowVehicleStatus">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+                </th>
+                <th (click)="sortDirection('StartEffectiveDate')" class="sorting-handle"> Start Effective Date
+                  <span *ngIf="gridArrowStartEffectiveDate">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+                </th>
+                <th (click)="sortDirection('EndEffectiveDate')" class="sorting-handle"> End Effective Date
+                  <span *ngIf="gridArrowEndEffectiveDate">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+                </th>
+                <th>
+                </th>
+                <th>
+                </th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let vehicle of vehicles | paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount }">
+                <td>
+                  {{vehicle.VehicleNumber}}
+                </td>
+                <td>
+                  {{vehicle.VehicleClassDesc}}
+                </td>
+                <td>
+                  {{vehicle.Color}}
+                </td>
+                <td>
+                  {{vehicle.VehicleDescription}}
+                </td>
+                <td>
+                  {{vehicle.StateName}}
+                </td>
+                <td>
+                  {{vehicle.CountryName}}
+                </td>
+
+                <td>{{vehicle.VehicleStatus}} </td>
+                <td>
+                  {{vehicle.StartEffectiveDate|customDateTimeFormat}}
+                </td>
+                <td>
+                  {{vehicle.EndEffectiveDate|customDateTimeFormat}}
+                </td>
+                <td>
+                  <!-- <a  [ngClass]="isHistoryAllowed?'disabletextbox':''" class="btn btn-default btn-xs" (click)="viewHistory(vehicle.VehicleId)">View History</a> -->
+
+                  <img *ngIf="isManageVehicle" [ngClass]="isHistoryAllowed?'disabletextbox':''" src='assets/images/svg/history-black.svg' title="View History"
+                    (click)="viewHistory(vehicle.VehicleId)" class='icon-svg3' />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="page-info" *ngIf='vehicles && vehicles.length'>
+            <div class="col-md-6 text-left">
+              <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+            </div>
+            <div class="col-md-6 text-right">
+              <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div class="panel panel-default" *ngIf="vehicleHistory">
+      <div class="panel-heading" #vehicleHistdiv> Vehicle History
+      </div>
+      <div class="panel-body table-bdr">
+        <div *ngIf="vehicleHistory" #vehicleHistdiv>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>
+                  Plate #
+                </th>
+                <th> Class</th>
+                <th>Color</th>
+                <th> Description</th>
+                <th>
+                  State
+                </th>
+                <th>
+                  Country
+                </th>
+
+                <th>
+                  Start Effective Date
+                </th>
+                <th>
+                  End Effective Date
+                </th>
+
+                <th>Status</th>
+                <th>Updated Date Time </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let vehicle of vehicleHistory">
+                <td>
+                  {{vehicle.VehicleNumber}}
+                </td>
+                <td>
+                  {{vehicle.VehicleClassDesc}}
+                </td>
+                <td>
+                  {{vehicle.Color}}
+                </td>
+                <td>
+                  {{vehicle.VehicleDescription}}
+                </td>
+                <td>
+                  {{vehicle.StateName}}
+                </td>
+                <td>
+                  {{vehicle.CountryName}}
+                </td>
+                <td>
+                  {{vehicle.StartEffectiveDate|customDateTimeFormat}}
+                </td>
+                <td>
+                  {{vehicle.EndEffectiveDate|customDateTimeFormat}}
+                </td>
+                <td>
+                  {{vehicle.VehicleStatus}}
+                </td>
+                <td>
+                  {{vehicle.UpdatedDateTime|customDateTimeFormat}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

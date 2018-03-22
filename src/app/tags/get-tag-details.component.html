@@ -1,0 +1,355 @@
+<div class="content">
+  <div class="row" *ngIf='hideAllBlocks'>
+    <div class="col-md-6 <text-left></text-left>">
+      <div class="row">
+        <div class="col-md-12 m-t-10">
+          <div class="custom-control custom-radio radio-inline">
+            <input type="radio" class="custom-control-input" name="inlineRadioOptions" id="updateTags" value="updateTags" checked='true' [(ngModel)]='selectedValue' (change)="changeRadioButton($event.target.value)">
+            <label for="updateTags" class="custom-control-discription"> Tag Details</label>
+          </div>
+          <div class="custom-control custom-radio radio-inline">
+            <input type="radio" name="inlineRadioOptions" id="requestNewTags" value="requestNewTags"  [(ngModel)]='selectedValue' (change)="changeRadioButton($event.target.value)"> 
+            <label for="requestNewTags" class="custom-control-discription">Requested Tags</label>
+          </div>
+          <div class="custom-control custom-radio radio-inline">
+            <input type="radio" name="inlineRadioOptions" id="nonrevenueTags" value="nonrevenueTags"  [(ngModel)]='selectedValue' (change)="changeRadioButton($event.target.value)"> 
+            <label for="nonrevenueTags" class="custom-control-discription">Manage Non-Revenue Tags</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 text-right form-group" *ngIf="!activeStatus">
+      <button class="btn btn-primary btn-search" type="submit" (click)="onRequestclick()" [disabled]="disableRequest">Request Tags</button>
+      <button class="btn btn-primary btn-search" type="submit" (click)="onAssociateTagclick()" [disabled]="disableAssociate">Associate Tags</button>
+    </div>
+  </div>
+
+  <!--Req Tags-->
+  <div class="panel panel-default" *ngIf='hideAllBlocks && !isManageTags && !isNonRevenue'>
+    <div class="panel-heading">
+      Requested Tags
+    </div>
+    <div class="panel-body">
+      <div *ngIf='tagsResponseArray && tagsResponseArray.length;else NodetailsRequestTagBlock'>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Serial #</th>
+              <th>Request Type</th>
+              <th>Protocol</th>
+              <th>Mounting</th>
+              <th>Requested Date/Time</th>
+              <th>Requested Quantity</th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let tagResponse of tagsResponseArray | paginate: { itemsPerPage: pageItemNumber, currentPage: currentPage, totalItems:totalRecordCount, id: 'first' }">
+              <td>{{tagResponse.TagTobeReplaced?tagResponse.TagTobeReplaced:'N/A'}}</td>
+              <td>{{tagResponse.TagReqType}}</td>
+              <td>{{tagResponse.Protocol}}</td>
+              <td>{{tagResponse.Mounting}}</td>
+              <td>{{tagResponse.TagReqDate | customDateTimeFormat}}</td>
+              <td>{{tagResponse.ReqCount}}</td>
+              <td><a [ngClass]="{'disabletextbox': disableCancel}" data-toggle="modal" (click)="cancelTagRequest(tagResponse.CustTagReqId)">Cancel Request</a></td>
+              <td><a [ngClass]="{'disabletextbox': disableButton}" (click)="redirectPage(tagResponse)">Select</a></td>
+            </tr>
+            <tr *ngIf='tagsResponseArray && tagsResponseArray.length>0'>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td> <strong> Total Count: </strong> </td>
+              <td> <strong> {{totalTagsCount()}} </strong></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="row page-info" *ngIf='tagsResponseArray && tagsResponseArray.length>0'>
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)" id="first"></pagination-controls>
+        </div>
+      </div>
+    </div>
+    <ng-template #NodetailsRequestTagBlock>
+      <div class="alert alert-info" role="alert">No records to display</div>
+    </ng-template>
+  </div>
+
+  <!--Manage Tags-->
+
+  <div class="table-bdr" *ngIf='hideAllBlocks && isManageTags && !isNonRevenue'>
+    <h3>
+      Tag Details
+    </h3>
+    <div class="pad-10">
+      <div *ngIf='manageTagsResponseArray && manageTagsResponseArray.length;else NodetailsBlock'>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Serial #</th>
+              <th>Protocol</th>
+              <th>Mounting</th>
+              <th>Alias Name</th>
+              <th>Start Effective Date/Time</th>
+              <th>End Effective Date/Time</th>
+              <th>Status</th>
+              <th>Is Non Revenue</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let manageTag of manageTagsResponseArray | paginate: { itemsPerPage: apageItemNumber, currentPage: acurrentPage, totalItems: atotalRecordCount, id: 'second' }; let i = index">
+              <td>{{manageTag.SerialNumber}} </td>
+              <td>{{manageTag.Protocol}}</td>
+              <td>{{manageTag.Mounting}}</td>
+              <td>
+                <div *ngIf="!manageTag.isSelected">{{manageTag.TagAlias}}</div>
+                <div *ngIf="manageTag.isSelected"><input type="text" #txtAlias [(ngModel)]='manageTag.TagAlias' (change)="txtChange(txtAlias.value)"></div>
+              </td>
+              <td>{{manageTag.StartEffectiveDate | customDateTimeFormat}}</td>
+              <td>{{manageTag.EndEffectiveDate | customDateTimeFormat}}</td>
+              <td>
+                <div *ngIf="manageTag.isSelected">
+                  <select #tag name="Status" (change)="dropdownselectedValue(tag.value)">
+                  <option  selected="selected" value="">--Select--</option>
+                  <option *ngFor="let status of tagStatusResponseArray" value="{{status.ColumnName}}">{{status.ColumnName}}</option>                             
+                </select></div>
+                <div *ngIf='!manageTag.isSelected'>{{manageTag.TagStatus}}</div>
+              </td>
+              <td>{{manageTag.IsNonRevenue?'Yes':'No'}}</td>
+              <td class="inline-anchors">
+                <a [ngClass]="{'disabletextbox': disableUpdate}" (click)="onManageClick(manageTag,i)" *ngIf='!manageTag.isSelected && !replacementVisible'>Manage</a>
+                <a (click)="updateTagStatus(manageTag)" *ngIf='manageTag.isSelected && !replacementVisible'>Update</a>
+                <a (click)="cancelTagStatus()" *ngIf='manageTag.isSelected && !replacementVisible'>Cancel</a>
+              </td>
+
+            </tr>
+            <tr *ngIf='!manageTagsResponseArray || manageTagsResponseArray.length==0'>
+              <td colspan="8">No records to display</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="row page-info" *ngIf='manageTagsResponseArray && manageTagsResponseArray.length>0'>
+          <div class="col-md-6 text-left">
+            <p>Display {{astartItemNumber}} - {{aendItemNumber}} Records of {{atotalRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls (pageChange)="pageChangedforAssignedTags($event)" id="second"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #NodetailsBlock>
+      <div class="alert alert-info" role="alert">No records to display</div>
+    </ng-template>
+  </div>
+  <form role="form" [formGroup]="addressForm" *ngIf='replacementVisible' novalidate>
+    <div class="row">
+      <div class="col-md-7">
+        <div class="table-bdr">
+          <h3>Tag Details</h3>
+          <div class="table-default table-responsive">
+            <form class="form-inline" style="margin:20px 0;">
+              <div class="form-group">
+                <label for="" class="focused">Tag Delivery Method</label>
+                <select class="form-control" style="margin-left: 10px;" (change)="onSelectDeliveryMethod($event.target.value)">
+                 <option value="{{method.Key}}" *ngFor='let method of purchaseMethod;let row_no=index' >{{method.Value}}</option>
+              </select>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="table-bdr">
+          <h3>Amount Details</h3>
+          <div class="table-default table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Payment Details</th>
+                  <th>Payment Amount ($)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Total Tag Fee</td>
+                  <td>0</td>
+                </tr>
+                <tr>
+                  <td>Total Tag Deposit</td>
+                  <td>0</td>
+                </tr>
+                <tr>
+                  <td>Service Tax</td>
+                  <td>0</td>
+                </tr>
+                <tr>
+                  <td>Total Shipping Charge</td>
+                  <td>{{selectedShipmentFee}}</td>
+                </tr>
+                <tr>
+                  <td>Total Amount</td>
+                  <td><input type="text" value="{{selectedShipmentFee}}"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Delivery Details-->
+    <div class="panel panel-default" *ngIf='shipmentVisible'>
+      <div class="panel-heading">
+        Delivery Details
+      </div>
+      <div class="panel-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <!--<th></th>-->
+              <th>Service Type</th>
+              <th>Service Description</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let tagshipments of getShipmentTypeResponse'>
+              <td>
+                <div class="radio">
+                  <label>                     
+                         <input type="radio" name="serviceoptions" id="serviceoptions"  [checked]="tagshipments.IsSelected" value="tagshipments.ServiceTypeId"
+                          (click)="onShipmentSelectionChange(tagshipments)" >{{tagshipments.ServiceTypeName}}
+                    </label>
+                </div>
+              </td>
+              <td>{{tagshipments.ServiceDescription}}</td>
+              <td>{{tagshipments.Cost| currency:'USD':true:'1.2-2'}}</td>
+            </tr>
+            <tr *ngIf='!getShipmentTypeResponse || getShipmentTypeResponse.length==0'>
+              <td colspan="8">No records to display</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="col-md-12 m-t-20" *ngIf="getShipmentTypeResponse && getShipmentTypeResponse.length>0">
+          <div class="pad-20-bdr">
+            <h3>Shipping Address</h3>
+            <label class="radio-inline">
+                        <input type="radio"  name="addressRadioOptions" id="inlineRadio1" value="exist" formControlName="addressRadioOptions" (change)="addressChange($event.target.value)"> Use Existing Address
+                       </label>
+            <label class="radio-inline">
+                        <input type="radio"  name="addressRadioOptions" id="inlineRadio2" formControlName="addressRadioOptions" value="new" (change)="addressChange($event.target.value)"> Add New Address
+                         </label>
+            <div style="height:250px">
+              <div *ngIf="isAddressEnable">
+                <app-add-address [customerID]="customerId" [isEnable]="true"></app-add-address>
+              </div>
+              <div *ngIf="!isAddressEnable">
+                <app-add-address [isEnable]="false"></app-add-address>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-7">
+          <div class="table-bdr">
+            <h3>Comments</h3>
+            <div class="padding-10">
+              <small class="pull-right">Left: {{descLength}} characters </small><br>
+              <textarea class="form-control" rows="3" maxlength="255" formControlName="comments" name="comments" (keyup)="descEvent($event)"></textarea>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <button [disabled]='disableButton' type="submit" class="btn btn-primary btn-search" (click)="submitTagRequest()">Submit</button>
+      <button class="btn btn-primary btn-reset" (click)="onCancelTagRequest($event.target.value)">Cancel</button>
+    </div>
+  </form>
+
+  <form role="form" [formGroup]="nonRevenueForm" novalidate>
+    <div class="panel panel-default" *ngIf='hideAllBlocks && isNonRevenue && !isManageTags'>
+      <div class="panel-heading">
+        Manage Non-Revenue Tags
+        <button class="btn btn-primary btn-xs btn-default pull-right m-r-10" (click)='clearRevenueDetails()'> Reset </button>
+        <button [disabled]='disableNonRev' type="submit" class="btn btn-primary btn-xs btn-default pull-right m-r-10" (click)='confirmSubmitNonRevenue()'> Update </button>
+      </div>
+      <div class="panel-body">
+        <div *ngIf='nonRevenueTagsResponse && nonRevenueTagsResponse.length;else NodetailsBlock'>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>
+                  <div class="checkbox">
+                   <input type="checkbox" (change)='checkAllClick($event)' [checked]="isParentSelected" id="checkAll" name="checkAll"
+                    formControlName="checkAll"> 
+                    <label for="checkAll"><span></span></label></div>
+                    </th>
+                <th *ngIf='isCustTagId'> Cust Tag #</th>
+                <th> Serial # </th>
+                <th> Protocol </th>
+                <th> Mounting </th>
+                <th> Start Effective Date/Time</th>
+                <th> End Effective Date/Time</th>
+                <th>Is Non Revenue</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let object of nonRevenueTagsResponse | paginate: { itemsPerPage: npageItemNumber, currentPage: ncurrentPage, totalItems: ntotalRecordCount, id: 'third' }">
+                <td> 
+                  <div class="checkbox">
+                  <input type="checkbox" (change)='checkboxCheckedEvent(object, $event)' id="indCheckBox{{object.CustTagReqId }}" name="indCheckBox"
+                    [checked]="object.isAccountSelected" formControlName="indCheckBox"> 
+                    <label for="indCheckBox{{object.CustTagReqId }}"><span></span></label></div>
+                    </td>
+                <td *ngIf='isCustTagId'> {{object.CustTagReqId }} </td>
+                <td> {{object.SerialNumber}} </td>
+                <td> {{object.Protocol}} </td>
+                <td>{{object.Mounting}} </td>
+                <td>{{object.StartEffectiveDate | customDateTimeFormat}}</td>
+                <td>{{object.EndEffectiveDate | customDateTimeFormat}}</td>
+                <td>{{object.IsNonRevenue?'Yes':'No'}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="row page-info" *ngIf='nonRevenueTagsResponse && nonRevenueTagsResponse.length>0'>
+            <div class="col-md-6 text-left">
+              <p>Display {{nstartItemNumber}} - {{nendItemNumber}} Records of {{ntotalRecordCount}}</p>
+            </div>
+            <div class="col-md-6 text-right">
+              <pagination-controls (pageChange)="pageChangedforNonRevenue($event)" id="third"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-template #NodetailsBlock>
+        <div class="alert alert-info" role="alert">No records to display</div>
+      </ng-template>
+    </div>
+  </form>
+  <app-add-tag *ngIf="childobject" (createClicked)='onFulfillClicked($event)' [childTagResponse]="childobject" [customerId]="customerId"
+    [fulfillVisible]="fulfillVisible" (cancelClicked)="onCancelClicked($event)"></app-add-tag>
+  <div class="clear">
+  </div>
+  <div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="text-center">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event,1000)"
+  (onOk)="userAction($event)"></app-success-failure-alerts-message>

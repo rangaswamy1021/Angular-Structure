@@ -1,0 +1,51 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Payments</a></li>
+        <li class="active">Confirm Payment</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Confirm Payment</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-account-info></app-account-info>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="payment-steps-2">
+        <ul>
+          <li class="done"><span>1</span>Enter Amount</li>
+          <li class="done"><span>2</span>Verify</li>
+          <li class="active"><span>3</span>Thank You</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="table-bdr padding-20 pay-confirm m-t-20" *ngIf='paymentResponse'>
+    <ul>
+      <li>Reference #: <span>{{paymentResponse.VoucherNo}}</span></li>
+      <li>Account #: <span>{{paymentResponse.CustomerId}}</span></li>
+      <li>Total Payment Amount: <span>{{paymentResponse.ToltalAmountPaid | currency:'USD':true:'1.2-2'}}</span></li>
+      <li>Paid by: <span>{{paymentMode}}</span></li>
+      <li *ngIf='paymentResponse.CCSuffix4'>Card Type: <span>{{ccMode}}</span></li>
+      <li *ngIf='paymentResponse.CCSuffix4'>Credit Card #: <span>XXXX_{{paymentResponse.CCSuffix4}}</span></li>
+      <li *ngIf='paymentResponse.MoneyOrderNumber'>Money Order #: <span>{{paymentResponse.MoneyOrderNumber}}</span></li>
+      <li *ngIf='paymentResponse.BankAccountNumber'>Bank Account Number #: <span>XXXX_{{paymentResponse.Banksuffix}}</span></li>
+      <li *ngIf='paymentResponse.ChequeNumber'>Check #: <span>{{paymentResponse.ChequeNumber}}</span></li>
+      <li>Transaction Date/Time: <span>{{paymentResponse.TransactionDate | customDateTimeFormat }}</span></li>
+    </ul>
+  </div>
+  <div>
+    <button type="submit" (click)="printReceipt()" [disabled]="disableReceipt" class="btn btn-primary btn-search">Print Payment Receipt</button>
+    <button type="submit" (click)="paymentEmail(1)" [disabled]="disableReceipt" class="btn btn-primary btn-search">Email</button>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

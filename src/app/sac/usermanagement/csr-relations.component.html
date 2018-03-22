@@ -1,0 +1,175 @@
+<div class="page-title-header container">
+    <div class="row no-gutters">
+        <div class="col-md-12">
+            <ol class="breadcrumb">
+                <li><a href="#">SAC</a></li>
+                <li>User Management</li>
+                <li class="active">CSR Relations</li>
+            </ol>
+        </div>
+        <div class="col-md-12">
+            <div class="page-header">
+                <h1> CSR Relations </h1>
+            </div>
+        </div>
+    </div>
+</div>
+<form role="form" name="csrRelation" [formGroup]="csrRelation">
+    <div class="content">
+        <!--Add new CSR Relation-->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <!-- <button class="btn btn-default btn-search" (click)="addcsr()"> Add New CSR Relation </button> -->
+                    <a (click)="addcsr()">
+                        <i class="fa fa-plus-square-o fa-lg fa-fw" aria-hidden="true"></i> Add New CSR Relation </a>
+                </div>
+            </div>
+        </div>
+        <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+
+        <div class="panel panel-default" *ngIf="isCsrRelation">
+
+            <div class="panel-heading" *ngIf="isAddClicked">
+                Add New CSR Relation
+            </div>
+            <div class="panel-heading" *ngIf="isEditClicked">
+                Update CSR Relation
+            </div>
+            <div class="panel-heading" *ngIf="isDeleteClicked">
+                Delete CSR Relation
+            </div>
+
+            <div class="panel-body bordered">
+
+                <div class="col-md-6">
+                    <div class="form-group popover-field col-md-12">
+                        <label class="focused">--Select--</label>
+                        <select class="form-control" formControlName="usersdropdown" name="usersdropdown" [ngClass]="{'disabletextbox':isDisableDropDown}">
+                            <option selected="selected" value="">--Select--</option>
+                            <option *ngFor="let user of usersdropdown" value="{{user.InternalUserId}}">{{user.InternalUserName}}</option>
+                        </select>
+
+                        <button type="button" class="pop-over" [popover]="popover1" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                        <ng-template #popover1>
+                            <ul>
+                                <li>Any one combination required</li>
+                                <li>Account # allows only numbers </li>
+                            </ul>
+                        </ng-template>
+
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group popover-field col-md-12">
+                        <label class="focused"> Account(s) # </label>
+
+                        <textarea class="form-control" formControlName="accountno" name="accountno" rows="2" [ngClass]="{'disabletextbox':isDeleteClicked }"> 
+
+            </textarea>
+                        <button type="button" class="pop-over" [popover]="popover2" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                        <ng-template #popover2>
+                            <ul>
+                                <li>Any one combination required</li>
+                                <li>Account # allows only numbers </li>
+                            </ul>
+                        </ng-template>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group popover-field col-md-12">
+                        <label class="focused"> Serial(s) # </label>
+
+                        <textarea class="form-control" formControlName="serialno" name="serialno" rows="2" [ngClass]="{'disabletextbox':isDeleteClicked }"> 
+
+            </textarea>
+
+
+                        <button type="button" class="pop-over" [popover]="popover3" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                        <ng-template #popover3>
+                            <ul>
+                                <li>Any one combination required</li>
+                                <li>Account # allows only numbers </li>
+                            </ul>
+                        </ng-template>
+
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group popover-field col-md-12">
+                        <label class="focused"> Vehicle Plate(s) # </label>
+                        <textarea class="form-control" formControlName="vehicleplate" name="vehicleplate" rows="2" [ngClass]="{'disabletextbox':isDeleteClicked }"> 
+                        </textarea>
+                        <button type="button" class="pop-over" [popover]="popover4" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                        <ng-template #popover4>
+                            <ul>
+                                <li>Any one combination required</li>
+                                <li>Account # allows only numbers </li>
+                            </ul>
+                        </ng-template>
+                    </div>
+                </div>
+
+                <div class="col-md-12 m-l-10">
+                    <div class="form-group">
+                        <button class="btn btn-default btn-search" [disabled]="disableCButton" (click)='addCsrRelation()' *ngIf="isAddClicked"> Add </button>
+                        <button class="btn btn-default btn-search" [disabled]="disableUButton" (click)='onUpdateClick()' *ngIf="isEditClicked"> Update </button>
+                        <button class="btn btn-default btn-search" [disabled]="disableDButton" (click)='OnDeleteCSR()' *ngIf="isDeleteClicked"> Delete </button>
+                        <button class="btn btn-default btn-reset" (click)="cancelcsr() "> Cancel </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!--CSR Relation grid-->
+        <div class="panel panel-default ">
+            <div class="panel-heading ">
+                CSR Relations
+            </div>
+            <div class="panel-body bordered"><div *ngIf='csrResp && csrResp.length;else NodetailsBlock'>
+                <table class="table bordered">
+                    <thead>
+                        <tr>
+                            <th> Internal Username </th>
+                            <th> Account(s) # </th>
+                            <th> Serial(s) # </th>
+                            <th>Vehicle Plate(s) # </th>
+                            <th> </th>
+                            <th> </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let csr of csrResp| paginate: { itemsPerPage: pageItemNumber, currentPage: currentPage }">
+                            <td>{{csr.InternalUserName}}</td>
+                            <td>{{csr.CustomerIds}}</td>
+                            <td>{{csr.TagIds}}</td>
+                            <td>{{csr.VehicleNumbers}}</td>
+                            <td>
+                                <img src="assets/images/svg/edit.svg" class="icon-svg3" (click)='onEditClick(csr)'>
+                            </td>
+                            <td>
+                                <img src="assets/images/svg/delete.svg" class="icon-svg3" (click)='onDeleteClick(csr)'>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row page-info " *ngIf='csrResp && dataLength>pageItemNumber'>
+                    <div class="col-md-6 text-left ">
+                        <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+                    </div>
+                    <div class="col-md-6 text-right ">
+                        <pagination-controls (pageChange)="pageChanged($event) "></pagination-controls>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <ng-template #NodetailsBlock>
+                <div>No details to display</div>
+            </ng-template>
+        </div>
+    </div>
+</form>

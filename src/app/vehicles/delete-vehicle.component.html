@@ -1,0 +1,192 @@
+<div class="row">
+  <div class="col-md-12">
+    <p class="text-right m-b-0">
+      <span class="glyphicon glyphicon-exclamation-sign" style="color:#448ccb" aria-hidden="true"></span> Enter input fields.</p>
+  </div>
+</div>
+
+<form role="form" name="updateVehicleForm" [formGroup]="updateVehicleForm">
+  <div class="status-content">
+    <h3>{{message}}</h3>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading"> {{buttonText}} Vehicle Details </div>
+    <div class="panel-body">
+      <div class="row ">
+        <div class="form-group col-md-6 popover-field">
+          <label for="AccountType" class="focused">Plate #</label>
+          <input type="text" class="form-control" placeholder="Plate #" [(ngModel)]="vehicleResponseNgModel.VehicleNumber" disabled="disabled"
+            id="pltNumber" formControlName="pltNumber" name="pltNumber">
+          <button type="button" [popover]="popPlate" triggers="mouseenter:mouseleave" class="pop-over" data-toggle="tooltip" data-placement="top"
+            data-container="body" popoverTitle="Help">?</button>
+          <ng-template #popPlate>
+            <ul>
+              <li> Plate number is required.</li>
+              <li> It allow alphanumerics only.</li>
+              <li> It should be minimum 1 character and maximum 10 Characters long.</li>
+            </ul>
+          </ng-template>
+        </div>
+        <div class="form-group col-md-6 popover-field">
+          <label for="pltClass" class="focused">Class</label>
+          <select class="form-control" placeholder="Class" disabled="disabled" [(ngModel)]="vehicleResponseNgModel.VehicleClass" id="pltClass"
+            name="pltClass" formControlName="pltClass">
+                  <option selected="selected" value="">--Select--</option>
+                  <option *ngFor="let class of vehicleClass" value="{{class.Code}}">{{class.VehicleClassDesc}}</option>
+                  <i *ngIf="updateVehicleForm.controls['pltClass'].hasError('required')">Class is required</i>
+                </select>
+          <button type="button" [popover]="popClass" class="pop-over" data-toggle="tooltip" data-placement="top" data-container="body"
+            popoverTitle="Help" triggers="mouseenter:mouseleave">?</button>
+          <ng-template #popClass>
+            <ul>
+              <li> Class is required.</li>
+              <li> Select Class.</li>
+            </ul>
+          </ng-template>
+        </div>
+        <div class="form-group col-md-6 popover-field">
+          <label for="Plan Name" class="focused">Year</label>
+          <select class="form-control" disabled="disabled" placeholder="Year" id="pltYear" [(ngModel)]="yearNG" name="pltYear" formControlName="pltYear">
+                  <option selected="selected" value="">--Select--</option>
+                  <option *ngFor="let year of years" value="{{year}}">{{year}}</option>
+                </select>
+          <button type="button" triggers="mouseenter:mouseleave" [popover]="popYear" class="pop-over" data-toggle="tooltip" data-placement="top"
+            data-container="body" popoverTitle="Help" title="Select Year.">?</button>
+          <ng-template #popYear>
+            <ul>
+              <li> Select Year.</li>
+            </ul>
+          </ng-template>
+        </div>
+        <div class="form-group col-md-6 popover-field">
+          <label for="Plan Name" class="focused">Make</label>
+          <select class="form-control" disabled="disabled" placeholder="Make" id="pltYear" [(ngModel)]="vehicleResponseNgModel.Make"
+            name="pltMake" formControlName="pltMake">
+                  <option selected="selected" value="">--Select--</option>
+                  <option *ngFor="let attribute of vehicleAttributes" value="{{attribute.Make}}">{{attribute.Make}}</option>
+                </select>
+          <button [popover]="popMake" triggers="mouseenter:mouseleave" type="button" class="pop-over" data-toggle="tooltip" data-placement="top"
+            data-container="body" popoverTitle="Help">?</button>
+          <ng-template #popMake>
+            <ul>
+              <li> Select Make.</li>
+            </ul>
+          </ng-template>
+        </div>
+        <div class="form-group col-md-6 popover-field">
+          <label for="pltModel" class="focused">Model</label>
+          <select class="form-control" placeholder="Model" id="pltModel" disabled="disabled" [(ngModel)]="vehicleResponseNgModel.Model "
+            name="pltModel" formControlName="pltModel">
+                  <option selected="selected" value="">--Select--</option>
+                  <option *ngFor="let models of vehicleModel" value="{{models}}">{{models}}</option>
+                </select>
+          <button [popover]="popModel" triggers="mouseenter:mouseleave" type="button" class="pop-over" data-toggle="tooltip" data-placement="top"
+            data-container="body" popoverTitle="Help">?</button>
+          <ng-template #popModel>
+            <ul>
+              <li> Select Model.</li>
+            </ul>
+          </ng-template>
+        </div>
+        <div class="form-group col-md-6 popover-field">
+          <label for="pltColor" class="focused">Color</label>
+          <select class="form-control" disabled="disabled" placeholder="Color" id="pltColor" [(ngModel)]="vehicleResponseNgModel.Color"
+            name="pltColor" formControlName="pltColor">
+                  <option selected="selected" value="">--Select--</option>
+                  <option *ngFor="let vColor of vehicleColors" value="{{vColor.LookUpTypeCode}}">{{vColor.LookUpTypeCode}}</option>
+                </select>
+          <button [popover]="popColor" triggers="mouseenter:mouseleave" type="button" class="pop-over" data-toggle="tooltip" data-placement="top"
+            data-container="body" popoverTitle="Help">?</button>
+          <ng-template #popColor>
+            <ul>
+              <li> Select Color.</li>
+            </ul>
+          </ng-template>
+        </div>
+        <div class="form-group col-md-6 popover-field">
+          <label for="pltCountry" class="focused">Registered Country</label>
+          <select class="form-control" placeholder="Register Country" id="pltCountry" disabled="disabled" name="pltCountry" [(ngModel)]="vehicleResponseNgModel.Country"
+            formControlName="pltCountry">
+                  <option selected="selected" value="">--Select--</option>
+                  <option *ngFor="let country of countries" value="{{country.CountryCode}}">{{country.CountryName}}</option>
+                </select>
+          <button type="button" [popover]="popCountry" triggers="mouseenter:mouseleave" class="pop-over" data-toggle="tooltip" data-placement="top"
+            data-container="body" popoverTitle="Help">?</button>
+          <ng-template #popCountry>
+            <ul>
+              <li>Registered Country is required.</li>
+              <li>Select Country.</li>
+            </ul>
+          </ng-template>
+        </div>
+        <div class="form-group col-md-6 popover-field">
+          <label for="pltState" class="focused">Registered State</label>
+          <select class="form-control" disabled="disabled" [(ngModel)]="vehicleResponseNgModel.State" placeholder="Registered State"
+            id="pltState" name="pltState" formControlName="pltState">
+                  <option selected="selected" value="">--Select--</option>
+                  <option *ngFor="let state of states" value="{{state.StateCode}}">{{state.StateName}}</option>
+                  <i *ngIf="updateVehicleForm.controls['pltState'].hasError('required')">Registered State is required</i>
+                </select>
+          <button type="button" [popover]="stateState" triggers="mouseenter:mouseleave" class="pop-over" data-toggle="tooltip" data-placement="top"
+            data-container="body" popoverTitle="Help">?</button>
+
+          <ng-template #stateState>
+            <ul>
+              <li> Registered State is required.</li>
+              <li>Select State.</li>
+            </ul>
+          </ng-template>
+        </div>
+        <div class="form-group col-md-6 popover-field">
+          <label for="Start Effective Date" class="focused">Start Effective Date</label>
+          <input type="text" class="form-control" [(ngModel)]="objStartDate" disabled="disabled" id="startDate" name="startDate" formControlName="startDate">
+          <button type="button" [popover]="popstartDate" triggers="mouseenter:mouseleave" class="pop-over" data-toggle="tooltip" data-placement="top"
+            data-container="body" popoverTitle="Help">?</button>
+          <ng-template #popstartDate>
+            <ul>
+              <li> Select Start Effective Date.</li>
+            </ul>
+          </ng-template>
+        </div>
+        <div class="form-group col-md-6 popover-field">
+          <label for="Start Effective Date" class="focused">End Effective Date</label>
+          <input type="text" disabled="disabled" [(ngModel)]="vehicleResponseNgModel.EndEffectiveDate" class="form-control" id="endDate"
+            name="endDate" formControlName="endDate">
+          <!-- <owl-date-time disabled="disabled" id="endDate" class="form-control" [(ngModel)]="vehicleResponseNgModel.EndEffectiveDate"
+                [dateFormat]="'MM/DD/YYYY HH:mm:ss'" [showSecondsTimer]="true" [placeHolder]="'MM/DD/YYYY HH:MM:SS'" formControlName="endDate"></owl-date-time> -->
+          <button type="button" [popover]="popstartEndDate" triggers="mouseenter:mouseleave" class="pop-over" data-toggle="tooltip"
+            data-placement="top" data-container="body" popoverTitle="Help">?</button>
+          <ng-template #popstartEndDate>
+            <ul>
+              <li> Select End Effective Date.</li>
+            </ul>
+          </ng-template>
+        </div>
+        <div class="form-group col-md-6 popover-field">
+          <label for="Contractual Type" class="focused">Contractual Type</label>
+          <select class="form-control" disabled="disabled" [(ngModel)]="vehicleResponseNgModel.ContractType" placeholder="Registered State"
+            id="pltContractual" name="pltContractual" formControlName="pltContractual">
+                  <option selected="selected" value="">--Select--</option>
+                  <option *ngFor="let cotracType of contarctualType" value="{{cotracType.Value}}">{{cotracType.Key}}</option>
+                </select>
+          <button type="button" [popover]="popCottype" triggers="mouseenter:mouseleave" class="pop-over" data-toggle="tooltip" data-placement="top"
+            data-container="body" popoverTitle="Help">?</button>
+          <ng-template #popCottype>
+            <ul>
+              <li> Select Contractual Type.</li>
+            </ul>
+          </ng-template>
+        </div>
+        <div class="col-md-6" style="margin-top: 28px">
+          <div class="checkbox-inline checkbox"> 
+            <input [checked]="vehicleResponseNgModel.IsTemporaryNumber" type="checkbox" id="temporaryid">
+            <label for="temporaryid"><span></span> Temporary Licence Plate #</label>
+          </div>
+        </div>
+        <div class="col-md-12 text-right">
+          <button type="submit" (click)="cancelVehicle()" class="btn btn-primary btn-search">Cancel</button>
+          <button type="submit" (click)="deactivateVehicle()" [disabled]="disableButton" class="btn btn-primary btn-search">{{buttonText}}</button>
+        </div>
+      </div>
+    </div>
+  </div>

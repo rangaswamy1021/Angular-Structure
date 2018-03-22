@@ -1,0 +1,62 @@
+<!-- 
+ <app-create-user>
+
+  
+ <app-user-item>   </app-user-item>
+ </app-create-user> -->
+
+<!-- 
+ <router-outlet></router-outlet> -->
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3 wow slideInDown" data-wow-duration="2s">
+      <div class="login-panel panel panel-default">
+        <div class="panel-heading">
+          <img src="assets/images/LoginLogo.png" alt="">
+        </div>
+        <div class="panel-body">
+          <form role="form" [formGroup]="Login_form" (ngSubmit)='onSubmit()'>
+            <div class="row">
+              <div class="col-sm-12 text-right">
+                <sup class="red">*</sup> Required fields
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="help-inline">
+                  <span class="red" ng-show="myform.emailAddress.$touched && myform.emailAddress.$invalid">
+                  <!--<span ng-show="myform.emailAddress.$error.required">Email is required.</span>-->
+                  <!--<span ng-error="myform.emailAddress.$error.invalid">Invalid email address.</span>-->
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="row login-error-msg">
+              <div class="col-sm-12">
+                <span>{{message}}</span>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 form-group">
+                  <label for="UserName"><sup class="red">*</sup> Username</label>
+                  <input class="form-control" type="email" id="UserName" placeholder="UserName" name="emailAddress" formControlName="username"
+                    data-ng-required="" required />
+                </div>
+                <div class="col-sm-12 form-group">
+                  <label for="exampleInputPassword1"><sup class="red">*</sup> Password</label>
+                  <input class="form-control" type="password" placeholder="Password" name="Password" formControlName="password" required/>
+                </div>
+                <div class="col-sm-12">
+                  <a (click)="forgotPassword()">Forgot Password</a>
+                  <input type="submit" class="btn btn-primary btn-search pull-right" value="Submit" />
+                </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+ (onOk)="userAction($event)" (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

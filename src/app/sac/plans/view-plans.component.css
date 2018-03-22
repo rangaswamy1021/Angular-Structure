@@ -1,0 +1,11 @@
+.underline {
+  width: 14px;
+  height: 22px;
+  text-decoration: underline;
+}
+.link-disabled
+{
+    cursor: not-allowed;
+    pointer-events: none;
+    color: #aaa3a3;
+}

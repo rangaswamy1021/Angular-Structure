@@ -1,0 +1,31 @@
+
+export interface IBlocklistresponse {
+    SourceName: string,
+    FieldValue: string,
+    CreatedUser: string,
+    CreatedDateTime: Date,
+    FlagReason: string
+    BlockListId: number,
+    CustomerId: number,
+    FirstName: string,
+    MiddleName: string,
+    LastName: string,
+    FullName: string,
+    Line1: string,
+    Line2: string,
+    Line3: string,
+    City: string,
+    State: string,
+    Country: string,
+    Zip1: string,
+    Zip2: string,
+    FullAddress: string,
+    EmailAddress: string,
+    PhoneNumber: string,
+    VehicleNumber: string,
+    CCNumber: string,
+    CCSuffix: string,
+    FlagIndicator: boolean,
+    UpdatedDateTime
+    RecordCount: number,
+}

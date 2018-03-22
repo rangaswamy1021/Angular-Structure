@@ -1,0 +1,85 @@
+<form name="createForm" [formGroup]="createForm" role="form">
+  <div class="col-md-6 form-group">
+      <label for="Account No.">Account #</label>
+      <input type="text" pattern="[0-9]*" id="AccountNo" name="AccountNo" formControlName="AccountNo" class="form-control" placeholder="Account #">
+      <div class="msg" *ngIf="createForm.controls['AccountNo'].invalid && (createForm.controls['AccountNo'].dirty || createForm.controls['AccountNo'].touched)">
+        <div *ngIf="createForm.controls['AccountNo'].errors.pattern">
+          Only numbers allowed.
+        </div>
+      </div>
+  </div>
+  <div class="col-md-6 form-group">
+      <label for="Platno">Plate #</label>
+      <input type="text" pattern="^[A-Za-z0-9]+$" id="PlateNo"  maxlength=10 name="PlateNo" formControlName="PlateNo" class="form-control" placeholder="Plate #">
+      <div class="msg" *ngIf="createForm.controls['PlateNo'].invalid && (createForm.controls['PlateNo'].dirty || createForm.controls['PlateNo'].touched)">
+        <div *ngIf="createForm.controls['PlateNo'].errors.pattern">
+          Only alphanumerics allowed.
+
+        </div>
+      </div>
+  </div>
+
+  <div class="col-md-6 form-group">
+      <label for="First Name">First Name</label>
+      <input type="text" pattern="^[\sa-zA-Z0-9_]*$" id="Fname" name="Fname" formControlName="Fname" class="form-control" placeholder="First Name">
+      <div class="msg" *ngIf="createForm.controls['Fname'].invalid && (createForm.controls['Fname'].dirty || createForm.controls['Fname'].touched)">
+        <div *ngIf="createForm.controls['Fname'].errors.pattern">
+          Only alpha numerics and (_) are allowed
+        </div>
+
+      </div>
+  </div>
+  <div class="col-md-6 form-group">
+      <label for="Serial No.">Serial #</label>
+      <input type="text" id="SerialNo" pattern="[0-9]*" name="SerialNo" formControlName="SerialNo" class="form-control" placeholder="Serial #">
+      <div class="msg" *ngIf="createForm.controls['SerialNo'].invalid && (createForm.controls['SerialNo'].dirty || createForm.controls['SerialNo'].touched)">
+        <div *ngIf="createForm.controls['SerialNo'].errors.pattern">
+          Only numbers allowed.
+        </div>
+      </div>
+  </div>
+  <div class="col-md-6 form-group">
+      <label for="Last Name">Last Name</label>
+      <input type="text" pattern="^[-\sa-zA-Z0-9_]+$" id="Lastname" name="Lastname" formControlName="Lastname" class="form-control"
+        placeholder="Last Name">
+      <div class="msg" *ngIf="createForm.controls['Lastname'].invalid && (createForm.controls['Lastname'].dirty || createForm.controls['Lastname'].touched)">
+        <div *ngIf="createForm.controls['Lastname'].errors.pattern">
+            Only alpha numerics and (_,-) are allowed
+        </div>
+      </div>
+  </div>
+  <div class="col-md-6 form-group">
+      <label for="Phone No">Phone #</label>
+      <input type="text" (keydown)="formatPhone($event)" maxlength="14" id="PhoneNo" name="PhoneNo" formControlName="PhoneNo" class="form-control"
+        placeholder="Phone #">
+      <div class="msg" *ngIf="createForm.controls['PhoneNo'].invalid && (createForm.controls['PhoneNo'].dirty || createForm.controls['PhoneNo'].touched)">
+        <div *ngIf="createForm.controls['PhoneNo'].errors.pattern">
+          Invalid phone format.
+        </div>
+      </div>
+  </div>
+  <div class="col-md-6 form-group">
+      <label for="CC Sufix">CC Suffix</label>
+      <input type="text" pattern="[0-9]*" id="CCSuffix" name="CCSuffix" minlength="4" formControlName="CCSuffix" class="form-control"
+        placeholder="CC Suffix">
+      <div class="msg" *ngIf="createForm.controls['CCSuffix'].invalid && (createForm.controls['CCSuffix'].dirty || createForm.controls['CCSuffix'].touched)">
+        <div *ngIf="createForm.controls['CCSuffix'].errors.pattern">
+          Only numbers allowed and it should be minimun 4 digits
+        </div>
+      </div>
+  </div>
+  <div class="col-md-6 form-group">
+      <label for="Email Address.">Email Address</label>
+      <input type="text" pattern="^[A-Za-z0-9]([_\.\-\+]?[a-zA-Z0-9])*@([A-Za-z0-9]+)([\.\-]?[a-zA-Z0-9])*\.([A-Za-z]{2,6})$" id="EmailAdd"
+        name="EmailAdd" formControlName="EmailAdd" class="form-control" placeholder="Email Address" maxlength="100">
+      <div class="msg" *ngIf="createForm.controls['EmailAdd'].invalid && (createForm.controls['EmailAdd'].dirty || createForm.controls['EmailAdd'].touched)">
+        <div *ngIf="createForm.controls['EmailAdd'].errors.pattern">
+          Invalid format.
+        </div>
+      </div>
+  </div>
+  <div class="col-md-6 form-group">
+      <label for="Address">Address</label>
+      <input type="text" id="Address" name="Address" formControlName="Address" class="form-control" placeholder="Address">
+  </div>
+</form>

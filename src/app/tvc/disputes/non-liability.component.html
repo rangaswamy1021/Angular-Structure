@@ -1,0 +1,238 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">TVC</a>
+        </li>
+        <li>
+          <a href="#">Disputes</a>
+        </li>
+        <li class="active">Affidavit Of Non-Liability</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Affidavit Of Non-Liability</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="col-md-6">
+      <h3 style="margin-top: 10px;">Account #: {{vioalatorId}}</h3>
+    </div>
+    <div class="col-md-6 text-right">
+      <button class="btn btn-primary btn-search" (click)="back()" type="submit">Back</button>
+    </div>
+  </div>
+  <div class="row m-t-10 m-b-10">
+    <div class="col-md-12">
+      <p>An affidavit of non-liability is any document received from an Account on file that provides proof that the vehicle
+        has been sold, stolen, leased, or rented to another party prior to, or at the time that the Trip occurred. Valid
+        affidavits of non-liability submitted within the allotted time will result in the Trip being transferred to the responsible
+        party.
+      </p>
+      <div *ngIf="pnlTransferTrips">
+        <p>
+          <strong>The following Trips will be transferred with a valid affidavit of non-liability.</strong>
+        </p>
+      </div>
+      <div *ngIf="pnlNotTransferTrips">
+        <p>
+          <strong>The following Trips cannot be transferred with a valid affidavit of non-liability.</strong>
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="table-bdr">
+    <h3 *ngIf='tripIdCSV.length'>
+      Trip(s) #: {{tripIdCSV}}
+    </h3>
+    <h3 *ngIf='invoiceIdCSV.length'>
+      Invoice(s) #: {{invoiceNumbers}}
+    </h3>
+    <div class="pad-10">
+      <!--<div class="row select-type">
+        <div class="col-md-12">
+          <div class="form-group">
+                <label for="" class="col-sm-4 control-label"></label>
+                <div class="col-sm-8">
+                  <label class="radio-inline">
+                    <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" (change)='selectType(1)' checked> Valid Document
+                  </label>
+                  <label class="radio-inline">
+                    <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3" (change)='selectType(2)'> Invalid Document
+                  </label>
+                </div>
+              </div>
+        </div>
+      </div>-->
+      <form role="form" name="nonLiability" [formGroup]="nonLiability">
+        <div class="row">
+          <div class="col-md-offset-3 col-md-6">
+            <div class="row">
+              <div class="form-group col-md-12 popover-field">
+                <label for="" class="focused">Non-Liability Reason *</label>
+                <select class="form-control" (click)="chnageType()" formControlName="nonLiabilityType">
+                      <option value="">--Select--</option>
+                      <option *ngFor="let docType of nonLiabilityResponse" value="{{docType.LookUpTypeCode.toUpperCase()}}">
+                        {{docType.LookUpTypeCodeDesc}}
+                      </option>
+                    </select>
+                <div class="msg" *ngIf="nonLiability.controls['nonLiabilityType'].invalid && (nonLiability.controls['nonLiabilityType'].dirty || nonLiability.controls['nonLiabilityType'].touched)">
+                  <div *ngIf="nonLiability.controls['nonLiabilityType'].errors.required">
+                    Required.
+                  </div>
+                </div>
+                <button type="button" class="pop-over" [popover]="popNonL" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popNonL>
+                  <ul>
+                    <li>Non-Liability reason is required</li>
+                    <li>Select Non-Liability reason</li>
+                  </ul>
+                </ng-template>
+              </div>
+              <div class="form-group col-md-12 popover-field">
+                <label for="addComments" id="focused">Additional Comment/Information</label>
+                <textarea name="" id="addComments" cols="30" rows="2" class="form-control" formControlName="information"></textarea>
+                <button type="button" class="pop-over" [popover]="popACI" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popACI>
+                  Provide additional comments/information
+                </ng-template>
+              </div>
+              <div class="form-group col-md-12 cal-time-field" *ngIf="isStartDate">
+                <div class="row">
+                  <!--<owl-date-time [(ngModel)]="moment2" formControlName="startDate" class="form-control"></owl-date-time>-->
+                  <label for="" class="focused">Start Effective Date *</label>
+                  <div class="col-sm-8">
+                    <my-date-picker name="mydate" [options]="myDatePickerOptions" formControlName="startDate" (inputFieldChanged)='onInputFieldRangeChanged($event)'></my-date-picker>
+                  </div>
+                  <div class="col-sm-4 popover-field">
+                    <owl-date-time [type]="'timer'" [dateFormat]="'HH:mm'" [placeHolder]="'hh:mm'" formControlName="startTime" [(ngModel)]="startTime"
+                      class="form-control"></owl-date-time>
+                    <button type="button" class="pop-over pull-right" [popover]="popSED" data-container="body" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                      placement="left">?</button>
+                    <ng-template #popSED>
+                      <ul>
+                        <li>Start Effective Date is required</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+                <div class="show-error" *ngIf="!dateError && nonLiability.controls['startDate'].invalid && (nonLiability.controls['startDate'].dirty || nonLiability.controls['startDate'].touched) ">
+                  <div *ngIf="nonLiability.controls['startDate'].errors.required">
+                    Date is required.
+                  </div>
+                </div>
+                <div class="show-error" *ngIf="dateError">
+                  <div>Invalid Date </div>
+                </div>
+              </div>
+              <div class="form-group col-md-12 cal-time-field" *ngIf="isEndDate">
+                <div class="row">
+                  <label for="" class="focused">End Effective Date *</label>
+                  <!--<owl-date-time [(ngModel)]="moment1" [min]="startDate" formControlName="endDate" class="form-control"></owl-date-time>-->
+                  <div class="col-sm-8">
+                    <my-date-picker name="mydate" [options]="myDatePickerOptionEndDate" formControlName="endDate" (inputFieldChanged)='onInputFieldEndDateChanged($event)'></my-date-picker>
+                  </div>
+                  <div class="col-sm-4 popover-field">
+                    <owl-date-time [type]="'timer'" [dateFormat]="'HH:mm'" [placeHolder]="'hh:mm'" formControlName="endTime" [(ngModel)]="endTime"
+                      class="form-control"></owl-date-time>
+                    <button type="button" data-container="body" class="pop-over" [popover]="popEED" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                      placement="left">?</button>
+                    <ng-template #popEED>
+                      <ul>
+                        <li>End Effective Date is required</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+                <div class="show-error" *ngIf="!invalidDate && nonLiability.controls['endDate'].invalid && (nonLiability.controls['endDate'].dirty || nonLiability.controls['endDate'].touched)">
+                  <div *ngIf="nonLiability.controls['endDate'].errors.required">
+                    Required.
+                  </div>
+                </div>
+                <div class="show-error" *ngIf="invalidDate">
+                  <div>Invalid Date </div>
+                </div>
+              </div>
+              <div class="form-group col-md-12 popover-field" *ngIf="isAttach">
+                  <label for="" class="col-sm-4 control-label" id="focused">Attach File *</label>
+                  <div class="file-upload-field" style="width: calc(100% - 30px); display: inline-block;">
+                    <input type="file" class="form-control" accept=".xls,.jpg,.jpeg,.txt,.gif,.docx,.pdf,.doc,.png,.xlsx" #cmpFile formControlName="cmpFile"
+                      style="width:calc(100% - 90px); display: inline-block; ">
+                    <div class="msg" *ngIf="!isDisputeReq && nonLiability.controls['cmpFile'].invalid && (nonLiability.controls['cmpFile'].dirty || nonLiability.controls['cmpFile'].touched)">
+                      <div *ngIf="nonLiability.controls['cmpFile'].errors.required">
+                        Required.
+                      </div>
+                    </div>
+                    <button type="submit" (click)="uploadFile()" [disabled]="isUpload" style="width:80px !important;" class="btn-bs-file btn btn-primary">
+                            Upload
+                          </button>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popAFile" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popAFile>
+                    <ul>
+                      <li>Attach file is required</li>
+                      <li>It allows files of jpg, jpeg, txt. gif, dox, pdf, doc, png, xlsx, xls</li>
+                      <li>It should not exceed 1MB</li>
+                    </ul>
+                  </ng-template>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div *ngIf='attachmentsList.length' class="m-t-10">
+                        <div *ngFor='let f of attachmentsList'>
+                          {{f.FileName}}
+                          <img src="assets/images/svg/delete.svg" class="icon-svg3" alt="Delete" (click)="deleteFile(f.Path)">
+                          <a href="{{viewPath + f.Path}}" target="_blank">View</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <div class='form-group col-md-12' *ngIf="this.objAffidavitsContextRequest && this.objAffidavitsContextRequest.ToCustomerId > 0">
+                <label for="" id='focused'> Transferred Account # </label>
+                <input type="text" class="form-control" value="{{this.objAffidavitsContextRequest.ToCustomerId}}">
+              </div>
+              <div class="col-sm-offset-4 col-sm-8" *ngIf='isDisputeReq'>
+                <button type="submit" (click)="submitRequest()" [disabled]="isRequest" class="btn btn-primary btn-search">Mark as Dispute</button>
+                <button type="submit" (click)="reset()" class="btn btn-primary btn-reset">Reset</button>
+              </div>
+              <div class="col-sm-offset-4 col-sm-12 m-t-20" *ngIf='!isDisputeReq'>
+                <a (click)="searchCustomer()" *ngIf='isSearchRequired'>Search Account</a>
+              </div>
+              <div class="col-md-12 text-center m-t-10" *ngIf='!isDisputeReq'>
+                <button type="submit" [disabled]="isApprove" class="btn btn-primary btn-search" (click)="approveDispute()">Approve</button>
+                <button type="submit" [disabled]="isReject" class="btn btn-primary btn-search" (click)="rejectDispute()">Reject</button>
+                <button type="submit" (click)="disputeReset()" class="btn btn-primary btn-reset">Reset</button>
+                <div class="background-hidden" *ngIf='isSaleExist'></div>
+                <div class="message alert" *ngIf='isSaleExist'>
+                  <div class="close-msg" (click)='emitFlag()'>Close</div>
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <div class="msg-text">
+                        <div class="title"></div>
+                        <div class="desc">{{msgNewAccount}}</div>
+                        <div class="btn-msg">
+                          <button class="btn btn-primary btn-search btn-small" type="button" (click)='yesClick()'>Yes</button>
+                          <button class="btn btn-primary btn-reset btn-small" type="button" (click)='noClick()'>No</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)">
+</app-success-failure-alerts-message>

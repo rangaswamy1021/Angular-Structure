@@ -1,0 +1,70 @@
+<div class="table-bdr">
+  <h3>Amount Summary Details</h3>
+  <div class="table-default table-responsive">
+    <table class="table plain-header">
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th align='right'>Amount ($)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Toll Balance</td>
+          <td>{{tollBalance | number : '1.2-2'}}</td>
+        </tr>
+        <tr *ngFor="let fees of feesOfPlan">
+          <td>{{fees.Key}}</td>
+          <td>{{fees.Value| number : '1.2-2'}}</td>
+        </tr>
+        <tr>
+          <td>Total Tag Fee</td>
+          <td>{{totalTagFee| number : '1.2-2'}}</td>
+        </tr>
+        <tr>
+          <td>Total Tag Deposit</td>
+          <td>{{totalTagDeposit| number : '1.2-2'}}</td>
+        </tr>
+        <tr>
+          <td><strong>Sub Total</strong></td>
+          <td><strong>{{tollBalance+totalTagFee+totalTagDeposit+totalFee| number : '1.2-2'}}</strong></td>
+        </tr>
+        <tr>
+          <td>Service Tax</td>
+          <td>{{totalServiceTax| number : '1.2-2'}}</td>
+        </tr>
+        <tr>
+          <td>Shipping Charge</td>
+          <td>{{totalShippingCharge| number : '1.2-2'}}</td>
+        </tr>
+        <tr>
+          <td><strong>Total Amount</strong></td>
+          <td><strong>{{tollBalance+totalTagFee+totalTagDeposit+totalFee+totalServiceTax+totalShippingCharge| number : '1.2-2'}}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+<div class="Info" *ngIf='isServiceTax || isCCServiceTax'>
+  <h4>Information</h4>
+  <ul>
+    <li *ngIf='isServiceTax'>- Service Tax {{serviceTax}}% applied on Tag Fee.</li>
+    <li *ngIf='isCCServiceTax'>- Service Tax {{ccServiceTax}}% applied on Credit Card Payment.</li>
+  </ul>
+</div>
+<div class="Info">
+  <h4>Need Help?</h4>
+  <ul>
+    <li>- Shipping</li>
+    <li>- Contact Us</li>
+  </ul>
+  <h4>Accepted Payment Methods</h4>
+  <div class="card-icons">
+    <img src="assets/images/svg/visa.svg" alt="">
+    <img src="assets/images/svg/mastercard.svg" alt="">
+    <img src="assets/images/svg/american-express.svg" alt="">
+    <img src="assets/images/svg/discover.svg" alt="">
+    <img src="assets/images/svg/paypal.svg" alt="">
+  </div>
+</div>

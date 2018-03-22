@@ -1,0 +1,276 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">IMC</a>
+        </li>
+        <li class="active">Manage Items</li>
+        <li class="active">Inventory Tracking</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Inventory Tracking</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="content">
+
+  <div [hidden]="!inventoryTracking">
+    <form role="form" name="inventoryTrackingSearchForm" [formGroup]="inventoryTrackingSearchForm">
+      <div class="panel panel-default">
+        <!-- <div class="panel-heading">
+          Inventory Tracking
+        </div> -->
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="col-md-12 form-group">
+                <label class="focused"> Item Name</label>
+                <select class="form-control" id="itemName" name="itemName" formControlName="itemName">
+                  <option value=""> --select--</option>
+                  <option *ngFor='let item of itemResponse' value="{{item.TagType}}">{{item.TagName}}</option>
+                </select>
+                <div class="msg" *ngIf="inventoryTrackingSearchForm.controls['itemName'].invalid && (inventoryTrackingSearchForm.controls['itemName'].dirty || inventoryTrackingSearchForm.controls['itemName'].touched)">
+                  <div *ngIf="inventoryTrackingSearchForm.controls['itemName'].errors.required">
+                    At least 1 field is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-md-6">
+              <div class="col-md-12 form-group">
+                <label class="focused">Item Status</label>
+                <select class="form-control" id="itemStatus" name="itemStatus" formControlName="itemStatus">
+                  <option value=""> --select--</option>
+                  <option *ngFor='let itemStatus of  responseItemStatus' value="{{itemStatus.TagStatus}}">{{itemStatus.TagStatus}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="col-md-12 form-group">
+                <label> PO #</label>
+                <input type="text" id="purchaseOrder" name="purchaseOrder" formControlName="purchaseOrder" class="form-control" maxlength="50"
+                  placeholder="PO #">
+                <div class="msg" *ngIf="inventoryTrackingSearchForm.controls['purchaseOrder'].errors && (inventoryTrackingSearchForm.controls['purchaseOrder'].dirty || inventoryTrackingSearchForm.controls['purchaseOrder'].touched)">
+                  <div *ngIf="inventoryTrackingSearchForm.controls['purchaseOrder'].errors.pattern">
+                    Only alphanumerics - / and spaces are allowed
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="col-md-12 form-group">
+                <label>Serial #</label>
+                <input type="text" pInputText (keypress)="onlyNumberKey($event)" id="serial" name="serial" formControlName="serial" class="form-control"
+                  maxlength="50" placeholder="Serial #">
+
+              </div>
+            </div>
+
+
+            <div class="col-md-6">
+              <div class="col-md-12 form-group">
+                <label class="focused">Location</label>
+                <select class="form-control" id="location" name="location" formControlName="location">
+                  <option value=""> --select--</option>
+                  <option *ngFor='let itemLocation of itemResponseLocation' value="{{itemLocation.Location}}">{{itemLocation.Location}}</option>
+                </select>
+
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="col-md-12 form-group">
+                <label>Hex Tag #</label>
+                <input type="text" id="serial" (keypress)="onlyHexaKey($event)" name="hexTag" formControlName="hexTag" class="form-control"
+                  maxlength="16" placeholder="Hex Tag #">
+                <div class="msg col-md-3" *ngIf="inventoryTrackingSearchForm.controls['hexTag'].invalid && (inventoryTrackingSearchForm.controls['hexTag'].dirty || inventoryTrackingSearchForm.controls['hexTag'].touched)">
+
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="col-md-12 form-group">
+                <label>Shipment #</label>
+                <input type="text" pInputText (keypress)="onlyNumberKey($event)" id="shipment" name="shipment" formControlName="shipment"
+                  class="form-control" maxlength="8" placeholder="Shipment #">
+
+              </div>
+            </div>
+
+
+            <div class="col-md-12">
+              <button type="submit" class="btn btn-primary btn-search" (click)="onSearchClick()" title="Search" [disabled]="disableSearchButton">Search</button>
+              <button type="button" class="btn btn-default btn-reset" (click)="onResetClick()" title="Reset">Reset</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+  <div class="panel-body" *ngIf="showrmaTextbox">
+    <div class="col-md-3">
+      <form role="form" name="inventoryTrackingRMAForm" [formGroup]="inventoryTrackingRMAForm">
+        <label>RMA Number</label>
+        <input type="text" id="rmaNumber" name="rmaNumber" formControlName="rmaNumber" class="form-control" maxlength="15">
+
+
+
+      </form>
+    </div>
+  </div>
+  <div class="panel panel-default" *ngIf="searchResponse && searchResponse.length && inventoryDetails">
+    <div class="panel-heading">
+      Inventory Details
+    </div>
+    <div class="panel-body table-bdr">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th (click)="sortDirection('SerialNumber')" class="sorting-handle">Serial #
+                <span *ngIf="gridArrowSerialNumber">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('CustomerId')" class="sorting-handle">Account #
+                <span *ngIf="gridArrowCustomerId">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('FULLNAME')" class="sorting-handle">Customer Name
+                <span *ngIf="gridArrowFULLNAME">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th>Location</th>
+              <th> Inv Start Date </th>
+              <th (click)="sortDirection('ITEMNAME')" class="sorting-handle">Item Name
+                <span *ngIf="gridArrowITEMNAME">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('TAGSTATUS')" class="sorting-handle">Item Status
+                <span *ngIf="gridArrowTAGSTATUS">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+
+              <th colspan="2"> </th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let inventory of searchResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: currentPage, totalItems: totalRecordCount }; let i = index">
+
+              <td>{{inventory.SerialNumber}}</td>
+              <td>{{inventory.CustomerId== "" ? "N/A":inventory.CustomerId}}</td>
+              <td>{{inventory.CustomerName=="" ? "N/A":inventory.CustomerName}}</td>
+              <td>{{inventory.Location=="" ? "N/A":inventory.Location}} </td>
+              <td>{{inventory.EndEffectiveDate| customDateFormat}}</td>
+              <td>{{inventory.TagName}}</td>
+              <td>
+                <div *ngIf="!inventory.isSelected">{{inventory.TagStatus}}</div>
+                <div *ngIf="inventory.isSelected">
+                  <select #tag name="Status" (change)="dropdownselectedValue(tag.value)">
+                    <option selected="selected" value="">--Select--</option>
+                    <option value="Assigned" *ngFor="let tagStatus of getTagStatusbyMatrixResponse" value="{{tagStatus.ColumnName}}">{{tagStatus.ColumnName}}</option>
+
+                  </select>
+                </div>
+              </td>
+              <td colspan="2">
+                <span *ngIf="disableManageButton" class="link-disabled" title="You don't have permission to access">Manage</span>
+                <span *ngIf="!disableManageButton">
+                  <a (click)="onManageClick(inventory,i)" *ngIf='!inventory.isSelected && !replacementVisible && inventory.TagStatus != "INVENTORYNEW" && inventory.TagStatus !="DESTROYEDDISPOSAL" && inventory.TagStatus != "SHIPPED" && inventory.TagStatus != "Shipped"  && inventory.TagStatus !="INVENTORYRETAILER"
+                  && inventory.TagStatus != "DESTROYEDOBSOLETE"
+                 && inventory.TagStatus != "VENDORRETURN"
+                 && inventory.TagStatus != "EXPIRED"' title="Manage">Manage</a>
+                  <a *ngIf='inventory.TagStatus == "INVENTORYNEW" ' title="INVENTORYNEW Transponder can not be managed">Manage</a>
+                  <a *ngIf='inventory.TagStatus == "DESTROYEDDISPOSAL" ' title="DESTROYEDDISPOSAL Transponder can not be managed">Manage</a>
+
+                  <a (click)="onManageClick(inventory,i)" *ngIf='inventory.TagStatus == "DESTROYEDOBSOLETE" ' title="DESTROYEDOBSOLETE Transponder can not be managed">Manage</a>
+                  <a (click)="onManageClick(inventory,i)" *ngIf='inventory.TagStatus == "VENDORRETURN" ' title="VENDORRETURN Transponder can not be managed">Manage</a>
+                  <a (click)="onManageClick(inventory,i)" *ngIf='inventory.TagStatus == "SHIPPED" ' title="SHIPPED Transponder can not be managed">Manage</a>
+                  <a (click)="onManageClick(inventory,i)" *ngIf='inventory.TagStatus == "Shipped" ' title="SHIPPED Transponder can not be managed">Manage</a>
+                  <a (click)="onManageClick(inventory,i)" *ngIf='inventory.TagStatus == "EXPIRED" ' title="EXPIRED Transponder can not be managed">Manage</a>
+                  <a (click)="onManageClick(inventory,i)" *ngIf='inventory.TagStatus == "INVENTORYRETAILER" ' title="INVENTORYRETAILER Transponder can not be managed">Manage</a>
+
+                  <!--<a (click)="updateTagStatus(inventory,i)" *ngIf='inventory.isSelected && !replacementVisible' title="Update">Update</a>-->
+
+
+                  <a *ngIf="inventory.isSelected && !replacementVisible " title="Update" tabindex="5" (click)="updateTagStatus(inventory,i)">Update</a>
+
+
+                  <a (click)="onCancelClick(inventory,i)" *ngIf='inventory.isSelected && !replacementVisible' title="Cancel">Cancel</a>
+                </span>
+              </td>
+              <!--<td><a *ngIf="!allowView" class="link-disabled" disabled tabindex="6" title="You can't View"><i class="fa fa-lg">&#xf0f6;</i></a>
+<span *ngIf="allowView">
+<a title="View" tabindex="5" (click)="historyClick(inventory.SerialNumber)"><i class="fa fa-lg">&#xf0f6;</i></a>
+</span>
+</td>-->
+              <td>
+                <i *ngIf="!allowView" title="You don't have permission to access" class="fa  fa-lg link-disabled">&#xf0f6;</i>
+                <span *ngIf="allowView">
+                  <a tabindex="6" (click)="historyClick(inventory.SerialNumber)" title=View>
+                    <i class="fa fa-lg">&#xf0f6;</i>
+                  </a>
+                </span>
+              </td>
+              <!--<td><a (click)="historyClick(inventory.SerialNumber)" title="View History"><i class="fa fa-lg">&#xf0f6;</i></a></td>-->
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+      <div class="m-t-20" *ngIf='searchResponse && searchResponse.length>0'>
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="text-center">
+          <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="panel panel-default" *ngIf='(!searchResponse || searchResponse.length==0)&& noRecordsDisplay'>
+    <div class="panel-heading">
+      Inventory Details
+    </div>
+    <div class="status-content table-bdr">
+      <div class="alert alert-success alert-dismissible m-t-10 m-l-10 m-r-10" role="alert">
+        <span>
+          <span class="glyphicon glyphicon-exclamation-sign">&nbsp;</span>No records to display</span>
+      </div>
+    </div>
+
+  </div>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+</div>

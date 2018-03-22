@@ -1,0 +1,84 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">SAC</a></li>
+        <li><a href="#">User Management</a></li>
+        <li class="active">Manage Transaction Types</li>
+      </ol>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Transaction Types</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="well">
+        Select the Respective Role to Assign Transaction Types.
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-body bordered">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group col-md-12">
+            <label class="focused"> Roles </label>
+            <select class="form-control" [(ngModel)]="selectedRole" (change)="bindTxnTypesByRoleId()"> 
+              <option selected="selected" value="">--Select--</option>
+              <option *ngFor="let role of roles" value="{{role.RoleId}}"> {{role.RoleName}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-5">
+          <div class="form-group col-md-12">
+            <label class="focused"> Assigned Transaction Types </label>
+            <select multiple class="form-control multipleSelect" [(ngModel)]="assignedTxnTypesSelected"> 
+            <option *ngFor="let assignedTxnType of assignedTxnTypes" value="{{assignedTxnType.TxnTypeId}}"> {{assignedTxnType.TxnType}}</option>
+          </select>
+          </div>
+        </div>
+        <div class="col-md-2 text-center">
+          <br/>
+          <br/>
+          <br/>
+          <button class="btn btn-primary btn-xs" (click)="moveToAssigned()"> <i class="fa fa-angle-left fa-fw fa-2x" aria-hidden="true"></i> </button>
+          <br/>
+          <br/>
+          <button class="btn btn-primary btn-xs" (click)="moveToAvailable()"> <i class="fa fa-angle-right fa-fw fa-2x" aria-hidden="true"></i> </button>
+          <br/>
+          <br/>
+          <button class="btn btn-primary btn-xs" (click)="moveAllToAssigned()"> <i class="fa fa-angle-double-left fa-fw fa-2x" aria-hidden="true"></i> </button>
+          <br/>
+          <br/>
+          <button class="btn btn-primary btn-xs" (click)="moveAllToAvailable()"> <i class="fa fa-angle-double-right fa-fw fa-2x" aria-hidden="true"></i> </button>
+          <br/>
+          <br/>
+        </div>
+        <div class="col-md-5">
+         
+          <div class="form-group col-md-12">
+            <label class="focused"> Available Transaction Types </label>
+            <select multiple class="form-control multipleSelect" [(ngModel)]="availableTxnTypesSelected"> 
+            <option *ngFor="let availableTxnType of availableTxnTypes" value="{{availableTxnType.TxnTypeId}}"> {{availableTxnType.TxnType}}</option>
+          </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="form-group">
+          <button class="btn btn-primary btn-search" (click)="insertTxnTypes()" [disabled]="disableButton">{{submitButtonText}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

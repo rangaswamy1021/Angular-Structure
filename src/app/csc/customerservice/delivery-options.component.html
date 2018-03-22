@@ -1,0 +1,142 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Customer Service</a></li>
+        <li class="active">Delivery Options</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Delivery Options</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-account-info></app-account-info>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+  <div class="row">
+    <div class="col-md-12">
+      <form role="form" name="deliveryOptionsform" [formGroup]="deliveryOptionsform" novalidate>
+        <div class="table-bdr">
+          <h3>Statement Delivery Options</h3>
+          <div class="*form-horizontal max-width-100  m-t-20">
+            <div class="form-group col-sm-6">
+                <!--[(ngModel)]='CustomerAttributesResponse.StatementDelivery'-->
+                <!--[(ngModel)]='strStatementDelivery'-->
+                 <label for="statementDeliveryOption" class="focused">Statement Delivery Option</label>
+                <select class="form-control" required [attr.disabled]="isNonRevenue?'':null" id="statementDeliveryOption" name="statementDeliveryOption"
+                  formControlName="statementDeliveryOption">
+                <option value="" selected="selected">--Select--</option>
+                <option *ngFor="let DeliveryOption of responseStatementDeliveryOption" value="{{DeliveryOption.Key}}">{{DeliveryOption.Value}}</option>
+              </select>
+              <div class="msg" *ngIf="deliveryOptionsform.controls['statementDeliveryOption'].invalid && (deliveryOptionsform.controls['statementDeliveryOption'].dirty || deliveryOptionsform.controls['statementDeliveryOption'].touched)">
+                  <div *ngIf="deliveryOptionsform.controls['statementDeliveryOption'].errors.required">
+                    Required
+                  </div>
+              </div>
+                <!--<div *ngIf="deliveryOptionsform.controls['statementDeliveryOption'].hasError('required')">Statement Delivery Option is Required</div>-->
+            
+            </div>
+            <div class="form-group col-sm-6" *ngIf='isPostpaid'>
+                  <label for="invoiceIntervalValue"  class="focused">Invoice Interval Cycle</label>
+                <!--(change)='selectionChange()'-->
+                <!--[(ngModel)]='InvoiceInterval'-->
+                <select class="form-control" required [attr.disabled]="!isInvoiceDisable||isNonRevenue?'':null" (change)='bindInvoiceDetails()'
+                  id="invoiceIntervalValue" name="invoiceIntervalValue" formControlName="invoiceIntervalValue">
+                 <option value="">--Select--</option>               
+                <option *ngFor="let InvoiceCycle of invoiceCycle" value="{{InvoiceCycle.CycleID}}">{{InvoiceCycle.CycleType}}</option>
+              </select>
+               <div class="msg" *ngIf="deliveryOptionsform.controls['invoiceIntervalValue'].invalid && (deliveryOptionsform.controls['invoiceIntervalValue'].dirty || deliveryOptionsform.controls['invoiceIntervalValue'].touched)">
+                  <div *ngIf="deliveryOptionsform.controls['invoiceIntervalValue'].errors.required">
+                  Required
+                  </div>
+              </div>
+                <!--<div *ngIf="deliveryOptionsform.controls['invoiceIntervalValue'].hasError('required')">Invoice Interval Cycle is Required</div>-->
+            </div>
+            <div class="form-group col-sm-6" *ngIf='isPostpaid&&isInvoiceDays'>
+                <!--[(ngModel)]='invoiceDays'-->
+                 <label for="invoiceDays" class="focused">Invoice Days</label>
+                <select class="form-control" [attr.disabled]="isNonRevenue?'':null" id="invoiceDays" name="invoiceDays" formControlName="invoiceDays">                             
+                <option *ngFor="let InvoiceDays of responseInvoiceDays" value="{{InvoiceDays.Key}}">{{InvoiceDays.Value}}</option>
+              </select>
+               <div class="msg" *ngIf="deliveryOptionsform.controls['invoiceDays'].invalid && (deliveryOptionsform.controls['invoiceDays'].dirty || deliveryOptionsform.controls['invoiceDays'].touched)">
+                  <div *ngIf="deliveryOptionsform.controls['invoiceDays'].errors.required">
+                   Required
+                  </div>
+              </div>
+                <!--<div *ngIf="deliveryOptionsform.controls['invoiceDays'].hasError('required')">Invoice Days is Required</div>-->
+           
+            </div>
+            <div class="form-group col-sm-6" [hidden]='!isPostpaid || !isInvoiceAmount'>
+              
+                 <label for="invoiceAmount">Invoice Amount</label>
+                <input type="text" class="form-control" [attr.disabled]="isNonRevenue?'':null" placeholder="" id="invoiceAmount" name="invoiceAmount"
+                  formControlName="invoiceAmount">
+             
+              <div *ngIf="deliveryOptionsform.controls['invoiceAmount'].hasError('required')">Invoice Amount is Required</div>
+            </div>
+            <div class="form-group col-sm-6" *ngIf='isPrepaid || isDisabled'>
+                <!--[(ngModel)]='strStatementCycle'-->
+                   <label for="statementCycle" class="focused">Statement Cycle</label>
+                <select class="form-control" required [attr.disabled]="isDisabled||isNonRevenue?'':null" id="StatementCycle" name="statementCycle"
+                  formControlName="statementCycle">
+                <option value="">--Select--</option>
+                <option *ngFor="let statementCycle of responsestatementCycle" value="{{statementCycle.Key}}">{{statementCycle.Value}}</option>
+              </select>
+               <div class="msg" *ngIf="deliveryOptionsform.controls['statementCycle'].invalid && (deliveryOptionsform.controls['statementCycle'].dirty || deliveryOptionsform.controls['statementCycle'].touched)">
+                  <div *ngIf="deliveryOptionsform.controls['statementCycle'].errors.required">
+                   Required
+                  </div>
+              </div>
+                <!--<div *ngIf="deliveryOptionsform.controls['statementCycle'].hasError('required')">Statement Cycle is Required</div>-->
+              
+            </div>
+             <div class="row m-l-10">
+            <div class="form-group  col-md-12">
+          
+                <button type="submit" [disabled]='isNonRevenue || disableUpdateButton' class="btn btn-primary btn-search" (click)="updateStatementDeliveryOptions()">Update</button>
+                <button type="submit" [disabled]='isNonRevenue' class="btn btn-primary btn-reset" (click)="resetDeliveryOptions()">Reset</button>
+             </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="table-bdr" *ngIf='isBoolTagRequired'>
+        <h3>Tag Delivery Options</h3>
+        <div class="*form-horizontal max-width-100">
+          <form role="form" name="tranponderPurchasemethodfrom" [formGroup]="tranponderPurchasemethodfrom" novalidate>
+            <div class="row">
+                  <div class="col-md-12">
+            <div class="form-group col-sm-6  m-t-20">
+                <!--[(ngModel)]='CustomerAttributesResponse.TranponderPurchasemethod'-->
+                <!--[(ngModel)]='strTranponderPurchasemethod'-->
+                  <label for="tranponderPurchase" class="focused">Tag Delivery Option</label>
+                <select class="form-control" [attr.disabled]="isNonRevenue?'':null" id="tranponderPurchase" name="tranponderPurchase" formControlName="tranponderPurchase"> 
+                 <option value="" selected="selected">--Select--</option>
+               <option *ngFor="let DeliveryOption of responseTagDeliveryOption" value="{{DeliveryOption.Key}}">{{DeliveryOption.Value}}</option>
+              </select>
+               <div class="msg" *ngIf="tranponderPurchasemethodfrom.controls['tranponderPurchase'].invalid && (tranponderPurchasemethodfrom.controls['tranponderPurchase'].dirty || tranponderPurchasemethodfrom.controls['tranponderPurchase'].touched)">
+                  <div *ngIf="tranponderPurchasemethodfrom.controls['tranponderPurchase'].errors.required">
+                    Required
+                  </div>
+              </div>
+                <!--<div *ngIf="tranponderPurchasemethodfrom.controls['tranponderPurchase'].hasError('required')">Tag Delivery Option is Required</div>-->
+            </div>
+            <div class="form-group col-md-6  m-t-10">
+                <button type="submit" [disabled]='isNonRevenue || disableButton' class="btn btn-primary btn-search" (click)="updateTagDeliveryOptions()">Update</button>
+                <button type="submit" [disabled]='isNonRevenue' class="btn btn-primary btn-reset" (click)="resetTranponderPurchase()">Reset</button>
+             </div>
+            </div>
+               </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

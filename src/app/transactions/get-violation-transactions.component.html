@@ -1,0 +1,41 @@
+  <div class="table-bdr">
+    <h3>Violation Transactions</h3>
+    <div class="pad-10">
+      <div *ngIf='violationResponse && violationResponse.length;else NoDetailsBlock'>
+        <table class="table">
+          <thead> 
+          <tr>
+            <th>Trip ID</th>
+            <th>Trip Date/Time</th>
+            <th>Location </th>
+            <th>Plate #</th>
+            <th>Toll Amount</th>
+            <th>Penalty</th>
+            <th>Outstanding Amount</th>
+          </tr>
+          </thead>
+          <tr *ngFor="let object of violationResponse">
+            <td> {{object.CustomerTripId}} </td>
+            <td> {{object.Entry_TripDateTime | customDateTimeFormat}} </td>
+            <td> {{object.LocationName | DisplayNA}} </td>
+            <td> {{object.VehicleNumber | DisplayNA}} </td>
+            <td> {{object.TollAmount | currency:'USD':true:'1.2-2'}} </td>
+            <td> {{object.FeeAmounts | currency:'USD':true:'1.2-2'}} </td>
+            <td> {{object.OutStandingAmount | currency:'USD':true:'1.2-2'}} </td>
+          </tr>
+          <!--<tr *ngIf='ViolationResponse.length>=5'>
+          <td style="float:right" > <a href=""> More </a></td>
+          </tr>-->
+        </table>
+        <div class="row">
+        <div class="col-md-12 text-right" *ngIf='violationResponse.length>=5' style="float:right">
+          <a (click)="goToTransactions('Violations')"> More </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #NoDetailsBlock>
+    <div >No details to display</div>
+  </ng-template>

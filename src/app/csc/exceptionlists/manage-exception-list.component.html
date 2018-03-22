@@ -1,0 +1,235 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Exception List</a></li>
+        <li class="active">Manage Exception List</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Exception List</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <form role="form" name="exceptionForm" [formGroup]="exceptionForm" novalidate>
+        <div class="row">
+          <div class="col-sm-6 form-group popover-field">
+            <label for="accountId" class="focused">Account # </label>
+            <input type="text" class="form-control" id="accountId" placeholder="Account #" formControlName="accountId" name="accountId"
+              maxlength="17">
+            <div class="msg" *ngIf="exceptionForm.controls['accountId'].invalid && (exceptionForm.controls['accountId'].dirty || exceptionForm.controls['accountId'].touched)">
+              <div *ngIf="exceptionForm.controls['accountId'].errors.pattern">
+                Only numerics are allowed.
+              </div>
+              <div *ngIf="exceptionForm.controls['accountId'].errors.minlength">
+                Minimum 1 characters are required.
+              </div>
+              <div *ngIf="exceptionForm.controls['accountId'].errors.maxlength">
+                Maximum 10 characters are allowed.
+              </div>
+            </div>
+            <button type="button" class="pop-over" data-container="body" [popover]="poppAccount" popoverTitle="Help" triggers="mouseenter:mouseleave"
+              placement='left'>?</button>
+            <ng-template #poppAccount>
+              <ul>
+                <li>Account # allows only numerics.</li>
+                <li>It should be minimum 1 maximum 10 characters long.</li>
+              </ul>
+            </ng-template>
+          </div>
+          <div class="form-group col-sm-6 popover-field">
+            <label for="plateNo">Plate # </label>
+            <input type="text" class="form-control" id="plateNo" placeholder="Plate #" formControlName="plateNo" name="plateNo" maxlength="10">
+            <div class="msg" *ngIf="exceptionForm.controls['plateNo'].invalid && (exceptionForm.controls['plateNo'].dirty || exceptionForm.controls['plateNo'].touched)">
+              <div *ngIf="exceptionForm.controls['plateNo'].errors.pattern">
+                Only alphanumerics are allowed.
+              </div>
+              <div *ngIf="exceptionForm.controls['plateNo'].errors.minlength">
+                Minimum 1 characters are required.
+              </div>
+              <div *ngIf="exceptionForm.controls['plateNo'].errors.maxlength">
+                Maximum 10 characters are allowed.
+              </div>
+            </div>
+            <button type="button" class="pop-over" data-container="body" [popover]="popPlate" popoverTitle="Help" triggers="mouseenter:mouseleave"
+              placement='left'>?</button>
+            <ng-template #popPlate>
+              <ul>
+                <li>Plate # allows only alphanumerics.</li>
+                <li>It should be minimum 1 maximum 10 characters long.</li>
+              </ul>
+            </ng-template>
+          </div>
+          <div class="form-group col-sm-6 popover-field">
+            <label for="selectedState" class="focused">State </label>
+            <select class="form-control" placeholder="State" id="selectedState" name="selectedState" formControlName="selectedState">
+                            <option selected="selected" value="">--Select--</option>
+                            <option *ngFor="let state of addressStates" value="{{state.StateCode}}">{{state.StateName}}</option>
+                          </select>
+            <div class="msg" *ngIf="exceptionForm.controls['selectedState'].invalid && (exceptionForm.controls['selectedState'].dirty || exceptionForm.controls['selectedState'].touched)">
+              <div *ngIf="exceptionForm.controls['selectedState'].errors.required">
+                Required.
+              </div>
+            </div>
+            <button type="button" class="pop-over" data-container="body" [popover]="popSS" popoverTitle="Help" triggers="mouseenter:mouseleave"
+              placement='left'>?</button>
+            <ng-template #popSS>
+              <ul>
+                <li>Select State</li>
+              </ul>
+            </ng-template>
+          </div>
+          <div class="form-group col-sm-6 popover-field">
+            <label for="countrySelected" class="focused">Country </label>
+            <select class="form-control" placeholder="Country" id="countrySelected" name="countrySelected" formControlName="countrySelected"
+              (change)="changeCountry($event.target.value)">
+                              <option selected="selected" value="">--Select--</option>
+                              <option *ngFor="let country of addressCountries" value="{{country.CountryCode}}">{{country.CountryName}}</option>
+                            </select>
+            <div class="msg" *ngIf="exceptionForm.controls['countrySelected'].invalid && (exceptionForm.controls['countrySelected'].dirty || exceptionForm.controls['countrySelected'].touched)">
+              <div *ngIf="exceptionForm.controls['countrySelected'].errors.required">
+                Required.
+              </div>
+            </div>
+            <button type="button" class="pop-over" data-container="body" [popover]="popSC" popoverTitle="Help" triggers="mouseenter:mouseleave"
+              tabindex="-1" placement='left'>?</button>
+            <ng-template #popSC>
+              <ul>
+                <li> Select Country.</li>
+              </ul>
+            </ng-template>
+          </div>
+          <div class="form-group col-sm-6 popover-field">
+            <label for="serialNo">Serial # </label>
+            <input type="text" class="form-control" id="serialNo" placeholder="Serial #" formControlName="serialNo" name="serialNo" maxlength="10">
+            <div class="msg" *ngIf="exceptionForm.controls['serialNo'].invalid && (exceptionForm.controls['serialNo'].dirty || exceptionForm.controls['serialNo'].touched)">
+              <div *ngIf="exceptionForm.controls['serialNo'].errors.pattern">
+                Only alphanumerics are allowed.
+              </div>
+              <div *ngIf="exceptionForm.controls['serialNo'].errors.minlength">
+                Minimum 1 characters are required.
+              </div>
+              <div *ngIf="exceptionForm.controls['serialNo'].errors.maxlength">
+                Maximum 10 characters are allowed.
+              </div>
+            </div>
+            <button type="button" class="pop-over" data-container="body" [popover]="popSerialNo" popoverTitle="Help" triggers="mouseenter:mouseleave"
+              placement='left'>?</button>
+            <ng-template #popSerialNo>
+              <ul>
+                <li>Serial # allows only numerics.</li>
+                <li>It should be minimum 1 maximum 10 characters long.</li>
+              </ul>
+            </ng-template>
+          </div>
+          <div class="form-group col-md-6">
+            <div class="checkbox">
+              <input #saveCheckbox type="checkbox" id="saveCheckbox" formControlName="active" name="active" [checked]="active" (change)="checkActive(saveCheckbox.checked)">
+              <label for="saveCheckbox">
+                  <span></span> Is Active </label>
+            </div>
+          </div>
+          <div style="clear:both">
+            <div class="form-group col-sm-6 popover-field">
+              <label for="comments" class="focused">Comments</label>
+              <textarea class="form-control" id="comments" rows="3" formControlName="comments" name="comments" maxlength="50"></textarea>
+              <div class="msg" *ngIf="exceptionForm.controls['comments'].invalid && (exceptionForm.controls['comments'].dirty || exceptionForm.controls['comments'].touched)">
+                <div *ngIf="exceptionForm.controls['comments'].errors.pattern">
+                  Only alphanumerics, spaces and all special characters except(
+                  <>) are allowed.
+                </div>
+                <div *ngIf="exceptionForm.controls['comments'].errors.minlength">
+                  Minimum 1 characters are required.
+                </div>
+                <div *ngIf="exceptionForm.controls['comments'].errors.maxlength">
+                  Maximum 50 characters are allowed.
+                </div>
+              </div>
+              <button type="button" class="pop-over" data-container="body" [popover]="popComments" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                placement='left'>?</button>
+              <ng-template #popComments>
+                <ul>
+                  <li>Comments allows alphanumerics, spaces and all special characters except(
+                    <>).</li>
+                  <li>It should be minimum 1 maximum 50 characters long.</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <button [disabled]='disabledCreate' type="submit" class="btn btn-primary btn-search" (click)="createWatchList()" *ngIf="!isUpdate">Add</button>
+            <button [disabled]='disabledUpdate' type="submit" class="btn btn-primary btn-search" (click)="updateWatchList()" *ngIf="isUpdate">Update</button>
+            <button type="reset" class="btn btn-primary btn-reset" (click)="resetFields()">Reset</button>
+          </div>
+        </div>
+      </form>
+      <!--Exception table start-->
+      <div class="table-bdr">
+        <h3>Manage Exception List</h3>
+        <div class="pad-10" *ngIf='exceptionListResponse && exceptionListResponse.length;else NodetailsBlock'>
+          <div class="table-responsive">
+            <table class="table hide-col-1">
+              <thead>
+                <tr>
+                  <th *ngIf="hideColumns">WatchList # </th>
+                  <th>Account #</th>
+                  <th>Plate #</th>
+                  <th>State</th>
+                  <th>Country</th>
+                  <th>Serial #</th>
+                  <th>Is Active </th>
+                  <th *ngIf="hideColumns">StartEffectiveDate </th>
+                  <th *ngIf="hideColumns">EndEffectiveDate </th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let exceptionResponse of exceptionListResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: currentPage, totalItems: totalRecordCount }">
+                  <td *ngIf="hideColumns">{{exceptionResponse.WatchListID}}</td>
+                  <td *ngIf="exceptionResponse.CustomerID>0">{{exceptionResponse.CustomerID}}</td>
+                  <td *ngIf="exceptionResponse.CustomerID==0"></td>
+                  <td>{{exceptionResponse.VehicleNumber}}</td>
+                  <td>{{exceptionResponse.VehicleState}}</td>
+                  <td>{{exceptionResponse.VehicleCountry}}</td>
+                  <td>{{exceptionResponse.TagID}}</td>
+                  <td>{{exceptionResponse.IsActive}}</td>
+                  <td *ngIf="hideColumns">{{exceptionResponse.StartEffectiveDate}}</td>
+                  <td *ngIf="hideColumns">{{exceptionResponse.EndEffectiveDate}}</td>
+                  <td><a [ngClass]="{'disabletextbox': disabledUpdate}" class="link" (click)="populateExceptionDetails(exceptionResponse)"><img src="assets/images/svg/edit.svg" class="icon-svg" alt="" width="16px"></a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="row page-info" *ngIf='exceptionListResponse && exceptionListResponse.length>0'>
+            <div class="col-md-6 text-left">
+              <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+            </div>
+            <div class="col-md-6 text-right">
+              <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+            </div>
+          </div>
+        </div>
+        <ng-template #NodetailsBlock>
+          <div class="alert" role="alert">No records to display</div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="text-center">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event, 1000)"></app-success-failure-alerts-message>

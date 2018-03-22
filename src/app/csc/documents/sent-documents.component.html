@@ -1,0 +1,132 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">{{subSystem}} </a></li>
+        <li><a href="#">Documents</a></li>
+        <li class="active">Sent Documents</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Sent Documents</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div *ngIf="boolCSCVisible">
+    <app-account-info></app-account-info>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <h3>Document Details</h3>
+        <form role="form" name="sentDocuments" [formGroup]="sentDocuments">
+          <div class="row m-t-20 no-nagarive-margins">
+            <div class="col-md-4">
+            <div class="row">
+              <div class="form-group col-md-12 popover-field">
+                <label class="focused" for="exampleInputEmail1">Document Type</label>
+                <select class="form-control" [(ngModel)]="selected" formControlName="documentType">
+                 <option [selected]="true" value="ALL">ALL</option>
+                 <option *ngFor="let docType of dropDownDataResults" value="{{docType.LookUpTypeCode}}" >
+                              {{docType.LookUpTypeCodeDesc}} 
+                  </option>
+                </select>
+                <button type="button" class="pop-over" [popover]="popDType" popoverTitle="Help" data-container="body" triggers="mouseenter:mouseleave"
+                  placement="left">?</button>
+
+                <ng-template #popDType>
+                  <ul>
+                    <li>Select Document Type</li>
+                  </ul>
+                </ng-template>
+              </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+            <div class="row">
+              <div class="form-group col-md-12 popover-field">
+                <label class="focused" for="exampleInputEmail1">Delivery Status</label>
+                <select class="form-control" [(ngModel)]="selectedDoc" formControlName="docStatus">
+                     <option [selected]="true" value="ALL">ALL</option>
+                 <option *ngFor="let docstatus of docStatus" value="{{docstatus.value}}" >
+                              {{docstatus.key}} 
+                          </option>
+                </select>
+                <button type="button" class="pop-over" [popover]="popDStatus" popoverTitle="Help" data-container="body" triggers="mouseenter:mouseleave"
+                  placement="left">?</button>                
+                <ng-template #popDStatus>
+                  <ul>
+                    <li>Select Delivery Status</li>
+                  </ul>
+                </ng-template>
+              </div>
+            </div>
+            </div>
+            <div class="col-md-4 m-t-15">              
+              <div class="btns-group">
+                <button class="btn btn-primary btn-search" type="button" [disabled]="isSearch" (click)="searchDocuments()">Search</button>
+                <button class="btn btn-primary btn-reset" type="button" (click)="reset()">Reset</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="table-bdr">
+        <h3>Sent Documents</h3>
+        <div class="table-default table-responsive">
+          <div *ngIf='searchResponse && searchResponse.length;else NodetailsBlock'>
+            <table class="table">
+              <thead>
+                <tr>
+                  <!-- <th>Document Type</th> -->
+                    <th (click)="sortDirection('DocumentTypeName')" class="sorting-handle"> Document Type 
+                        <span *ngIf="gridArrowDocumentTypeName">
+                            <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                          </span>
+                    </th>
+                  <th>Description</th>
+                  <!-- <th>Generated Date</th> -->
+                  <th (click)="sortDirection('GENERATEDDATE')" class="sorting-handle"> Generated Date 
+                      <span *ngIf="gridArrowCOMMUNICATIONDATE">
+                          <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                        </span>
+                  </th>
+                  <th>Deliver Status</th>
+                  <th>View</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor='let object of searchResponse| paginate: { itemsPerPage: pageItemNumber, currentPage: p , totalItems:dataLength}'>
+                  <td>{{object.DocumentTypeName}}</td>
+                  <td>{{object.Description}}</td>
+                  <td>{{object.GeneratedDate| customDateTimeFormat}}</td>
+                  <td>
+                    {{object.DocumentStatus}}
+                  </td>
+                  <td><a (click)="viewFile(object)"><img src="assets/images/svg/view.svg" alt="" class="icon-svg3"></a></td>
+
+                </tr>
+              </tbody>
+            </table>
+            <div class="page-info" *ngIf='searchResponse && dataLength>pageItemNumber'>
+              <div class="col-md-6 text-left">
+                <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+              </div>
+              <div class="col-md-6 text-right">
+                <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ng-template #NodetailsBlock>
+          <div>No details to display</div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

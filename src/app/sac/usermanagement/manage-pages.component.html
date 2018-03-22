@@ -1,0 +1,94 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">SAC</a></li>
+        <li><a href="#">User Management</a></li>
+        <li class="active">Manage Pages</li>
+      </ol>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Pages</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="well">
+        Select the Respective Roles, Sub System to Assign Available Pages.
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-body bordered">
+
+      <div class="col-md-6">
+        <div class="form-group col-md-12">
+          <label class="focused"> Roles </label>
+          <select class="form-control" (change)="getPages()" [(ngModel)]='roleId'> 
+            <option  value="0">--select--</option>
+                 <option *ngFor='let role of roles' [value]="role.RoleId"> 
+                  {{role.RoleName}}
+                 </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group col-md-12">
+          <label class="focused"> Sub System </label>
+          <select class="form-control" (change)="getPages()" [(ngModel)]='siteId'> 
+             <option  value="0">--select--</option>
+                 <option *ngFor='let branch of branches' [value]="branch.SiteId"> 
+                  {{branch.SiteName}}
+                 </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-md-5">
+        <div class="form-group col-md-12">
+          <label class="focused"> Assigned Pages </label>
+          <select multiple class="form-control multipleSelect" [(ngModel)]='selectedAssignedPages'> 
+            <option *ngFor='let assignedpage of assignedPages' value="{{assignedpage.SiteId}}"> {{assignedpage.SiteDesc}} </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-2 text-center">
+        <br/>
+
+        <br/>
+        <br/>
+        <button class="btn btn-primary btn-xs" (click)="leftAssign()"> <i class="fa fa-angle-left fa-fw fa-2x" aria-hidden="true" ></i> </button>        <br/>
+        <br/>
+        <button class="btn btn-primary btn-xs" (click)="rightAssign()"> <i class="fa fa-angle-right fa-fw fa-2x" aria-hidden="true"></i> </button>        <br/>
+        <br/>
+        <button class="btn btn-primary btn-xs" (click)="allLeftAssign()"> <i class="fa fa-angle-double-left fa-fw fa-2x" aria-hidden="true"></i> </button>        <br/>
+        <br/>
+        <button class="btn btn-primary btn-xs" (click)="allRightAssign()"> <i class="fa fa-angle-double-right fa-fw fa-2x" aria-hidden="true"></i> </button>        <br/><br/>
+      </div>
+      <div class="col-md-5">
+        <div class="form-group col-md-12">
+          <label class="focused"> Available Pages </label>
+          <select multiple class="form-control multipleSelect" [(ngModel)]='selectedAvailabelPages'> 
+            <option *ngFor='let availablepage of availablePages' value="{{availablepage.SiteId}}"> {{availablepage.SiteDesc}} </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="form-group">
+          <button class="btn btn-default btn-search" [disabled]="isManage" (click)="updatePages()">{{assignorupdate}}</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

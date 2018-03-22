@@ -1,0 +1,60 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Customer Accounts</a></li>
+        <li class="active">Adjustment Requests</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Adjustment Requests</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="table-bdr">
+    <div *ngIf='objAdjustmentResponse && objAdjustmentResponse.length'>
+      <h3>Pending Adjustment Requests</h3>
+      <div class="pad-10">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th> Account # </th>
+                <th> Adjustment Reason </th>
+                <th> Requested Date/Time </th>
+                <th> Amount($) </th>
+                <th> Approve </th>
+                <th> Reject </th>
+              </tr>
+            </thead>
+            <tr *ngFor="let res of objAdjustmentResponse| paginate: { itemsPerPage: pageItemNumber, currentPage: p }">
+              <td> {{res.CustomerId}} </td>
+              <td> {{res.AdjustmentReason}} </td>
+              <td> {{res.AdjustmentDate | customDateTimeFormat }} </td>
+              <td> {{res.Amount| currency:'USD':true:'1.2-2'}} </td>
+              <td> <a name="{{res.AdjustmentCategoryId}}" (click)="approvePopup(res)" [ngClass]="{'disabletextbox': disableApproveButton}">Approve</a></td>
+              <td> <a name="{{res.AdjustmentCategoryId}}" (click)="rejectPopup(res)" [ngClass]="{'disabletextbox': disableRejectButton}">Reject</a></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div *ngIf=' !objAdjustmentResponse || objAdjustmentResponse.length==0'>
+      <div class="panel-heading"> Adjustment Requests </div>
+      <div class="panel-body">
+        <div class="status-content">
+          <p>No records to display</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event, 1000)"
+  (onOk)="userAction($event)"></app-success-failure-alerts-message>

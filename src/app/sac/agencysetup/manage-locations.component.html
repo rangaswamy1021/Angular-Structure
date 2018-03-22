@@ -1,0 +1,212 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">SAC</a>
+        </li>
+        <li>
+          <a href="#">Agency Setup</a>
+        </li>
+        <li class="active">Manage Facility</li>
+      </ol>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Facility</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<form role="form" name="manageLocations" [formGroup]="manageLocations">
+  <div class="content">
+    <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+    <div class="table-bdr">
+      <div class="panel-body">
+        <div class="col-md-6">
+          <div class="form-group col-md-12 popover-field">
+            <label> Facility Code </label>
+            <input type="text" class="form-control" formControlName="location-code" name="location-code" placeholder="Facility Code">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group col-md-12 popover-field">
+            <label> Facility Name </label>
+            <input type="text" class="form-control" formControlName="location-name" name="location-name" placeholder="Facility Name">
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="form-group">
+            <button type="submit" (click)="searchClick()" class="btn btn-primary btn-search">Search</button>
+            <button type="reset" (click)="searchresetClick()" class="btn btn-primary btn-reset"> Reset </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--manage location add button-->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <!-- <button class="btn btn-default btn-search" (click)="addloc()"> Add New Location </button> -->
+          <!-- <a href="javascript:;" (click)='addloc()'>Add New Location</a> -->
+          <a (click)="addloc()">
+            <i class="fa fa-plus-square-o fa-lg fa-fw" aria-hidden="true"></i> Add New Facility </a>
+        </div>
+      </div>
+    </div>
+    <!--manage location add and edit form-->
+    <div class="table-bdr" [hidden]="!isaddLocation">
+      <h3>
+        Facility Details
+      </h3>
+      <div class="panel-body">
+        <div class="col-md-6">
+          <div class="form-group col-md-12 popover-field">
+            <label> Facility Name </label>
+            <input type="text" maxlength="30" pattern="^[a-zA-Z0-9 ]*$" class="form-control" formControlName="locationname" name="locationname"
+              placeholder="Facility Name">
+            <div class="msg" *ngIf="manageLocations.controls['locationname'].invalid && (manageLocations.controls['locationname'].dirty || manageLocations.controls['locationname'].touched)">
+              <div *ngIf="manageLocations.controls['locationname'].errors.required">
+                Required.
+              </div>
+              <div *ngIf="manageLocations.controls['locationname'].errors.pattern">
+                Only alphanumerics and spaces are allowed
+              </div>
+            </div>
+            <button type="button" class="pop-over" data-container="body" [popover]="popLN" popoverTitle="Help" triggers="mouseenter:mouseleave"
+              placement='left'>?</button>
+            <ng-template #popLN>
+              <ul>
+                <li>Facility Name is required</li>
+                <li>It allows only alphabets, numbers and spaces</li>
+                <li>Special characters are not allowed</li>
+                <li>Facility Name should be minimum of 1 and maximum of 30 characters in length</li>
+              </ul>
+            </ng-template>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group col-md-12 popover-field">
+            <label> Facility Code </label>
+            <input type="text" maxlength="10" pattern="^[a-zA-Z0-9]*$" class="form-control" formControlName="locationcode" name="locationcode"
+              placeholder="Facility code">
+            <div class="msg" *ngIf="manageLocations.controls['locationcode'].invalid && (manageLocations.controls['locationcode'].dirty || manageLocations.controls['locationcode'].touched)">
+              <div *ngIf="manageLocations.controls['locationcode'].errors.required">
+                Required.
+              </div>
+              <div *ngIf="manageLocations.controls['locationcode'].errors.pattern">
+                Only alphanumerics and spaces are allowed
+              </div>
+            </div>
+            <button type="button" class="pop-over" data-container="body" [popover]="popLC" popoverTitle="Help" triggers="mouseenter:mouseleave"
+              placement='left'>?</button>
+            <ng-template #popLC>
+              <ul>
+                <li>Facility Code is required</li>
+                <li>It allows only alphabets, numbers and spaces</li>
+                <li>Special characters and spaces are not allowed</li>
+                <li>Facility Code should be minimum of 1 and maximum of 10 characters in length</li>
+              </ul>
+            </ng-template>
+          </div>
+        </div>
+
+        <div class="col-md-6">      
+            <div class="form-group col-md-12 popover-field">
+              <label> Description</label>
+              <textarea class="form-control" cols="5" rows="3" id="description" name="description" formControlName="description" (keyup)="calculateLength($event)"
+                [maxlength]="descriptionMaxLength"> </textarea>
+              <div class="msg" *ngIf="manageLocations.controls['description'].invalid && (manageLocations.controls['description'].dirty || manageLocations.controls['description'].touched)">
+                <div *ngIf="manageLocations.controls['description'].errors.required">
+                  Required.
+                </div>
+              </div>
+              <button type="button" class="pop-over" data-container="body" [popover]="popD" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                placement='left'>?</button>
+              <ng-template #popD>
+                <ul>
+                  <li>Description is required</li>
+                  <li>Description should be minimum of 1 and maximum of 250 characters in length</li>
+                </ul>
+              </ng-template>
+            </div>
+            <small class="pull-right" style="padding-right:30px"> Left: {{descriptionLength}} characters </small>
+          
+        </div>
+        <div class="form-group checkbox-inline col-md-6">
+          <div class="col-md-4 checkbox">
+            <input #saveCheckbox type="checkbox" id="saveCheckbox" name="active" formControlName="active" [checked]="active" (change)="checkActive(saveCheckbox.checked)">
+            <label for="saveCheckbox">
+              <span></span>Is Owned</label>
+          </div>
+          <div class="col-md-4 checkbox">
+            <input #saveCheckbox1 type="checkbox" id="saveCheckbox1" name="activer" formControlName="activer" [checked]="activer" (change)="checkActive1(saveCheckbox1.checked)">
+            <label for="saveCheckbox1">
+              <span></span>Is Non Revenue</label>
+          </div>
+        </div>
+        <div class="col-md-12 m-t-10">
+          <button class="btn btn-default btn-search" [disabled]="disableCButton" (click)='addLocation()' *ngIf="isAddClicked"> Add </button>
+          <button class="btn btn-default btn-search" [disabled]="disableUButton" (click)='onUpdateClick()' *ngIf="isEditClicked"> Update </button>
+          <button type="reset" (click)="resetClick()" class="btn btn-primary btn-reset"> Reset </button>
+          <button class="btn btn-default btn-reset" (click)="cancel() "> Cancel </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!--manage location grid-->
+    <div class="table-bdr">
+      <h3>
+        Facility Details
+      </h3>
+      <div class="panel-body">
+        <div *ngIf='locations && locations.length;else NodetailsBlock'>
+          <table class="table bordered">
+            <thead>
+              <tr>
+                <th> Facility Code </th>
+                <th> Facility Name </th>
+                <th> Facility Description </th>
+                <th> Is Owned </th>
+                <th> Is Non Revenue </th>
+                <th> Edit </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let loc of locations| paginate: { itemsPerPage: pageItemNumber, currentPage: currentPage }">
+
+                <td>{{loc.LocationCode}}</td>
+                <td>{{loc.LocationName}}</td>
+                <td>{{loc.Description}}</td>
+                <td>{{loc.isOwned?'Yes':'No'}}</td>
+                <td>{{loc.isNonRevenue?'Yes':'No'}}</td>
+                <td>
+                  <img src="assets/images/svg/edit.svg" class="icon-svg3" (click)='onEditClick(loc)' title="Edit">
+                </td>
+                <!-- <td>
+                <a href="#" (click)='onEditClick(loc)'><i class="fa fa-pencil-square fa-2x"> </i>
+                </a>
+              </td> -->
+              </tr>
+            </tbody>
+          </table>
+          <div class="row page-info ">
+            <div class="col-md-6 text-left ">
+              <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+            </div>
+            <div class="col-md-6 text-right ">
+              <pagination-controls (pageChange)="pageChanged($event) "></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-template #NodetailsBlock>
+        <div class="alert alert-info " role="alert ">No details to display</div>
+      </ng-template>
+    </div>
+  </div>
+</form>

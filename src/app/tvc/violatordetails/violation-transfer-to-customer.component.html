@@ -1,0 +1,158 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">TVC</a>
+        </li>
+        <li>
+          <a href="#">Search</a>
+        </li>
+        <li>
+          <a href="#">Account Summary</a>
+        </li>
+        <li>
+          <a href="#">Trips</a>
+        </li>
+        <li>Trip Adjustments</li>
+        <li class="active">Move To Customer</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Move To Customer</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+  <div class="row">
+    <div class=" col-md-12 text-right">
+      <button class="btn btn-default btn-search" (click)='backClick()' type="button">Back</button>
+    </div>
+  </div>
+  <div>
+    From this page a CSR can transfer the trip(s) to a valid customer account.
+  </div>
+
+  <div class="alert alert-info clear">
+    Linking Trip # : ({{tripIdCSV}})
+    <div style="float:right;"> Payment amount is: {{outStandingAmount | currency:'USD':true:'1.2-2' }} </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 radio-big">
+      <label *ngFor="let entry of transferAccounts;let idx = index" class="custom-control custom-radio radio-inline">
+        <input name="inlineRadioOptions" (change)="onSelectionChange(entry.id)" type="radio" [(ngModel)]="defalutSelection" class="custom-control-input" [value]="entry.id" [id]="entry.id">
+        <!--<span class="custom-control-indicator"> </span>-->
+        <!--<span class="custom-control-description">{{ entry.Value }}</span>-->
+        <label [for]="entry.id" class="custom-control-description">{{ entry.Value }}</label>
+      </label>
+    </div>
+  </div>
+  <div class="panel" id="divNewAccount">
+    <div class="panel-body ">
+      <div class="col-md-12">
+        <p class="text-right m-b-0">
+          <span class="glyphicon glyphicon-exclamation-sign" style="color:#448ccb" aria-hidden="true"></span> Enter input
+          in any of the fields below.</p>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-body table-bdr">
+        <div class="row">
+          <app-advance-search></app-advance-search>
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-primary btn-search" [disabled]="disableSearchButton" (click)="searchCustomers()">Search</button>
+            <button type="reset" class="btn btn-default btn-reset" (click)="searchReset()">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- app components -->
+    <div class="panel panel-default" *ngIf="isDisplaySearchDetails">
+      <div class="panel-heading">
+        Accounts Search Results
+      </div>
+      <div class="panel-body table-bdr" *ngIf='profileResponse && profileResponse.length>0;else NodetailsBlock'>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th> </th>
+                <th> Account # </th>
+                <th> First Name </th>
+                <th> Last Name </th>
+                <th> Address </th>
+                <th> Phone # </th>
+                <th> Email Address </th>
+                <th> Status </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let customerResponse of profileResponse | paginate: { itemsPerPage:pageItemNumber, currentPage: pageNumber, totalItems:totalRecordCount }'>
+                <td>
+                  <div class="custom-control custom-radio">
+                    <input type="radio" class="custom-control-input" [id]="customerResponse.AccountId" name="check" (change)="checkorUncheckCustomer(customerResponse,$event)">
+                    <label [for]="customerResponse.AccountId" class="custom-control-description"></label>
+                  </div>
+                </td>
+                <td>{{customerResponse.AccountId}}</td>
+                <td>{{customerResponse.FirstName}}</td>
+                <td>{{customerResponse.LastName}}</td>
+                <td>{{customerResponse.FullAddress}}</td>
+                <td>{{customerResponse.Phone}}</td>
+                <td>{{customerResponse.Email}}</td>
+                <td>{{customerResponse.AccountStatusDesc}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="row page-info" *ngIf='profileResponse && profileResponse[0].RecordCount > 10'>
+          <div class="col-md-6 text-left">
+            <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+        <div>
+          <button type="submit" class="btn btn-primary btn-search" [disabled]="disableTransferButton" (click)="linkTrips()">Transfer</button>
+        </div>
+      </div>
+      <ng-template #NodetailsBlock>
+        <div>No details to display</div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+
+<div class="background-hidden" *ngIf='confirmFlag'></div>
+<div class="message alert" *ngIf='confirmFlag'>
+  <div class="close-msg" (click)='emitFlag()'>Close</div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="msg-text">
+        <div class="title"></div>
+        <div class="desc">Do you want to add the plate(s) to account : {{strVehicles}}</div>
+        <div class="btn-msg">
+          <button class="btn btn-primary btn-search btn-small" type="button" (click)='btnYesForExisting()'>Yes</button>
+          <button class="btn btn-primary btn-reset btn-small" type="button" (click)='btnNoForExisting()'>No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,190 @@
+<div class="page-title-header">
+    <div class="row no-gutters">
+        <div class="col-md-12">
+            <ol class="breadcrumb">
+                <li><a href="#">CSC</a></li>
+                <li class="#"> Reports </li>
+                <li class="active">E-ZPass Outbound Transactions Correction</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-header">
+                <h1>E-ZPass Outbound Transactions Correction</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="content">
+    <div class="panel panel-default">
+        <!-- <div class="panel-heading">
+            EZPass Outbound Transactions Correction
+        </div> -->
+        <div class="panel-body table-bdr" *ngIf='outboundTransactionsResponse && outboundTransactionsResponse.length;else clerkDetailsElseBlock'>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Transaction Id </th>
+                            <th> Transaction Type</th>
+                            <th> Tag Type </th>
+                            <th> Entry Plaza </th>
+                            <th> Entry Lane </th>
+                            <th> Exit Plaza</th>
+                            <th> Exit Lane</th>
+                            <th> Vehicle Class</th>
+                            <th> Toll Amount</th>
+                            <th> </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let outboundTransaction of outboundTransactionsResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: pageNumber, totalItems:totalRecordCount,id:'first'}">
+                            <td>{{outboundTransaction.TransactionId}}</td>
+                            <td>{{outboundTransaction.TransactionType}}</td>
+                            <td>{{outboundTransaction.TagType}}</td>
+                            <td>{{outboundTransaction.EntryPlaza}} </td>
+                            <td> {{outboundTransaction.EntryLane}} </td>
+                            <td> {{outboundTransaction.ExitPlaza}} </td>
+                            <td>{{outboundTransaction.ExitLane}} </td>
+                            <td>{{outboundTransaction.VehicleClass}} </td>
+                            <td>{{outboundTransaction.TollAmount | currencycustom }} </td>
+                            <td>
+
+                                <i *ngIf="updateDisableButton" class="fa fa-pencil-square-o fa-lg fa-fw link-disabled" title="Can Not Edit" aria-hidden="true"></i>
+
+                                <span *ngIf="!updateDisableButton">
+                                <a (click)="editOutBoundTransactionsById(outboundTransaction)" title="Edit" tabindex="20"><i class="fa fa-pencil-square-o fa-lg fa-fw" aria-hidden="true"></i></a>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row page-info">
+                <div class="col-md-6 text-left">
+                    <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+                </div>
+                <div class="col-md-6 text-right">
+                    <pagination-controls id='first' (pageChange)="pageChanged($event)"></pagination-controls>
+                </div>
+            </div>
+        </div>
+    </div>
+    <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+        (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+</div>
+<ng-template #clerkDetailsElseBlock>
+    <div>
+        No EZPass Outbound transactions to display
+    </div>
+</ng-template>
+<!-- EZpassout bound Model Template Start Here -->
+
+<div id="ezpassoutModel" class="modal fade delink-request-modal-lg" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-body">
+
+            <form role="form" name="transactionsCorrectionForm" [formGroup]="transactionsCorrectionForm">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Update EZPass Outbound Transactions Correction
+                    </div>
+                    <div class="panel-body table-bdr">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group col-md-12">
+                                    <label class="focused">Correction Type  </label>
+                                    <select class="form-control" id="correctionType" name="correctionType" (change)="correctionResons($event)" formControlName="correctionType"> 
+                                        <option selected="selected" value="">--Select--</option>
+                                        <option *ngFor="let reason of correctionReasons" [value]="reason.LookUpTypeCode">{{reason.LookUpTypeCodeDesc}}</option> 
+                                   </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group col-md-12">
+                                    <label for="transactionId">Transaction Id</label>
+                                    <input type="text" class="form-control" id="transactionId" name="transactionId" readonly formControlName="transactionId">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group col-md-12">
+                                    <label for="transactionType">Transaction Type</label>
+                                    <input type="text" class="form-control" id="transactionType" name="transactionType" readonly formControlName="transactionType">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group col-md-12">
+                                    <label for="tagType">Tag Type</label>
+                                    <input type="text" class="form-control" id="tagType" name="tagType" readonly formControlName="tagType">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group col-md-12">
+                                    <label class="focused" for="entryPlaza">Entry Plaza</label>
+                                    <select class="form-control" id="entryPlaza" name="entryPlaza" (change)="getLanesByPlazaCode($event,'ENTRY', false)" formControlName="entryPlaza"> 
+                                        <option selected="selected" value="">--Select--</option>
+                                        <option *ngFor="let entryPlaza of plazasDetails" [value]="entryPlaza.PlazaId">{{entryPlaza.PlazaCode}}</option> 
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group col-md-12">
+                                    <label class="focused" for="exitPlaza">Exit Plaza</label>
+                                    <select class="form-control" id="exitPlaza" name="exitPlaza" (change)="getLanesByPlazaCode($event,'EXIT', false)" formControlName="exitPlaza"> 
+                                        <option selected="selected" value="">--Select--</option>
+                                        <option *ngFor="let exitPlaza of plazasDetails" [value]="exitPlaza.PlazaId">{{exitPlaza.PlazaCode}}</option> 
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group col-md-12">
+                                    <label class="focused" for="entryLane">Entry Lane</label>
+                                    <select class="form-control" id="entryLane" name="entryLane" formControlName="entryLane"> 
+                                        <option selected="selected" value="">--Select--</option>
+                                        <option *ngFor="let entryLane of entryLanesByPlazaCode" [value]="entryLane.LaneId">{{entryLane.LaneCode}}</option> 
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group col-md-12">
+                                    <label class="focused" for="exitLane">Exit Lane</label>
+                                    <select class="form-control" id="exitLane" name="exitLane" formControlName="exitLane"> 
+                                        <option selected="selected" value="">--Select--</option>
+                                        <option *ngFor="let exitLane of exitLanesByPlazaCode" [value]="exitLane.LaneId">{{exitLane.LaneCode}}</option> 
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group col-md-12">
+                                    <label class="focused" for="vehicleClass">Vehicle Class</label>
+                                    <select class="form-control" id="vehicleClass" name="vehicleClass" formControlName="vehicleClass"> 
+                                        <option selected="selected" value="">--Select--</option>
+                                        <option *ngFor="let vehicleClass of vehicleClasses" value="{{vehicleClass.Name}}">{{vehicleClass.Code}}</option> 
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group col-md-12">
+                                    <label for="tollAmount">Toll Amount</label>
+                                    <input type="text" class="form-control" formControlName="tollAmount" name="tollAmount" id="tollAmount" (change)="checkToolAmountPattern1($event)">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <button class="btn btn-default btn-search" (click)="updateOutBoundTransactionsById()"> Update </button>
+                                    <button class="btn btn-default btn-reset" (click)="cancelupdateOutBoundTransactions()"> Cancel </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+        (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+</div>
+<!-- EZpassout bound Model Template END Here -->

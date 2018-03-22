@@ -1,0 +1,167 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Customer Accounts</a></li>
+        <li class="active">Verify Unidentified Payment</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Verify Unidentified Payment</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="payment-steps">
+        <div class="row">
+          <div class="col-md-12">
+            <ul>
+              <li class="done"><span>1</span>Unidentified Payment</li>
+              <li *ngIf="!paymentResponse" class="active"><span>2</span>Verify Payment</li>
+              <li *ngIf="paymentResponse" class="done"><span>2</span>Verify Payment</li>
+              <li *ngIf="!paymentResponse"><span>3</span>Thank You</li>
+              <li *ngIf="paymentResponse" class="done"><span>3</span>Thank You</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>    
+  </div>
+
+  <!--Verify payment-->
+  <div class="row verify-payment" *ngIf='!paymentResponse && isPayment'>
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="verify-details">
+            <div class="row">
+              <div class="col-md-4 title">Name :</div>
+              <div class="col-md-8 field" *ngIf="!paymentRequest.Name">N/A</div>
+              <div class="col-md-8 field" *ngIf="paymentRequest.Name">{{paymentRequest.Name}}</div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 title">Address :</div>
+              <div class="col-md-8 field" *ngIf="!paymentRequest.Address">N/A</div>
+              <div class="col-md-8 field" *ngIf="paymentRequest.Address">{{paymentRequest.Address}}</div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 title">Total Payment Amount :</div>
+              <div class="col-md-8 field">{{paymentRequest.TxnAmount | currency:'USD':true:'1.2-2'}}</div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 title">Pay By :</div>
+              <div class="col-md-8 field">{{paymentMode}}</div>
+            </div>
+            <div class="row" *ngIf="(paymentMode == 'Check')">
+              <div class="col-md-4 title">Check # :</div>
+              <div class="col-md-8 field">{{paymentRequest.ChequeNumber}}</div>
+            </div>
+            <div class="row" *ngIf="(paymentMode == 'MoneyOrder')">
+              <div class="col-md-4 title">Money Order # :</div>
+              <div class="col-md-8 field">{{paymentRequest.MONumber}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+          <div class="btns-group">
+            <button type="submit" class="btn btn-primary btn-search" (click)="paymentPrevious()">Back</button>
+            <button type="submit" class="btn btn-primary btn-search" [disabled]="(disable)" (click)="makePayment()">Make Payment</button>
+            <button type="reset" class="btn btn-default btn-reset" (click)="cancelPayment()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row verify-payment" *ngIf='!paymentResponse && !isPayment'>
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="verify-details">
+            <div class="row">
+              <div class="col-md-4 title">Account # :</div>
+              <div class="col-md-8 field">{{paymentRequest.CustomerId}}</div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 title">Payment Amount :</div>
+              <div class="col-md-8 field">{{paymentRequest.TxnAmount | currency:'USD':true:'1.2-2'}}</div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 title">Pay By :</div>
+              <div class="col-md-8 field">{{paymentMode}}</div>
+            </div>
+            <div class="row" *ngIf="(paymentMode == 'Check')">
+              <div class="col-md-4 title">Check # :</div>
+              <div class="col-md-8 field">{{paymentRequest.CheckRoutingNumber}}</div>
+            </div>
+            <div class="row" *ngIf="(paymentMode == 'MoneyOrder')">
+              <div class="col-md-4 title">Money Order # :</div>
+              <div class="col-md-8 field">{{paymentRequest.CheckRoutingNumber}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+          <div class="btns-group">
+            <button type="submit" class="btn btn-primary btn-search" (click)="transferPrevious(paymentRequest.CustomerId)">Back</button>
+            <button type="submit" class="btn btn-primary btn-search" [disabled]="(disable)" (click)="transferPayment()">Make Payment</button>
+            <button type="reset" class="btn btn-default btn-reset" (click)="cancelTransfer()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Verify payment-->
+
+
+  <!--Verify payment-->
+  <div class="row thank-you" *ngIf='paymentResponse'>
+    <div class="col-md-12">
+      <div class="verify-details">
+        <div class="row">
+          <div class="col-md-4 title">Reference # :</div>
+          <div class="col-md-8 field">{{paymentResponse.VoucherNo}}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 title">Total Payment Amount :</div>
+          <div class="col-md-8 field">{{paymentResponse.ToltalAmountPaid | currency:'USD':true:'1.2-2'}}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 title">Pay By :</div>
+          <div class="col-md-8 field" *ngIf='paymentResponse.ChequeNumber>0'>{{paymentResponse.ChequeNumber}}</div>
+          <div class="col-md-8 field" *ngIf='paymentResponse.MoneyOrderNumber>0 && isPayment'>{{paymentResponse.MoneyOrderNumber}}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 title">Transaction Date/Time :</div>
+          <div class="col-md-8 field">{{paymentResponse.TransactionDate | customDateTimeFormat}}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 col-md-offset-2 form-group">
+            <a class="btn btn-default btn-search" (click)="clickToNavigatePayment()">Click here to go UnIdentified payment</a>
+            <span *ngIf="printPDF" > <a (click)="printReciept()" class="btn btn-default btn-search" > Print Payment Receipt</a> </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Verify payment-->
+  <div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="text-center">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event, 1000)"></app-success-failure-alerts-message>

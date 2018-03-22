@@ -1,0 +1,225 @@
+<div class="page-title-header">
+    <div class="row no-gutters">
+        <div class="col-md-12">
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">Helpdesk</a>
+                </li>
+                <li class="active">Manage Complaints</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-header">
+                <h1>Manage Complaints</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <form role="form" name="manageComplaints" [formGroup]="manageComplaints">
+        <div class="row">
+            <div class="col-md-12">
+                <a href='javascript:;' [ngClass]='{"disabletextbox":disableCreateButton}' class="btn btn-default btn-search" (click)='createComplaint()'>Create</a>
+                <!-- [disabled]="disableCreateButton"-->
+                <a href='javascript:;' [ngClass]='{"disabletextbox":disableAssignToMasterButton}' class="btn btn-default btn-search" (click)="AssignMaster()">Assign to Master </a>
+                <button class="btn btn-default btn-search" [disabled]="disableOnHoldButton" (click)="onholdClick()">On Hold</button>
+                <button class="btn btn-default btn-search" [disabled]="disableReOpenButton" (click)="reopenClick()">Re Open</button>
+                <button class="btn btn-default btn-search" [disabled]="disableTransferButton" (click)="transferClick()">Transfer</button>
+                <button class="btn btn-default btn-search" [disabled]="disableAssignButton" (click)="assignClick()">Assign</button>
+                <button class="btn btn-default btn-search" [disabled]="disableReAssignButton" (click)="reassignClick()">Re Assign</button>
+                <button class="btn btn-default btn-search" [disabled]="disableResolveButton" (click)="resolveClick()">Resolve</button>
+                <button class="btn btn-default btn-search" [disabled]="disableRejectButton" (click)="rejectClick()">Reject</button>
+                <button class="btn btn-default btn-search" [disabled]="disableCloseButton" (click)="closeClick()">Close</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-bdr m-t-20">
+                    <h3>Complaints / Suggestions</h3>
+                    <div class="pad-10">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label> Ticket # </label>
+                                <input type="text" class="form-control" formControlName="ticketid" name="ticketid">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="timePeriod" class="focused">Time Period</label>
+                                <!--<input class="form-control" placeholder="Daterangepicker" bsDaterangepicker #dpr="bsDaterangepicker" name="timePeriod" formControlName="timePeriod"
+                            [(ngModel)]="timePeriodValue" autocomplete="off">-->
+                                <my-date-range-picker name="mydaterange" [options]="myDateRangePickerOptions" placeholder="MM/DD/YYYY-MM/DD/YYYY" formControlName="timePeriod"
+                                    (inputFieldChanged)='onInputFieldRangeChanged($event)' (inputFocusBlur)='onInputFocusBlur($event)'></my-date-range-picker>
+                                <div class="show-error" *ngIf=" !invalidDateRange && (manageComplaints.controls['timePeriod'].invalid && (manageComplaints.controls['timePeriod'].dirty || manageComplaints.controls['timePeriod'].touched))">
+                                    <div *ngIf="manageComplaints.controls['timePeriod'].errors.required">
+                                        Date is required.
+                                    </div>
+                                </div>
+                                <div *ngIf="invalidDateRange" class="show-error">
+                                    <div> Invalid Date </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="focused"> Type </label>
+                                <select class="form-control" formControlName="CmpType" name="CmpType">
+                            <option selected='selected' value="">--Select--</option>
+                            <option *ngFor='let pt of problemTypes' value="{{pt.Key}}">{{pt.Value}}</option>
+                        </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="focused"> Status </label>
+                                <select class="form-control" formControlName="CmpStatus" name="CmpStatus">
+                            <option selected='selected' value="">--Select--</option>
+                            <option *ngFor='let p of pmStatus' value="{{p.LookUpTypeCode}}">{{p.LookUpTypeCodeDesc}}</option>
+                        </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="focused"> Priority </label>
+                                <select class="form-control" formControlName="CmpPriority" name="CmpPriority">
+                            <option selected='selected' value="">--Select--</option>
+                            <option *ngFor='let p of pmPriority' value="{{p.LookUpTypeCode}}">{{p.LookUpTypeCodeDesc}}</option>
+                        </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="focused"> Severity </label>
+                                <select class="form-control" formControlName="CmpSeverity" name="CmpSeverity">
+                            <option selected='selected' value="">--Select--</option>
+                            <option *ngFor='let p of pmSeverity' value="{{p.LookUpTypeCode}}">{{p.LookUpTypeCodeDesc}}</option>
+                        </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label> Keyword </label>
+                                <input type="text" class="form-control" formControlName="keyword" name="keyword" placeholder="keyword">
+                            </div>
+                            <div class="col-md-12">
+                                <button type="submit" (click)="searchClick()" class="btn btn-primary btn-search">Search</button>
+                                <button type="button" (click)="resetClick()" class="btn btn-primary btn-reset"> Reset </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row m-b-20">
+            <div class="col-md-12">
+                <div class="checkbox-inline checkbox">
+                    <input #saveCheckbox type="checkbox" id="saveCheckbox" name="checkactive" formControlName="checkactive" [checked]="checkactive"
+                        (change)='onSelectionStatusTypeChange("ASSIGNED",$event)'>
+                    <label for="saveCheckbox">
+                                <span></span> Assigned to me
+                            </label>
+                </div>
+                <div class="checkbox-inline checkbox">
+                    <input #saveCheckbox type="checkbox" id="saveCheckbox1" name="checkactive" formControlName="checkactive" [checked]="checkactive"
+                        (change)='onSelectionStatusTypeChange("REASSIGNED",$event)'>
+                    <label for="saveCheckbox1">
+                                <span></span> Re Assigned
+                            </label>
+                </div>
+            </div>
+        </div>
+        <div class="table-bdr">
+            <h3>Complaint Details</h3>
+            <div class="pad-10">
+                <div *ngIf='search && search.length;else NodetailsBlock'>
+                    <table class="table table-bordered table-sm">
+                        <thead>
+                            <tr>
+                                <th>Check box</th>
+                                <th>Ticket#</th>
+                                <th>Status</th>
+                                <th>Type</th>
+                                <th>Created Date</th>
+                                <th>Due Date</th>
+                                <th>Severity</th>
+                                <th> Title </th>
+                                <th> Priority </th>
+                                <th> Action </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let srch of search| paginate: { itemsPerPage: pageItemNumber, currentPage: currentPage }">
+                                <td *ngIf="srch.TransformationProblemId==0 && srch.TransformationEventTypeId.toUpperCase() !='' ">
+                                    <!-- <button class=" btn btn-default"></button> -->
+                                    <img src="assets/images/svg/link.svg" class="icon-svg3" alt="" data-toggle="modal" data-target="#mymodal" (click)='linkClick(srch.ProblemId)'>
+                                </td>
+                                <td *ngIf="srch.TransformationEventTypeId=='' ">
+                                    <div class="checkbox">
+                                        <input type="checkbox" (change)='checkboxCheckedEvent(srch,$event)' id="{{srch.TicketId}}" name="selectedSearchList" [checked]="srch.isSearchBoxSelected">
+                                        <label for="{{srch.TicketId}}">
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>{{srch.TicketId}}</td>
+                                <td>{{srch.Status}}</td>
+                                <td>{{srch.ProblemTypeDesc}}</td>
+                                <td>{{srch.DateReported| customDateTimeFormat}}</td>
+                                <td>{{srch.TargetDate| customDateTimeFormat}}</td>
+                                <td>{{srch.Severity}}</td>
+                                <td>{{srch.ProblemTitle}}</td>
+                                <td>{{srch.PriorityDesc}}</td>
+                                <td>
+                                    <a (click)='viewComplaint(srch.ProblemId)'>View</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row page-info ">
+                        <div class="col-md-6 text-left ">
+                            <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+                        </div>
+                        <div class="col-md-6 text-right ">
+                            <pagination-controls (pageChange)="pageChanged($event) "></pagination-controls>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ng-template #NodetailsBlock>
+                <div>No details to display</div>
+            </ng-template>
+        </div>
+    </form>
+</div>
+<app-pm-popup (handleMsg)="onStatusChange($event)" (getManageComp)='onSuccess()'></app-pm-popup>
+
+<div id="mymodal" class="modal fade" tabindex="-1 " role="dialog " aria-labelledby="mymodalLabel ">
+    <div class="modal-dialog " role="document ">
+        <div class="modal-content ">
+            <div class="modal-header ">
+                <button type="button " class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true ">&times;</span>
+                    </button>
+                <h4 class="modal-title " id="mymodalLabel"> Linked Complaints </h4>
+            </div>
+            <div class="panel panel-default ">
+                <div class="panel-heading ">Complaint Details </div>
+                <div class="panel-body bordered">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-sm ">
+                            <thead>
+                                <tr>
+                                    <th>Ticket#</th>
+                                    <th>Created Date</th>
+                                    <th> Title </th>
+                                    <th> View </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let child of childSearch ">
+                                    <td>{{child.TicketId}}</td>
+                                    <td>{{child.DateOccurred| customDateTimeFormat}}</td>
+                                    <td>{{child.ProblemTitle}}</td>
+                                    <td>
+                                        <a (click)='viewComplaint(child.ProblemId)'>View</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

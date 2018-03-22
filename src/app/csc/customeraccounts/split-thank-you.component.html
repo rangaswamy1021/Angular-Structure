@@ -1,0 +1,128 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Customer Accounts</a></li>
+        <li class="active"> Split Payment </li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Split Payment</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="content">
+  <app-account-info></app-account-info>
+  <div class="clear"></div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="payment-steps">
+        <div class="row">
+          <div class="col-md-12">
+            <ul>
+              <li class="done"><span>1</span>Account Information</li>
+              <li class="done"><span>2</span>Plan(s) Selection</li>
+              <li class="done"><span>3</span>Vehicle Information</li>
+              <li class="active"><span>4</span>Payment</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="payment-steps-2">
+        <ul>
+          <li class="done"><span>1</span>Payment Mode</li>
+          <li class="done"><span>2</span>Verify & Submit</li>
+          <li class="active"><span>3</span>Payment Receipt</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <table class="table">
+        <tr>
+          <td> </td>
+          <td> <a (click)="goAccountSummary()">Click Here</a> <strong>  to view Account Summary </strong> </td>
+        </tr>
+
+        <tr *ngIf="!splitReq.isTotalBalanceTransfer">
+          <td> Reference #: </td>
+          <td> <strong> {{referenceNo}} </strong> </td>
+        </tr>
+
+        <tr>
+          <td> Account #: </td>
+          <td> <strong> {{accountId}} </strong> </td>
+        </tr>
+
+        <tr *ngIf="!splitReq.isTotalBalanceTransfer">
+          <td> Total Payment Amount: </td>
+          <td> <strong> {{totAmountPaid}} </strong> </td>
+        </tr>
+
+        <tr *ngIf="!splitReq.isTotalBalanceTransfer">
+          <td> Pay By: </td>
+          <td> <strong>  {{splitReq.payMethod}} </strong> </td>
+        </tr>
+
+        <tr *ngIf="!splitReq.isTotalBalanceTransfer">
+          <td> Transaction Date/Time:</td>
+          <td> <strong> {{txnDateTime | customDateTimeFormat}} </strong>  </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="!splitReq.isTotalBalanceTransfer">
+    <div class="col-md-12">
+      <div class="form-group">
+        <button type="submit" (click)="printReceipt()" class="btn btn-primary btn-search">Payment Receipt</button>
+      </div>
+    </div>
+  </div>
+
+  <!--
+  <div class="row">
+    <div class="col-md-4 title"></div>
+    <div class="col-md-8 field">
+
+    </div>
+  </div>
+  <div class="row" *ngIf="!totAmntTran">
+    <div class="col-md-4 title"></div>
+    <div class="col-md-8 field"></div>
+  </div>
+  <div class="row">
+    <div class="col-md-4 title"></div>
+    <div class="col-md-8 field"></div>
+  </div>
+  <div class="row" *ngIf="!totAmntTran">
+    <div class="col-md-4 title"> </div>
+    <div class="col-md-8 field"> </div>
+  </div>
+  <div class="row" *ngIf="!totAmntTran">
+    <div class="col-md-4 title"> </div>
+    <div class="col-md-8 field"></div>
+  </div>
+  <!--<div class="row" *ngIf="totAmntTran && isBankPayment">
+  <div class="col-md-4 title">Account Holder Name:</div>
+  <div class="col-md-8 field">{{splitReq.Payment.CreditCardPaysment.NameOnCard}}</div>
+</div>-->
+  <!--<div class="row" *ngIf="!totAmntTran">
+    <div class="col-md-4 title"></div>
+    <div class="col-md-8 field"></div>
+  </div>-->

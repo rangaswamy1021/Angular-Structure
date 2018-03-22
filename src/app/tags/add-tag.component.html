@@ -1,0 +1,205 @@
+<div *ngIf="isFulfillVisible">
+  <div class="page-title-header">
+
+    <div class="table-bdr">
+      <h3> Fulfill Request
+        <div class="pull-right" style="margin-top: -5px;">
+          <button class="btn btn-primary btn-xs" (click)="onPrintCustomerAddress()">Print Customer Address</button>
+          <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#addTag" (click)="getSerialNumbers()"> Inventory New Tags </button>
+        </div>
+      </h3>
+      <div class="pad-10">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="table-bdr">
+              <h3>Customer Information</h3>
+              <div class="table-responsive" style="font-size: 12px;">
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <td class="nowrap">Account #:</td>
+                      <td>{{customerId}}</td>
+                    </tr>
+                    <tr>
+                      <td class="nowrap">Customer Name:</td>
+                      <td>{{customerResponse.FullName}}</td>
+                    </tr>
+                    <tr>
+                      <td class="nowrap">Customer Address:</td>
+                      <td>{{customerResponse.FullAddress}}</td>
+                    </tr>
+                    <tr>
+                      <td class="nowrap">Delivery Type:</td>
+                      <td>{{childTagResponse.TagPurchaseMethodDesc}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="table-bdr">
+              <h3>Request Information</h3>
+              <div class="table-responsive" style="font-size: 12px;">
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <td>Request Type:</td>
+                      <td>{{childTagResponse.TagReqType=="Replace" ? "Replacement": childTagResponse.TagReqType}}</td>
+                    </tr>
+                    <tr>
+                      <td>Protocol:</td>
+                      <td>{{childTagResponse.Protocol}}</td>
+                    </tr>
+                    <tr>
+                      <td>Mounting:</td>
+                      <td>{{childTagResponse.Mounting}}</td>
+                    </tr>
+                    <tr>
+                      <td>Requested Count:</td>
+                      <td>{{childTagResponse.ReqCount}}</td>
+                    </tr>
+                    <tr>
+                      <td>Requested Date:</td>
+                      <td>{{childTagResponse.TagReqDate | customDateTimeFormat}}</td>
+                    </tr>
+                    <tr>
+                      <td>Comment:</td>
+                      <td>{{childTagResponse.TagReqComment}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="table-bdr">
+              <h3>Tag's Information</h3>
+              <div class="table-responsive" style="max-height:260px; overflow:auto; font-size: 12px;">
+                <table class="table" *ngIf='!isReplaceTag'>
+                  <thead>
+                    <tr>
+                      <td>Serial #</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor='let tag of tagAssignArray; let i=index'>
+                      <td><input class="" min="0" [(ngModel)]="tag.SerialNumber" (change)='validateTag(i)' maxlength="50">{{tag.ErrorMessage}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <table class="table" *ngIf='isReplaceTag'>
+                  <thead>
+                    <tr>
+                      <td>Old Serial #</td>
+                      <td align="center">Is Tag Returned</td>
+                      <td>Serial #</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{childTagResponse.TagTobeReplaced}}</td>
+                      <td align="center">
+                        <div class="checkbox-inline checkbox">
+                          <input type="checkbox" id="isTagReturned" name="isTagReturned" [(ngModel)]="isTagReturned">
+                          <label for="isTagReturned">
+                            <span></span> 
+                          </label>
+                        </div>
+                        <!--<div class="checkbox">
+                          <input type="checkbox" id="isTagReturned" [(ngModel)]="isTagReturned">
+                        <label for="isTagReturned"><span></span></label>
+                        </div>-->
+                      </td>
+                      <td><input class="" min="0" [(ngModel)]="tagReplaceAssign.SerialNumber" (change)='validateReplaceTag()'
+                          maxlength="50">{{tagReplaceAssign.ErrorMessage}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="row">
+              <!--<div class="col-md-4"><button type="submit" class="btn btn-primary btn-search">Previous Request</button></div>-->
+              <div class="col-md-12">
+                <button type="submit" class="btn btn-primary btn-search" (click)="fulFillRequest()">Fulfill Request</button>
+                <button type="submit" class="btn btn-primary btn-reset" (click)="cancelFulfillRequest()">Cancel</button>
+              </div>
+              <!--<div class="col-md-4"><button type="submit" class="btn btn-primary btn-search">Next Request</button></div>-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="addTag" tabindex="-1" role="dialog" *ngIf="tagsbtn">
+
+      <div class="modal-dialog" role="document">
+        <form role="form" name="selectedtgsForm" [formGroup]="selectedtgsForm" novalidate>
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">Inventory New Tags</h4>
+            </div>
+            <div class="modal-body">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <table class="table">
+                    <tbody>
+                      <tr>
+                        <td> Protocol: </td>
+                        <td>{{childTagResponse.Protocol}}</td>
+                      </tr>
+                      <tr>
+                        <td> Mounting: </td>
+                        <td>{{childTagResponse.Mounting}} </td>
+                      </tr>
+                      <tr>
+                        <td> Location: </td>
+                        <td> {{locationName}} </td>
+                      </tr>
+                      <tr>
+                        <td> Serail Number(s): </td>
+                        <td>
+                          <angular2-multiselect [data]="multiselectlist" [settings]="dropdownSettings" (onSelect)="onItemSelect($event)" [(ngModel)]="selectedItems"
+                            (onDeSelect)="OnItemDeSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)"
+                            formControlName="selecttagsList" data-displacement="top">
+                          </angular2-multiselect>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <div class="pull-left">
+                <button class="btn btn-default btn-search" data-dismiss="modal" (click)="selectedSerialNumbers();"> 
+                    Select 
+                  </button>
+                <button class="btn btn-default btn-reset" (click)="resetBtn()"> 
+                    Reset
+                  </button>
+                <button class="btn btn-default btn-reset" data-dismiss="modal" (click)="cancelClick()"> 
+                    Cancel 
+                  </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+    <div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="text-center">
+          <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event, 1000)"
+    (onOk)="userAction($event)"></app-success-failure-alerts-message>

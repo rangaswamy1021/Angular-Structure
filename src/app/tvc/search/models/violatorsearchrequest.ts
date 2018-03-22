@@ -1,0 +1,20 @@
+export interface IViolatorSearchRequest {
+    Soundex: number,
+    ViolatorID: number,
+    InvoiceNumber: string,
+    InvoiceBatchId: string,
+    TripId: number,
+    LicensePlate: string,
+    Address: string,
+    ViolatorFirstName: string,
+    ViolatorSecondName: string,
+    IsViolation: boolean,
+    PageSize: number,
+    PageNumber: number,
+    SortDir: any,
+    SortColumn: string,
+    LoginId: number,
+    UserName: string,
+    LoggedUserId: number,
+    IsSearch: boolean
+}

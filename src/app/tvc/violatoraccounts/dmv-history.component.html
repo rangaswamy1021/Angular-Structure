@@ -1,0 +1,169 @@
+<div class="page-title-header">
+  <div class="row">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">TVC</a>
+        </li>
+        <li class="active">DMV History</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>DMV History</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class=" status-message" *ngIf="errorBlock">
+    <div class="close-icon" (click)="errorBlock=false">
+      <img src="assets/images/svg/cancel-black.svg" class="icon-svg1" alt="">
+    </div>
+    <div class="status-img">
+      <img src='assets/images/svg/warning.svg'>
+    </div>
+    <div class="status-content">
+      <h3>{{errorMessage}}</h3>
+    </div>
+    <div class="clear"></div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="row">
+        <form [formGroup]="dmvHistoryForm" name="dmvHistoryForm" role="form" (ngSubmit)="onSubmit()" novalidate>
+
+          <div class="col-md-6">
+           <div class="row">
+            <div class="form-group col-md-12">
+              <label for="Platno">Plate #</label>
+              <input type="text" id="PlateNo" name="PlateNo" formControlName="PlateNo" class="form-control" placeholder="Plate #">
+              <div class="msg" *ngIf="dmvHistoryForm.controls['PlateNo'].invalid && (dmvHistoryForm.controls['PlateNo'].dirty || dmvHistoryForm.controls['PlateNo'].touched)">
+                <div *ngIf="dmvHistoryForm.controls['PlateNo'].errors.pattern">
+                  Only alphanumerics allowed.
+                </div>
+              </div>
+            </div>
+           </div>
+          </div>
+
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-primary btn-search">Search</button>
+            <button type="reset" class="btn btn-default btn-reset" (click)="resetSearch()">Reset</button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default" *ngIf='result && iDMVDetails'>
+    <div class="panel-heading"> DMV Details </div>
+    <div class="panel-body bordered">
+      <div class="row">
+        <div class="col-md-12">
+          <button class="btn btn-default btn-search pull-right" (click)="GeneratePdf();">PRINT</button>
+          <div class="clear"> </div>
+        </div>
+      </div>
+      <div #generate class="row">
+
+        <br />
+
+        <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">CUSTOMER DETAILS</div>
+            <table *ngIf='iDMVDetails' class="table">
+              <tbody>
+                <tr>
+                  <td class="text-left">Plate #:</td>
+                  <td class="text-right"> {{ iDMVDetails.VehicleNumber}} </td>
+                </tr>
+                <tr>
+                  <td class="text-left">Name:</td>
+                  <td class="text-right"> {{ iDMVDetails.Name}} </td>
+                </tr>
+                <tr>
+                  <td class="text-left">Address:</td>
+                  <td class="text-right">
+                    <div role="alert" data-html="true">
+                      <span [innerHTML]="iDMVDetails.Address"></span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">VEHICLE DETAILS</div>
+            <table *ngIf='iDMVDetails' class="table">
+              <tbody>
+                <tr>
+                  <td class="text-left">Vehicle Type:</td>
+                  <td class="text-right" *ngIf="iDMVDetails.VehicleType != '';else NAVehicleTypeBlock">{{iDMVDetails.VehicleType }}</td>
+                  <ng-template #NAVehicleTypeBlock>
+                    <td class="text-right"> N/A </td>
+                  </ng-template>
+                </tr>
+                <tr>
+                  <td class="text-left">Vehicle Make:</td>
+                  <td class="text-right" *ngIf="iDMVDetails.VehicleMake != '';else NAVehicleMakeBlock">{{iDMVDetails.VehicleMake }}</td>
+                  <ng-template #NAVehicleMakeBlock>
+                    <td class="text-right"> N/A </td>
+                  </ng-template>
+                </tr>
+                <tr>
+                  <td class="text-left">Vehicle Model:</td>
+                  <td class="text-right" *ngIf="iDMVDetails.VehicleModel != '';else NAVehicleModelBlock">{{iDMVDetails.VehicleModel }}</td>
+                  <ng-template #NAVehicleModelBlock>
+                    <td class="text-right"> N/A </td>
+                  </ng-template>
+                </tr>
+                <tr>
+                  <td class="text-left">Vehicle Year:</td>
+                  <td class="text-right" *ngIf="iDMVDetails.VehicleYear != '';else NAVehicleYearBlock">{{iDMVDetails.VehicleYear }}</td>
+                  <ng-template #NAVehicleYearBlock>
+                    <td class="text-right"> N/A </td>
+                  </ng-template>
+                </tr>
+                <tr>
+                  <td class="text-left">Purchase Date:</td>
+                  <td class="text-right" *ngIf="iDMVDetails.PurchaseDate != '0001-01-01T00:00:00';else NAPurchaseDateBlock">{{iDMVDetails.PurchaseDate | customDateFormat }}</td>
+                  <ng-template #NAPurchaseDateBlock>
+                    <td class="text-right"> N/A </td>
+                  </ng-template>
+                </tr>
+                <tr>
+                  <td class="text-left">Registration Expiration:</td>
+                  <td class="text-right" *ngIf="iDMVDetails.RegistrationExpirationDate != '0001-01-01T00:00:00';else NAExpirationBlock">{{iDMVDetails.RegistrationExpirationDate | customDateFormat }}</td>
+                  <ng-template #NAExpirationBlock>
+                    <td class="text-right"> N/A </td>
+                  </ng-template>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default" *ngIf='!result'>
+    <div class="panel-heading"> DMV Details </div>
+    <div class="panel-body bordered">
+      <div class="status-content">
+        <p>No records to display</p>
+      </div>
+    </div>
+  </div>
+
+</div>

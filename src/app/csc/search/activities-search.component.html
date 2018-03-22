@@ -1,0 +1,148 @@
+<div class="page-title-header wow fadeInDown">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li class="active">Search</li>
+        <li class="active">Activities</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Activities</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+
+<div class="content wow fadeInUp">
+  <form role="form" name="activitiesSearchForm" [formGroup]="activitiesSearchForm">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <app-search-details [Search]="3"></app-search-details>
+        <div class="row">
+          <div class="col-md-6 form-group">
+            <label for="Account No.">Account #</label>
+            <input type="text" pattern="[0-9]*" id="AccountId" name="AccountId" formControlName="AccountId" class="form-control" placeholder="Account #">
+          
+                  
+                
+            <div class="msg" *ngIf="activitiesSearchForm.controls['AccountId'].invalid && (activitiesSearchForm.controls['AccountId'].dirty || activitiesSearchForm.controls['AccountId'].touched)">
+             
+              <div *ngIf="activitiesSearchForm.controls['AccountId'].errors.pattern">
+                Only numbers allowed.
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 form-group">
+            <label for="Date Range">Date</label>
+
+
+            <!--<input class="form-control" placeholder="Daterangepicker" bsDaterangepicker #dpr="bsDaterangepicker" name="bsRangeValue" (bsValueChange)='bsValueChange($event)'
+              formControlName="bsRangeValue" [(ngModel)]="bsRangeValue">-->
+            <my-date-range-picker name="mydaterange"  [options]="myDateRangePickerOptions" formControlName="bsRangeValue" (inputFieldChanged)="onDateRangeFieldChanged($event)"></my-date-range-picker>
+            <div class="show-error" style="color:red; " *ngIf=" !invalid && (activitiesSearchForm.controls['bsRangeValue'].invalid && (activitiesSearchForm.controls['bsRangeValue'].touched))">
+              <div> Date Range is required</div>
+            </div>
+            <div>
+              <div class="show-error" *ngIf='invalid'>
+                <div>Invalid Date Range
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 form-group">
+            <label for="Activity Type">Activity Type</label>
+            <select class="form-control" [(ngModel)]="selectedValue" name="ActivityType" id="ActivityType" name="ActivityType" formControlName="ActivityType"
+              [(ngModel)]='activityType' placeholder=''>
+              <option value=""></option>
+              <option value="ALL">--ALL--</option>
+              <option *ngFor="let ActivityType of getActivityResponse" value="{{ActivityType.LookUpTypeCode}}">{{ActivityType.LookUpTypeCodeDesc}}</option>
+            </select>
+          </div>
+
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-primary btn-search" [disabled]="disableButton" (click)="customerActivitiesSearch(1,'onSearch')">Search</button>
+            <button type="submit" (click)="resetclick()" class="btn btn-default btn-reset btn-sm">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="table-bdr wow fadeIn" *ngIf="getCustomerActivityResponse  && getCustomerActivityResponse.length">
+    <h3>Activity Search Results</h3>
+    <div class="pad-10">
+      <div class="table-responsive">
+        <table class="table" *ngIf='getCustomerActivityResponse && getCustomerActivityResponse.length'>
+          <thead class="nowrap">
+            <tr>
+              <th (click)="sortDirection('CUSTOMERID')" class="sorting-handle">Account #
+                <span *ngIf="gridArrowCUSTOMERID">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('ACTIVITYTYPE')" class="sorting-handle">Activity Type
+                <span *ngIf="gridArrowACTIVITYTYPE">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+              </th>
+              <th (click)="sortDirection('ACTIVITYTEXT')" class="sorting-handle">Description
+                <span *ngIf="gridArrowACTIVITYTEXT">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+              </th>
+              <th (click)="sortDirection('UPDATEDUSER')" class="sorting-handle">Created User
+                <span *ngIf="gridArrowUPDATEDUSER">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+              </th>
+              <th (click)="sortDirection('ACTIVITYSOURCE')" class="sorting-handle">Performed By
+                <span *ngIf="gridArrowACTIVITYSOURCE">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+              </th>
+              <th (click)="sortDirection('ACTIVITYDATE')" class="sorting-handle">Date/Time
+                <span *ngIf="gridArrowACTIVITYDATE">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let custActivity of getCustomerActivityResponse| paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount }'>
+              <td>{{custActivity.CustomerId}} </td>
+              <td>{{custActivity.Type}}</td>
+              <td>{{custActivity.Activity}}</td>
+              <td>{{custActivity.User}}</td>
+              <td>{{custActivity.PerformedBy}}</td>
+              <td class="nowrap">{{custActivity.ActivityDate | customDateTimeFormat}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="row page-info" *ngIf='getCustomerActivityResponse && totalRecordCount>pageItemNumber'>
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="table-bdr" *ngIf=' !getCustomerActivityResponse || getCustomerActivityResponse.length==0'>
+    <h3>Activity Search Results</h3>
+    <div class="pad-10">
+      <div class="status-content">
+        <p>No records to display</p>
+      </div>
+    </div>
+  </div>
+</div>
+<!--<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='errorHeading' [msgDesc]='errorMessage' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>-->

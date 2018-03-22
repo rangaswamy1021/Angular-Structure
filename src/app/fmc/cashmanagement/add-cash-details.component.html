@@ -1,0 +1,124 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">FMC</a></li>
+        <li><a href="#">Cash Managemant</a></li>
+        <li class="active">Add Cash Management </li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Add Cash Management Details</h1>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div class="content container">
+  <div *ngIf="alert">
+    <p class="alert alert-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> End Amount is overages than Fund Threshold <button data-toggle="modal"
+        data-target="#alertModal" type="button" class="close" (click)="raiseAlertError()">
+        <span aria-hidden="true">&times;</span>
+      </button></p>
+  </div>
+  <form>
+    <div class=" col-md-12 ">
+      <label class=" col-md-2 "><h5>Day Begin Amount</h5> </label>
+      <input type="text" id="Contracttext" name="Contracttext" class=" col-md-2 " disabled [value]="beginAmount | currencycustom">
+    </div>
+    <div class="col-md-12">
+      <div class="col-md-6">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Denomination</th>
+              <th>Quantity</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>$100</td>
+              <td><input type="number" class="form-control" min="0" id="" [(ngModel)]="denom100" name="denom100" (change)="calculateTotal()"></td>
+              <td><input type="text" class="form-control" id="" [value]="ddenom100*100==0 ? '' : ddenom100*100" disabled></td>
+            </tr>
+            <tr>
+              <td>$50</td>
+              <td><input type="number" class="form-control" min="0" id="" [(ngModel)]="denom50" name="denom50" (change)="calculateTotal()"></td>
+              <td><input type="text" class="form-control" id="" [value]="ddenom50*50==0 ? '' : ddenom50*50" disabled></td>
+            </tr>
+            <tr>
+              <td>$20</td>
+              <td><input type="number" class="form-control" min="0" id="" [(ngModel)]="denom20" name="denom20" (change)="calculateTotal()"></td>
+              <td><input type="text" class="form-control" id="" [value]="ddenom20*20==0 ? '' : ddenom20*20" disabled></td>
+            </tr>
+            <tr>
+              <td>$10</td>
+              <td><input type="number" class="form-control" min="0" id="" [(ngModel)]="denom10" name="denom10" (change)="calculateTotal()"></td>
+              <td><input type="text" class="form-control" id="" [value]="ddenom10*10==0 ? '' : ddenom10*10" disabled></td>
+            </tr>
+            <tr>
+              <td>$5</td>
+              <td><input type="number" class="form-control" min="0" id="" [(ngModel)]="denom5" name="denom5" (change)="calculateTotal()"></td>
+              <td><input type="text" class="form-control" id="" [value]="ddenom5*5==0 ? '' : ddenom5*5" disabled></td>
+            </tr>
+            <tr>
+              <td>$2</td>
+              <td><input type="number" class="form-control" min="0" id="" [(ngModel)]="denom2" name="denom2" (change)="calculateTotal()"></td>
+              <td><input type="text" class="form-control" id="" [value]="ddenom2*2==0 ? '' : ddenom2*2" disabled></td>
+            </tr>
+            <tr>
+              <td>$1</td>
+              <td><input type="number" class="form-control" min="0" id="" [(ngModel)]="denom1" name="denom1" (change)="calculateTotal()"></td>
+              <td><input type="text" class="form-control" id="" [value]="ddenom1*1==0 ? '' : ddenom1*1" disabled></td>
+            </tr>
+            <tr>
+              <td>Half Dollar</td>
+              <td><input type="number" class="form-control" min="0" id="" [(ngModel)]="denomHalf" name="denomHalf" (change)="calculateTotal()"></td>
+              <td><input type="text" class="form-control" id="" [value]="ddenomHalf*0.5==0 ? '' : ddenomHalf*0.5" disabled></td>
+            </tr>
+            <tr>
+              <td>Quarter</td>
+              <td><input type="number" class="form-control" min="0" id="" [(ngModel)]="denomQuater" name="denomQuater" (change)="calculateTotal()"></td>
+              <td><input type="text" class="form-control" id="" [value]="ddenomQuater*0.25==0 ? '' : ddenomQuater*0.25" disabled></td>
+            </tr>
+            <tr>
+              <td>Dime</td>
+              <td><input type="number" class="form-control" min="0" id="" [(ngModel)]="denomDime" name="denomDime" (change)="calculateTotal()"></td>
+              <td><input type="text" class="form-control" id="" [value]="ddenomDime*0.1==0 ? '' : ddenomDime*0.1" disabled></td>
+            </tr>
+            <tr>
+              <td>Nickel</td>
+              <td><input type="number" class="form-control" min="0" id="" [(ngModel)]="denomNickel" name="denomNickel" (change)="calculateTotal()"></td>
+              <td><input type="text" class="form-control" id="" [value]="ddenomNickel*0.05==0 ? '' : ddenomNickel*0.05" disabled></td>
+            </tr>
+            <tr>
+              <td>Penny</td>
+              <td><input type="number" class="form-control" min="0" id="" [(ngModel)]="denomPenny" name="denomPenny" (change)="calculateTotal()"></td>
+              <td><input type="text" class="form-control" id="" [value]="ddenomPenny*0.01==0 ? '' : ddenomPenny*0.01" disabled></td>
+            </tr>
+            <tr>
+              <td><strong>Total Amount :</strong></td>
+              <td></td>
+              <td><input type="text" class="form-control" id="" name="totalAmount" [(ngModel)]="totalAmount" [value]="totalAmount"
+                  disabled></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-md-6 text-center">
+      <div class="pad-10">
+        <button class="btn btn-primary btn-search" type="submit" [disabled]="disableSubmit" (click)="assignChangeFund()">Submit</button>
+        <button class="btn btn-default btn-reset " (click)="amountReset()">Reset</button>
+      </div>
+    </div>
+  </form>
+  <div class="clearfix"></div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event, 1000)"
+  (onOk)="btnYesClick($event)"></app-success-failure-alerts-message>

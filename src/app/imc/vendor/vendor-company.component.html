@@ -1,0 +1,870 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">IMC</a></li>
+        <li class="active">Set up</li>
+        <li class="active"> Vendor Registration </li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1> Vendor Registration </h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="table-bdr" [hidden]="submitted">
+    <form role="form" name="vendorCompanyForm" [formGroup]="vendorCompanyForm">
+      <h3>
+        Company Information
+      </h3>
+      <div class="pad-10">
+        <div class="row">
+          <!--CompanyName-->
+          <div class="col-md-6">
+            <div class="col-md-12 form-group popover-field">
+              <label>Company Name
+                  <span *ngIf="companyNameMessage;" style="padding-left: 20px;"> 
+                    <span *ngIf="isCompanyNotAvailable" style="color:red">{{companyNameMessage}}</span>         <span *ngIf="!isCompanyNotAvailable" style="color:green">{{companyNameMessage}}</span>
+                  </span> 
+                <!--<span style="float: left; padding-right: 20px;"> Company Name </span>
+                  <div *ngIf="companyNameMessage;"  style="float: left;"> 
+                    <span *ngIf="isCompanyNotAvailable" style="color:red">{{companyNameMessage}}</span>         <span *ngIf="!isCompanyNotAvailable" style="color:green">{{companyNameMessage}}</span>
+                  </div>-->
+              </label>
+              <input type="text" class="form-control" maxlength="50" tabindex="1" placeholder="Company Name" name="CompanyName" formControlName="CompanyName"
+                (change)="checkVendorCompanyName($event)">
+              <div class="msg" *ngIf="vendorCompanyForm.controls['CompanyName'].invalid && (vendorCompanyForm.controls['CompanyName'].dirty || vendorCompanyForm.controls['CompanyName'].touched)">
+                <div *ngIf="vendorCompanyForm.controls['CompanyName'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="vendorCompanyForm.controls['CompanyName'].errors.minLength || vendorCompanyForm.controls['CompanyName'].errors.maxLength ">
+                  Maximum 50 characters are allowed.
+                </div>
+                <!--<div *ngIf="vendorCompanyForm.controls['CompanyName'].errors.pattren">
+                    Initial space(s) are not allowed
+                  </div>-->
+                <div *ngIf="vendorCompanyForm.controls['CompanyName'].errors.pattern">
+                  Only allows alphanumerics and Initial space(s) are not allowed.
+                </div>
+              </div>
+              <ng-template #popCompanyName>
+                <ul>
+                  <li> Company Name is required</li>
+
+                  <li> it allows only alphanumeric and spaces</li>
+
+                  <li> Special characters are not allowed </li>
+                  <li> it should be minimum 1 character and<br> maximum 50 characters long</li>
+                </ul>
+              </ng-template>
+
+              <button type="button" data-container="body" class="pop-over" [popover]="popCompanyName" popoverTitle="Help" placement="left"
+                triggers="mouseenter:mouseleave">?
+               </button>
+            </div>
+
+          </div>
+
+          <!--supplierid-->
+          <div class="col-md-6" *ngIf="!hideSuppierId">
+            <div class="col-md-12 form-group popover-field">
+              <label> SupplierId </label>
+              <label class="col-md-offset-1">
+                 <span *ngIf="supplierIDMessage;">{{supplierIDMessage}}</span>
+              </label>
+              <input type="text" class="form-control" maxlength="2" tabindex="2" placeholder="Tag SupplierId" name="SupplierId" formControlName="SupplierId"
+                (blur)=checkSupplieridValidorNot($event)>
+              <div class="msg" *ngIf="vendorCompanyForm.controls['SupplierId'].invalid && (vendorCompanyForm.controls['SupplierId'].dirty || vendorCompanyForm.controls['SupplierId'].touched)">
+                <div *ngIf="vendorCompanyForm.controls['SupplierId'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="vendorCompanyForm.controls['SupplierId'].errors.pattern">
+                  Only Numerics are allowed and Initial space(s) are not allowed.
+                </div>
+                <div *ngIf="vendorCompanyForm.controls['SupplierId'].errors.maxLength ">
+                  Maximum 2 Numbers are allowed.
+                </div>
+              </div>
+              <ng-template #popSupplierId>
+                <ul>
+                  <li> Tag SupplierId is required<br></li>
+
+                  <li> it allows only Numeric and <br></li>
+
+                  <li> Special characters are not<br> allowed<br></li>
+                  <li> it should be maximum 2<br> character long</li>
+                </ul>
+              </ng-template>
+
+              <button type="button" data-container="body" class="pop-over" [popover]="popSupplierId" popoverTitle="Help" placement="left"
+                triggers="mouseenter:mouseleave">?
+              </button>
+            </div>
+          </div>
+
+
+          <!--Ceo/owner Name-->
+          <div class="col-md-6">
+            <div class="col-md-12 form-group popover-field">
+              <label> CEO/Owner Name </label>
+              <input type="text" class="form-control" placeholder="CEO/Owner Name" maxlength="50" tabindex="3" name="OwnerName" formControlName="OwnerName">
+              <div class="msg" *ngIf="vendorCompanyForm.controls['OwnerName'].invalid && (vendorCompanyForm.controls['OwnerName'].dirty || vendorCompanyForm.controls['OwnerName'].touched)">
+                <div *ngIf="vendorCompanyForm.controls['OwnerName'].errors.pattern">
+                  special characters and Initial space(s) are not allowed.
+                </div>
+                <div *ngIf="vendorCompanyForm.controls['OwnerName'].errors.minLength || vendorCompanyForm.controls['OwnerName'].errors.maxLength ">
+                  Maximum 50 characters are allowed.
+                </div>
+              </div>
+              <ng-template #popCEOOwnerName>
+                <ul>
+                  <li> CEO/Owner Name allows <br> alphanumeric and spaces
+                    <br></li>
+                  <li> Special characters are not allowed</li>
+                  <li> It should be minimum 1<br> character and maximum 50 <br> characters long</li>
+                </ul>
+              </ng-template>
+
+              <button type="button" data-container="body" class="pop-over" [popover]="popCEOOwnerName" popoverTitle="Help" placement="left"
+                triggers="mouseenter:mouseleave">?
+             </button>
+            </div>
+          </div>
+
+
+          <!--Website-->
+          <div class="col-md-6">
+            <div class="col-md-12 form-group popover-field">
+              <label> Website </label>
+              <input type="url" maxlength="320" tabindex="4" class="form-control" placeholder="Website" name="Website" formControlName="Website">
+              <div class="msg" *ngIf="vendorCompanyForm.controls['Website'].invalid && (vendorCompanyForm.controls['Website'].dirty || vendorCompanyForm.controls['Website'].touched)">
+                <div>
+                  Website should be in correct format.
+                </div>
+                <div *ngIf="vendorCompanyForm.controls['Website'].errors.minLength || vendorCompanyForm.controls['Website'].errors.maxLength">
+                  Website should be in between 9 and 320 characters.
+                </div>
+              </div>
+              <ng-template #popWebsite>
+                <ul>
+                  <li> Website should be in the correct <br> format<br></li>
+                  <li> It should be minimum 9 <br> characters and maximum 320 <br> characters long<br></li>
+
+                  <li> For example <br> http://www.tollplus.com</li>
+                </ul>
+              </ng-template>
+
+              <button type="button" data-container="body" class="pop-over" [popover]="popWebsite" popoverTitle="Help" placement="left"
+                triggers="mouseenter:mouseleave">?
+              </button>
+            </div>
+          </div>
+
+
+          <!--Address Line1-->
+          <div class="col-md-6">
+            <div class="col-md-12 form-group popover-field">
+              <label> Address Line 1 </label>
+              <input type="text" class="form-control" placeholder="Address Line 1" maxlength="50" tabindex="5" id="addressLine1" name="addressLine1"
+                formControlName="addressLine1">
+              <div class="msg" *ngIf="vendorCompanyForm.controls['addressLine1'].invalid && (vendorCompanyForm.controls['addressLine1'].dirty || vendorCompanyForm.controls['addressLine1'].touched)">
+                <div *ngIf="vendorCompanyForm.controls['addressLine1'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="vendorCompanyForm.controls['addressLine1'].errors.pattern">
+                  Initial space(s) and &lt; &gt; symbols are not allowed.
+                </div>
+                <div *ngIf="vendorCompanyForm.controls['addressLine1'].errors.maxlength">
+                  Maximum 50 characters are allowed.
+                </div>
+              </div>
+              <ng-template #popCompanyAddressLine1>
+                <ul>
+                  <li> Address Line 1 is required<br></li>
+
+                  <li> It allows alphanumerics,spaces <br> and special characters
+                    <br></li>
+
+                  <li> It should be minimum 1<br> character and maximum 50
+                    <br> characters long</li>
+                </ul>
+              </ng-template>
+
+              <button type="button" data-container="body" class="pop-over" [popover]="popCompanyAddressLine1" popoverTitle="Help" placement="left"
+                triggers="mouseenter:mouseleave">?
+              </button>
+            </div>
+          </div>
+
+
+
+          <!--Address Line2-->
+          <div class="col-md-6">
+            <div class="col-md-12 form-group popover-field">
+              <label>Address Line 2</label>
+              <input type="text" class="form-control" placeholder="Address Line 2" maxlength="50" tabindex="6" id="addressLine2" name="addressLine2"
+                formControlName="addressLine2">
+              <div class="msg" *ngIf="vendorCompanyForm.controls['addressLine2'].invalid && (vendorCompanyForm.controls['addressLine2'].dirty || vendorCompanyForm.controls['addressLine2'].touched)">
+                <div *ngIf="vendorCompanyForm.controls['addressLine2'].errors.pattern">
+                  Initial space(s) and &lt; &gt; symbols are not allowed.
+                </div>
+                <div *ngIf="vendorCompanyForm.controls['addressLine2'].errors.maxlength">
+                  Maximum 50 characters are allowed.
+                </div>
+              </div>
+              <ng-template #popCompanyAddressLine2>
+                <ul>
+                  <li> Address Line 2 allows<br> alphanumeric with special
+                    <br> character and space<br></li>
+
+                  <li> It should be minimum 1 <br> character and maximum 50 <br> characters long</li>
+                </ul>
+              </ng-template>
+
+              <button type="button" data-container="body" class="pop-over" [popover]="popCompanyAddressLine2" popoverTitle="Help" placement="left"
+                triggers="mouseenter:mouseleave">?
+              </button>
+            </div>
+          </div>
+
+
+          <!--AddressLine3-->
+          <div class="col-md-6">
+            <div class="col-md-12 form-group popover-field">
+              <label> Address Line 3 </label>
+              <input type="text" class="form-control" placeholder="Address Line 3" tabindex="7" maxlength="50" formControlName="addressLine3">
+              <div class="msg" *ngIf="vendorCompanyForm.controls['addressLine3'].invalid && (vendorCompanyForm.controls['addressLine3'].dirty || vendorCompanyForm.controls['addressLine3'].touched)">
+                <div *ngIf="vendorCompanyForm.controls['addressLine3'].errors.pattern">
+                  Initial space(s) and &lt; &gt; symbols are not allowed.
+                </div>
+                <div *ngIf="vendorCompanyForm.controls['addressLine3'].errors.maxlength">
+                  Maximum 50 characters are allowed.
+                </div>
+              </div>
+              <ng-template #popCompanyAddressLine3>
+                <ul>
+                  <li> Address Line 3 allows <br> alphanumeric with special <br> characters and space<br></li>
+
+                  <li> It should be minimum 1<br> character and maximum 50 <br> characters long</li>
+                </ul>
+              </ng-template>
+
+              <button type="button" data-container="body" class="pop-over" [popover]="popCompanyAddressLine3" popoverTitle="Help" placement="left"
+                triggers="mouseenter:mouseleave">?
+              </button>
+            </div>
+          </div>
+
+
+          <!--City-->
+          <div class="col-md-6">
+            <div class="col-md-12 form-group popover-field">
+              <label class="block"> City  </label>
+              <input type="text" class="form-control" placeholder="City" maxlength="50" tabindex="8" formControlName="addressCity">
+              <div class="msg" *ngIf="vendorCompanyForm.controls['addressCity'].invalid && (vendorCompanyForm.controls['addressCity'].dirty || vendorCompanyForm.controls['addressCity'].touched)">
+                <div *ngIf="vendorCompanyForm.controls['addressCity'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="vendorCompanyForm.controls['addressCity'].errors.pattern">
+                  Only allows alphanumerics and initial space(s) are not allowed.
+                </div>
+                <div *ngIf="vendorCompanyForm.controls['addressCity'].errors.maxlength">
+                  Maximum 50 characters are allowed.
+                </div>
+              </div>
+              <ng-template #popCompanyCity>
+                <ul>
+                  <li> City is required<br></li>
+
+                  <li> It allows alphanumerics and <br> space<br></li>
+                  <li> Special characters are not<br> allowed<br></li>
+                  <li> It should be minimum 1<br> character and maximum 50 <br/> characters long<br></li>
+                </ul>
+              </ng-template>
+
+              <button type="button" data-container="body" class="pop-over" [popover]="popCompanyCity" popoverTitle="Help" placement="left"
+                triggers="mouseenter:mouseleave">?
+              </button>
+            </div>
+          </div>
+
+          <!--state-->
+          <div class="col-md-6">
+            <div class="col-md-12 form-group popover-field">
+              <label class="focused"> State </label>
+              <select class="form-control" placeholder="addressState" tabindex="9" id="addressState" name="addressState" formControlName="addressStateSelected">
+              <option selected="selected" value="">--Select--</option>
+              <option *ngFor="let state of addressStates" value="{{state.StateCode}}">{{state.StateName}}</option>
+            </select>
+              <div class="msg" *ngIf="vendorCompanyForm.controls['addressStateSelected'].invalid && (vendorCompanyForm.controls['addressStateSelected'].dirty || vendorCompanyForm.controls['addressStateSelected'].touched)">
+                <div *ngIf="vendorCompanyForm.controls['addressStateSelected'].errors.required">
+                  Select State.
+                </div>
+              </div>
+              <ng-template #popCompanyState>
+                <ul>
+                  <li> State is required</li>
+
+                  <li> Select state</li>
+                </ul>
+              </ng-template>
+
+              <button type="button" data-container="body" class="pop-over" [popover]="popCompanyState" popoverTitle="Help" placement="left"
+                triggers="mouseenter:mouseleave">?
+              </button>
+            </div>
+          </div>
+
+          <!--Zip-->
+          <div class="col-md-3">
+            <div class="col-md-12 form-group popover-field">
+              <label class="block"> Zip1 </label>
+              <input type="text" class="form-control" placeholder="Zip1" tabindex="10" formControlName="zip1" [maxlength]="zipMaxlength">
+              <div class="msg" *ngIf="vendorCompanyForm.controls['zip1'].invalid && (vendorCompanyForm.controls['zip1'].dirty || vendorCompanyForm.controls['zip1'].touched)">
+                <div *ngIf="vendorCompanyForm.controls['zip1'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="vendorCompanyForm.controls['zip1'].errors.minlength &&!vendorCompanyForm.controls['zip1'].errors.pattern ">
+                  {{zipMessage}}
+                </div>
+                <div *ngIf="vendorCompanyForm.controls['zip1'].errors.pattern">
+                  Only numerics are allowed
+                </div>
+                <div *ngIf="vendorCompanyForm.controls['zip1'].errors.maxlength && !vendorCompanyForm.controls['zip1'].errors.pattern ">
+                  {{zipMessage}}
+                </div>
+                <!--<div *ngIf="vendorCompanyForm.controls['zip1'].errors.minlength">
+                  Minimum 5 characters are required.
+                </div>
+                <div *ngIf="vendorCompanyForm.controls['zip1'].errors.maxlength">
+                  Maximum 6 characters are allowed.
+                </div>-->
+              </div>
+              <button type="button" class="pop-over" data-container="body" [popover]="popCompanyZip1" popoverTitle="Help" placement="left"
+                triggers="mouseenter:mouseleave">?
+              </button>
+              <ng-template #popCompanyZip1>
+                <ul>
+                  <li> Zip Code 1 is required</li>
+
+                  <li> It allows only numbers</li>
+                  <li> It allows up to 6 digits</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="col-md-12 form-group popover-field">
+              <label class="block"> Zip2 </label>
+              <input type="text" class="form-control" tabindex="10" placeholder="Zip2" formControlName="zip2" maxlength="4">
+              <div class="msg" *ngIf="vendorCompanyForm.controls['zip2'].invalid && (vendorCompanyForm.controls['zip2'].dirty || vendorCompanyForm.controls['zip2'].touched)">
+                <div *ngIf="vendorCompanyForm.controls['zip2'].errors.pattern" style="white-space:nowrap">
+                  Only allows numerics and space(s) are not allowed
+                </div>
+                <div *ngIf="vendorCompanyForm.controls['zip2'].errors.maxlength">
+                  Maximum 4 characters are allowed.
+                </div>
+              </div>
+              <button type="button" data-container="body" class="pop-over" [popover]="popCompanyZip2" popoverTitle="Help" placement="left"
+                triggers="mouseenter:mouseleave">?
+              </button>
+              <ng-template #popCompanyZip2>
+                <ul>
+                  <li> Zip Code 2 allows only<br>numbers</li>
+
+                  <li> it allows upto 4 digits</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+
+          <!--Country-->
+
+          <div class="col-md-6">
+            <div class="col-md-12 form-group popover-field">
+              <label class="focused">Country</label>
+              <select class="form-control" placeholder="addressCountries" tabindex="12" id="addressCountries" name="addressCountries" formControlName="addressCountrySelected"
+                (change)="changeCountry($event.target.value)">
+              <option selected="selected" value="">--Select--</option>
+              <option *ngFor="let country of addressCountries" value="{{country.CountryCode}}">{{country.CountryName}}</option>
+              </select>
+              <div class="msg" *ngIf="vendorCompanyForm.controls['addressCountrySelected'].invalid && (vendorCompanyForm.controls['addressCountrySelected'].dirty || vendorCompanyForm.controls['addressCountrySelected'].touched)">
+                <div *ngIf="vendorCompanyForm.controls['addressCountrySelected'].errors.required">
+                  Select Countrty.
+                </div>
+              </div>
+              <ng-template #popCompanyCountry>
+                <ul>
+                  <li> Country is required</li>
+                  <li> Select Country</li>
+                </ul>
+              </ng-template>
+
+              <button type="button" data-container="body" class="pop-over" [popover]="popCompanyCountry" popoverTitle="Help" placement="left"
+                triggers="mouseenter:mouseleave">?
+              </button>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <button type="button" class="btn btn-primary btn-search" tabindex="13" (click)="submitVendorCompanyInformation()">Next</button>
+            <!--[disabled]="!vendorCompanyForm.valid"-->
+            <button type="reset" class="btn btn-default btn-reset" tabindex="14" (click)="cancelVendor()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!--Address Information-->
+  <div [hidden]="!submitted">
+    <form role="form" name="vendorAddressForm" [formGroup]="vendorAddressForm" novalidate>
+      <div class="table-bdr">
+        <h3 role="tab" id="headingThree">
+          Address Information
+        </h3>
+        <div class="pad-10">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="form-group col-md-12 popover-field">
+                  <label class="focused"> Address Type</label>
+                  <select class="form-control" id="AddressType" tabindex="15" formControlName="AddressType" (change)=addressChangeEvent($event.target.value)> 
+                    <!--<option value="">Select</option>-->
+                    <option value="Primary"  >Primary Address</option>
+                    <option value="Secondary">Secondary Address</option>
+              </select>
+                  <div class="msg" *ngIf="vendorAddressForm.controls['AddressType'].invalid && (vendorAddressForm.controls['AddressType'].dirty || vendorAddressForm.controls['AddressType'].touched)">
+                    <div *ngIf="vendorAddressForm.controls['AddressType'].errors.required">
+                      Select AddressType.
+                    </div>
+                  </div>
+                  <ng-template #popAddressType>
+                    <ul>
+                      <li>Address Type is Required</li>
+                      <li> Select AddressType.</li>
+                    </ul>
+                  </ng-template>
+                  <button type="button" data-container="body" class="pop-over" [popover]="popAddressType" popoverTitle="Help" placement="left"
+                    triggers="mouseenter:mouseleave"><i class="fa fa-question" aria-hidden="true"></i>
+                     </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf='!(isAddressChanged)'>
+            <app-add-address [customerID]="customerID" [addressType]="addressType"></app-add-address>
+          </div>
+          <div *ngIf='isAddressChanged'>
+            <app-add-address [customerID]="customerID" [addressType]="addressType"></app-add-address>
+          </div>
+        </div>
+
+      </div>
+      <!--Contact Information-->
+      <div class="table-bdr m-t-20">
+        <h3>Contact Information</h3>
+        <div class="pad-10">
+          <div class="row">
+            <div class="col-md-12">
+              <p class="text-right m-b-0">
+                <!--<span class="glyphicon glyphicon-exclamation-sign" style="color:#448ccb" aria-hidden="true"></span>-->
+                <span class="msg" style="color:red" *ngIf="vendorAddressForm.controls['phonePreference'].invalid && (vendorAddressForm.controls['phonePreference'].dirty || vendorAddressForm.controls['phonePreference'].touched)">
+                  <span class="msg" *ngIf="vendorAddressForm.controls['phonePreference'].errors.required">
+                  * Atleast one Phone Preference required.
+                  </span>
+                </span>
+              </p>
+            </div>
+            <!--Dayphone-->
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-sm-9 popover-field">
+                  <label> Day Phone #
+                  <span  *ngIf="divDayPhone">
+                    <a  (click)="deletePhone(phoneTypes.DayPhone)">Delete</a>
+                  </span>
+                  
+                </label>
+                  <input type="text" tabindex="18" class="form-control" placeholder="Day Phone #" formControlName=DayPhone (change)="validateDayPhoneAllZeros()"
+                    (keydown)="formatPhone($event)" maxlength="14">
+                  <div class="msg" *ngIf="vendorAddressForm.controls['DayPhone'].invalid && (vendorAddressForm.controls['DayPhone'].dirty || vendorAddressForm.controls['DayPhone'].touched)">
+                    <div *ngIf="vendorAddressForm.controls['DayPhone'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="vendorAddressForm.controls['DayPhone'].errors.pattern">
+                      Invalid phone format.
+                    </div>
+                    <div *ngIf="vendorAddressForm.controls['DayPhone'].errors.maxlength">
+                      Maximum 14 characters are allowed.
+                    </div>
+                  </div>
+                  <div class="show-error" *ngIf="isInvalidDayPhone">
+                    <div>Invalid phone number</div>
+                  </div>
+                  <ng-template #popDayPhone>
+                    <ul>
+                      <li> Any One Phone # is required</li>
+                      <li> Day phone # allows only<br> numbers</li>
+                    </ul>
+                  </ng-template>
+                  <button type="button" data-container="body" class="pop-over" [popover]="popDayPhone" popoverTitle="Help" placement="left"
+                    triggers="mouseenter:mouseleave">?</button>
+                </div>
+                <div class="col-md-3 custom-control custom-radio  m-t-30">
+                  <input type="radio" class="custom-control-input" id="Dayphone" name='phonePreference' tabindex="19" value="DayPhone" formControlName="phonePreference"
+                    (change)="prefferedPhoneTypeChange($event.target.value)">
+                  <label for="Dayphone" class="custom-control-description m-t-30">Is Preferred?
+                    <!--<div class="msg" *ngIf="vendorAddressForm.controls['phonePreference'].invalid && (vendorAddressForm.controls['phonePreference'].dirty || vendorAddressForm.controls['phonePreference'].touched)">
+                      <div class="msg" *ngIf="vendorAddressForm.controls['phonePreference'].errors.required">
+                        Atleast one field Required.
+                      </div>
+                    </div>-->
+                    </label>
+                </div>
+              </div>
+            </div>
+            <!--EveningPhone-->
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-md-9 popover-field">
+                  <label>Evening Phone # 
+                <span  *ngIf="divEveningPhone">
+                  <a (click)="deletePhone(phoneTypes.EveningPhone)">Delete</a>
+                </span>
+                
+                </label>
+                  <input type="text" maxlength="14" tabindex="20" class="form-control" placeholder="Evening Phone #" formControlName="EveningPhone"
+                    (change)="validateEveningPhoneAllZeros()" (keydown)="formatPhone($event)">
+
+                  <div class="msg" *ngIf="vendorAddressForm.controls['EveningPhone'].invalid && (vendorAddressForm.controls['EveningPhone'].dirty || vendorAddressForm.controls['EveningPhone'].touched)">
+                    <div *ngIf="vendorAddressForm.controls['EveningPhone'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="vendorAddressForm.controls['EveningPhone'].errors.pattern">
+                      Invalid phone format.
+                    </div>
+                    <div *ngIf="vendorAddressForm.controls['EveningPhone'].errors.maxlength">
+                      Maximum 14 characters are allowed.
+                    </div>
+                  </div>
+                  <div class="show-error" *ngIf="isInvalidEveningPhone">
+                    <div>Invalid phone number</div>
+                  </div>
+
+
+                  <ng-template #popEveningPhone>
+                    <ul>
+                      <li> Any One Phone # is required</li>
+                      <li> Evening # allows only<br> numbers</li>
+                    </ul>
+                  </ng-template>
+                  <button type="button" data-container="body" class="pop-over" [popover]="popEveningPhone" popoverTitle="Help" placement="left"
+                    triggers="mouseenter:mouseleave">?</button>
+
+                </div>
+                <div class="col-md-3 custom-control custom-radio  m-t-30">
+                  <input type="radio" class="preferred custom-control-input" id="EveningPhone" tabindex="21" name='phonePreference' value="EveningPhone"
+                    formControlName="phonePreference" (change)="prefferedPhoneTypeChange($event.target.value)">
+                  <label for="EveningPhone" class="custom-control-description m-t-30">Is Preferred?
+                    </label>
+                </div>
+              </div>
+            </div>
+            <!--MobileNo-->
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-md-9 popover-field">
+                  <label> Mobile #
+                  <span *ngIf="divMobileNo">
+                  <a (click)="deletePhone(phoneTypes.MobileNo)">Delete</a>
+                </span>
+                </label>
+                  <input type="text" maxlength="14" tabindex="22" class="form-control" placeholder="Mobile#" formControlName="MobileNo" (change)="validateMobilePhoneAllZeros()"
+                    (keydown)="formatPhone($event)">
+
+                  <div class="msg" *ngIf="vendorAddressForm.controls['MobileNo'].invalid && (vendorAddressForm.controls['MobileNo'].dirty || vendorAddressForm.controls['MobileNo'].touched)">
+
+                    <div *ngIf="vendorAddressForm.controls['MobileNo'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="vendorAddressForm.controls['MobileNo'].errors.pattern">
+                      Invalid phone format.
+                    </div>
+                    <div *ngIf="vendorAddressForm.controls['MobileNo'].errors.maxlength">
+                      Maximum 14 characters are allowed.
+                    </div>
+                  </div>
+                  <div class="show-error" *ngIf="isInvalidMobilePhone">
+                    <div>Invalid phone number</div>
+                  </div>
+                  <ng-template #popMobileNo>
+                    <ul>
+                      <li> Any One Phone # is required</li>
+                      <li> MobileNo Phone # allows omly numbers</li>
+                    </ul>
+                  </ng-template>
+
+                  <button type="button" data-container="body" class="pop-over" [popover]="popMobileNo" popoverTitle="Help" placement="left"
+                    triggers="mouseenter:mouseleave">?
+                     </button>
+                </div>
+                <div class="col-md-3 custom-control custom-radio  m-t-30">
+                  <input type="radio" class="preferred custom-control-input" id="MobileNo" tabindex="23" name='phonePreference' value="MobileNo"
+                    formControlName="phonePreference" (change)="prefferedPhoneTypeChange($event.target.value)">
+                  <label for="MobileNo" class="custom-control-description m-t-30 nowrap">
+                    Is Preferred?
+                      </label>
+                </div>
+              </div>
+            </div>
+            <!--Workphone-->
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-9">
+                  <div class="row">
+                    <div class="form-group col-md-7 popover-field">
+                      <label> Work Phone # 
+                  <span  *ngIf="divWorkPhone">
+                    <a (click)="deletePhone(phoneTypes.WorkPhone)">Delete</a>
+                    </span>
+       
+                </label>
+                      <input type="text" maxlength="14" tabindex="24" class="form-control" placeholder="Work Phone #" formControlName="WorkPhone"
+                        (change)="validateWorkPhoneAllZeros()" (keydown)="formatPhone($event)">
+                      <div class="msg" *ngIf="vendorAddressForm.controls['WorkPhone'].invalid && (vendorAddressForm.controls['WorkPhone'].dirty || vendorAddressForm.controls['WorkPhone'].touched)">
+                        <div *ngIf="vendorAddressForm.controls['WorkPhone'].errors.required">
+                          Required.
+                        </div>
+                        <div *ngIf="vendorAddressForm.controls['WorkPhone'].errors.pattern">
+                          Invalid phone format.
+                        </div>
+                        <div *ngIf="vendorAddressForm.controls['WorkPhone'].errors.maxlength">
+                          Maximum 14 characters are allowed.
+                        </div>
+                      </div>
+                      <div class="show-error" *ngIf="isInvalidWorkPhone">
+                        <div>Invalid phone number</div>
+                      </div>
+                      <ng-template #popWorkPhone>
+                        <ul>
+                          <li> Ext-is required for Work phone</li>
+                          <li> It allows only numbers</li>
+                        </ul>
+                      </ng-template>
+                      <button type="button" data-container="body" class="pop-over" data-container="body" [popover]="popWorkPhone" popoverTitle="Help"
+                        placement="left" triggers="mouseenter:mouseleave">?
+                  </button>
+                    </div>
+                    <div class="form-group col-md-5 popover-field">
+                      <label style="width: 100%;"> Ext- </label>
+                      <input type="text" maxlength="5" class="form-control" tabindex="24" maxlength="5" placeholder="Ext-" (change)="changeExtension()"
+                        formControlName="extn">
+                      <div class="msg" *ngIf="vendorAddressForm.controls['extn'].invalid && (vendorAddressForm.controls['extn'].dirty || vendorAddressForm.controls['extn'].touched)">
+                        <div *ngIf="vendorAddressForm.controls['extn'].errors.pattern">
+                          Only numerics are allowed.
+                        </div>
+                        <div *ngIf="vendorAddressForm.controls['extn'].errors.maxlength">
+                          Maximum 5 characters are allowed.
+                        </div>
+                      </div>
+                      <ng-template #popWorkPhone>
+                        <ul>
+                          <li> Ext-is required for Work phone</li>
+                          <li> It allows only numbers</li>
+                        </ul>
+                      </ng-template>
+                      <button type="button" class="pop-over" data-container="body" [popover]="popWorkPhone" popoverTitle="Help" placement="left"
+                        triggers="mouseenter:mouseleave">?
+                  </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3 custom-control custom-radio  m-t-30">
+                  <input type="radio" id="WorkPhone" class="custom-control-input preferred" tabindex="25" name='phonePreference' value="WorkPhone"
+                    formControlName="phonePreference" (change)="prefferedPhoneTypeChange($event.target.value)">
+                  <label for="WorkPhone" class="custom-control-description m-t-30">Is Preferred?
+                  </label>
+                </div>
+              </div>
+            </div>
+            <!--Fax-->
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-md-9 popover-field">
+                  <label> Fax #
+                <span *ngIf="divFax">
+                  <a (click)="deletePhone(phoneTypes.Fax)">Delete</a>
+                  </span>
+                  </label>
+                  <input type="text" maxlength="14" tabindex="26" class="form-control" placeholder="Fax#" formControlName="Fax" (change)="validateFaxAllZeros()"
+                    (keydown)="formatPhone($event)">
+
+                  <div class="msg" *ngIf="vendorAddressForm.controls['Fax'].invalid && (vendorAddressForm.controls['Fax'].dirty || vendorAddressForm.controls['Fax'].touched)">
+                    <div *ngIf="vendorAddressForm.controls['Fax'].errors.pattern">
+                      Invalid phone format.
+                    </div>
+                    <div *ngIf="vendorAddressForm.controls['Fax'].errors.maxlength">
+                      Maximum 14 characters are allowed.
+                    </div>
+                  </div>
+                  <div class="show-error" *ngIf="isInvalidFax">
+                    <div>Invalid phone number</div>
+                  </div>
+                  <ng-template #popFax>
+                    <ul>
+                      <li>Fax # allows only numbers</li>
+                    </ul>
+                  </ng-template>
+                  <button type="button" data-container="body" class="pop-over" [popover]="popFax" popoverTitle="Help" placement="left" triggers="mouseenter:mouseleave">?
+                </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--Email Information-->
+      <div class="table-bdr m-t-20">
+        <h3>Email Information</h3>
+        <div class="pad-10">
+          <div class="row">
+            <div class="col-md-12">
+              <p class="text-right m-b-0">
+                <!--<span class="glyphicon glyphicon-exclamation-sign" style="color:#448ccb" aria-hidden="true"></span>-->
+                <span class="msg" style="color:red" *ngIf="vendorAddressForm.controls['emailPreference'].invalid && (vendorAddressForm.controls['emailPreference'].dirty || vendorAddressForm.controls['emailPreference'].touched)">
+                      <span *ngIf="vendorAddressForm.controls['emailPreference'].errors.required">
+                       * Atleast one Email Prefrence is Required.
+                      </span>
+                </span>
+              </p>
+            </div>
+            <!--primary email-->
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-md-9 popover-field">
+                  <label> Primary Email
+                   <span *ngIf="divPrimaryEmail">
+                      <a (click)="deleteEmail(emailTypes.PrimaryEmail)">Delete</a>
+                    </span>
+                </label>
+                  <input type="text" class="form-control" tabindex="27" maxlength="100" placeholder="Primary Email" formControlName="PrimaryEmail"
+                    (change)="checkPrimaryEmailExists()" (focus)="focusMail()">
+                  <div class="msg" *ngIf="vendorAddressForm.controls['PrimaryEmail'].invalid && (vendorAddressForm.controls['PrimaryEmail'].dirty || vendorAddressForm.controls['PrimaryEmail'].touched)">
+                    <div *ngIf="vendorAddressForm.controls['PrimaryEmail'].errors.required">
+                      Required
+                    </div>
+                    <div *ngIf="vendorAddressForm.controls['PrimaryEmail'].errors.pattern && !(vendorAddressForm.controls['PrimaryEmail'].errors.minlength || vendorAddressForm.controls['PrimaryEmail'].errors.maxlength)">
+                      Invalid Email format.
+                    </div>
+                    <div *ngIf="vendorAddressForm.controls['PrimaryEmail'].errors.minlength || vendorAddressForm.controls['PrimaryEmail'].errors.maxlength">
+                      minimum 6 characters and maximum 100 characters are allowed.
+                    </div>
+
+                  </div>
+                  <div class="show-error" *ngIf="isPrimaryEmailExists">
+                    <div>Email already exists</div>
+                  </div>
+                  <ng-template #popPrimaryEmail>
+                    <ul>
+                      <li> Primary Email allows<br> alphanumeric with special
+                        <br> characters('@''.''_')..</li>
+                      <li> Spaces are not allowed</li>
+                      <li> It should be minimum 6<br> characters and maximum 100 <br> characters long</li>
+                      <li> It should follow the format<br> yourname@domain.com.</li>
+                    </ul>
+                  </ng-template>
+                  <button type="button" data-container="body" class="pop-over" [popover]="popPrimaryEmail" popoverTitle="Help" placement="left"
+                    triggers="mouseenter:mouseleave">?
+                    </button>
+
+                </div>
+                <div class="col-md-3 custom-control custom-radio  m-t-30">
+                  <input type="radio" id="PrimaryEmail" class="preferred custom-control-input" tabindex="28" name='emailPreference' value="PrimaryEmail"
+                    formControlName="emailPreference" (change)="prefferedEmailTypeChange($event.target.value)">
+                  <label for="PrimaryEmail" class="custom-control-description m-t-30">Is Preferred?
+                    
+                      </label>
+                </div>
+              </div>
+              <!--<span *ngIf="emailMessage;">{{emailMessage}}</span>-->
+            </div>
+            <!--secondaryEmail-->
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-md-9 popover-field">
+                  <label> Secondary Email
+                  <span *ngIf="divSecondaryEmail">
+                      <a (click)="deleteEmail(emailTypes.SecondaryEmail)">Delete</a>
+                    </span>
+                </label>
+                  <input type="text" class="form-control" tabindex="29" maxlength="100" placeholder="Secondary Email" formControlName="SecondaryEmail"
+                    (change)="checkSecondaryEmailExists()" (focus)="focusMail()">
+
+                  <div class="msg" *ngIf="vendorAddressForm.controls['SecondaryEmail'].invalid && (vendorAddressForm.controls['SecondaryEmail'].dirty || vendorAddressForm.controls['SecondaryEmail'].touched)">
+                    <div *ngIf="vendorAddressForm.controls['SecondaryEmail'].errors.required">
+                      Required
+                    </div>
+                    <div *ngIf="vendorAddressForm.controls['SecondaryEmail'].errors.pattern && !(vendorAddressForm.controls['SecondaryEmail'].errors.minlength || vendorAddressForm.controls['SecondaryEmail'].errors.maxlength)">
+                      Invalid Email format.
+                    </div>
+                    <div *ngIf="vendorAddressForm.controls['SecondaryEmail'].errors.minlength || vendorAddressForm.controls['SecondaryEmail'].errors.maxlength">
+                      minimum 6 characters and maximum 100 characters are allowed.
+                    </div>
+
+                  </div>
+                  <div class="show-error" *ngIf="isSecondaryEmailError">
+                    <div>{{secondaryEmailErrorMessage}}</div>
+                  </div>
+                  <ng-template #popSecondaryEmail>
+                    <ul>
+                      <li> Secondary Email allows<br> alphanumeric with special
+                        <br> characters('@''.''_')..</li>
+                      <li> Spaces are not allowed</li>
+                      <li> It should be minimum 6 <br> characters and maximum 100
+                        <br> characters long</li>
+                      <li> It should follow the format<br> yourname@domain.com.</li>
+                    </ul>
+                  </ng-template>
+                  <button type="button" data-container="body" class="pop-over" [popover]="popSecondaryEmail" popoverTitle="Help" placement="left"
+                    triggers="mouseenter:mouseleave">?
+                    </button>
+
+                </div>
+                <div class="col-md-3 custom-control custom-radio m-t-30">
+                  <input type="radio" id="SecondaryEmail" class="preferred custom-control-input" tabindex="30" name='emailPreference' value="SecondaryEmail"
+                    formControlName="emailPreference" (change)="prefferedEmailTypeChange($event.target.value)">
+                  <label for="SecondaryEmail" class="custom-control-description m-t-30">Is Preferred?
+                      </label>
+                </div>
+                <!--<span>{{emailEqualMessage}}</span>-->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <button class="btn btn-default btn-reset" tabindex="31" (click)="previousVendorCompanyInformation()">Previous </button>
+          <a href='javascript:;' class="btn btn-default btn-reset" tabindex="32" (click)="cancelVendor()">Cancel </a>
+          <button class="btn btn-default btn-search" tabindex="33" (click)="finishButtonClick()">{{btnFinish}} </button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="text-center">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  </div>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)" (onOk)=deleteEmailClick($event)></app-success-failure-alerts-message>

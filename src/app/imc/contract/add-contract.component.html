@@ -1,0 +1,337 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">IMC</a></li>
+        <li class="active">Set up</li>
+        <li class="active">Contracts</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Contract</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+
+  <form role="form" name="contractSearchForm" [formGroup]="contractSearchForm">
+    <div class="panel panel-default">
+      <!-- <div class="panel-heading">
+        Manage Contract
+      </div> -->
+      <div class="row">
+        <div class="form-group col-md-6">
+          <label> Contract #</label>
+          <input type="text" id="ContractNumber" name="ContractNumber" formControlName="ContractNumber" class="form-control" placeholder="Contract #"
+            maxlength="20">
+          <div class="msg" *ngIf="contractSearchForm.controls['ContractNumber'].invalid && (contractSearchForm.controls['ContractNumber'].dirty || contractSearchForm.controls['ContractNumber'].touched)">
+            <div *ngIf="contractSearchForm.controls['ContractNumber'].errors.required">
+              At least 1 field is required.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+            <div class="form-group col-sm-12">
+              <label> Contract Name</label>
+              <input type="text" id="ContractName" name="ContractName" formControlName="ContractName" class="form-control" placeholder="Contract Name"
+                maxlength="50">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+            <div class="form-group col-sm-12">
+              <label class="focused"> Contract Status</label>
+              <select class="form-control" id="ContractStatus" name="ContractStatus" formControlName="ContractStatus">
+              <option selected="selected" value="2">--Select--</option>
+              <option value="1">Active</option>
+              <option value="0">InActive</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <button type="submit" class="btn btn-primary btn-search" (click)="searchContract()" [disabled]="searchDisableButton">Search</button>
+          <button (click)="searchFormReset()" class="btn btn-default btn-reset">Reset</button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+
+  <div class="row" *ngIf="!isEdit">
+    <div class="col-md-12">
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary btn-search" (click)="addNewContract()" [disabled]="disableButton"><i class="fa fa-plus-square-o fa-lg fa-fw" aria-hidden="true"></i>Add New Contract</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="table-bdr" [hidden]="!isEdit">
+    <h3>
+      {{contractHeading}} Contract
+    </h3>
+
+    <!--add contract form-->
+    <form role="form" name="newContractForm" [formGroup]="newContractForm">
+      <div class="pad-10">
+        <div class="row">
+          <!--contract Number-->
+          <div class="col-md-6">
+            <div class="row">
+              <div class="form-group col-sm-12 popover-field">
+                <label> Contract # 
+              <span *ngIf="!checkContractNumber" id="body_lblMessage" class="leftAlign left0I top5"
+                style="color:red; padding-left: 20px;">
+               Not Available</span>    </label>
+                <input [readonly]="editDivButtons" type="text" id="ContractNumber" name="ContractNumber" formControlName="ContractNumber"
+                  class="form-control" (change)="checkContract(newContractForm.controls['ContractNumber'].value)" placeholder="Contract #"
+                  maxlength="20">
+                <div class="msg" *ngIf="newContractForm.controls['ContractNumber'].invalid && (newContractForm.controls['ContractNumber'].dirty || newContractForm.controls['ContractNumber'].touched)">
+                  <div *ngIf="newContractForm.controls['ContractNumber'].errors.required">
+                    *required.
+                  </div>
+                  <div *ngIf="newContractForm.controls['ContractNumber'].errors.pattern">
+                    Only alphanumerics allowed and Initial space(s) not allowed
+                  </div>
+
+                </div>
+                <ng-template #popContactNumber>
+                  <ul>
+                    <li>Contract # is mandatory</li>
+                    <li>It allowes alphanumerics</li>
+                    <li>Special characters and spaces are not allowed</li>
+                    <li> It should be minimum 1 character and maximum 20 characters long</li>
+                  </ul>
+                </ng-template>
+                <button type="button" class="pop-over" data-container="body" [popover]="popContactNumber" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                  placement="left">?
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!--contract name-->
+          <div class="col-md-6">
+            <div class="row">
+              <div class="form-group  col-sm-12 popover-field">
+                <label> Contract Name </label>
+                <input type="text" id="ContractName" name="ContractName" formControlName="ContractName" class="form-control" placeholder="Contract Name"
+                  maxlength="50">
+                <div class="msg" *ngIf="newContractForm.controls['ContractName'].errors && (newContractForm.controls['ContractName'].dirty || newContractForm.controls['ContractName'].touched)">
+                  <div *ngIf="newContractForm.controls['ContractName'].errors.required">
+                    Required.
+                  </div>
+                  <div *ngIf="newContractForm.controls['ContractName'].errors.pattern">
+                    Only alphanumerics allowed and Initial space(s) not allowed
+                  </div>
+                </div>
+                <ng-template #popContractName>
+                  <ul>
+                    <li>Contract name is mandatory</li>
+                    <li>Contract name allows alphanumerics and spaces</li>
+                    <li>Special characters are not allowed</li>
+                    <li>It should be minimum 1 character and maximum 50 characters long</li>
+                  </ul>
+                </ng-template>
+                <button type="button" class="pop-over" data-container="body" [popover]="popContractName" popoverTitle="Help" placement="left"
+                  triggers="mouseenter:mouseleave">?
+                </button>
+              </div>
+            </div>
+          </div>
+          <!--contract status-->
+          <div class="col-md-6" *ngIf="editDivButtons">
+            <div class="row">
+              <div class="form-group col-sm-12 popover-field">
+                <label class="focused"> Contact Status</label>
+                <select class="form-control" id="ContractStatus" name="ContractStatus" formControlName="ContractStatus">
+              <option selected="selected" value="">--Select--</option>
+              <option value=1>Active</option>
+              <option value=0>InActive</option>
+              </select>
+                <div class="msg" *ngIf="newContractForm.controls['ContractStatus'].invalid && (newContractForm.controls['ContractStatus'].dirty || newContractForm.controls['ContractStatus'].touched)">
+                  <div *ngIf="newContractForm.controls['ContractStatus'].errors.required">
+                    Required.
+                  </div>
+                </div>
+
+                <ng-template #popovercontractstatus>
+                  <ul>
+                    <li> Contract status is manditory</li>
+                    <li> Select Contract status</li>
+
+                  </ul>
+                </ng-template>
+                <button type="button" class="pop-over" data-container="body" [popover]="popovercontractstatus" popoverTitle="Help" placement="left"
+                  triggers="mouseenter:mouseleave">?
+                </button>
+              </div>
+            </div>
+          </div>
+          <!--vendor-->
+          <div class="col-md-6">
+            <div class="row">
+              <div class="form-group col-sm-12 popover-field">
+                <label class="focused">Vendor </label>
+                <select class="form-control" id="Vendor" name="Vendor" formControlName="Vendor"> 
+              <option selected="selected" value="">--Select--</option>
+              <option *ngFor="let name of editVendorNames" [value]="name.VendorId">{{name.CompanyName}}</option> 
+              </select>
+                <div class="msg" *ngIf="newContractForm.controls['Vendor'].invalid && (newContractForm.controls['Vendor'].dirty || newContractForm.controls['Vendor'].touched)">
+                  <div *ngIf="newContractForm.controls['Vendor'].errors.required">
+                    Required.
+                  </div>
+                </div>
+                <ng-template #popVendor>
+                  <ul>
+                    <li> vendor is mandatory</li>
+                    <li> select vendor</li>
+
+                  </ul>
+                </ng-template>
+                <button type="button" class="pop-over" data-container="body" [popover]="popVendor" popoverTitle="Help" placement="left" triggers="mouseenter:mouseleave">?
+                </button>
+              </div>
+            </div>
+          </div>
+          <!--upload contract-->
+          <div class="col-md-6">
+            <div class="row">
+              <div class="form-group col-sm-12 popover-field">
+                <label id="focused"> Upload Contract
+               <span *ngIf="fileSize" style="color:red;">
+                {{errorMessageAttachmentFile}}
+              </span>
+              </label>
+                <input type="file" class="form-control" id="UploadContract" formControlName="UploadContract" #upload style="width: calc(100% - 150px);">
+                <span *ngIf="!isContractFileUploaded" class='upload-view'>
+                <button type="submit" (click)="uploadClickContract($event)" class="btn btn-small btn-primary btn-search"> Upload</button>
+              </span>
+                <span *ngIf="isContractFileUploaded" class='upload-view'>
+                <a href="{{contractUploadedFullPath}}" target="_blank">View</a>
+                 <a (click)="removePdfFile()"><i class="fa fa-trash-o fa-fw fa-lg" aria-hidden="true"></i></a>
+              </span>
+                <ng-template #popUploadContract>
+                  <ul>
+                    <li> Only pdf files are allowed</li>
+                    <li> File size should not be more than {{fileMaxSize}} MB</li>
+
+                  </ul>
+                </ng-template>
+                <button type="button" class="pop-over" data-container="body" [popover]="popUploadContract" popoverTitle="Help" placement="left"
+                  triggers="mouseenter:mouseleave">?
+               </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <button class="btn btn-default btn-search" (click)="btnAddContract()" *ngIf="addDivButtons" title="Add">Add </button>
+            <button class="btn btn-default btn-search" (click)="btnUpdateContract()" *ngIf="editDivButtons" title="Update"> Update </button>
+            <button class="btn btn-default btn-reset" (click)="editFormReset()" *ngIf="addDivButtons" title="Reset">Reset </button>
+            <button class="btn btn-default btn-reset" (click)="cancelEditContract()" title="Cancel"> Cancel </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <h3>Search Result</h3>
+        <div class="pad-10" *ngIf='getContractResponse && getContractResponse.length;else elseBlock'>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+
+
+                <tr>
+                  <th (click)="sortDirection('ContractNumber')" class="sorting-handle"> Contract 1 #
+                    <span *ngIf="gridArrowContractNumber">
+                              <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                            </span>
+                  </th>
+                  <th (click)="sortDirection('ContractName')" class="sorting-handle"> Contract Name
+                    <span *ngIf="gridArrowContractName">
+                              <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                            </span>
+                  </th>
+                  <th (click)="sortDirection('VendorName')" class="sorting-handle"> Vendor Name
+                    <span *ngIf="gridArrowVendorName">
+                              <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                            </span>
+                  </th>
+
+
+                  <th> IsActive </th>
+                  <th> </th>
+                  <th> </th>
+                  <th> </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor='let contract of getContractResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: pageNumber, totalItems:totalRecordCount }'>
+                  <td> {{contract.ContractNumber}}</td>
+                  <td> {{contract.ContractName}} </td>
+                  <td> {{contract.VendorName}} </td>
+                  <td>
+                    <div *ngIf="contract.ContractStatus">True </div>
+                    <div *ngIf="!contract.ContractStatus">False </div>
+                  </td>
+                  <td>
+                    <i *ngIf="pdffDisableButton" title="You can't View PDF" class="fa fa-file-pdf-o fa-fw fa-lg link-disabled" aria-hidden="true"></i>
+                    <span *ngIf="!pdffDisableButton">
+              <a *ngIf="contract.UploadContract" href="{{documentLinked+contract.UploadContract}}" title="Contract Document" target="_blank"> <i class="fa fa-file-pdf-o fa-fw fa-lg" aria-hidden="true"></i></a>
+                 </span>
+                  </td>
+
+                  <td> <i *ngIf="updateDisableButton" class="fa fa-pencil-square-o fa-lg fa-fw link-disabled" title="You can't Edit Contract"
+                      aria-hidden="true"></i>
+
+
+                    <span *ngIf="!updateDisableButton">
+             <a (click)="btneditContract(contract)" title="Edit"><i class="fa fa-pencil-square-o fa-lg fa-lg" aria-hidden="true"></i> </a> 
+             </span>
+                  </td>
+
+                  <td>
+                    <span *ngIf="cancelDisableButton" class="link-disabled" title="You can't Cancel Contract">Cancel
+           </span>
+                    <span *ngIf="!cancelDisableButton">
+             <a *ngIf="contract.ContractStatus"  title="Cancel" (click)=DeleteClick(contract.ContractId)>Cancel</a>
+               </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="row page-info">
+            <div class="col-md-6 text-left">
+              <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+            </div>
+            <div class="col-md-6 text-right">
+              <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-template #elseBlock>
+        <div class="status-content">
+          <div class="alert alert-success alert-dismissible m-t-10 m-l-10 m-r-10" role="alert">
+            <strong><span class="glyphicon glyphicon-exclamation-sign">&nbsp;</span>No Contracts to display</strong>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)" (onOk)="btnYesClick($event)"></app-success-failure-alerts-message>
+</div>

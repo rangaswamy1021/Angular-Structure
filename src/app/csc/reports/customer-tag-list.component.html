@@ -1,0 +1,114 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li class="active">Reports</li>
+        <li class="active">Customer Tag List</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Customer Tag List</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <form role="form" name="customerTagSearchForm" [formGroup]="customerTagSearchForm">
+    <div class="row">
+      <div class=" col-md-6 form-group">
+        <label>Account #</label>
+        <input type="text" id="account" placeholder="Account #" name="account" formControlName="account" class="form-control" maxlength="17">
+        <div class="msg" *ngIf="customerTagSearchForm.controls['account'].invalid && (customerTagSearchForm.controls['account'].dirty || customerTagSearchForm.controls['account'].touched)">
+          <div *ngIf="customerTagSearchForm.controls['account'].errors.required">
+            Required
+          </div>
+          <div *ngIf="customerTagSearchForm.controls['account'].errors.pattern">
+            Only numbers are Allowed
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 m-t-20">
+        <button type="submit" class="btn btn-primary btn-search" title="Search" [disabled]="disableSearchButton" (click)="customerTagSearchClick()">Search</button>
+        <button type="reset" class="btn btn-default btn-reset" title="Reset" (click)=" customerTagResetClick()"> Reset </button>
+      </div>
+    </div>
+  </form>
+  <div class="table-bdr" *ngIf="searchResultGrid">
+    <h3>Search Results</h3>
+    <div class="pad-10">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th (click)="sortDirection('SERIALNO')" class="sorting-handle">Serial #
+                <span *ngIf=gridArrowSERIALNO>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th>Tag Type</th>
+              <th (click)="sortDirection('TAGALIAS')" class="sorting-handle">Alias Name
+                <span *ngIf=gridArrowTAGALIAS>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('TAGSTARTDATE')" class="sorting-handle">Start Date/Time
+                <span *ngIf=gridArrowTAGSTARTDATE>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('TAGENDDATE')" class="sorting-handle">End Date/Time
+                <span *ngIf=gridArrowTAGENDDATE>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('TAGSTATUS')" class="sorting-handle">Status
+                <span *ngIf=gridArrowTAGSTATUS>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let tagList of customerTagListResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: currentPage, totalItems:totalRecordCount };">
+              <td>{{tagList.SerialNumber}}</td>
+              <td>{{tagList.TagType==""?"N/A":tagList.TagType}}</td>
+              <td>{{tagList.TagAlias==""?"N/A":tagList.TagAlias}}</td>
+              <td>{{tagList.StartEffectiveDate | customDateTimeFormat }}</td>
+              <td>{{tagList.EndEffectiveDate | customDateTimeFormat}}</td>
+              <td>{{tagList.TagStatus}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="row page-info" *ngIf='customerTagListResponse && customerTagListResponse[0].RecCount'>
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="table-bdr" *ngIf="searchCheckNoRecords">
+    <h3>Search Results</h3>
+    <div class="pad-10">
+      No records to display
+    </div>
+    <div>
+      <div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+          <div class="text-center">
+            <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

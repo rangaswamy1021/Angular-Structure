@@ -1,0 +1,55 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">TVC</a>
+        </li>
+        <li>
+          <a href="#">Trips</a>
+        </li>
+        <li class="active">SST History</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>SST History</h1>
+        <div class="text-right">
+          <span id="" class="accno">Account #:{{accountId}}</span>
+          <button class="btn btn-default  btn-search" type="button" (click)='backClick()'>Back</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <span id="" class="accno"> Trip #: {{citationId}} </span>
+    </div>
+  </div>
+  <div class="table-bdr">
+    <div *ngIf='tripResponse && tripResponse.length'>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Created Date </th>
+            <th>Stage/Status/Type</th>
+            <th>UserName</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let object of tripResponse">
+            <td> {{object.CreatedDate | customDateFormat }} </td>
+            <td> {{object.AuditStatus}} </td>
+            <td> {{object.UserName }} </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf='!tripResponse|| tripResponse.length===0'>
+      <div class="pad-10">No sst details to display</div>
+    </div>
+  </div>

@@ -1,0 +1,248 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">TVC</a></li>
+        <li><a href="#">Violator Details</a></li>
+        <li class="active">Make Payment</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Make Payment</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="col-md-7">
+      <strong>Payment For : </strong>
+      <div class="custom-control custom-radio radio-inline" *ngIf="payMethod!='OutstandingBalance' && strCitationIds==''">
+        <input type="radio" name="inlineRadioOptions" class="custom-control-input" id="inlineRadio1" value="InvoicePayment" (change)='changeOption()'
+          [(ngModel)]='payMethod'>
+        <label for="inlineRadio1" class="custom-control-description">Invoice Payment</label>
+      </div>
+      <div class="custom-control custom-radio radio-inline" *ngIf="payMethod!='InvoicePayment' && strCitationIds!=''">
+        <input type="radio" class="custom-control-input" name="inlineRadioOptions" id="inlineRadio2" value="OutstandingBalance" (change)='changeOption()'
+          [(ngModel)]='payMethod'>
+        <label for="inlineRadio2" class="custom-control-description">Outstanding Balance</label>
+      </div>
+      <div class="custom-control custom-radio radio-inline">
+        <input type="radio" class="custom-control-input" name="inlineRadioOptions" id="inlineRadio3" value="AdministrativeHearingDeposit"
+          (change)='changeOption()' [(ngModel)]='payMethod'>
+        <label for="inlineRadio3" class="custom-control-description">Administrative Hearing Deposit</label>
+      </div>
+    </div>
+    <div class="col-md-5 text-right">
+      <span id="" class="accno">Account #: {{accountId}}</span>
+      <button class="btn btn-primary btn-reset" (click)="exitClick();">Exit</button>
+      <button class="btn btn-primary btn-search" (click)="backClick();">Back</button>
+    </div>
+  </div>
+  <div class="row m-t-20">
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table-bdr" *ngIf='vioAmounts && vioAmounts.length>0 && payMethod == "OutstandingBalance"'>
+            <h3>Trip Details</h3>
+            <div class="table-responsive">
+              <div class="pad-10">
+                <form role="form" #vioForm="ngForm">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>
+                          <div class="checkbox-inline checkbox">
+                            <input [checked]="isCheckallTrips" type="checkbox" (change)="checkandUncheckAllRows($event)" id="checkAllTrips">
+                            <label for="checkAllTrips">
+                            <span></span>
+                          </label>
+                          </div>
+                        </th>
+                        <th>Trip #</th>
+                        <th>Toll Fee</th>
+                        <th>Fine Fee</th>
+                        <th>Outstanding Due</th>
+                        <th>Payment Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor='let viotrips of vioAmounts; let row_no=index'>
+                        <td>
+                          <div class="checkbox-inline checkbox">
+                            <input [id]="row_no" type="checkbox" [(ngModel)]="viotrips.checkedStatus" [ngModelOptions]="{standalone: true}" (change)=checkChange($event,viotrips);
+                              [disabled]="viotrips.TotalFee>0?false:true">
+                            <label [for]="row_no">
+                            <span></span>
+                          </label>
+                          </div>
+                        </td>
+                        <td>{{viotrips.CitationId}}</td>
+                        <td>{{viotrips.Tollfee | currency:'USD':true:'1.2-2'}}</td>
+                        <td>{{viotrips.FineFee | currency:'USD':true:'1.2-2'}}</td>
+                        <td>{{viotrips.TotalFee | currency:'USD':true:'1.2-2'}}</td>
+                        <td>
+                          <div class="col-md-12">
+                            <div class="popover-field" ngModelGroup="tollAmounts">
+                              <input type="text" pattern="^[0-9]+(\.{1}[0-9]{1,2})?$" maxlength="9" #tripsList="ngModel" required name="tripsAmount[{{row_no}}]"
+                                class="form-control" (change)="checkAmountChange($event.target.value,viotrips)" ngModel="{{viotrips.checkedStatus?(viotrips.BackHoldStatus? (viotrips.AdjTotalFee | number : '1.2-2'):(viotrips.TotalFee | number : '1.2-2')):(amount | number : '1.2-2')}}"
+                               [disabled]="isCourtTrip"  [readonly]="!viotrips.checkedStatus" style="max-width: 80px;">
+                              <div class="msg" *ngIf="tripsList.invalid && (tripsList.dirty || tripsList.touched)">
+                                <div *ngIf="tripsList.errors.required">
+                                  Required.
+                                </div>
+                                <div *ngIf="tripsList.errors.pattern">
+                                  Invalid amount.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default" *ngIf='(!vioAmounts || vioAmounts.length==0) &&  payMethod == "OutstandingBalance"'>
+            <div class="panel-heading"> Trip Details</div>
+            <div class="panel-body">
+              <div class="status-content">
+                <p>No records to display</p>
+              </div>
+            </div>
+          </div>
+          <div class="table-bdr" *ngIf='invoiceResponse && invoiceResponse.length>0 && payMethod == "InvoicePayment"'>
+            <h3>Invoice Details</h3>
+            <div class="table-responsive">
+              <div class="pad-10">
+                <form role="form" #invoiceForm="ngForm">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>
+                          <div class="checkbox-inline checkbox">
+                            <input type="checkbox" [checked]="isCheckallInvoices" (change)="checkandUncheckInvoices($event)" id="checkAllItems">
+                            <label for="checkAllItems">
+                            <span></span>
+                          </label>
+                          </div>
+                        </th>
+                        <th>Due Date</th>
+                        <th>Invoice #</th>
+                        <th>Plate #</th>
+                        <th>Stage</th>
+                        <th>Status</th>
+                        <th>Invoice Amount</th>
+                        <th>Payment(s) / Adjustment(s)</th>
+                        <th>Trip Amount in Court</th>
+                        <th>Hold Type</th>
+                        <th>Hold Status</th>
+                        <th>Outstanding Due</th>
+                        <th>Payment Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor='let invoices of invoiceResponse; let row_no=index'>
+                        <td>
+                          <div class="checkbox-inline checkbox">
+                            <input type="checkbox" [id]="row_no" [(ngModel)]="invoices.IsChecked" [ngModelOptions]="{standalone: true}" (change)=checkChangeInvoices($event,invoices);
+                              [disabled]="(invoices.AgingHoldType=='Payment Plan' && invoices.HoldStatus=='Hold') || (invoices.OutstandingDue>0?false:true)">
+                            <label [for]="row_no">
+                            <span></span>
+                          </label>
+                          </div>
+                        </td>
+                        <td>{{invoices.DueDate | customDateFormat}}</td>
+                        <td>{{invoices.InvoiceNumber}}</td>
+                        <td>{{invoices.PlateNumber}}</td>
+                        <td>{{invoices.StepDescription}}</td>
+                        <td>{{invoices.Status}}</td>
+                        <td>{{invoices.BalanceDue | currency:'USD':true:'1.2-2'}}</td>
+                        <td>{{invoices.UnbilledAmount | currency:'USD':true:'1.2-2'}}</td>
+                        <td>{{invoices.TripAmtInCourt | currency:'USD':true:'1.2-2'}}</td>
+                        <td>{{invoices.AgingHoldType | DisplayNA}}</td>
+                        <td>{{invoices.HoldStatus | DisplayNA}}</td>
+                        <td>{{invoices.OutstandingDue | currency:'USD':true:'1.2-2'}}</td>
+                        <td class="col-xs-2">
+                            <div class="popover-field" ngModelGroup="invoices">
+                              <input type="text" pattern="^[0-9]+(\.{1}[0-9]{1,2})?$" maxlength="9" #invList="ngModel" required name="tripsAmount[{{row_no}}]"
+                                class="form-control" (change)="checkAmountChangeInvoices($event.target.value,invoices)" ngModel="{{invoices.IsChecked?(invoices.SearchActivityIndicator?(invoices.AdjTotalAmount | number : '1.2-2'):(invoices.OutstandingDue | number : '1.2-2')):(amount | number : '1.2-2')}}"
+                                [readonly]="!invoices.IsChecked">
+
+                              <div class="msg" *ngIf="invList.invalid && (invList.dirty || invList.touched)">
+                                <div *ngIf="invList.errors.required">
+                                  Required.
+                                </div>
+                                <div *ngIf="invList.errors.pattern">
+                                  Invalid amount.
+                                </div>
+                              </div>
+                            </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="table-bdr" *ngIf='(!invoiceResponse || invoiceResponse.length==0) && payMethod == "InvoicePayment"'>
+            <h3>Invoice Details</h3>
+            <div class="pad-10">No records to display</div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-horizontal">
+            <div class="form-group col-sm-6">
+              <form role="form" #amountForm="ngForm">
+                <label for="">Amount to be paid:</label>
+                <input type="text" pattern="^[0-9]+(\.{1}[0-9]{1,2})?$" maxlength="9" #inputAmount="ngModel" required class="form-control"
+                  name="inputAmount" (change)="updateAmount($event);" ngModel="{{totalAmounttobePaid  | number : '1.2-2'}}"
+                  [disabled]="payMethod!='AdministrativeHearingDeposit'">
+                <div class="msg" *ngIf="payMethod=='AdministrativeHearingDeposit' && inputAmount.invalid && (inputAmount.dirty || inputAmount.touched)">
+                  <div *ngIf="inputAmount.errors.required">
+                    Required.
+                  </div>
+                  <div *ngIf="inputAmount.errors.pattern">
+                    Invalid amount.
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <app-make-payment [Feature]="feature" [IsCCTaxShow]="isCCTaxShow"></app-make-payment>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="btns-group">
+            <button class="btn btn-primary btn-search" [disabled]="disableMakePayment" type="submit" (click)="doPayment()" autofocus>Make Payment</button>
+            <button class="btn btn-primary btn-reset" type="submit" (click)="resetClick();">Reset</button>
+            <button class="btn btn-primary btn-reset" type="submit" (click)="cancelClick(0);">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>-->
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"
+  (onOk)="userAction($event)"></app-success-failure-alerts-message>

@@ -1,0 +1,302 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">TVC</a>
+        </li>
+        <li>
+          <a href="#">Trips</a>
+        </li>
+        <li class="active">Trip History</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Trip History</h1>
+        <div class="text-right">
+          <span id="" class="accno">Account #: {{longViolatorId}}</span>
+          <button (click)="backClick()" class="btn btn-primary btn-search">
+            Back
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="pad-20 m-b-20">
+      <div class="col-md-12">
+        <ngx-gallery [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
+        <div class="row">
+          <div class="col-md-6">
+            <ul class="image-view-options">
+              <li>
+                <a (click)="zoomIn()" (keydown)="getKeyCode($event)" tabindex="1">
+              <img src="assets/images/svg/zoom-tool.svg" alt="">
+              <span>Zoom in
+                <strong>F1</strong>
+              </span>
+            </a>
+              </li>
+              <li>
+                <a (click)="zoomOut()" (keyup)="getKeyCode($event)" tabindex="2"> 
+              <img src="assets/images/svg/zoom-out1.svg" alt="">
+              <span>Zoom Out
+                <strong>F2</strong>
+              </span>
+            </a>
+              </li>
+              <li>
+                <a (click)="resetImageProperties()" (keyup)="getKeyCode($event)" tabindex="3">
+              <img src="assets/images/svg/reload.svg" alt="">
+              <span> Reset
+                <strong>F3</strong>
+              </span>
+            </a>
+              </li>
+              <li>
+                <a (click)="darken()" (keyup)="getKeyCode($event)" tabindex="4">
+              <img src="assets/images/svg/dark.svg" alt="">
+              <span>Darken
+                <strong  >F4</strong>
+              </span>
+            </a>
+              </li>
+              <li>
+                <a (click)="brighten()" (keyup)="getKeyCode($event)" tabindex="5">
+              <img src="assets/images/svg/brigth.svg" alt="">
+              <span>Brighten
+                <strong>F5 </strong>
+              </span>
+            </a>
+              </li>
+              <li>
+                <a (click)="print()" (keyup)="getKeyCode($event)" tabindex="6">
+                    <img src="assets/images/svg/printer-.svg" alt="">
+                    <span>Print
+                      <strong>F6</strong>
+                    </span>
+                  </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <h3> Trip #: {{tripIdCSV}}</h3>
+      <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+      <div class="form-horizontal">
+        <div class="row m-t-20" *ngIf='tripResponse && tripResponse.length>0'>
+          <!--trip details -->
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="" class="col-sm-5 strong text-right">Plate # :</label>
+              <label for="" class="col-sm-7">{{tripResponse[0].VehicleNumber}}</label>
+            </div>
+            <div class="form-group">
+              <label for="" class="col-sm-5 strong text-right">Location :</label>
+              <label for="" class="col-sm-7">{{tripResponse[0].LocationName}}</label>
+            </div>
+            <div class="form-group">
+              <label for="" class="col-sm-5 strong text-right">Entry Plaza :</label>
+              <label for="" class="col-sm-7">{{tripResponse[0].EntryPlazaName}}</label>
+            </div>
+            <div class="form-group">
+              <label for="" class="col-sm-5 strong text-right">Exit Plaza :</label>
+              <label for="" class="col-sm-7">{{tripResponse[0].ExitPlazaName}}</label>
+            </div>
+            <div class="form-group">
+              <label for="" class="col-sm-5 strong text-right">Problem Status :</label>
+              <label for="" class="col-sm-7">{{tripResponse[0].ProblemStatus}}</label>
+            </div>
+            <div class="form-group">
+              <label for="" class="col-sm-5 strong text-right">Stage :</label>
+              <label for="" class="col-sm-7">{{tripResponse[0].CitationStage}}</label>
+            </div>
+            <div class="form-group">
+              <label for="" class="col-sm-5 strong text-right">Status :</label>
+              <label for="" class="col-sm-7">{{tripResponse[0].CitationStatus}}</label>
+            </div>
+            <div class="form-group">
+              <label for="" class="col-sm-5 strong text-right">Type :</label>
+              <label for="" class="col-sm-7">{{tripResponse[0].CitationType}}</label>
+            </div>
+          </div>
+          <!-- trip outstanding details -->
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="" class="col-sm-5 strong text-right">Toll Fee :</label>
+              <label for="" class="col-sm-7">{{tripResponse[0].TollAmount | currency:'USD':true:'1.2-2'}}</label>
+            </div>
+            <div class="form-group">
+              <label for="" class="col-sm-5 strong text-right">Penalty :</label>
+              <label for="" class="col-sm-7">{{tripResponse[0].FeeAmounts | currency:'USD':true:'1.2-2'}}</label>
+            </div>
+            <div class="form-group">
+              <label for="" class="col-sm-5 strong text-right">Balance Due :</label>
+              <label for="" class="col-sm-7">{{tripResponse[0].OutstandingAmount | currency:'USD':true:'1.2-2'}}</label>
+            </div>
+            <div class="form-group">
+              <label for="" class="col-sm-5 strong text-right">Entry Time :</label>
+              <label for="" class="col-sm-7">{{tripResponse[0].Entry_TripDateTime | customDateTimeFormat}}</label>
+            </div>
+            <div class="form-group">
+              <label for="" class="col-sm-5 strong text-right">Exit Time :</label>
+              <label for="" class="col-sm-7">{{tripResponse[0].Exit_TripDateTime | customDateTimeFormat}}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="clear m-b-10 m-l-10 btns-more">
+            <button type="submit" (click)='makePaymentClick()' class="btn btn-primary btn-search btn-sm">Make Payment</button>
+            <button type="submit" (click)='AdjustmentClick()' class="btn btn-primary btn-search btn-sm">Adjustments</button>
+            <button type="submit" (click)='disputeClick()' class="btn btn-primary btn-search btn-sm">Dispute</button>
+            <button type="submit" class="btn btn-primary btn-search btn-sm" (click)='bindTripStatusHistory()' data-toggle="modal" data-target="#myModal">History</button>
+            <div class="dropup">
+              <button class="btn btn-primary btn-search dropdown-toggle " type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+            More Actions
+          </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <li><a title="Submit Inquiry" (click)='submitInquiryClick()'>Submit Inquiry</a></li>
+                <li><a title="SST History" (click)='SSTHistory()'>SST History</a></li>
+                <li><a title="Correspondence History" (click)='viewCorrespondingHistory()'>Correspondence History</a></li>
+                <li><a title="Trip Status Update" (click)='tripStatusUpdateClick()'>Trip Status Update</a></li>
+                <li><a title="Overpayment Transfer" (click)='overpaymentTransferClick()'>Overpayment Transfer</a></li>
+                <li><a title="Admin Hearing Transfer" (click)='adminHearingTransferClick()'>Admin Hearing Transfer</a></li>
+                <li><a title="Create Correspondence" (click)='createCorrespondenceClick()'>Create Correspondence</a></li>
+              </ul>
+              <!--<div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+            <button type="submit" (click)='submitInquiryClick()' class="btn btn-primary dropdown-item">Submit Inquiry</button>
+            <button type="submit" (click)="SSTHistory()" class="btn btn-primary dropdown-item">SST History</button>
+            <button type="submit" (click)="viewCorrespondingHistory()" class="btn btn-primary dropdown-item">Correspondence History</button>
+            <button type="submit" (click)='tripStatusUpdateClick()' class="btn btn-primary dropdown-item">Trip Status Update</button>
+            <button type="submit" (click)='overpaymentTransferClick()' class="btn btn-primary dropdown-item">Overpayment Transfer</button>
+            <button type="submit" (click)='adminHearingTransferClick()' class="btn btn-primary dropdown-item">Admin Hearing Transfer</button>
+            <button type="submit" (click)='createCorrespondenceClick()' class="btn btn-primary dropdown-item">Create Correspondence</button>
+          </div>-->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row m-t-20">
+        <div class="col-md-12">
+          <span style="cursor: pointer; font-weight: 600;" *ngIf='!addActivity' (click)='showActivity()'>
+        <img src="assets/images/svg/add-file2.svg" class="icon-svg3" alt="">Add Activity</span>
+        </div>
+        <div class="col-md-12" *ngIf='addActivity'>
+          <form role="form" name="activityForm" [formGroup]="activityForm">
+            <div class="table-bdr">
+              <h3>Activity</h3>
+              <div class="pad-20">
+                <div class="row">
+                  <div class="col-sm-6 form-group">
+                    <label for="" class="focused">Activity Text</label>
+                    <textarea name="" id="" cols="" formControlName="activityText" maxlength="255" name="activityText" rows="6" class="form-control"
+                      (keyup)="descEvent($event)"></textarea>
+                    <small class="text-count">Left: {{commentTextLength}} characters </small>
+                    <div class="msg" *ngIf="activityForm.controls['activityText'].invalid && (activityForm.controls['activityText'].dirty || activityForm.controls['activityText'].touched)">
+                      <div *ngIf="activityForm.controls['activityText'].errors.required">
+                        Required.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group col-sm-12">
+                    <button type="submit" class="btn btn-primary btn-search" [disabled]="disableAddActivitybtn" (click)="addActivityForTrip()">Submit</button>
+                    <button type="submit" class="btn btn-primary btn-reset" (click)="resetForm()">Reset</button>
+                    <button type="submit" class="btn btn-primary btn-reset" (click)='addActivity=!addActivity'>cancel</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="row m-t-10">
+        <div class="col-md-12">
+          <div class="table-bdr">
+            <h3>Activities</h3>
+            <div class="pad-10 invoiceDetails" *ngIf='activityRes && activityRes.length;else NodetailsBlock'>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th class="col-xs-2">Date/Time</th>
+                    <th class="col-xs-1">User</th>
+                    <th class="col-xs-2">Activity Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let object of activityRes| paginate: { itemsPerPage: pageItemNumber, currentPage: p,totalItems:dataLength }">
+                    <td>{{object.ActivityDate | customDateTimeFormat }}</td>
+                    <td>{{object.User}}</td>
+                    <td>{{object.Type}}</td>
+                    <td>{{object.Activity}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="row page-info" *ngIf="activityRes[0].Recount>10">
+                <div class="col-md-6 text-left">
+                  <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+                </div>
+                <div class="col-md-6 text-right">
+                  <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="table-bdr">
+          <h3>Trip History</h3>
+          <div class="pad-20">
+            <div class="table-responsive" *ngIf='tripHistoryRes && tripHistoryRes.length;else NodetailsBlock'>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Trip Stage</th>
+                    <th>Trip Status</th>
+                    <th>Trip Status Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let object of tripHistoryRes">
+                    <td> {{object.TripStageCode}} </td>
+                    <td> {{object.TripStatusCode}} </td>
+                    <td> {{object.TripStatusDate | customDateTimeFormat}} </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <ng-template #NodetailsBlock>
+              <div class="pad-10">No details to display</div>
+            </ng-template>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 text-right">
+            <button type="submit" class="btn btn-primary btn-reset" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

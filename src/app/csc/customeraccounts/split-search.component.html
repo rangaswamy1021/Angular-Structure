@@ -1,0 +1,96 @@
+<div class="page-title-header">
+  <div class="row">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Customer Accounts</a></li>
+        <li class="active">Split Search </li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Split Search</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <p class="text-right m-b-10"> <span class="glyphicon glyphicon-exclamation-sign" style="color:#448ccb" aria-hidden="true"></span> Enter input in
+        any of the fields below.</p>
+    </div>
+  </div>
+  <div class="row">
+    <app-advance-search> </app-advance-search>
+    <div class="col-md-12">
+      <button type="submit" class="btn btn-primary btn-search" (click)="splitSearch()">Search</button>
+      <button type="reset" class="btn btn-default btn-reset" (click)="splitSearchReset()">Reset</button>
+    </div>
+  </div>
+  <div class="table-bdr m-t-20" *ngIf='searchResponse && searchResponse.length > 0 && afterSearch'>
+    <h3>Split Search</h3>
+    <div class="pad-10">
+      <table class="table">
+        <thead class="nowrap">
+          <tr>
+            <th>Select</th>
+            <th>Plan Name</th>
+            <th>Account #</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Address</th>
+            <th>Phone #</th>
+            <th>Email Address</th>
+            <!--<td>Status</td>-->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let split of searchResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: currentPage }">
+            <td>
+              <div class="custom-control custom-radio">
+                <input type="radio" name="splitcustomer" (change)="onCustomerSelected(split.AccountId, split.AccountStatus)" class="custom-control-input"
+                  [id]="split.AccountId" />
+                <label [for]="split.AccountId" class="custom-control-description"></label>
+              </div>
+
+            </td>
+            <td> {{split.PlanName}} </td>
+            <td> {{split.AccountId}} </td>
+            <td> {{split.FirstName}} </td>
+            <td> {{split.LastName}} </td>
+            <td> {{split.FullAddress}} </td>
+            <td class="nowrap"> {{split.PhoneNumber}} </td>
+            <td> {{split.EmailAddress}} </td>
+            <!--<td> {{split.AccountStatusDesc}} </td>-->
+          </tr>
+        </tbody>
+      </table>
+      <div class="row page-info">
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row m-b-20" *ngIf='searchResponse && searchResponse.length > 0 && afterSearch'>
+    <div class="col-md-12 text-right">
+      <button type="submit" class="btn btn-primary btn-search m-r-10" (click)="onSplitClicked()">Split Customer</button>
+    </div>
+  </div>
+  <div class="panel panel-default" *ngIf=' !searchResponse || searchResponse.length==0  && afterSearch '>
+    <div class="panel-heading"> Split Search </div>
+    <div class="panel-body">
+      <div class="status-content">
+        <p>No records to display</p>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

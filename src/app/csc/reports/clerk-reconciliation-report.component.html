@@ -1,0 +1,356 @@
+<div class="page-title-header container">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li>
+          <a href="#">Reports</a>
+        </li>
+        <li class="active">Clerk Reconciliation</li>
+      </ol>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Clerk Reconciliation </h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <form role="form" name="clerkReconciliationReportSearchForm" [formGroup]="clerkReconciliationReportSearchForm">
+    <!-- <div class="panel-heading">
+        Clerk Reconciliation Report
+      </div> -->
+    <div class="row">
+      <div class="col-md-6 form-group">
+        <label for="icnNumber">ICN #</label>
+        <input type="text" tabindex="1" (keypress)="_keyPress($event)" class="form-control" maxlength="10" id="icnNumber" placeholder="ICN #"
+          name="icnNumber" formControlName="icnNumber">
+      </div>
+      <div class="col-md-6 form-group">
+        <label class="focused" for="location"> Location </label>
+        <select class="form-control" formControlName="location" name="location" id="location">
+                <option selected='selected' value="">--Select--</option>
+                <option *ngFor='let loc of locationResponse' value="{{loc.LocationName}}">{{loc.LocationName}}</option>
+              </select>
+      </div>
+      <div class="col-md-6 form-group">
+        <label for="timePeriod" class="focused">Time Period</label>
+        <!--<input class="form-control" tabindex="2" placeholder="MM/DD/YYYY-MM/DD/YYYY" bsDaterangepicker #dpr="bsDaterangepicker" name="timePeriod"
+                formControlName="timePeriod" [(ngModel)]="timePeriod" (bsValueChange)='bsValueChange($event)'>-->
+        <my-date-range-picker name="mydaterange" (inputFieldChanged)='onDateRangeFieldChanged($event)' placeholder="MM/DD/YYYY - MM/DD/YYYY"
+          [options]="myDateRangePickerOptions" formControlName="timePeriod" id="timePeriod"></my-date-range-picker>
+        <div class="show-error" *ngIf="!invalidDate && clerkReconciliationReportSearchForm.controls['timePeriod'].invalid && (clerkReconciliationReportSearchForm.controls['timePeriod'].touched)">
+          <div *ngIf="clerkReconciliationReportSearchForm.controls['timePeriod'].errors.required">
+            Date Range is Required
+          </div>
+        </div>
+        <div class="show-error" *ngIf="invalidDate">
+          <div>
+            Invalid Date Range
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 m-t-20">
+        <button type="submit" tabindex="3" class="btn btn-primary btn-search" (click)="searchClerkReconciliation()" [disabled]="disableSearchButton">Search</button>
+        <button type="submit" tabindex="4" class="btn btn-default btn-reset" (click)="clerkreconciliationReset()">Reset</button>
+      </div>
+    </div>
+  </form>
+
+  <span *ngIf="transactionDetails">
+    <strong> ICN #: </strong>{{icnNO}}</span>
+  <span *ngIf="transactionDetails" class="pull-right">
+    <strong>Status: </strong>{{status}} </span>
+
+  <div class="table-bdr">
+    <h3>{{tableHeading}}</h3>
+    <!--gridBind table for clerk details-->
+    <div *ngIf="!transactionDetails">
+      <div class="pad-10">
+        <div class="table-responsive">
+          <div class="table-default table-responsive">
+            <table class="table" *ngIf="icnResponse && icnResponse.length>0">
+
+              <thead class="nowrap">
+                <tr>
+                  <th (click)="sortDirection('UserId')" class="sorting-handle">User #
+                    <span *ngIf="gridArrowUserId">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+                  </th>
+                  <th (click)="sortDirection('Username')" class="sorting-handle">Username
+                    <span *ngIf="gridArrowUsername">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+                  </th>
+                  <th (click)="sortDirection('ICNID')" class="sorting-handle">ICN #
+                    <span *ngIf="gridArrowICNID">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+                  </th>
+                  <th (click)="sortDirection('ICNStatus')" class="sorting-handle">ICN Status
+                    <span *ngIf="gridArrowICNStatus">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+                  </th>
+                  <th (click)="sortDirection('LOCATIONNAME')" class="sorting-handle">Location
+                    <span *ngIf="gridArrowLOCATIONNAME">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+                  </th>
+                  <th (click)="sortDirection('RevenueDate')" class="sorting-handle">Created Date
+                    <span *ngIf="gridArrowRevenueDate">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+                  </th>
+                  <th (click)="sortDirection('UpdatedDate')" class="sorting-handle">Updated Date
+                    <span *ngIf="gridArrowUpdatedDate">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+                  </th>
+
+                  <th> </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let clerk of icnResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p,totalItems:totalRecordCount,id:'clerk'}; let i = index">
+                  <td>{{clerk.UserId}}</td>
+                  <td>{{clerk.UserName}}</td>
+                  <td>{{clerk.ICNId}}</td>
+                  <td>{{clerk.ICNStatus}}</td>
+                  <td>{{clerk.LocationName}}</td>
+                  <td>{{clerk.CreatedDate | customDateFormat}}</td>
+                  <td>{{clerk.UpdatedDate | customDateFormat}}</td>
+                  <td>
+                    <span>
+                      <a title="View" tabindex="5" (click)="viewTransactionDetails(clerk.ICNId,i,clerk.ICNStatus)">
+                        <i class="fa fa-file-text-o fa-lg"></i>
+                      </a>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div *ngIf='icnResponse && icnResponse.length > 0'>
+            <div class="col-md-6 text-left">
+              <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+            </div>
+            <div class="col-md-6 text-right">
+              <pagination-controls id="clerk" (pageChange)="pageChanged($event)"></pagination-controls>
+            </div>
+          </div>
+        </div>
+        <div *ngIf='!icnResponse || icnResponse.length==0'>
+          <div class="status-content">
+            <div>
+              No clerk reconciled details to display
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!--GridBind Table for Transaction Details-->
+    <div *ngIf="transactionDetails">
+      <div class="pad-10" *ngIf="icnTransactionResponse && icnTransactionResponse.length>0">
+        <div class="table-responsive">
+          <div class="table-default table-responsive">
+            <!--<span *ngFor="let clerk of icnResponse">ICN #:{{clerk.ICNId}}</span>
+            <span *ngFor="let clerk of icnResponse" class="pull-right">Status:{{clerk.ICNStatus}} </span>-->
+
+            <table class="table">
+              <thead class="nowrap">
+                <tr>
+                  <th>Payment</th>
+                  <th>System Transactions
+                    <br> (System Transactions + Float Amount)
+                  </th>
+                  <th>Manual Transactions</th>
+                  <th>Variance</th>
+                  <th> </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor='let transaction of icnTransactionResponse;    let i = index'>
+
+                  <td> {{transaction.VarianceType}} </td>
+                  <td>
+                    <span *ngIf="i==0">{{systemTransactionAmount| currencycustom}}+{{floatAmount | currencycustom}}</span>
+                    <span *ngIf="i==1 || i==2">{{transaction.SystemTxnCount | currencycustom }}</span>
+                    <span *ngIf="i==3||i==4">{{transaction.SystemTxnCount}}</span>
+                  </td>
+                  <td>
+                    <span *ngIf="i!=3&&i!=4">{{transaction.ManualTxnCount | currencycustom}}</span>
+                    <span *ngIf="i==3||i==4">{{transaction.ManualTxnCount }}</span>
+                  </td>
+                  <td>
+                    <span *ngIf="i!=3&&i!=4">{{transaction.Variance | currencycustom}}</span>
+                    <span *ngIf="i==3||i==4">{{transaction.Variance }}</span>
+                  </td>
+                  <td *ngIf="i!=3&&i!=4">
+                    <a tabindex="6" (click)="viewEntries(transaction,i,transaction.VarianceType)" title="View">
+                      <i class="fa fa-file-text-o fa-fw fa-lg"></i>
+                    </a>
+
+                  </td>
+                  <td *ngIf="i==3" rowspan="2" class="transactionDetailsTrMerge">
+                    <a tabindex="6" class="p-l-3" (click)="viewEntries(transaction,i,transaction.VarianceType)" title="View">
+                      <i class="fa fa-file-text-o fa-lg"></i>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="row" *ngIf="transactionDetails">
+    <div class="col-md-12">
+      <div class="form-group">
+        <button class="btn btn-default btn-search pull-right" tabindex="7" (click)="goToClerkReconciledDetails()"> Back </button>
+        <div class="clear"> </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div *ngIf="entryDetails">
+    <div class="table-bdr">
+      <h3>Clerk Entries</h3>
+      <div class="pad-10">
+        <!-- *ngIf="tagResponse && tagResponse.length>0" !-->
+        <div class="table-responsive">
+          <div class="table-default table-responsive">
+            <table class="table" *ngIf="icnEntryResponse">
+              <!--*ngIf='getBlockListResp && getBlockListResp.length;'-->
+              <thead class="nowrap">
+                <tr>
+                  <th>Cash Amount</th>
+                  <th>Check Amount</th>
+                  <th>Money Order Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{icnEntryResponse.CashAmount | currencycustom}}</td>
+                  <td>{{icnEntryResponse.CheckAmount | currencycustom}}</td>
+                  <td>{{icnEntryResponse.MOAmount | currencycustom}}</td>
+                  <td style="display:none">{{icnEntryResponse.CreditAmount | currencycustom}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div *ngIf='!icnEntryResponse'>
+          <div class="status-content">
+            <div>
+              No Requests to Display
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="entryDetails">
+    <div class="table-bdr">
+      <h3>System Entries</h3>
+      <div class="pad-10">
+        <div class="table-responsive">
+          <div class="table-default table-responsive">
+            <table class="table" *ngIf="icnSystemResponse && icnSystemResponse.length>0">
+              <thead class="nowrap">
+                <tr>
+                  <th>Transaction #</th>
+                  <th>Customer #</th>
+                  <th>Voucher #</th>
+                  <th>Transaction Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let response of icnSystemResponse | paginate: { itemsPerPage: systemPageItemNumber, currentPage: systemPage, totalItems:systemTotalRecordCount,id:'system' }; ">
+                  <td>{{response.TxnId}}</td>
+                  <td>{{response.CustomerId}}</td>
+                  <td>{{response.VoucherNo}}</td>
+                  <td>{{response.TxnAmount | currencycustom}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div *ngIf='icnSystemResponse && icnSystemResponse.length > 0'>
+            <div class="col-md-6 text-left">
+              <p>Display {{systemStartItemNumber}} - {{systemEndItemNumber}} Records of {{systemTotalRecordCount}}</p>
+            </div>
+            <div class="col-md-6 text-right">
+              <pagination-controls id="system" (pageChange)="systemPageChanged($event)"></pagination-controls>
+            </div>
+          </div>
+        </div>
+        <div class="m-t-10 m-l-10 m-r-10" *ngIf='!icnSystemResponse || icnSystemResponse.length==0'>
+          <div class="status-content">
+            <div>
+              No system entries to display
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="transponderDetails">
+    <div class="table-bdr">
+      <h3>Transponder Details</h3>
+      <div class="pad-10">
+        <div class="table-responsive" *ngIf="icnTransponderResponse && icnTransponderResponse.length>0">
+          <div class="table-default table-responsive">
+            <table class="table ">
+              <thead class="nowrap">
+                <tr>
+                  <th>Serial #</th>
+                  <th>Tag Type</th>
+                  <th>Hex Tag #</th>
+                  <th>Facility Code</th>
+                  <th>Tag Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let transponder of icnTransponderResponse | paginate: { itemsPerPage: transponderPageItemNumber, currentPage: transponderPage, totalItems:transponderTotalRecordCount,id:'transponder' }; let i=index3">
+                  <!--*ngFor='let blkList of getBlockListResp | paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount }'!-->
+                  <td>{{transponder.SerialNo}}</td>
+                  <td>{{transponder.ItemType}}</td>
+                  <td>{{transponder.HEXItemID}}</td>
+                  <td>{{transponder.FacilityCode}}</td>
+                  <td>{{transponder.ItemStatus}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div *ngIf='icnTransponderResponse && icnTransponderResponse.length > 0'>
+            <div class="col-md-6 text-left">
+              <p>Display {{transponderStartItemNumber}} - {{transponderEndItemNumber}} Records of {{transponderTotalRecordCount}}</p>
+            </div>
+            <div class="col-md-6 text-right">
+              <pagination-controls id="transponder" (pageChange)="transponderPageChanged($event)"></pagination-controls>
+            </div>
+          </div>
+        </div>
+        <div *ngIf='!icnTransponderResponse || icnTransponderResponse.length==0'>
+          <div class="status-content">
+            <div>
+              No transponders to display
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

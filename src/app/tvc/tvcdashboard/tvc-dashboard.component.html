@@ -1,0 +1,162 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">TVC</a></li>
+
+        <li class="active">Dashboard</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Dashboard</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="main-content">
+    <div class="row">
+      <div class="col-md-6">
+          <div class="card">
+              <div class="customer-heading heading col-md-12">Admin Hearing And Over Payment Amount<span class="pull-right">(Till Yesterday)</span></div>
+        <div class="card-body">
+        <table class="table" [hidden]='othersPaymentError'>
+          <thead>
+            <tr>
+            <th>Balance Type</th>
+            <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let details of othersPaymentAmount'>
+            <td>
+              {{details.ReturnValue[0]}}
+            </td>
+            <td>
+              {{details.ReturnValue[1] | currency:'USD':true:'2.2-4'}}
+            </td>
+            </tr>
+          </tbody>
+        </table>
+         <h3 class="error-msg" [hidden]='!othersPaymentError'>No Data Available</h3>
+        </div>
+          </div>
+      </div>
+      <div class="col-md-6">
+          <div class="card">
+        <div class="customer-heading heading col-md-12">Violation Trending Details<span class="pull-right">(Till Yesterday)</span></div>
+        <div class="card-body">
+        <table class="table" [hidden]='violationTrendingError'>
+          <thead>
+            <tr>
+            <th>Trending Types</th>
+            <th>Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let details of violatorsTrendingDetails'>
+            <td>
+             {{details.ReturnValue[0]}}
+            </td>
+            <td>
+             {{details.ReturnValue[1]}}
+            </td>
+            </tr>
+          </tbody>
+        </table>
+        <h3 class="error-msg" [hidden]='!violationTrendingError'>No Data Available</h3>
+        </div>
+          </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+           <div class="customer-heading heading col-md-12">Violation/Invoice Details</div>
+           <div class="card-body">
+             <div [hidden]='violationError'>
+             <div class="graph-duration">
+            <ul>
+              <li><a href="javascript:;" [ngClass]="{'active': violationSelectedItem=='WEEKLY' }" (click)="getViolationCountByPeriod('WEEKLY')">Current Week</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': violationSelectedItem=='MONTHLY' }" (click)="getViolationCountByPeriod('MONTHLY')">Current Month</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': violationSelectedItem=='QUARTERLY' }" (click)="getViolationCountByPeriod('QUARTERLY')">Quarterly</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': violationSelectedItem=='YEARLY' }" (click)="getViolationCountByPeriod('YEARLY')">Yearly</a></li>
+              
+            </ul>
+        </div>
+          <div id="violationDetails" [style.width.%]="100" [style.height.px]="400"></div>
+          </div>
+           <h3 class="error-msg" [hidden]='!violationError'>No Data Available</h3>
+           </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+           <div class="customer-heading heading col-md-12">Payment Details</div>
+           <div class="card-body">
+             <div [hidden]='paymentDetailsError'>
+             <div class="graph-duration">
+            <ul>
+              <li><a href="javascript:;" [ngClass]="{'active': paymentSelectedItem=='WEEKLY' }" (click)="getPaymentAmountByPeriod('WEEKLY')">Current Week</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': paymentSelectedItem=='MONTHLY' }" (click)="getPaymentAmountByPeriod('MONTHLY')">Current Month</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': paymentSelectedItem=='QUARTERLY' }" (click)="getPaymentAmountByPeriod('QUARTERLY')">Quarterly</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': paymentSelectedItem=='YEARLY' }" (click)="getPaymentAmountByPeriod('YEARLY')">Yearly</a></li>
+              
+            </ul>
+        </div>
+          <div id="paymentDetails" [style.width.%]="100" [style.height.px]="400"></div>
+          </div>
+          <h3 class="error-msg" [hidden]='!paymentDetailsError'>No Data Available</h3>
+           </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+           <div class="customer-heading heading col-md-12">Invoice Details</div>
+           <div class="card-body">
+             <div [hidden]='invoiceError'>
+             <div class="graph-duration">
+            <ul>
+              <li><a href="javascript:;" [ngClass]="{'active': invoiceSelectedItem=='WEEKLY' }" (click)="getInvoiceCountByPeriod('WEEKLY')">Current Week</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': invoiceSelectedItem=='MONTHLY' }" (click)="getInvoiceCountByPeriod('MONTHLY')">Current Month</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': invoiceSelectedItem=='QUARTERLY' }" (click)="getInvoiceCountByPeriod('QUARTERLY')">Quarterly</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': invoiceSelectedItem=='YEARLY' }" (click)="getInvoiceCountByPeriod('YEARLY')">Yearly</a></li>
+              
+            </ul>
+        </div>
+          <div id="invoiceDetails" [style.width.%]="100" [style.height.px]="400"></div>
+          </div>
+           <h3 class="error-msg" [hidden]='!invoiceError'>No Data Available</h3>
+           </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+           <div class="customer-heading heading col-md-12">Payments (Internal Portal vs Customer Portal)</div>
+           <div class="card-body">
+             <div [hidden]='paymentError'>
+             <div class="graph-duration">
+            <ul>
+              <li><a href="javascript:;" [ngClass]="{'active': paymentISelectedItem=='WEEKLY' }" (click)="getPaymentCountBasedOnSubSystem('WEEKLY')">Current Week</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': paymentISelectedItem=='MONTHLY' }" (click)="getPaymentCountBasedOnSubSystem('MONTHLY')">Current Month</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': paymentISelectedItem=='QUARTERLY' }" (click)="getPaymentCountBasedOnSubSystem('QUARTERLY')">Quarterly</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': paymentISelectedItem=='YEARLY' }" (click)="getPaymentCountBasedOnSubSystem('YEARLY')">Yearly</a></li>
+              
+            </ul>
+        </div>
+          <div id="paymentsData" [style.width.%]="100" [style.height.px]="400"></div>
+          </div>
+          <h3 class="error-msg" [hidden]='!paymentError'>No Data Available</h3>
+           </div>
+        </div>
+      </div>
+    </div>
+</div>

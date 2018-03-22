@@ -1,0 +1,492 @@
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+<form role="form" name="popup" [formGroup]="popup">
+
+    <div class="modal fade" id="onhold-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel"> On Hold Complaint </h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="col-md-12">
+                        <div class="well" *ngIf="isAllowShow">
+                            {{notes}}
+                        </div>
+                        <div class="well" *ngIf="isNotAllowShow">
+                            {{problemID}}
+                        </div>
+
+
+                        <div class="alert alert-warning alert-dismissible" role="alert" *ngIf="errorBlock">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button> {{errorNotes}}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label id="focused"> On Hold Date: </label>
+                            <!--<owl-date-time [dateFormat]='"MM/DD/YYYY"' [type]='"calendar"' class="form-control" formControlName="onholddate" name="onholddate"
+                                autoClose=false></owl-date-time>-->
+                            <my-date-picker [options]="myDatePickerOptions" formControlName="onholddate" name="onholddate" (inputFieldChanged)='onDateChanged($event)'
+                                placeholder="MM/DD/YYYY"></my-date-picker>
+                            <div class="show-error" *ngIf="invalidDate">
+                                <div>Invalid Date.</div>
+                            </div>
+                            <div class="show-error" *ngIf="!invalidDate && popup.controls['onholddate'].invalid && (popup.controls['onholddate'].dirty || popup.controls['onholddate'].touched)">
+                                <div *ngIf="popup.controls['onholddate'].errors.required">
+                                    Required.
+                                </div>
+                                <!--<div *ngIf="popup.controls['onholddate'].errors.invalid">
+                                Date is not valid
+                            </div>-->
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="focused"> Notes: </label>
+                            <textarea rows="3" class="form-control" formControlName="onholdnotes"></textarea>
+                            <div class="msg" *ngIf="popup.controls['onholdnotes'].invalid && (popup.controls['onholdnotes'].dirty || popup.controls['onholdnotes'].touched)">
+                                <div *ngIf="popup.controls['onholdnotes'].errors.required">
+                                    Required.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-search" [disabled]="isNotAllowShow" (click)="onholdClicked()">On Hold</button>
+                    <button type="button" class="btn btn-default btn-reset" (click)="cancel()" data-dismiss="modal" onCancelClicked>Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="reopen-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel"> Re Open Complaint </h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="col-md-12">
+                        <div class="well" *ngIf="isAllowShow">
+                            {{notes}}
+                        </div>
+                        <div class="well" *ngIf="isNotAllowShow">
+                            {{problemID}}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label id="focused"> Re Open Date: </label>
+                            <!--<owl-date-time [dateFormat]='"MM/DD/YYYY"' [type]='"calendar"' class="form-control" formControlName="reopendate" name="reopendate"
+                                autoClose=false></owl-date-time>-->
+
+                            <my-date-picker [options]="myDatePickerOptions" formControlName="reopendate" name="reopendate" (inputFieldChanged)='onDateChanged($event)'
+                                placeholder="MM/DD/YYYY"></my-date-picker>
+                            <div class="show-error" *ngIf="invalidDate">
+                                <div>Invalid Date.</div>
+                            </div>
+                            <div class="show-error" *ngIf="!invalidDate && popup.controls['reopendate'].invalid && (popup.controls['reopendate'].dirty || popup.controls['reopendate'].touched)">
+                                <div *ngIf="popup.controls['reopendate'].errors.required">
+                                    Required.
+                                </div>
+                                <!--<div *ngIf="popup.controls['reopendate'].errors.invalid">
+                                Required.
+                            </div>-->
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="focused"> Notes: </label>
+                            <textarea rows="3" class="form-control" formControlName="reopennotes"></textarea>
+                            <div class="msg" *ngIf="popup.controls['reopennotes'].invalid && (popup.controls['reopennotes'].dirty || popup.controls['reopennotes'].touched)">
+                                <div *ngIf="popup.controls['reopennotes'].errors.required">
+                                    Required.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-search" [disabled]="isNotAllowShow" (click)="onreopenClicked()">Re Open</button>
+                    <button type="button" class="btn btn-default btn-reset" (click)="cancel()" data-dismiss="modal" onCancelClicked>Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="transfer-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel"> Transfer Complaint </h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="col-md-12">
+                        <div class="well" *ngIf="isAllowShow">
+                            {{notes}}
+                        </div>
+                        <div class="well" *ngIf="isNotAllowShow">
+                            {{problemID}}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label class="focused"> Department </label>
+                            <select class="form-control" formControlName="departmentdropdown" name="department">
+                                <option selected="selected" value="">--Select--</option>
+                                <option *ngFor="let dept of department" value="{{dept.key}}">{{dept.value}}</option>
+                            </select>
+                            <div class="msg" *ngIf="popup.controls['departmentdropdown'].invalid && (popup.controls['departmentdropdown'].dirty || popup.controls['departmentdropdown'].touched)">
+                                <div *ngIf="popup.controls['departmentdropdown'].errors.required">
+                                    Required.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-12">
+                            <label class="focused"> Notes: </label>
+                            <textarea rows="3" class="form-control" formControlName="transfernotes"></textarea>
+                            <div class="msg" *ngIf="popup.controls['transfernotes'].invalid && (popup.controls['transfernotes'].dirty || popup.controls['transfernotes'].touched)">
+                                <div *ngIf="popup.controls['transfernotes'].errors.required">
+                                    Required.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-search" [disabled]="isNotAllowShow" (click)="ontransferClicked()">Transfer</button>
+                    <button type="button" class="btn btn-default btn-reset" (click)="cancel()" data-dismiss="modal" onCancelClicked>Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="assign-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel"> Assign Complaint </h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="col-md-12">
+                        <div class="well" *ngIf="isAllowShow">
+                            {{notes}}
+                        </div>
+                        <div class="well" *ngIf="isNotAllowShow">
+                            {{problemID}}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label class="focused"> Assign To </label>
+                            <select class="form-control" formControlName="usersdropdown" name="usersdropdown">
+                                <option selected="selected" value="">--Select--</option>
+                                <option *ngFor="let user of internalUsers" value="{{user.name}}">{{user.id}}</option>
+                            </select>
+                            <div class="msg" *ngIf="popup.controls['usersdropdown'].invalid && (popup.controls['usersdropdown'].dirty || popup.controls['usersdropdown'].touched)">
+                                <div *ngIf="popup.controls['usersdropdown'].errors.required">
+                                    Required.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="focused"> Notes: </label>
+                            <textarea rows="3" class="form-control" formControlName="assignnotes"></textarea>
+                            <div class="msg" *ngIf="popup.controls['assignnotes'].invalid && (popup.controls['assignnotes'].dirty || popup.controls['assignnotes'].touched)">
+                                <div *ngIf="popup.controls['assignnotes'].errors.required">
+                                    Required.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-search" [disabled]="isNotAllowShow" (click)="onassignClicked()">Assign</button>
+                    <button type="button" class="btn btn-default btn-reset" (click)="cancel()" data-dismiss="modal" onCancelClicked>Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="reassign-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel"> Re Assign Complaint </h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="col-md-12">
+                        <div class="well" *ngIf="isAllowShow">
+                            {{notes}}
+                        </div>
+                        <div class="well" *ngIf="isNotAllowShow">
+                            {{problemID}}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label class="focused"> Assign To </label>
+                            <select class="form-control" formControlName="reassignusersdropdown" name="users">
+                                <option selected="selected" value="">--Select--</option>
+                                <option *ngFor="let user of internalUsers" value="{{user.name}}">{{user.id}}</option>
+                            </select>
+                            <div class="msg" *ngIf="popup.controls['reassignusersdropdown'].invalid && (popup.controls['reassignusersdropdown'].dirty || popup.controls['reassignusersdropdown'].touched)">
+                                <div *ngIf="popup.controls['reassignusersdropdown'].errors.required">
+                                    Required.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="focused"> Notes: </label>
+                            <textarea rows="3" class="form-control" formControlName="reassignnotes"></textarea>
+                            <div class="msg" *ngIf="popup.controls['reassignnotes'].invalid && (popup.controls['reassignnotes'].dirty || popup.controls['reassignnotes'].touched)">
+                                <div *ngIf="popup.controls['reassignnotes'].errors.required">
+                                    Required.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-search" [disabled]="isNotAllowShow" (click)="onreassignClicked()">Re Assign</button>
+                    <button type="button" class="btn btn-default btn-reset" (click)="cancel()" data-dismiss="modal" onCancelClicked>Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="resolve-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel"> Resolve Complaint </h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="col-md-12">
+                        <div class="well" *ngIf="isAllowShow">
+                            {{notes}}
+                        </div>
+                        <div class="well" *ngIf="isNotAllowShow">
+                            {{problemID}}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label id="focused"> Resolve Date: </label>
+                            <!--<owl-date-time [dateFormat]='"MM/DD/YYYY"' [type]='"calendar"' class="form-control" formControlName="resolvedate" name="resolvedate"
+                                autoClose=false></owl-date-time>-->
+
+                            <my-date-picker [options]="myDatePickerOptions" formControlName="resolvedate" name="resolvedate" (inputFieldChanged)='onDateChanged($event)'
+                                placeholder="MM/DD/YYYY"></my-date-picker>
+                            <div class="show-error" *ngIf="invalidDate">
+                                <div>Invalid Date.</div>
+                            </div>
+                            <div class="show-error" *ngIf="!invalidDate && popup.controls['resolvedate'].invalid && (popup.controls['resolvedate'].dirty || popup.controls['resolvedate'].touched)">
+                                <div *ngIf="popup.controls['resolvedate'].errors.required">
+                                    Required.
+                                </div>
+                                <!--<div *ngIf="popup.controls['resolvedate'].errors.invalid">
+                                Required.
+                            </div>-->
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="focused"> Root cause Analysis </label>
+                            <textarea rows="3" class="form-control" formControlName="resolverca"></textarea>
+                            <div class="msg" *ngIf="popup.controls['resolverca'].invalid && (popup.controls['resolverca'].dirty || popup.controls['resolverca'].touched)">
+                                <div *ngIf="popup.controls['resolverca'].errors.required">
+                                    Required.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="focused"> Resolution </label>
+                            <textarea rows="3" class="form-control" formControlName="resolveresolution"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-search" [disabled]="isNotAllowShow" (click)="onresolveClicked()">Resolve</button>
+                    <button type="button" class="btn btn-default btn-reset" (click)="cancel()" data-dismiss="modal" onCancelClicked>Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="reject-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel"> Reject Complaint </h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="col-md-12">
+                        <div class="well" *ngIf="isAllowShow">
+                            {{notes}}
+                        </div>
+                        <div class="well" *ngIf="isNotAllowShow">
+                            {{problemID}}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label id="focused"> Reject Date: </label>
+                            <!--<owl-date-time [dateFormat]='"MM/DD/YYYY"' [type]='"calendar"' class="form-control" formControlName="rejectdate" name="rejectdate"
+                                autoClose=false></owl-date-time>-->
+
+                            <my-date-picker [options]="myDatePickerOptions" formControlName="rejectdate" name="rejectdate" (inputFieldChanged)='onDateChanged($event)'
+                                placeholder="MM/DD/YYYY"></my-date-picker>
+                            <div class="show-error" *ngIf="invalidDate">
+                                <div>Invalid Date.</div>
+                            </div>
+                            <div class="show-error" *ngIf="!invalidDate && popup.controls['rejectdate'].invalid && (popup.controls['rejectdate'].dirty || popup.controls['rejectdate'].touched)">
+                                <div *ngIf="popup.controls['rejectdate'].errors.required">
+                                    Required.
+                                </div>
+                                <!--<div *ngIf="popup.controls['rejectdate'].errors.invalid">
+                                Required.
+                            </div>-->
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="focused"> Root cause Analysis </label>
+                            <textarea rows="3" class="form-control" formControlName="rejectrca"></textarea>
+                            <div class="msg" *ngIf="popup.controls['rejectrca'].invalid && (popup.controls['rejectrca'].dirty || popup.controls['rejectrca'].touched)">
+                                <div *ngIf="popup.controls['rejectrca'].errors.required">
+                                    Required.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-12">
+                            <label class="focused"> Resolution </label>
+                            <textarea rows="3" class="form-control" formControlName="rejectresolution"></textarea>
+                            <div class="msg" *ngIf="popup.controls['rejectresolution'].invalid && (popup.controls['rejectresolution'].dirty || popup.controls['rejectresolution'].touched)">
+                                <div *ngIf="popup.controls['rejectresolution'].errors.required">
+                                    Required.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-search" [disabled]="isNotAllowShow" (click)="onrejectClicked()">Reject</button>
+                    <button type="button" class="btn btn-default btn-reset" (click)="cancel()" data-dismiss="modal" onCancelClicked>Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="close-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel"> Close Complaint </h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="col-md-12">
+                        <div class="well" *ngIf="isAllowShow">
+                            {{notes}}
+                        </div>
+                        <div class="well" *ngIf="isNotAllowShow">
+                            {{problemID}}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label id="focused"> Close Date: </label>
+                            <!--<owl-date-time [dateFormat]='"MM/DD/YYYY"' [type]='"calendar"' class="form-control" formControlName="closedate" name="closedate"
+                                autoClose=false></owl-date-time>-->
+                            <my-date-picker [options]="myDatePickerOptions" formControlName="closedate" name="closedate" (inputFieldChanged)='onDateChanged($event)'
+                                placeholder="MM/DD/YYYY"></my-date-picker>
+                            <div class="show-error" *ngIf="invalidDate">
+                                <div>Invalid Date.</div>
+                            </div>
+
+                            <div class="show-error" *ngIf="!invalidDate && popup.controls['closedate'].invalid && (popup.controls['closedate'].dirty || popup.controls['closedate'].touched)">
+                                <div *ngIf="popup.controls['closedate'].errors.required">
+                                    Required.
+                                </div>
+                                <!--<div *ngIf="popup.controls['closedate'].errors.invalid">
+                                Required.
+                            </div>-->
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-12">
+                            <label class="focused"> Notes </label>
+                            <textarea rows="3" class="form-control" formControlName="closenotes"></textarea>
+                            <div class="msg" *ngIf="popup.controls['closenotes'].invalid && (popup.controls['closenotes'].dirty || popup.controls['closenotes'].touched)">
+                                <div *ngIf="popup.controls['closenotes'].errors.required">
+                                    Required.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-search" [disabled]="isNotAllowShow" (click)="oncloseClicked()">Close</button>
+                    <button type="button" class="btn btn-default btn-reset" (click)="cancel()" data-dismiss="modal" onCancelClicked>Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

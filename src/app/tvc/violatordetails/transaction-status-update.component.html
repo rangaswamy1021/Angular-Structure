@@ -1,0 +1,103 @@
+<div class="page-title-header">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Update Trip Status</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="text-right m-t-10 m-b-10">
+    <span id="" class="accno">Account #:{{inputViolatorID}}</span>
+    <button class="btn btn-default btn-search" (click)="goToTrips(false)" type="submit">Back</button>
+  </div>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+  <form role="form" name="tripStatusupdateForm" [formGroup]="tripStatusupdateForm" novalidate>
+    <div class="panel panel-default" *ngIf="iCitationInfoTrxnList">
+
+
+      <div class="panel-heading"> Trip Status Details </div>
+      <div class="panel-body table-bdr">
+
+        <table class="table table-bordered table-sm">
+          <thead>
+            <tr>
+              <th>Trip # </th>
+              <th>Txn Date</th>
+              <th>Plate #</th>
+              <th>Stage/Status/Type</th>
+              <th>Trip Status Date</th>
+              <th>Toll Amount</th>
+              <th>Penalty </th>
+              <th> Stage ModifiedDate</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let citation of iCitationInfoTrxnList">
+              <td>{{citation.CitationId}}</td>
+              <td>{{citation.EntryTripDateTime|customDateTimeFormat}}</td>
+              <td>{{citation.VehicleNumber}}</td>
+              <td>{{citation.AuditStatus }}</td>
+              <td>{{citation.TripStatusDate|customDateTimeFormat}}</td>
+              <td> $ {{citation.TollAmount|number:'1.2-5'}}</td>
+              <td>$ {{citation.FeeAmounts|number:'1.2-5'}}</td>
+              <td>{{citation.StageModifiedDate|customDateTimeFormat}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">Change To: </div>
+      <div class="panel-body table-bdr">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group col-md-12">
+              <label class="focused">Stage</label>
+              <select class="form-control" (change)="bindStatus($event.target.value)" [(ngModel)]="selectedStage" formControlName="ddlStage"
+                id="ddlStage" name="ddlStage">
+                <!-- <option selected="selected" value="">Stage</option> -->
+                <option *ngFor="let stage of stages" value="{{stage}}">{{stage}}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group col-md-12">
+              <label class="focused">Status</label>
+              <select class="form-control" [(ngModel)]="selectedStatus" (change)="bindType($event.target.value)" formControlName="ddlStatus"
+                id="ddlStatus" name="ddlStatus">
+                <option selected="selected" value="">Status</option>
+                <option *ngFor="let stat of status" value="{{stat}}">{{stat}}</option>
+              </select>
+              <div class="msg" *ngIf="tripStatusupdateForm.controls['ddlStatus'].hasError('required')">
+                <div>Status is required</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group   col-md-12">
+              <label class="focused"> Type</label>
+              <select class="form-control" formControlName="ddlType" [(ngModel)]="selectedType" id="ddlType" name="ddlType">
+                <option selected="selected" value="">Type</option>
+                <option *ngFor="let type of types" value="{{type}}">{{type}}</option>
+              </select>
+              <div class="msg" *ngIf="tripStatusupdateForm.controls['ddlType'].hasError('required')">
+                <div>Type is required</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <button type="submit" (click)="updateStageStatusType()" [disabled]="isUpdateAllowed" class="btn btn-primary btn-search">Update</button>
+            <button (click)="resetClick()" class="btn btn-default btn-reset">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

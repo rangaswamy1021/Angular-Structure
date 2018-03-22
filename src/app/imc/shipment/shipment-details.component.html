@@ -1,0 +1,171 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">IMC</a></li>
+        <li class="active"> Shipment Details </li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1> Shipment Details </h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <button type="button" class="btn btn-default btn-search pull-right" (click)="backMethod()">Back</button>
+        <div class="clear"> </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Shipment Information
+            </div>
+            <div class="panel-body shipmentDetails-info-block">
+              <table class="table" *ngFor="let shipmentDetails of  shipmentResponse">
+                <tr>
+                  <td class="text-left"> Shipment Id : </td>
+                  <td class="text-left"> <strong> {{shipmentDetails.ShipmentId}} </strong> </td>
+                </tr>
+                <tr>
+                  <td class="text-left"> Purchase Order # : </td>
+                  <td class="text-left"> <strong> {{shipmentDetails.OrderNumber}} </strong> </td>
+                </tr>
+                <tr>
+                  <td class="text-left"> Purchase Order Date : </td>
+                  <td class="text-left"> <strong> {{shipmentDetails.OrderDate  | customDateFormat}} </strong> </td>
+                </tr>
+                <tr>
+                  <td class="text-left"> Shipment Status : </td>
+                  <td class="text-left"> <strong> {{getStatus(shipmentDetails.ShipmentStatus)}}  </strong> </td>
+                </tr>
+                <tr>
+                  <td class="text-left"> Warranty Name : </td>
+                  <td class="text-left"> <strong> {{shipmentDetails.WarrantyName}} </strong> </td>
+                </tr>
+                <tr>
+                  <td class="text-left"> Warranty (in months) : </td>
+                  <td class="text-left"> <strong> {{shipmentDetails.WarrantyInMonths}}</strong> </td>
+                </tr>
+                <tr>
+                  <td class="text-left"> Contract # : </td>
+                  <td class="text-left"> <strong> {{shipmentDetails.ContractNumber}}</strong> </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Vendor Details
+            </div>
+            <div class="panel-body shipmentDetails-info-block" *ngIf="shipmentDetailsResponse">
+              <table class="table" >
+                <tr>
+                  <td class="text-left"> {{shipmentDetailsResponse.CompanyName}}, </td>
+                </tr>
+                 <tr>
+                  <td class="text-left"> {{shipmentDetailsResponse.Line1}}, </td>
+                </tr>
+                <tr>
+                  <td class="text-left"> {{shipmentDetailsResponse.City}}, </td>
+                </tr>
+                <tr>
+                  <td class="text-left"> {{shipmentDetailsResponse.State}}, </td>
+                </tr>
+                <tr>
+                  <td class="text-left"> {{shipmentDetailsResponse.Zip1}},{{shipmentDetailsResponse.Country}} </td>
+                </tr>
+
+              </table>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Contact Information
+            </div>
+            <div class="panel-body shipmentDetails-info-block" *ngIf="shipmentDetailsResponse">
+              <table class="table" >
+                <tr>
+                  <td class="text-left"> CEO Name : </td>
+                  <td class="text-left"> <strong> {{shipmentDetailsResponse.CeoName}}</strong> </td>
+                </tr>
+                <tr>
+                  <td class="text-left"> Email : </td>
+                  <td class="text-left"> <strong> {{shipmentDetailsResponse.EmailAddress}}</strong> </td>
+                </tr>
+                <tr>
+                  <td class="text-left"> Phone #: </td>
+                  <td class="text-left"> <strong> {{shipmentDetailsResponse.PhoneNumber}}</strong> </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      Item(s)
+    </div>
+    <div class="panel-body">
+      <table class="table">
+        <thead>
+          <tr>
+            <th> Serial #</th>
+            <th>Facility Code</th>
+            <th> Tag # </th>
+            <th> Inventory Status Date</th>
+            <th> Warranty Start Date</th>
+            <th>Warranty End Date </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let items of itemDetailsResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p ,totalItems:totalRecordCount }">
+            <td>{{items.SerialNumber}} </td>
+            <td>{{items.FacilityCode}} </td>
+            <td>{{items.ItemId}} </td>
+            <td>{{items.InventoryStatusDate | customDateFormat}} </td>
+            <td>{{items.WarrantyStartDate | customDateFormat}} </td>
+            <td>{{items.WarrantyEndDate | customDateFormat}}</td>
+          </tr>
+        </tbody>
+      </table>
+     <div class="row page-info" *ngIf='itemDetailsResponse && itemDetailsResponse[0].RecordCount > 0'>
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType'
+   [msgTitle]='msgTitle' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+
+</div>

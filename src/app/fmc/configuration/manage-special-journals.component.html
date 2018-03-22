@@ -1,0 +1,304 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">FMC</a></li>
+        <li><a href="#">Configurations</a></li>
+        <li class="active">Special Journals</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Special Journals</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"
+  (onOk)="btnOkClick($event)"></app-success-failure-alerts-message>
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <button type="button" class="btn btn-link" (click)="manageSpecialJournals()" *ngIf="linkshide">Manage Special Journals</button>
+      <button type="button" class="btn btn-link" (click)="manageSpecialJournalAssociations()" *ngIf="linkshide1">Manage Special Journals Associations</button>
+    </div>
+    <div class="col-md-12">
+      <button *ngIf="addNewSpecialJournalDetail" class="btn btn-primary btn-search m-t-20" [disabled]="disableCreateButton" (click)="specialJournalButton()"><i class="fa fa-plus-circle" aria-hidden="true"></i> Add Special Journal details</button>
+      <button *ngIf="addNewSpecialJournalAssociation" class="btn btn-primary btn-search m-t-20" [disabled]="disableCreateButton"
+        (click)="specialJournalAssociationButton()"><i class="fa fa-plus-circle" aria-hidden="true"></i> Add Special Journal details</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="table-bdr" [hidden]="!journal">
+        <h3 *ngIf="addButton">Add New Special Journal</h3>
+        <h3 *ngIf="updateButton">Update Special Journal</h3>
+        <!--<div class="table-bdr" [hidden]="!journal">
+      <div class="panel-heading" *ngIf="addButton">
+        <h4 class="panel-title">Add New Special Journal</h4>
+      </div>-->
+        <!--<div class="panel-heading" *ngIf="updateButton">
+        <h4 class="panel-title">Update Special Journal</h4>
+      </div>-->
+        <div class="pad-10">
+          <form role="form" #ResetForm="ngForm" name="addNewSpecialJournalGroupFrom" [formGroup]="addNewSpecialJournalGroupFrom" novalidate
+            (ngSubmit)="createManageSpecialJournalsData()">
+            <div class="row">
+              <div class="form-group col-md-6 popover-field">
+                <label for="code">Code</label>
+                <input type="text" class="form-control" maxlength="10" placeholder="Code" placement="right" id="code" name="code" formControlName="code"
+                  required>
+                <div class="msg" *ngIf="addNewSpecialJournalGroupFrom.controls['code'].invalid && (addNewSpecialJournalGroupFrom.controls['code'].dirty || addNewSpecialJournalGroupFrom.controls['code'].touched)">
+                  <div *ngIf="addNewSpecialJournalGroupFrom.controls['code'].errors.required">
+                    *Required.
+                  </div>
+                  <div *ngIf="addNewSpecialJournalGroupFrom.controls['code'].errors.pattern">
+                    Only alphabets allowed
+                  </div>
+                  <div *ngIf="addNewSpecialJournalGroupFrom.controls['code'].errors.maxlength">
+                    Maximum 10 characters are allowed.
+                  </div>
+                </div>
+                <button class="pop-over" [popover]="popContentCode" popoverTitle="Help" placement="left" data-container="body" popovertitle="Help"
+                  tabindex="-1" triggers="mouseenter:mouseleave" type="button" ng-reflect-popover="[object Object]" ng-reflect-popover-title="Help"
+                  ng-reflect-triggers="mouseenter:mouseleave" ng-reflect-container="body">?</button>
+                <ng-template #popContentCode>
+                  <ul>
+                    <li> Code is mandatory</li>
+                    <li>It allows only alphabets</li>
+                    <li>It should be minimum 1 character<br> and maximum 10 characters long
+                      <br></li>
+                  </ul>
+                </ng-template>
+              </div>
+              <div class="form-group col-md-6 popover-field">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" maxlength="50" placeholder="Name" id="name" pattern="^[\sa-zA-Z]+$" name="name" formControlName="name"
+                  required>
+                <div class="msg" *ngIf="addNewSpecialJournalGroupFrom.controls['name'].invalid && (addNewSpecialJournalGroupFrom.controls['name'].dirty || addNewSpecialJournalGroupFrom.controls['name'].touched)">
+                  <div *ngIf="addNewSpecialJournalGroupFrom.controls['name'].errors.required">
+                    *Required.
+                  </div>
+                  <div *ngIf="addNewSpecialJournalGroupFrom.controls['name'].errors.pattern">
+                    Only alphabets and spaces allowed
+                  </div>
+                  <div *ngIf="addNewSpecialJournalGroupFrom.controls['name'].errors.maxlength">
+                    Maximum 50 characters are allowed.
+                  </div>
+                </div>
+                <button class="pop-over" [popover]="popContentName" popoverTitle="Help" placement="left" data-container="body" popovertitle="Help"
+                  tabindex="-1" triggers="mouseenter:mouseleave" type="button" ng-reflect-popover="[object Object]" ng-reflect-popover-title="Help"
+                  ng-reflect-triggers="mouseenter:mouseleave" ng-reflect-container="body">?</button>
+                <ng-template #popContentName>
+                  <ul>
+                    <li>Name is mandatory</li>
+                    <li>It allows only alphabets</li>
+                    <li>It should be minimum 1 character<br> and maximum 50 characters long
+                      <br></li>
+                  </ul>
+                </ng-template>
+              </div>
+              <div class="form-group col-md-6 popover-field">
+                <label>Description</label>
+                <textarea class="form-control" placeholder="Description" id="description" name="description" formControlName="description"
+                  cols="10" rows="3" maxlength="128" required></textarea>
+                <div class="msg" *ngIf="addNewSpecialJournalGroupFrom.controls['description'].invalid && (addNewSpecialJournalGroupFrom.controls['description'].dirty || addNewSpecialJournalGroupFrom.controls['description'].touched)">
+                  <div *ngIf="addNewSpecialJournalGroupFrom.controls['description'].errors.required">
+                    *Required.
+                  </div>
+                  <div *ngIf="addNewSpecialJournalGroupFrom.controls['description'].errors.maxlength">
+                    Maximum 128 characters are allowed.
+                  </div>
+                </div>
+                <button class="pop-over" [popover]="popContentDescription" popoverTitle="Help" placement="left" data-container="body" popovertitle="Help"
+                  tabindex="-1" triggers="mouseenter:mouseleave" type="button" ng-reflect-popover="[object Object]" ng-reflect-popover-title="Help"
+                  ng-reflect-triggers="mouseenter:mouseleave" ng-reflect-container="body">?</button>
+
+                <ng-template #popContentDescription>
+                  <ul>
+                    <li>Description is mandatory</li>
+                    <li>It should be minimum 1 character<br> and maximum 128 characters long
+                      <br></li>
+                  </ul>
+                </ng-template>
+              </div>
+              <!--<div class="col-md-12">
+            <div class="form-group row">
+              <label class="col-sm-1 col-form-label"> Status </label>
+              <label *ngFor="let status of statuses;let idx = index" class="custom-control custom-radio radio-inline">
+                  <input formControlName="rdostatus" type="radio" [(ngModel)]="defaultStatus" class=""
+                    [value]="status.id">
+                  <span class="custom-control-indicator"> </span>
+                  <span class="custom-control-description">{{status.Value}}
+                  </span>
+                </label>
+            </div>
+          </div>-->
+              <div class="col-md-6 m-t-20">
+                <div class="row">
+                  <label class="col-md-3"> Status </label>
+                  <div class="col-md-9">
+                    <div *ngFor="let status of statuses" class="custom-control custom-radio radio-inline">
+                      <input formControlName="rdostatus" type="radio" [(ngModel)]="defaultStatus" class="custom-control-input" [value]="status.id"
+                        [id]="status.id">
+                      <!--<span class="custom-control-indicator"> </span>-->
+                      <label [for]="status.id" class="custom-control-description">{{status.Value}}</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <button type="submit" class="btn btn-primary btn-search" *ngIf="addButton" [disabled]="disableCreateButton">Add</button>
+                <button type="button" class="btn btn-primary btn-search" *ngIf="updateButton" (click)="updateManageSpecialJournalsData()"
+                  [disabled]="disableUpdateButton">Update</button>
+                <button type="button" class="btn btn-default btn-reset" (click)="cancelNewSpecialJournal()">Cancel</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="table-bdr" *ngIf="associationJournal">
+    <h3 *ngIf="addButton">Add New Special Journal Association</h3>
+    <h3 *ngIf="updateButton">Update Special Journal Association</h3>
+    <div class="panel-body">
+      <form role="form" name="addNewSpecialJournalAssociationForm" [formGroup]="addNewSpecialJournalAssociationForm" novalidate>
+        <div class="col-md-6">
+          <div class="form-group col-sm-12 popover-field">
+            <label class="focused">Special Journal</label>
+            <select class="form-control" name="SpecialJournalAssociation" id="SpecialJournalAssociation" formControlName="SpecialJournalAssociation"
+              required>
+                  <option selected="selected" value="">--Select--</option>                  
+                   <option *ngFor='let specialJournal of specialJournalDropDownRes' value="{{specialJournal.SpecialJournalId}}">{{specialJournal.SpecialJournalName}}</option> 
+                  </select>
+            <div class="msg" *ngIf="addNewSpecialJournalAssociationForm.controls['SpecialJournalAssociation'].invalid && (addNewSpecialJournalAssociationForm.controls['SpecialJournalAssociation'].dirty || addNewSpecialJournalAssociationForm.controls['SpecialJournalAssociation'].touched)">
+              <div *ngIf="addNewSpecialJournalAssociationForm.controls['SpecialJournalAssociation'].errors.required">
+                *Required.
+              </div>
+            </div>
+            <button class="pop-over" [popover]="popSpecialJournalAssociation" popoverTitle="Help" placement="left" data-container="body"
+              popovertitle="Help" tabindex="-1" triggers="mouseenter:mouseleave" type="button" ng-reflect-popover="[object Object]"
+              ng-reflect-popover-title="Help" ng-reflect-triggers="mouseenter:mouseleave" ng-reflect-container="body">?</button>
+            <ng-template #popSpecialJournalAssociation>
+              <ul>
+                <li>Special Journal is Required</li>
+                <li>Select any special journal</li>
+              </ul>
+            </ng-template>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group col-md-12 popover-field">
+            <label for="" class="focused">G/L Accounts</label>
+            <angular2-multiselect [data]="multiselectlist" [settings]="dropdownSettings" (onSelect)="onItemSelect($event)" [(ngModel)]="selectedItems"
+              (onDeSelect)="OnItemDeSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)"
+              formControlName="description" required>
+            </angular2-multiselect>
+            <div class="msg" *ngIf="addNewSpecialJournalAssociationForm.controls['description'].invalid && (addNewSpecialJournalAssociationForm.controls['description'].dirty || addNewSpecialJournalAssociationForm.controls['description'].touched)">
+              <div *ngIf="addNewSpecialJournalAssociationForm.controls['description'].errors.required">
+                *Required.
+              </div>
+            </div>
+            <button class="pop-over" [popover]="popAccounts" popoverTitle="Help" placement="left" data-container="body" popovertitle="Help"
+              tabindex="-1" triggers="mouseenter:mouseleave" type="button" ng-reflect-popover="[object Object]" ng-reflect-popover-title="Help"
+              ng-reflect-triggers="mouseenter:mouseleave" ng-reflect-container="body">?</button>
+            <ng-template #popAccounts>
+              <ul>
+                <li>G/L Accounts is Required</li>
+                <li>Select any G/L Accounts</li>
+              </ul>
+            </ng-template>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <button type="submit" class="btn btn-primary btn-search" *ngIf="addButton" (click)="alertClick()" [disabled]="disableAssociationCreateButton">Add</button>
+          <button type="button" class="btn btn-primary btn-search" *ngIf="updateButton" (click)="updateSpecialJournalAssociaton()"
+            [disabled]="disableAssociationUpdateButton">Update</button>
+          <button type="button" class="btn btn-default btn-reset" (click)="cancelManageSpecialJournalsAssociation()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="row m-t-20">
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <!--special journal table-->
+        <div *ngIf="specialJournalTable">
+          <h3>Special Journal</h3>
+          <div class="pad-10 table-responsive">
+            <table class="table bordered">
+              <thead class="thead-default">
+                <tr>
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Edit</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let specialJournal of objManageSpecialJournalResponse | paginate: { itemsPerPage:pageItemNumber, currentPage: p, totalItems:totalRecordCount}">
+                  <td>{{specialJournal.Code}}</td>
+                  <td>{{specialJournal.SpecialJournalName}}</td>
+                  <td>{{specialJournal.SpecialJournalDesc}}</td>
+                  <td><span *ngIf="specialJournal.Status" aria-hidden="true">Active</span>
+                    <span *ngIf="!specialJournal.Status" aria-hidden="true">Inactive</span></td>
+                  <!--<td><i *ngIf="specialJournal.Status" class="fa fa-toggle-on" aria-hidden="true"></i>
+                <i *ngIf="!specialJournal.Status" class="fa fa-toggle-off" aria-hidden="true"></i></td>-->
+                  <td><i class="fa fa-pencil fa-lg" aria-hidden="true" style="cursor:pointer" (click)="editSpecialJournalGroup(specialJournal)"
+                      [ngClass]="{'disabletextbox': disableUpdateButton}"></i></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="row page-info" *ngIf='objManageSpecialJournalResponse && objManageSpecialJournalResponse.length > 0'>
+            <div class="col-md-6 text-left">
+              <p class="p-l-8">Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+            </div>
+            <div class="col-md-6 text-right">
+              <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+            </div>
+          </div>
+        </div>
+        <!--special journal Association table-->
+        <div *ngIf="specialJournalAssociationTable">
+          <div class="invoiceDetails">
+            <h3>Special Journal Association</h3>
+            <div class="pad-10 table-responsive">
+              <table class="table bordered">
+                <thead class="thead-default nowrap">
+                  <tr>
+                    <th>Special Journal</th>
+                    <th>G/L Accounts</th>
+                    <th>Edit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let specialJournalAssociation of objManageSpecialJournalResponseAssociations| paginate: { itemsPerPage:pageItemNumber1, currentPage: p1, totalItems:totalRecordCount1}">
+                    <td class="nowrap">{{specialJournalAssociation.SpecialJournalDesc}}</td>
+                    <td>{{specialJournalAssociation.ChartofAccounts}}</td>
+                    <td><i class="fa fa-pencil fa-lg" aria-hidden="true" style="cursor:pointer" (click)="editSpecialJournalAssociation(specialJournalAssociation)"
+                        [ngClass]="{'disabletextbox': disableUpdateButton}"></i></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="row page-info" *ngIf='objManageSpecialJournalResponseAssociations && objManageSpecialJournalResponseAssociations.length >10 '>
+            <div class="col-md-6 text-left">
+              <p class="p-l-8">Display {{startItemNumber1}} - {{endItemNumber1}} Records of {{totalRecordCount1}}</p>
+            </div>
+            <div class="col-md-6 text-right">
+              <pagination-controls (pageChange)="pageChangedAssociation($event)"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

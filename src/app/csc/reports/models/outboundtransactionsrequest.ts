@@ -1,0 +1,30 @@
+import { IPaging } from './../../../shared/models/paging';
+export interface OutBoundTransactionsRequest {
+    BosIopTransactionId:number,
+    TransactionId:number,
+    TransactionType:string,
+    TagType:string,
+    EntryPlaza:string,
+    EntryLane:string,
+    ExitPlaza:string,
+    ExitLane:string,
+    VehicleClass:string,
+    TollAmount:number,
+    PerformedBy:string,
+    TPTripId:number,
+    CorrectionAmount:number,
+    CorrectionReason:string,
+    EtcDebitCredit:string,
+    SourceAgency:string,
+    TransactionTypeId:number,
+    CorrectionId:number,
+    LicenseNumber:string,
+    LicenseState:string,
+    TagSerialNumber:number,
+    Paging:IPaging,
+    TripMethod:string,
+    AdjustedAmount:number,
+    IstollUpdated:boolean,
+    CorrectionStatus:string
+    
+}

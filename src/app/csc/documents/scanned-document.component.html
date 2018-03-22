@@ -1,0 +1,91 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Documents</a></li>
+        <li class="active">Scanner Interface</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Scanner Interface</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <form role="form" name="scannedDocumentForm" [formGroup]="scannedDocumentForm">
+    <div class="row">
+      <div class="form-group col-sm-6 popover-field">
+        <label for="" class="focused">Document Folder</label>
+        <select class="form-control" required formControlName="DocumentFolder" (change)="documentFolderSelectionChange($event.target.value)">
+                  <option value="" selected="selected">--Select--</option>
+                  <option *ngFor="let scannedDocumentType of scannedDocumentTypes"  value="{{scannedDocumentType}}">{{scannedDocumentType}}</option> 
+                </select>
+        <div class="msg" *ngIf="scannedDocumentForm.controls['DocumentFolder'].invalid && (scannedDocumentForm.controls['DocumentFolder'].dirty || scannedDocumentForm.controls['DocumentFolder'].touched)">
+          <div *ngIf="scannedDocumentForm.controls['DocumentFolder'].hasError('required')"> Required</div>
+        </div>
+        <button type="button" class="pop-over" [popover]="popSD" popoverTitle="Help" triggers="mouseenter:mouseleave" placement='left'>?</button>
+        <ng-template #popSD>
+          <ul>
+            <li>Document Folder is Required</li>
+            <li>Select Document Folder</li>
+          </ul>
+        </ng-template>
+      </div>
+      <div class="col-sm-6 m-t-17">
+        <button type="submit" class="btn btn-primary btn-search" (click)="getDocumentdetails()" [disabled]="disableViewButton">View Files</button>
+        <button type="button" class="btn btn-default btn-reset" (click)="documentdetailsReset()">Reset</button>
+      </div>
+      <div *ngIf='scannedDocumentsResponse && scannedDocumentsResponse.length'>
+        <div class="col-md-12">
+          <div class="table-bdr m-t-10">
+            <h3>Search Results</h3>
+            <div class="table-default table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>File Name</th>
+                    <th style="text-align: center">View</th>
+                    <th style="text-align: center">Link</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor='let eachDoc of scannedDocumentsResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p }'>
+                    <td>{{eachDoc.Filename}}</td>
+                    <td style="text-align: center; cursor: pointer"><a href="{{Documenttobelinked+selectedDocumentFolder+'/'+eachDoc.Filename}}" target="_blank"><img src="assets/images/pdf.jpg" alt=""></a></td>
+                    <td style="text-align: center; cursor: pointer"><a [ngClass]="{'disabletextbox': disableLinkButton}"><img src="assets/images/ext_web_ico_link.png" (click)="ViewButton(eachDoc)" alt=""></a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="totalRecordCount >=11">
+          <div class="page-info" *ngIf="(this.scannedDocumentsResponse && this.scannedDocumentsResponse.length > 0)">
+            <div class="col-md-6 text-left">
+              <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+            </div>
+            <div class="col-md-6 text-right">
+              <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" *ngIf='noDataToDisplay'>
+      <div class="col-md-12">
+        <div class="table-bdr m-t-10">
+          <h3>Search Results</h3>
+          <div class="status-content">
+            <p class="pad-10"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> No records to display</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event, 1000)"></app-success-failure-alerts-message>

@@ -1,0 +1,96 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li>
+          <a href="#">Customer Accounts</a>
+        </li>
+        <li class="active">Payment</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Payment</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="col-md-12 border-bottom">
+      <div class="payment-steps">
+        <div class="row">
+          <div class="col-md-12">
+            <ul>
+              <li class="done"><span>1</span>Account Information</li>
+              <li class="done"><span>2</span>Plan Selection</li>
+              <li class="done"><span>3</span>Vehicle Information</li>
+              <li class="done"><span>4</span>Preferences</li>
+              <li class="active"><span>5</span>Payment</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="selected-plan-detials">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="plan-message">
+          <div class="block">
+            <strong>Plan Name:</strong>
+            <span for=""> {{planName}} {{isTagMessage}}</span>
+          </div>
+          <div class="block">
+            <strong>Fee:</strong> {{fee}}</div>
+          <div class="block">
+            <strong>Discount:</strong> {{discount}}</div>
+          <div class="block">
+            <strong>Payable Amount:</strong> {{txnAmount | currency:'USD':true:'1.2-2'}}</div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="payment-steps-2">
+        <ul>
+          <li class="active"><span>1</span>Payment Mode</li>
+          <li><span>2</span>Verify & Submit</li>
+          <li><span>3</span>Payment Receipt</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8">
+      <app-make-payment (onValidationChanges)='onValidationChanged($event)' [IsDisabled]="isDisbaleNext"></app-make-payment>
+    </div>
+    <div class="col-md-4">
+      <div *ngIf="customerInfo && customerInfo.length">
+        <app-amounts-summary-details [tollBalance]="tollBalance" [totalFee]="totalFee" [totalTagFee]="totalTagFee" [totalTagDeposit]="totalTagDeposit"
+          [totalServiceTax]="totalServiceTax" [totalShippingCharge]="totalShippingCharge" [planId]="planId"></app-amounts-summary-details>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="btns-group">
+        <button class="btn btn-primary btn-search" (click)="gotoPreferences()" type="submit">Preferences</button>
+        <button class="btn btn-primary btn-search" type="submit" [disabled]="isDisbaleNext" (click)="doPayment()" autofocus>Verify Payment</button>
+        <button class="btn btn-primary btn-reset" type="submit" (click)="onCancel(0)">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"
+  (onOk)="userAction($event)"></app-success-failure-alerts-message>

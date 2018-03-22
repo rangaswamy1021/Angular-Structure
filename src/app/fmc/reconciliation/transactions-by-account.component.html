@@ -1,0 +1,133 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">FMC</a></li>
+        <li><a href="#">Reconciliation</a></li>
+        <li class="active">Transaction Reconciliation By Account</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Transaction Reconciliation By Account</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="table-bdr">
+    <form role="form" name="transactionActivitiesForm" [formGroup]="transactionActivitiesForm">
+      <div class="panel-body">
+        <div class="row">
+          <div class="form-group col-md-6">
+            <label for="timePeriod" class="focused">Time Period</label>
+            <!--<input class="form-control disbale-to-write" formControlName="timePeriod" placeholder="Select Date Range" bsDaterangepicker
+                #dpr="bsDaterangepicker" name="timePeriod" [(ngModel)]="timePeriod">-->
+            <my-date-range-picker (inputFieldChanged)='onDateRangeFieldChanged($event)' name="timePeriod" [options]="myDateRangePickerOptions"
+              formControlName="timePeriod" placeholder="MM/DD/YYYY - MM/DD/YYYY"></my-date-range-picker>
+            <div class="show-error" *ngIf="!invalidDate && transactionActivitiesForm.controls['timePeriod'].invalid && (transactionActivitiesForm.controls['timePeriod'].dirty || transactionActivitiesForm.controls['timePeriod'].touched)">
+              <div *ngIf="transactionActivitiesForm.controls['timePeriod'].errors.required">
+                Required.
+              </div>
+            </div>
+            <div class="show-error" *ngIf="invalidDate">
+              <div>
+                Invalid Date Range
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group col-md-6 popover-field">
+            <label for="customerId">  Customer # </label>
+            <input type="text" class="form-control" placeholder="Customer" id="customer" name="customer" formControlName="customer">
+            <div class="msg" *ngIf="transactionActivitiesForm.controls['customer'].invalid && (transactionActivitiesForm.controls['customer'].dirty || transactionActivitiesForm.controls['customer'].touched)">
+              <div *ngIf="transactionActivitiesForm.controls['customer'].errors.pattern">
+                Only numarical values are allowed.
+              </div>
+            </div>
+            <button _ngcontent-c16="" class="pop-over" [popover]="popContent1" placement="left" data-container="body" popoverTitle="Help"
+              tabindex="-1" triggers="mouseenter:mouseleave" type="button" ng-reflect-popover="[object Object]" ng-reflect-popover-title="Help"
+              ng-reflect-triggers="mouseenter:mouseleave" ng-reflect-container="body">?</button>
+            <ng-template #popContent1>
+              <ul>
+                <li>CustomerId allows only numeric values</li>
+              </ul>
+            </ng-template>
+          </div>
+          <div class="col-md-12">
+            <button type="button" class="btn btn-primary btn-search" [disabled]="disableSubmit" (click)="searchClick()">Show Reconciled</button>
+            <button type="button" class="btn btn-primary btn-search" [disabled]="disableSubmit" (click)="unReconsile()">Show Unreconciled</button>
+            <button type="button" class="btn btn-default btn-reset" (click)="resetbtn()">Reset</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="table-bdr" *ngIf="tablehide">
+    <h3> Transaction Reconciliation By Account - {{this.btnName}} </h3>
+    <div class="panel-body borderd">
+      <table class="table bordered" *ngIf="transactionLength >= 1">
+        <thead class="thead-default">
+          <tr>
+            <th></th>
+            <th></th>
+            <th colspan="1">Customer Trips </th>
+            <th></th>
+            <th></th>
+            <th colspan="1">Violator Trips </th>
+            <th></th>
+          </tr>
+          <tr>
+            <!-- <th (click)="sortDirection('CustomerId')" class="sorting-handle"> Category
+                    <span *ngIf="gridArrowCustomerId">
+                        <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                      </span>
+                </th> -->
+            <th>Category</th>
+            <th>Application</th>
+            <th>Finance </th>
+            <th>Variance</th>
+            <th>Application</th>
+            <th>Finance </th>
+            <th>Variance</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let transaction of transactionres | paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount };">
+            <td>{{transaction.CustomerId}}</td>
+            <td>{{transaction.AppTrips | currencycustom}}</td>
+            <td>{{transaction.FinTrips | currencycustom}}</td>
+            <td>{{transaction.AppTrips-transaction.FinTrips | currencycustom}}</td>
+            <td>{{transaction.AppVioTrips | currencycustom}}</td>
+            <td>{{transaction.FinVioTrips | currencycustom}}</td>
+            <td>{{transaction.AppVioTrips-transaction.FinVioTrips | currencycustom}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf="transactionLength == 0">
+        <div>No Records to display</div>
+      </div>
+    </div>
+    <div *ngIf="totalRecordCount >= 11">
+      <div class="row page-info" *ngIf="(this.transactionres && this.transactionres.length > 0)">
+        <div class="col-md-6 text-left">
+          <p class="m-l-20">Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>

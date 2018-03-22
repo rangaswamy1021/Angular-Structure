@@ -1,0 +1,266 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="">CSC</a></li>
+        <li><a href="">Customer Accounts</a></li>
+        <li class="active">Advanced Pay Tolls</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1 class="pull-left">Advanced Pay Tolls</h1>
+        <div class="accout-sec pull-right">
+          <h3>Account Id: {{customerId}}</h3>
+          <a class="btn btn-primary btn-search" routerLink="/csc/search/pay-a-advance-tolls" [queryParams]="{ fromSearch: true}">Back</a>
+        </div>
+        <div class="clear"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="content">
+  <div class="info-view">
+    <div class="row">
+      <div class="col-md-3 col-md-offset-1">
+        <h3>Available Balance</h3>
+      </div>
+      <div class="col-md-3">
+        <h3>{{currentAmount |currency:'USD':true:'2.2-4'}} </h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3 col-md-offset-1">
+        <h3>Total Outstanding Balance</h3>
+      </div>
+      <div class="col-md-3">
+        <h3>{{tollAmount|currency:'USD':true:'2.2-4'}}</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3 col-md-offset-1">
+        <h3>Amount to be Paid</h3>
+      </div>
+      <div class="col-md-3">
+        <h3>{{paidAmount|currency:'USD':true:'2.2-4'}}</h3>
+      </div>
+    </div>
+    <div class="clear"></div>
+    <div class="btn-sec col-md-offset-1">
+      <button class="btn btn-primary btn-search" [disabled]='paymentButtonStatus' (click)='showPayment=true'>Make Payment</button>
+      <button class="btn btn-primary btn-search" [disabled]='convertButtonStatus' (click)='convertToCust()'>{{convertButtonText}}</button>
+    </div>
+  </div>
+  <div *ngIf='showPayment' [hidden]='paymentButtonStatus'>
+<div class="payment-mode-selection" >
+  <div class="row">
+    <div class="col-md-1">
+      <h3>
+        Pay By
+      </h3>
+       </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <input type='radio' [(ngModel)]='paymentType' value='Credit Card' name='payment'> 
+          <p>Credit Card</p>
+         
+        </div>
+        <div class="form-group">
+         
+          <input type='radio' [(ngModel)]='paymentType' value='Cash' name='payment'/>
+          <p>Cash</p>
+        </div>
+      </div>
+   </div>
+</div>
+
+  <div class="payment-sec" *ngIf='paymentType=="Credit Card"'>
+    <div class="panel panel-default m-t-20">
+      <div class="panel-heading"> Credit Card Details </div>
+      <div class="panel-body">
+        <div class="col-md-6">
+          <app-credit-card-information [Customerid]="customerid" [IsSaveCheckBox]='false' [IsAddressVisible]="false"></app-credit-card-information>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default m-t-20">
+      <div class="panel-heading"> Address Details </div>
+      <div class="panel-body">
+        <app-add-address></app-add-address>
+      </div>
+    </div>
+  </div>
+  <button class="btn btn-primary btn-search pull-right" (click)='confirmPayment()'>Confirm Payment</button>
+  <div class="clear"></div>
+  </div>
+</div>
+
+<div id="verifyPayment" class="edit-modal  modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <a class="form-title">Verify Payment</a>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-8 col-md-offset-2">
+                  <div class="row">
+          <div class="col-md-6">
+            <h3>Total Payment Amount</h3>
+          </div>
+
+          <div class="col-md-6">
+            <h3>{{paidAmount}}</h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <h3>Pay By</h3>
+          </div>
+
+          <div class="col-md-6">
+            <h3>{{paymentType}}</h3>
+          </div>
+        </div>
+        <div class="row" [hidden]="paymentType=='Cash'">
+          <div class="col-md-6">
+            <h3>Card Type</h3>
+          </div>
+
+          <div class="col-md-6">
+            <h3>{{ccardType}}</h3>
+          </div>
+        </div>
+        <div class="row" [hidden]="paymentType=='Cash'">
+          <div class="col-md-6">
+            <h3>Credit Card</h3>
+          </div>
+
+          <div class="col-md-6">
+            <h3>XXXX_{{ccardNum}}</h3>
+          </div>
+        </div>
+        <div class="row" [hidden]="paymentType=='Cash'">
+          <div class="col-md-6">
+            <h3>Name on Card</h3>
+          </div>
+
+          <div class="col-md-6">
+            <h3>{{ccname}}</h3>
+          </div>
+        </div>
+        <div class="row" [hidden]="paymentType=='Cash'">
+          <div class="col-md-6">
+            <h3>Credit Card Service Tax</h3>
+          </div>
+
+          <div class="col-md-6">
+            <h3>{{ccServiceTax |currency:'USD':true:'2.2-4' }}</h3>
+          </div>
+        </div>
+        </div></div>
+        <button class="btn btn-primary btn-search m-t-20 btn-center" (click)='makePayment()'>Proceed to Pay</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="thankYou" class="edit-modal  modal fade " role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <a class="form-title">Thank You</a>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+       <div class=" status-message payment-status" [ngClass]='{"success":paymentSuccess}' *ngIf='paymentSuccess'>
+    
+    <div class="status-img">
+      <img src='assets/images/svg/success-check.svg' [hidden]='!paymentSuccess'>
+      <img src='assets/images/svg/warning.svg' [hidden]='paymentSuccess'>
+    </div>
+    <div class="status-content">
+      <h3>{{statusMessage}}</h3>
+    </div>
+    <div class="clear"> </div>
+  </div>
+ <div class="row">
+          <div class="col-md-10 col-md-offset-1">
+                  <div class="row">
+          <div class="col-md-6">
+            <h3>Reference No</h3>
+          </div>
+
+          <div class="col-md-6">
+            <h3>{{paymentResponse.VoucherNo}}</h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <h3>Account Id</h3>
+          </div>
+
+          <div class="col-md-6">
+            <h3>{{paymentResponse.CustomerId}}</h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <h3>Total Payment Amount</h3>
+          </div>
+
+          <div class="col-md-6">
+            <h3>{{paymentResponse.ToltalAmountPaid}}</h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <h3>Pay By</h3>
+          </div>
+
+          <div class="col-md-6">
+            <h3>{{paymentResponse.PaymentMode}}</h3>
+          </div>
+        </div>
+        <div class="row" [hidden]="paymentType=='Cash'">
+          <div class="col-md-6">
+            <h3>Card Type</h3>
+          </div>
+
+          <div class="col-md-6">
+            <h3>{{ccardType}}</h3>
+          </div>
+        </div>
+        <div class="row" [hidden]="paymentType=='Cash'">
+          <div class="col-md-6">
+            <h3>Credit Card</h3>
+          </div>
+
+          <div class="col-md-6">
+            <h3>XXXX_{{ccardNum}}</h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <h3>Transaction Date/Time</h3>
+          </div>
+
+          <div class="col-md-6">
+            <h3>{{paymentResponse.TransactionDate}}</h3>
+          </div>
+        </div>
+        <div class=" btn-center">
+        <button class="btn btn-primary btn-search m-t-20" (click)='printReciept()' >Payment Receipt</button>
+        <button class="btn btn-primary btn-search m-t-20" (click)='paymentEmail()'>Email</button>
+        </div>
+        </div></div>
+
+      </div>
+    </div>
+  </div>
+</div>
+        

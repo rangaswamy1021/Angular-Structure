@@ -1,0 +1,206 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">FMC</a></li>
+        <li><a href="#">Cash Managemant</a></li>
+        <li class="active">Cash Management Details</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1> Cash Management Report</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="table-bdr">
+    <h3>Cash Report</h3>
+    <div class="panel-body">
+      <div class="row">
+        <form role="form" name="PeriodsForm" [formGroup]="cashreport">
+          <div class="form-group col-md-6">
+            <label for="date" class="focused">Date</label>
+            <!--<input class="form-control" autocomplete="off" placeholder="selectPeriod" bsDaterangepicker #dpr="bsDaterangepicker" name="dateRange"
+                formControlName="dateRange" [(ngModel)]="timePeriodValue">-->
+            <my-date-range-picker (inputFieldChanged)='onDateRangeFieldChanged($event)' name="dateRange" [options]="myDateRangePickerOptions"
+              formControlName="dateRange" id="date" placeholder="MM/DD/YYYY - MM/DD/YYYY"></my-date-range-picker>
+            <div class="show-error" *ngIf="!invalidDate && cashreport.controls['dateRange'].invalid && (cashreport.controls['dateRange'].dirty || cashreport.controls['dateRange'].touched)">
+              <div *ngIf="cashreport.controls['dateRange'].errors.required">
+                Required.
+              </div>
+            </div>
+            <div class="show-error" *ngIf="invalidDate">
+              <div>
+                Invalid Date Range
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <button class="btn btn-primary btn-search" type="submit" [disabled]="disableSubmit" (click)="search()">Search</button>
+            <button class="btn btn-default btn-reset" type="button" (click)="amountReset()">Reset</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="table-bdr" *ngIf="!subReportVisible">
+    <h3>Cash Management Report</h3>
+    <!--<div class="panel-heading">
+      <h4 class="panel-title">Cash Management Report</h4>
+    </div>-->
+    <div class="panel-body">
+      <div *ngIf="getChangeFundDetailsResponse && getChangeFundDetailsResponse.length;else empty">
+        <table class="table bordered">
+          <thead class="thead-default">
+            <tr>
+              <th>Date</th>
+              <th>Day Begining Balance</th>
+              <th>Float Amount</th>
+              <th>Recieved Amount</th>
+              <th>Day Ending Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let changeFund of getChangeFundDetailsResponse | paginate: { itemsPerPage:pageItemNumber, currentPage: p, totalItems:totalRecordCount}">
+              <td><a *ngIf="changeFund.FloatAmount > 0 || changeFund.ReceivedBalance > 0;else withOutLink" (click)="getChangeFundDenominationDetails(changeFund.FundDate)">{{changeFund.FundDate |date:'MM/dd/yyyy'}}</a></td>
+              <ng-template #withOutLink>
+                <td>{{changeFund.FundDate |date:'MM/dd/yyyy'}}</td>
+              </ng-template>
+              <td> {{changeFund.BeginofAmount |currencycustom}} </td>
+              <td> {{changeFund.FloatAmount | currencycustom}} </td>
+              <td> {{changeFund.ReceivedBalance |currencycustom }} </td>
+              <td> {{changeFund.EndofAmount | currencycustom }} </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-template #empty>
+       <div *ngIf="transactionLength == 0">
+          <div>No Records to display</div>
+        </div>
+      </ng-template>
+    </div>
+    <div *ngIf="totalRecordCount >= 11 && !subReportVisible">
+      <div class="row page-info" *ngIf="(this.getChangeFundDetailsResponse && this.getChangeFundDetailsResponse.length > 0)">
+        <div class="col-md-6 text-left">
+          <p class="p-l-15"> Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default" *ngIf="subReportVisible">
+    <div class="panel-heading">
+      <h4 class="panel-title">Float Amount Details</h4>
+    </div>
+    <div class="panel-body">
+      <table class="table  table-border">
+        <thead class="thead-default">
+          <tr>
+            <th>UserID</th>
+            <th>Source</th>
+            <th>100$</th>
+            <th>50$</th>
+            <th>20$</th>
+            <th>10$</th>
+            <th>5$</th>
+            <th>2$</th>
+            <th>1$</th>
+            <th>HALF</th>
+            <th>QUARTER</th>
+            <th>DIME</th>
+            <th>NICKEL</th>
+            <th>PENNY</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let floatItems of floatDenominationArray">
+            <td> {{floatItems.FloatUserID}} </td>
+            <td> {{floatItems.SourceofFloat}} </td>
+            <td> {{floatItems.FloatHundreds}} </td>
+            <td> {{floatItems.FloatFifties}} </td>
+            <td> {{floatItems.FloatTwenties}} </td>
+            <td> {{floatItems.FloatTens}} </td>
+            <td> {{floatItems.FloatFives}} </td>
+            <td> {{floatItems.FloatTwos}} </td>
+            <td> {{floatItems.FloatOnes}} </td>
+            <td> {{floatItems.FloatHalfs}} </td>
+            <td> {{floatItems.FloatQuarters}} </td>
+            <td> {{floatItems.FloatDimes}} </td>
+            <td> {{floatItems.FloatNickles}} </td>
+            <td> {{floatItems.FloatPennies}} </td>
+            <td> {{floatItems.FloatTotalAmount | currencycustom}} </td>
+          </tr>
+        </tbody>
+        <tfoot class="total-amount">
+          <tr>
+            <td colspan="14" class="tfoot-total">Total:</td>
+            <td>
+              <p class="pull-right">{{totalFloatAmount | currencycustom}}</p>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+  <div class="table-bdr" *ngIf="subReportVisible">
+    <h3>Received Amount Details</h3>
+    <div class="panel-body">
+      <table class="table  table-border">
+        <thead class="thead-default">
+          <tr>
+            <th>UserID</th>
+            <th>Source</th>
+            <th>100$</th>
+            <th>50$</th>
+            <th>20$</th>
+            <th>10$</th>
+            <th>5$</th>
+            <th>2$</th>
+            <th>1$</th>
+            <th>HALF</th>
+            <th>QUARTER</th>
+            <th>DIME</th>
+            <th>NICKEL</th>
+            <th>PENNY</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ReceivedItems of receivedDenominationArray">
+            <td> {{ReceivedItems.ReceivedUserID}} </td>
+            <td> {{ReceivedItems.SourceofReceive}} </td>
+            <td> {{ReceivedItems.ReceiveHundreds}} </td>
+            <td> {{ReceivedItems.ReceiveFifties}} </td>
+            <td> {{ReceivedItems.ReceiveTwenties}} </td>
+            <td> {{ReceivedItems.ReceiveTens}} </td>
+            <td> {{ReceivedItems.ReceiveFives}} </td>
+            <td> {{ReceivedItems.ReceiveTwos}} </td>
+            <td> {{ReceivedItems.ReceiveOnes}} </td>
+            <td> {{ReceivedItems.ReceiveHalfs}} </td>
+            <td> {{ReceivedItems.ReceiveQuarters}} </td>
+            <td> {{ReceivedItems.ReceiveDimes}} </td>
+            <td> {{ReceivedItems.ReceiveNickles}} </td>
+            <td> {{ReceivedItems.ReceivePennies}} </td>
+            <td> {{ReceivedItems.ReceivedTotalAmount | currencycustom}} </td>
+          </tr>
+        </tbody>
+        <tfoot class="total-amount">
+          <tr>
+            <td colspan="14" class="tfoot-total">Total:</td>
+            <td>
+              <p class="pull-right">{{totalReceivedAmount| currencycustom}}</p>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>

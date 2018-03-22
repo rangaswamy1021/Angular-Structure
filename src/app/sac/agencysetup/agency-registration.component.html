@@ -1,0 +1,355 @@
+<div class="page-title-header">
+    <div class="row no-gutters">
+        <div class="col-md-12">
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">SAC</a>
+                </li>
+                <li>
+                    <a href="#">Agency Setup</a>
+                </li>
+                <li class="active">Agency Registration</li>
+            </ol>
+        </div>
+        <div class="col-md-12">
+            <div class="page-header">
+                <h1>Agency Registration</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<form role="form" name="agencyRegistrationForm" [formGroup]="agencyRegistrationForm">
+    <div class="content">
+        <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+        <div class="table-bdr">
+            <h3> Agency Details </h3>
+            <div class="panel-body">
+                <div class="col-md-6">
+                    <div class="form-group col-md-12 popover-field">
+                        <label> Agency Name </label>
+                        <input type="text" maxlength="250" pattern="^[a-zA-Z0-9 ]*$" class="form-control" formControlName="agencyName" name="agencyName"
+                            placeholder="Agency Name">
+                        <div class="msg" *ngIf="agencyRegistrationForm.controls['agencyName'].invalid && (agencyRegistrationForm.controls['agencyName'].dirty || agencyRegistrationForm.controls['agencyName'].touched)">
+                            <div *ngIf="agencyRegistrationForm.controls['agencyName'].errors.required">
+                                Required.
+                            </div>
+                            <div *ngIf="agencyRegistrationForm.controls['agencyName'].errors.pattern">
+                                Only alphanumerics and spaces are allowed
+                            </div>
+                        </div>
+                        <button type="button" class="pop-over" data-container="body" [popover]="popAN" popoverTitle="Help" triggers="mouseenter:mouseleave">?</button>
+                        <ng-template #popAN>
+                            <ul>
+                                <li>Agency Name is required</li>
+                                <li>It allows only alphabets, numbers and spaces</li>
+                                <li>Special characters are not allowed</li>
+                                <li>it should be minimum of 1 and maximum of 250 characters in length</li>
+                            </ul>
+                        </ng-template>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group col-md-12 popover-field">
+                        <label> Agency Code </label>
+                        <input type="text" maxlength="5" pattern="^[a-zA-Z0-9 ]*$" class="form-control" formControlName="agencyCode" name="agencyCode"
+                            placeholder="Agency Code" [ngClass]="{'disabletextbox':isEditShow}">
+                        <div class="msg" *ngIf="agencyRegistrationForm.controls['agencyCode'].invalid && (agencyRegistrationForm.controls['agencyCode'].dirty || agencyRegistrationForm.controls['agencyCode'].touched)">
+                            <div *ngIf="agencyRegistrationForm.controls['agencyCode'].errors.required">
+                                Required.
+                            </div>
+                            <div *ngIf="agencyRegistrationForm.controls['agencyCode'].errors.pattern">
+                                Only alphanumerics and spaces are allowed
+                            </div>
+                        </div>
+                        <button type="button" class="pop-over" data-container="body" [popover]="popAC" popoverTitle="Help" triggers="mouseenter:mouseleave">?</button>
+                        <ng-template #popAC>
+                            <ul>
+                                <li>Agency Code is required</li>
+                                <li>It allows only alphabets, numbers and spaces</li>
+                                <li>Special characters are not allowed</li>
+                                <li>it should be minimum of 1 and maximum of 5 characters in length</li>
+                            </ul>
+                        </ng-template>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group col-md-12 popover-field">
+                        <label> Description </label>
+                        <!-- <input type="text" class="form-control" formControlName="agencyDescription" name="agencyDescription" placeholder="Description"> -->
+                        <textarea class="form-control" cols="5" rows="3" id="agencyDescription" name="agencyDescription" formControlName="agencyDescription"> </textarea>
+                        <div class="msg" *ngIf="agencyRegistrationForm.controls['agencyDescription'].invalid && (agencyRegistrationForm.controls['agencyDescription'].dirty || agencyRegistrationForm.controls['agencyDescription'].touched)">
+                            <div *ngIf="agencyRegistrationForm.controls['agencyDescription'].errors.required">
+                                Required.
+                            </div>
+                        </div>
+                        <button type="button" class="pop-over" data-container="body" [popover]="popD" popoverTitle="Help" triggers="mouseenter:mouseleave">?</button>
+
+                        <ng-template #popD>
+                            <ul>
+                                <li>Description is required</li>
+                                <li>It allows only alphabets, numbers and spaces</li>
+                                <li>it should be minimum of 1 and maximum of 250 characters in length</li>
+                            </ul>
+                        </ng-template>
+                    </div>
+                    <span class="pull-right col-md-offset-1">Left:255characters </span>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="table-bdr">
+            <h3>
+                Address Information
+            </h3>
+            <div class="panel-body">
+                <app-add-address [customerID]="accountId" [isEnable]="false"></app-add-address>
+            </div>
+        </div>
+
+        <div class="table-bdr">
+            <h3>
+                Contact Information
+            </h3>
+            <div class="panel-body">
+                <div class="col-md-3">
+                    <div class="form-group col-md-12 popover-field">
+                        <label class="focused control-label"> Title </label>
+                        <select class="form-control" formControlName="titleSelected">
+                            <!-- <option label="Title" selected="selected" value="">Title</option> -->
+                            <option *ngFor="let title of titles" value="{{title.Key}}"> {{title.Value}}</option>
+                        </select>
+                        <button type="button" class="pop-over" data-container="body" [popover]="popTitle" popoverTitle="Help" triggers="mouseenter:mouseleave">?</button>
+                        <ng-template #popTitle>
+                            <ul>
+                                <li>Select Title</li>
+                            </ul>
+                        </ng-template>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group col-md-12 popover-field">
+                        <label class="focused control-label"> Suffix </label>
+                        <select class="form-control" formControlName="suffixSelected" (change)="selectSuffix()">
+                            <!-- <option label="Suffix" selected="selected" value="">Suffix</option> -->
+                            <option *ngFor="let suffix of suffixes" value="{{suffix.Key}}"> {{suffix.Value}}</option>
+                        </select>
+                        <button type="button" class="pop-over" data-container="body" [popover]="popSfx" popoverTitle="Help" triggers="mouseenter:mouseleave">?</button>
+                        <ng-template #popSfx>
+                            <ul>
+                                <li>Select Suffix</li>
+                            </ul>
+                        </ng-template>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group col-md-12 popover-field">
+                        <label> First Name </label>
+                        <input type="text" class="form-control" maxlength="50" pattern="^[a-zA-Z0-9 ]*$" placeholder="First Name" formControlName="firstName">
+                        <div class="msg" *ngIf="agencyRegistrationForm.controls['firstName'].invalid && (agencyRegistrationForm.controls['firstName'].dirty || agencyRegistrationForm.controls['firstName'].touched)">
+                            <div *ngIf="agencyRegistrationForm.controls['firstName'].errors.required">
+                                Required.
+                            </div>
+                            <div *ngIf="agencyRegistrationForm.controls['firstName'].errors.pattern">
+                                Only alphanumerics and spaces are allowed
+                            </div>
+                        </div>
+                        <button type="button" class="pop-over" data-container="body" [popover]="popFN" popoverTitle="Help" triggers="mouseenter:mouseleave">?</button>
+                        <ng-template #popFN>
+                            <ul>
+                                <li>First Name is required</li>
+                                <li>It allows only alphabets, numbers and spaces</li>
+                                <li>it should be minimum of 2 and maximum of 50 characters in length</li>
+                            </ul>
+                        </ng-template>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group col-md-12 popover-field">
+                        <label> Middle Name </label>
+                        <input type="text" class="form-control" placeholder="Middle Name" formControlName="middleName">
+                        <button type="button" class="pop-over" data-container="body" [popover]="popMN" popoverTitle="Help" triggers="mouseenter:mouseleave">?</button>
+                        <ng-template #popMN>
+                            <ul>
+                                <li>It allows only alphabets</li>
+                                <li>Special characters and spaces are not allowed. it is maximum 2 characters long</li>
+                            </ul>
+                        </ng-template>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group col-md-12 popover-field">
+                        <label> Last Name </label>
+                        <input type="text" maxlength="50" pattern="^[a-zA-Z0-9]*$" class="form-control" placeholder="Last Name" formControlName="lastName">
+                        <div class="msg" *ngIf="agencyRegistrationForm.controls['lastName'].invalid && (agencyRegistrationForm.controls['lastName'].dirty || agencyRegistrationForm.controls['lastName'].touched)">
+                            <div *ngIf="agencyRegistrationForm.controls['lastName'].errors.required">
+                                Required.
+                            </div>
+                            <div *ngIf="agencyRegistrationForm.controls['lastName'].errors.pattern">
+                                Only alphanumerics and spaces are allowed
+                            </div>
+                        </div>
+                        <button type="button" class="pop-over" data-container="body" [popover]="popLN" popoverTitle="Help" triggers="mouseenter:mouseleave">?</button>
+                        <ng-template #popLN>
+                            <ul>
+                                <li>Last Name is required</li>
+                                <li>It allows only alphabets, numbers and spaces and (-)</li>
+                                <li>it should be minimum of 2 and maximum of 50 characters in length</li>
+                            </ul>
+                        </ng-template>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group col-md-12 popover-field">
+                        <label class="focused"> Gender </label>
+                        <select class="form-control" formControlName="genderSelected">
+                            <!-- <option label="Gender" selected="selected" value="">Gender</option> -->
+                            <option *ngFor="let gender of genderTypes" value="{{gender.Key}}"> {{gender.Value}}</option>
+                        </select>
+                        <button type="button" class="pop-over" data-container="body" [popover]="popG" popoverTitle="Help" triggers="mouseenter:mouseleave">?</button>
+                        <ng-template #popG>
+                            <ul>
+                                <li>Gender is required</li>
+                                <li>Select Gender</li>
+                            </ul>
+                        </ng-template>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group col-md-12 popover-field">
+                        <label> Phone # </label>
+                        <input type="text" class="form-control" placeholder="Phone#" formControlName="dayPhone" (keydown)="formatPhone($event)" maxlength="14">
+                        <button type="button" class="pop-over" data-container="body" [popover]="popDPN" popoverTitle="Help" triggers="mouseenter:mouseleave">?</button>
+                        <ng-template #popDPN>
+                            <ul>
+                                <li>Phone # allows only numbers</li>
+                            </ul>
+                        </ng-template>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group col-md-12 popover-field">
+                        <label> Mobile # </label>
+                        <input type="text" class="form-control" placeholder="Mobile#" formControlName="mobilePhone" (keydown)="formatPhone($event)"
+                            maxlength="14">
+                        <div class="msg" *ngIf="agencyRegistrationForm.controls['mobilePhone'].invalid && (agencyRegistrationForm.controls['mobilePhone'].dirty || agencyRegistrationForm.controls['mobilePhone'].touched)">
+                            <div *ngIf="agencyRegistrationForm.controls['mobilePhone'].errors.required">
+                                Required.
+                            </div>
+                            <div *ngIf="agencyRegistrationForm.controls['mobilePhone'].errors.pattern">
+                                Invalid phone number.
+                            </div>
+                            <div *ngIf="agencyRegistrationForm.controls['mobilePhone'].errors.maxlength">
+                                Maximum 14 characters are allowed.
+                            </div>
+                        </div>
+                        <button type="button" class="pop-over" data-container="body" [popover]="popMobN" popoverTitle="Help" triggers="mouseenter:mouseleave">?</button>
+                        <ng-template #popMobN>
+                            <ul>
+                                <li>Mobile # is required</li>
+                                <li>Mobile # allows only numbers</li>
+                            </ul>
+                        </ng-template>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group col-md-12 popover-field">
+                        <label> Email </label>
+                        <input type="text" class="form-control" placeholder="Email" formControlName="primaryEmail">
+                        <div class="msg" *ngIf="agencyRegistrationForm.controls['primaryEmail'].invalid && (agencyRegistrationForm.controls['primaryEmail'].dirty || agencyRegistrationForm.controls['primaryEmail'].touched)">
+                            <div *ngIf="agencyRegistrationForm.controls['primaryEmail'].errors.required">
+                                Required.
+                            </div>
+                            <div *ngIf="agencyRegistrationForm.controls['primaryEmail'].errors.pattern">
+                                Invalid email format.
+                            </div>
+                            <div *ngIf="agencyRegistrationForm.controls['primaryEmail'].errors.minlength">
+                                Minimum 6 characters are required.
+                            </div>
+                            <div *ngIf="agencyRegistrationForm.controls['primaryEmail'].errors.maxlength">
+                                Maximum 100 characters are allowed.
+                            </div>
+                        </div>
+                        <button type="button" class="pop-over" data-container="body" [popover]="popEmail" popoverTitle="Help" triggers="mouseenter:mouseleave">?</button>
+                        <ng-template #popEmail>
+                            <ul>
+                                <li>Email is required.</li>
+                                <li>Email allows alphanumerics with special characters (@, _, ., -, +)</li>
+                                <li>Spaces are not allowed.</li>
+                                <li>It should be minimum 6 characters and maximum 100 characters long.</li>
+                                <li>It should follow the format yourname@domain.com</li>
+                            </ul>
+                        </ng-template>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group col-md-12 popover-field">
+                        <label> Username </label>
+                        <input type="text" maxlength="50" pattern="^[a-zA-Z0-9]*$" class="form-control" placeholder="Username" formControlName="userName" (change)="checkUserExist($event.target.value)"
+                            [ngClass]="{'disabletextbox':isEditShow }">
+                        <div class="msg" *ngIf="agencyRegistrationForm.controls['userName'].invalid && (agencyRegistrationForm.controls['userName'].dirty || agencyRegistrationForm.controls['userName'].touched)">
+                            <div *ngIf="agencyRegistrationForm.controls['userName'].errors.required">
+                                Required.
+                            </div>
+                            <div *ngIf="agencyRegistrationForm.controls['userName'].errors.minlength">
+                                Minimum 5 characters required.
+                            </div>
+                            <div *ngIf="agencyRegistrationForm.controls['userName'].errors.maxlength">
+                                Maximum 50 characters are allowed
+                            </div>
+                            <div *ngIf="agencyRegistrationForm.controls['userName'].errors.pattern">
+                                Only alphanumerics are allowed
+                            </div>                            
+                        </div>
+                        <button type="button" class="pop-over" data-container="body" [popover]="popUserName" popoverTitle="Help" triggers="mouseenter:mouseleave">?</button>
+                        <ng-template #popUserName>
+                            <ul>
+                                <li>Username is required</li>
+                                <li>It allows only alphanumeric</li>
+                                <li>Special characters and spaces are not allowed</li>
+                                <li>it should be minimum of 5 and maximum of 50 characters long</li>
+                            </ul>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12" *ngIf="isAddShow">
+                <button class="btn btn-default btn-search" (click)="addClick()">
+                    Add
+                </button>
+                <button class="btn btn-default btn-search" (click)="addContinueClick()">
+                    Add and Continue
+                </button>
+                <button class="btn btn-default btn-reset" (click)="resetAgency()">
+                    Reset
+                </button>
+                <a href='javascript:;' class="btn btn-default btn-reset" (click)="cancelAgency()">
+                    Cancel
+                </a>
+            </div>
+            <div class="col-md-12" *ngIf="isEditShow">
+                <button class="btn btn-default btn-search" (click)="updateClick()">
+                    Update
+                </button>
+                <button class="btn btn-default btn-search" (click)="updateContinueClick()">
+                    Update and Continue
+                </button>
+                <button class="btn btn-default btn-reset" (click)="resetAgency()">
+                    Reset
+                </button>
+                <a href='javascript:;' class="btn btn-default btn-reset" (click)="cancelAgency()">
+                    Cancel
+                </a>
+            </div>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,272 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">Tvc</a>
+        </li>
+        <li>
+          <a href="#">Disputes</a>
+        </li>
+        <li class="active">Affidavit Search Violator</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Affidavit Search Violator</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class=" text-right">
+    <span id="" class="accno">Account #:{{violatorID}}</span>
+    <button class="btn btn-default  btn-search" type="button" (click)='backClick()'>Back</button>
+  </div>
+
+  <div class="row" *ngIf='isAccountTypeShow'>
+    <div class="col-md-12 m-b-10">
+      <div class="custom-control custom-radio radio-inline">
+        <input type="radio" name="accountType" id="rdoExist" value="Existing Account" checked="checked" [(ngModel)]="rdoAccType"
+          (change)="rdoAccountType(true)">
+        <label class="custom-control-description" for="rdoExist">Existing Account</label>
+      </div>
+
+      <div class="custom-control custom-radio radio-inline">
+        <input type="radio" name="accountType" id="rdoNew" value="New Account" [(ngModel)]="rdoAccType" (change)="rdoAccountType(false)">
+        <label class="custom-control-description" for="rdoNew">New Account</label>
+      </div>
+
+
+
+
+
+
+    </div>
+  </div>
+
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+
+  <div [hidden]='!isExistAccount'>
+    <div class="panel panel-default">
+      <div class="panel-heading">Search Account</div>
+      <form role="form" name="searchForm" [formGroup]="searchForm">
+        <div class="panel-body bordered">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group col-sm-12">
+                <label for="invoice" class="">Invoice #</label>
+                <input class="form-control" formControlName="invoice" id="invoice" name="invoice" maxlength="25" pattern="^[a-zA-Z0-9]*"
+                  placeholder="Invoice #:" type="text">
+                <div class="msg" *ngIf="searchForm.controls['invoice'].invalid && (searchForm.controls['invoice'].dirty || searchForm.controls['invoice'].touched)">
+                  <div *ngIf="searchForm.controls['invoice'].errors.pattern">
+                    Only alphanumerics are allowed !
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group col-sm-12">
+                <label for=" invoiceRef" class="">Invoice Ref #</label>
+                <input class="form-control" formControlName="invoiceRef" id=" invoiceRef" name="invoiceRef" maxlength="25" pattern="^[a-zA-Z0-9]*"
+                  placeholder="Invoice Ref  #" type="text">
+                <div class="msg" *ngIf="searchForm.controls['invoiceRef'].invalid && (searchForm.controls['invoiceRef'].dirty || searchForm.controls['invoiceRef'].touched)">
+                  <div *ngIf="searchForm.controls['invoiceRef'].errors.pattern">
+                    Only alphanumerics are allowed !
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group col-sm-12">
+                <label for="trip " class="">Trip #</label>
+                <input class="form-control" formControlName="trip" id="trip" name="trip" pattern="^[0-9]*" maxlength="18" placeholder="Trip #"
+                  type="text">
+                <div class="msg" *ngIf="searchForm.controls['trip'].invalid && (searchForm.controls['trip'].dirty || searchForm.controls['trip'].touched)">
+                  <div *ngIf="searchForm.controls['trip'].errors.pattern">
+                    Only numbers are allowed !
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group col-sm-12">
+                <label for="account " class="">Account #</label>
+                <input class="form-control" formControlName="account" id="account" name="account" pattern="^[0-9]*" maxlength="18" placeholder="Account  #"
+                  type="text">
+                <div class="msg" *ngIf="searchForm.controls['account'].invalid && (searchForm.controls['account'].dirty || searchForm.controls['account'].touched)">
+                  <div *ngIf="searchForm.controls['account'].errors.pattern">
+                    Only numbers are allowed !
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group col-sm-12">
+                <label for="firstName" class="">First Name</label>
+                <input class="form-control" formControlName="firstName" id="firstName" name="firstName" pattern="^[\sa-zA-Z0-9_]*$" maxlength="50"
+                  placeholder="First Name" type="text">
+                <div class="msg" *ngIf="searchForm.controls['firstName'].invalid && (searchForm.controls['firstName'].dirty || searchForm.controls['firstName'].touched)">
+                  <div *ngIf="searchForm.controls['firstName'].errors.pattern">
+                    Only alpha numerics and ( _ ) are allowed
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group col-sm-12 popover-field">
+                <label for="lastName" class="">Last Name</label>
+                <input class="form-control" formControlName="lastName" id="lastName" name="lastName" pattern="^[-\sa-zA-Z0-9_]+$" maxlength="50"
+                  placeholder="Last Name" type="text">
+                <div class="msg" *ngIf="searchForm.controls['lastName'].invalid && (searchForm.controls['lastName'].dirty || searchForm.controls['lastName'].touched)">
+                  <div *ngIf="searchForm.controls['lastName'].errors.pattern">
+                      Only alpha numerics and ( _ , - ) are allowed
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group col-sm-12">
+                <label for="plate" class="">Plate #</label>
+                <input class="form-control" formControlName="plate" id="plate" name="plate" pattern="^[a-zA-Z0-9- ]*" maxlength="10" placeholder="Plate #"
+                  type="text">
+                <div class="msg" *ngIf="searchForm.controls['plate'].invalid && (searchForm.controls['plate'].dirty || searchForm.controls['plate'].touched)">
+                  <div *ngIf="searchForm.controls['plate'].errors.pattern">
+                    Only alphanumeric and hyphen are allowed !
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group col-sm-12">
+                <label for="address" class="">Address</label>
+                <input class="form-control" formControlName="address" id="address" name="address" maxlength="320" placeholder="Address" type="text">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12 ">
+            <div class="form-horizontal m-b-10">
+              <button class="btn btn-primary btn-search" type="submit" [disabled]="disableSearchBtn" (click)='searchClick(1, false)'>Search</button>
+              <button class="btn btn-primary btn-reset" type="button" (click)='resetClick()'>Reset</button>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class=" table-bdr m-t-20" *ngIf="showGrid">
+        <h3>Account Search Results</h3>
+        <div class="pad-10" *ngIf='violators && violators.length'>
+          <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Select</th>
+                <th (click)="sortDirection('CUSTOMERID')" class="sorting-handle">Account #
+                  <span *ngIf="gridArrowCUSTOMERID">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+                <th (click)="sortDirection('VEHICLECSV')" class="sorting-handle">Plate #
+                  <span *ngIf="gridArrowVEHICLECSV">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+
+                <th>Trip #</th>
+                <th (click)="sortDirection('FIRSTNAME')" class="sorting-handle">First Name
+                  <span *ngIf="gridArrowFIRSTNAME">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+
+                <th (click)="sortDirection('LASTNAME')" class="sorting-handle">Last Name
+                  <span *ngIf=gridArrowLASTNAME>
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+                <th (click)="sortDirection('FullAddress')" class="sorting-handle">Address
+                  <span *ngIf="gridArrowFullAddress">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+                <th (click)="sortDirection('OUTSTANDINGINVOICECOUNT')" class="sorting-handle">Outstanding Count
+                  <span *ngIf="gridArrowOUTSTANDINGINVOICECOUNT">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let vio of violators| paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems: dataLength }'>
+                <td>
+
+                  <div class="custom-control custom-radio radio-inline">
+                    <input class="custom-control-input" name="rdoViolator" type="radio" id="{{vio.ViolatorID}}" (change)='vioSelectedClick(vio)'>
+                    <label class="custom-control-description" for="{{vio.ViolatorID}}"></label>
+                  </div>
+
+
+
+                </td>
+                <td>{{vio.ViolatorID}}</td>
+                <td>{{vio.LicensePlate}}</td>
+                <td>{{vio.TripId}}</td>
+                <td>{{vio.ViolatorFirstName}}</td>
+                <td>{{vio.ViolatorSecondName}}</td>
+                <td>{{vio.FullAddress}}</td>
+                <td>{{vio.InvoicesCount}}</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="row page-info" *ngIf='dataLength > (endItemNumber - startItemNumber)'>
+            <div class="col-md-6 text-left">
+              <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+            </div>
+            <div class="col-md-6 text-right">
+              <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+            </div>
+          </div>
+        </div>
+        <div class="row m-t-20" *ngIf='!violators || violators.length==0'>
+          <div class="col-md-12">
+            <div class="table-bdr">
+              <!-- <h3> Advanced Search</h3> -->
+              <div class="status-content pad-20">
+                No records to display
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="row" *ngIf='violators && violators.length'>
+      <div class="col-md-12 ">
+        <div class="form-horizontal m-t-10">
+          <button class="btn btn-primary btn-search" type="submit" [disabled]="disableTrsfrBtn" (click)='transferClick()'>Transfer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf='!isExistAccount'>
+    <div class="row">
+      <div class="col-md-12 m-t-10 ">
+        <div class="well well-div">{{msgNewAccount}}
+          <div class="form-horizontal m-t-10 ">
+            <button class="btn btn-primary btn-search" type="submit" (click)='yesClick()'>Yes</button>
+            <button class="btn btn-primary btn-search" type="submit" (click)='noClick()'>No</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

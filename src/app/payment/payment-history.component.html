@@ -1,0 +1,111 @@
+<!-- <app-account-info></app-account-info> -->
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)" (onOk)="reversePaymentTransaction($event)"></app-success-failure-alerts-message>
+<form role="form" name="paymentHistoryForm" [formGroup]="paymentHistoryForm">
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group col-sm-12 ">
+            <label for="" class="focused">Activity</label>
+            <!-- <select class="form-control" placeholder="paymentParentActivities" id="paymentParentActivities" name="paymentParentActivities" formControlName="paymentParentActivitiesSelected">
+               <option>All Transactions:</option>
+                <option>2</option>
+             </select> -->
+            <select class="form-control" placeholder="paymentParentActivities" id="paymentParentActivities" name="paymentParentActivities"
+              formControlName="paymentParentActivitiesSelected">
+               <option *ngFor="let paymentParentActivity of parentPaymentActivityTypes" value="{{paymentParentActivity.Key}}">{{paymentParentActivity.Value}}</option>
+             </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group col-sm-12">
+            <label for="Date Range" class="focused">Date</label>
+            <!--<input class="form-control" placeholder="Select Date Range" bsDaterangepicker #dpr="bsDaterangepicker" name="dateRange" formControlName="dateRange">
+            <div class="msg" *ngIf="paymentHistoryForm.controls['dateRange'].invalid && paymentHistoryForm.controls['dateRange'].touched">
+              <div *ngIf="paymentHistoryForm.controls['dateRange'].errors.pattern">
+                Date Range is required
+              </div>
+            </div>-->
+              <my-date-range-picker name="mydaterange" (inputFieldChanged)='onDateRangeFieldChanged($event)' placeholder="MM/DD/YYYY - MM/DD/YYYY"
+                [options]="myDateRangePickerOptions" formControlName="dateRange"></my-date-range-picker>
+              <div class="show-error" *ngIf="!invalidDate && paymentHistoryForm.controls['dateRange'].invalid && (paymentHistoryForm.controls['dateRange'].touched)">
+                <div *ngIf="paymentHistoryForm.controls['dateRange'].errors.required">
+                  Date Range is Required
+                </div>
+              </div>
+              <div class="show-error" *ngIf="invalidDate">
+                <div>
+                  Invalid Date Range
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <button class="btn btn-primary btn-search" type="submit" (click)="bindParentPaymentDetailsByPaymentModes()">Search</button>
+          <button class="btn btn-default btn-reset" (click)="resetForm()">Reset</button>
+        </div>
+      </div>      
+    </div>
+
+  <div class="table-responce">
+    <div class="panel panel-default m-t-20">
+      <div class="panel-heading">Payment History </div>
+      <div class="panel-body bordered" *ngIf="parentpaymentmodesresponse && parentpaymentmodesresponse.length">
+        <table class="table table-bordered table-sm">
+          <thead>
+            <tr>
+              <th (click)="sortDirection('CreatedDate')" class="sorting-handle">Date/Time
+                <span *ngIf="gridArrowCreatedDate">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+              </th>
+              <th>Payment Type</th>
+              <th>Payment Mode</th>
+              <th (click)="sortDirection('VoucherNo')" class="sorting-handle">Reference #
+                <span *ngIf="gridArrowVoucherNo">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+              </th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let parentPaymentModes of parentpaymentmodesresponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount }'>
+              <!-- <tr *ngFor='let parentPaymentModes of parentpaymentmodesresponse'> -->
+              <td>{{parentPaymentModes.Date | customDateTimeFormat}} </td>
+              <td>{{parentPaymentModes.ParentPaymentMode}}</td>
+              <td>{{parentPaymentModes.PaymentMode}}</td>
+              <td>{{parentPaymentModes.VoucherNo}}</td>
+              <td>{{parentPaymentModes.TxnAmount | currency:'USD':true:'1.2-2'}}</td>
+              <td>{{parentPaymentModes.PaymentStatus}}</td>
+              <td><a *ngIf="parentPaymentModes.isAllowReverse" href="javascript:;" (click)="reversePaymentTransactionConfirm(parentPaymentModes.PaymentId,parentPaymentModes.TxnAmount,parentPaymentModes.PaymentMode,parentPaymentModes.VoucherNo,parentPaymentModes.PaymentId, parentPaymentModes.ParentPaymentMode, parentPaymentModes.Date.toLocaleString())"
+                  [ngClass]="disableReversalButton?'disabletextbox':''">Reverse</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel panel-default" *ngIf="!parentpaymentmodesresponse || parentpaymentmodesresponse.length==0">
+
+        <div class="panel-body bordered">
+          <div class="status-content">
+            <p>No records to display</p>
+          </div>
+        </div>
+      </div>
+      <div class="row page-info" *ngIf='parentpaymentmodesresponse && parentpaymentmodesresponse.length > 0'>
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

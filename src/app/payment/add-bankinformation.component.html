@@ -1,0 +1,92 @@
+<div class="content">
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)" (onOk)="okDeleteBankInfo($event)"></app-success-failure-alerts-message>
+  <div class="row">
+    <div class="col-md-12">
+      <button class="btn btn-primary btn-search" style="margin-top:10px" [disabled]="disableCreateButton" (click)="addNewBankInfo()"><i class="fa fa-plus-circle fa-lg" aria-hidden="true"></i> <span>Add New Bank Account</span></button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6" [hidden]="!enterBankDetails">
+      <div class="payment-details payment-contents">
+        <app-bank-information (saveClicked)='addBankInfoClicked($event)' [IsSaveBankCheckBox]="false" [Customerid]="customerId" [ReplenishMentType]=" "></app-bank-information>
+        <div class="row col-md-12">
+          <!--<div class="form-group">-->
+          <form [formGroup]="setPrimaryBankForm">
+            <div class="checkbox-inline checkbox pull-left">
+              <input type="checkbox" formControlName="isPrimaryBank" name="save" value="save" id="save" [(ngModel)]="isPrimaryBankInfo"
+              />
+              <label for="save">
+                  <span></span> Use as Primary Account
+             </label>
+            </div>
+          </form>
+          <!--</div>-->
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <button type="button" class="btn btn-primary btn-search" *ngIf="addBank" [disabled]="disableCreateButton" (click)="addBankDetails()">Add</button>
+            <button type="button" class="btn btn-primary btn-search" *ngIf="updateBank" [disabled]="disableUpdateButton" (click)="updateBankDetails()">Update</button>
+            <button type="button" class="btn btn-primary btn-search" *ngIf="deleteBank" [disabled]="disableDeleteButton" (click)="deleteDetails()">Delete</button>
+            <button type="reset" class="btn btn-primary btn-reset" *ngIf="resetBank" (click)="resetBankDetails()">Reset</button>
+            <button class="btn btn-primary btn-reset" (click)="cancelBankDetails()">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <!--<div style="margin-top:10px">
+    <app-table-layout [records]="bankAccountInfo"></app-table-layout>
+  </div>-->
+
+      <!--
+  <div class="clear">
+
+  </div>-->
+    </div>
+    <div class="col-md-12  m-t-20">
+      <div class="panel panel-default" *ngIf="bankAccountInfo.length >= 1">
+        <div class="panel-heading"> Bank Account Details </div>
+        <div class="panel-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <td>Bank Name</td>
+                <td>Bank Account#</td>
+                <td>Routing #</td>
+                <td>Primary Card</td>
+                <td>Edit</td>
+                <td>Delete</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let bankInfo of bankAccountInfo">
+                <td>{{bankInfo.bankName}}</td>
+                <td>{{bankInfo.bankAccount}}</td>
+                <td>{{bankInfo.routingNumber}}</td>
+                <!--<td>{{bankInfo.primaryCard}}</td>-->
+                <td>{{(bankInfo.primaryCard)?'True':'False'}}</td>
+                <!--<td class="text-center">
+                  <i *ngIf="bankInfo.primaryCard === true" class="fa fa-toggle-on" aria-hidden="true" title="{{bankInfo.primaryCard}}"></i>
+                  <i *ngIf="bankInfo.primaryCard === false" class="fa fa-toggle-off" aria-hidden="true" title="{{bankInfo.primaryCard}}"></i>
+                </td>-->
+                <td>
+                  <i [ngClass]="{'disabletextbox': disableUpdateButton}" class="fa fa-pencil fa-lg" aria-hidden="true" style="cursor:pointer"
+                    (click)="editBankDetails(bankInfo)"></i>
+                </td>
+                <td>
+                  <i [ngClass]="{'disabletextbox': disableDeleteButton}" class="fa fa-trash fa-lg" aria-hidden="true" style="cursor:pointer"
+                    (click)="deleteBankDetails(bankInfo)"></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel panel-default" *ngIf="bankAccountInfo.length <= 0">
+        <div class="panel-heading"> Bank Account Details </div>
+        <div class="panel-body bordered">
+          There are no bank accounts for this Account # {{customerId}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

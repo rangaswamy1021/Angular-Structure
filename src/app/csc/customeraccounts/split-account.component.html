@@ -1,0 +1,853 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Customer Accounts</a></li>
+        <li class="active">Split Account Information</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Split Account Information</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <app-account-info></app-account-info>
+  <div class="row">
+    <div class="col-md-12 m-t-20">
+      <div class="payment-steps">
+        <div class="row">
+          <div class="col-md-12">
+            <ul>
+              <li class="active"><span>1</span>Account Information</li>
+              <li><span>2</span>Plan Selection</li>
+              <li><span>3</span>Vehicle Information</li>
+              <li><span>4</span>Payment</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="alert alert-warning alert-dismissible m-t-5" role="alert" *ngIf="isErrorBlock">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4>{{failureMessage}}</h4>
+  </div>
+  <form role="form" name="splitAccountForm" [formGroup]="splitAccountForm" novalidate>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="accordion-mgc">
+          <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title">
+                  <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Personal Details</a>
+                </h4>
+              </div>
+              <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <div class="panel-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="row">
+                        <div class="form-group col-sm-12 popover-field">
+                          <label for="" class="focused">Select Customer Type</label>
+                          <select class="form-control" formControlName="userTypeSelected" (change)='customerTypeChanged()'>
+                            <option label="* Customer Type" selected="selected" value="">* Customer Type</option>
+                            <option *ngFor="let userType of userTypes" value="{{userType.Key}}"> {{userType.Value}}</option>
+                          </select>
+                          <div class="msg" *ngIf="splitAccountForm.controls['userTypeSelected'].invalid && (splitAccountForm.controls['userTypeSelected'].dirty || splitAccountForm.controls['userTypeSelected'].touched)">
+                            <div *ngIf="splitAccountForm.controls['userTypeSelected'].errors.required">
+                              Required.
+                            </div>
+                          </div>
+                          <button type="button" class="pop-over" data-container="body" [popover]="poppUType" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                            tabindex="-1">?</button>
+
+                          <ng-template #poppUType>
+                            <ul>
+                              <li>Customer Type Is Mandatory </li>
+                              <li> Please Select Customer Type</li>
+                            </ul>
+                          </ng-template>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf='showBusinessName'>
+                      <div class="row">
+                        <div class="form-group col-sm-12 popover-field">
+                          <label for="">Business Name</label>
+                          <input type="text" class="form-control" id="" placeholder="* Business Name" maxlength="50" formControlName="businessName">
+                          <div class="msg" *ngIf="splitAccountForm.controls['businessName'].invalid && (splitAccountForm.controls['businessName'].dirty || splitAccountForm.controls['businessName'].touched)">
+                            <div *ngIf="splitAccountForm.controls['businessName'].errors.required">
+                              Required.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['businessName'].errors.pattern">
+                              Only alphanumerics are allowed.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['businessName'].errors.minlength">
+                              Minimum 3 characters are required.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['businessName'].errors.maxlength">
+                              Maximum 50 characters are allowed.
+                            </div>
+                          </div>
+                          <button type="button" class="pop-over" data-container="body" [popover]="poppBName" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                            tabindex="-1">?</button>
+                          <ng-template #poppBName>
+                            <ul>
+                              <li>Business Name is required.</li>
+                              <li>It allows alphanumerics, spaces and all special characters except(
+                                <>).</li>
+                              <li>It should be minimum 3 characters and maximum 50 characters long.</li>
+                            </ul>
+                          </ng-template>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="row">
+                        <div class="form-group col-sm-12 popover-field">
+                          <label for="" class="focused">Select Account Category</label>
+                          <select class="form-control" formControlName="accountCategorySelected">
+                            <option *ngFor="let accountCategory of accountCategories" value="{{accountCategory.Key}}"> {{accountCategory.Value}}</option>
+                          </select>
+                          <div class="msg" *ngIf="splitAccountForm.controls['accountCategorySelected'].invalid && (splitAccountForm.controls['accountCategorySelected'].dirty || splitAccountForm.controls['accountCategorySelected'].touched)">
+                            <div *ngIf="splitAccountForm.controls['accountCategorySelected'].errors.required">
+                              Required.
+                            </div>
+                          </div>
+                          <button type="button" class="pop-over" data-container="body" [popover]="poppAType" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                            tabindex="-1">?</button>
+                          <ng-template #poppAType>
+                            <ul>
+                              <li>Account Category is required.</li>
+                              <li>Select Account Category.</li>
+                            </ul>
+                          </ng-template>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="row">
+                        <div class="form-group col-sm-4 popover-field">
+                          <label for="" class="focused">Title</label>
+                          <select class="form-control" formControlName="titleSelected">
+                          <option *ngFor="let title of titles" value="{{title.Key}}"> {{title.Value}}</option>
+                        </select>
+                          <button type="button" class="pop-over" data-container="body" [popover]="poppTitle" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                            tabindex="-1">?</button>
+                          <ng-template #poppTitle>
+                            <ul>
+                              <li>Select Title</li>
+                            </ul>
+                          </ng-template>
+                        </div>
+                        <div class="form-group col-sm-4 popover-field">
+                          <label for="" class="focused">Suffix</label>
+                          <select class="form-control" formControlName="suffixSelected" (change)="selectSuffix()">
+                              <option *ngFor="let suffix of suffixes" value="{{suffix.Key}}"> {{suffix.Value}}</option>
+                            </select>
+                          <button type="button" class="pop-over" data-container="body" [popover]="poppSKey" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                            tabindex="-1">?</button>
+                          <ng-template #poppSKey>
+                            <ul>
+                              <li>Select Suffix</li>
+                            </ul>
+                          </ng-template>
+                        </div>
+                        <div class="form-group col-sm-4 popover-field" *ngIf='isSuffixOther'>
+                          <label for="">Others</label>
+                          <input type="text" class="form-control" id="" placeholder="other" formControlName="suffixOther" maxlength="5">
+                          <div class="msg" *ngIf="splitAccountForm.controls['suffixOther'].invalid && (splitAccountForm.controls['suffixOther'].dirty || splitAccountForm.controls['suffixOther'].touched)">
+                            <div *ngIf="splitAccountForm.controls['suffixOther'].errors.required">
+                              Required.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['suffixOther'].errors.pattern">
+                              Only alphabets are allowed.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['suffixOther'].errors.maxlength">
+                              Maximum 5 characters are allowed.
+                            </div>
+                          </div>
+                          <button type="button" class="pop-over" data-container="body" [popover]="poppSOther" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                            tabindex="-1">?</button>
+                          <ng-template #poppSOther>
+                            <ul>
+                              <li> Other suffix is required </li>
+                              <li> It allows only alphabets</li>
+                              <li> It allows minimum of 1 and maximum of 5 characters length</li>
+                            </ul>
+                          </ng-template>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="row">
+                        <div class="form-group col-sm-12 popover-field">
+                          <label for="">First Name</label>
+                          <input type="text" class="form-control" id="" placeholder="* First Name" formControlName="firstName" maxlength="=50">
+                          <div class="msg" *ngIf="splitAccountForm.controls['firstName'].invalid && (splitAccountForm.controls['firstName'].dirty || splitAccountForm.controls['firstName'].touched)">
+                            <div *ngIf="splitAccountForm.controls['firstName'].errors.required">
+                              Required.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['firstName'].errors.pattern">
+                              Only Alphabets and space are allowed.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['firstName'].errors.minlength">
+                              Minimum 2 characters are required.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['firstName'].errors.maxlength">
+                              Maximum 50 characters are allowed.
+                            </div>
+                          </div>
+                          <button type="button" class="pop-over" data-container="body" [popover]="poppFName" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                            tabindex="-1">?</button>
+                          <ng-template #poppFName>
+                            <ul>
+                              <li>First Name is required</li>
+                              <li>It allows only alphabets and spaces</li>
+                              <li>It should be minimum 2 characters <br>and maximum 50 characters long.</li>
+                            </ul>
+                          </ng-template>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="row">
+                        <div class="form-group col-sm-12 popover-field">
+                          <label for="">Middle Name</label>
+                          <input type="text" class="form-control" id="" placeholder="Middle Name" formControlName="middleName" maxlength="2">
+                          <div class="msg" *ngIf="splitAccountForm.controls['middleName'].invalid && (splitAccountForm.controls['middleName'].dirty || splitAccountForm.controls['middleName'].touched)">
+                            <div *ngIf="splitAccountForm.controls['middleName'].errors.pattern">
+                              Only Alphabets are allowed.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['middleName'].errors.maxlength">
+                              Maximum 2 characters are allowed.
+                            </div>
+                          </div>
+                          <button type="button" class="pop-over" data-container="body" [popover]="poppMName" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                            tabindex="-1">?</button>
+                          <ng-template #poppMName>
+                            <ul>
+                              <li>It allows only alphabets</li>
+                              <li>Special Characters and spaces <br>are not allowed. It is maximum <br>2 characters long</li>
+                            </ul>
+                          </ng-template>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="row">
+                        <div class="form-group col-sm-12 popover-field">
+                          <label for="">Last Name</label>
+                          <input type="text" class="form-control" id="" placeholder="* Last Name" formControlName="lastName" maxlength="50">
+                          <div class="msg" *ngIf="splitAccountForm.controls['lastName'].invalid && (splitAccountForm.controls['lastName'].dirty || splitAccountForm.controls['lastName'].touched)">
+                            <div *ngIf="splitAccountForm.controls['lastName'].errors.required">
+                              Required.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['lastName'].errors.pattern">
+                              Only Alphabets, space and (-) are allowed.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['lastName'].errors.minlength">
+                              Minimum 2 characters are required.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['lastName'].errors.maxlength">
+                              Maximum 50 characters are allowed.
+                            </div>
+                          </div>
+                          <button type="button" class="pop-over" data-container="body" [popover]="popplname" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                            tabindex="-1">?</button>
+                          <ng-template #popplname>
+                            <ul>
+                              <li>Last Name is required</li>
+                              <li>It allows only alphabets, spaces and (-).</li>
+                              <li>It should be minimum 2 characters <br>and maximum 50 characters long</li>
+                            </ul>
+                          </ng-template>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="row">
+                        <div class="form-group col-sm-12 popover-field">
+                          <label for="">User Name</label>
+                          <input type="text" class="form-control" id="" placeholder="* User Name" minlength="5" maxlength="50" formControlName="userName"
+                            (change)="isUserExists()">
+                          <div class="msg" *ngIf="splitAccountForm.controls['userName'].invalid && (splitAccountForm.controls['userName'].dirty || splitAccountForm.controls['userName'].touched)">
+                            <div *ngIf="splitAccountForm.controls['userName'].errors.required">
+                              Required.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['userName'].errors.pattern">
+                              Only alphanumerics are allowed.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['userName'].errors.minlength">
+                              Minimum 5 characters are required.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['userName'].errors.maxlength">
+                              Maximum 50 characters are allowed.
+                            </div>
+                          </div>
+                          <div class="show-error" *ngIf="isUserNameExists && !(splitAccountForm.controls['userName'].invalid && (splitAccountForm.controls['userName'].dirty || splitAccountForm.controls['userName'].touched))">
+                            <div>User Name already exists</div>
+                          </div>
+                          <button type="button" class="pop-over" data-container="body" [popover]="popUName" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                            tabindex="-1">?</button>
+                          <ng-template #popUName>
+                            <ul>
+                              <li>Username is required</li>
+                              <li>It allows only alphanumeric.</li>
+                              <li>Special Characters and spaces are not allowed.</li>
+                              <li>It should be minimum 5 characters <br>and maximum 50 characters long.</li>
+                            </ul>
+                          </ng-template>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="row">
+                        <div class="form-group col-sm-6 popover-field">
+                          <label for="" class="focused">Select Gender</label>
+                          <select class="form-control" formControlName="genderSelected">
+                          <option *ngFor="let gender of genderTypes" value="{{gender.Key}}"> {{gender.Value}}</option>
+                        </select>
+                          <button type="button" class="pop-over" data-container="body" [popover]="popGender" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                            tabindex="-1">?</button>
+                          <ng-template #popGender>
+                            <ul>
+                              <li> Select Gender.</li>
+                            </ul>
+                          </ng-template>
+                        </div>
+                        <div class="form-group col-sm-6 popover-field">
+                          <!--<owl-date-time [dateFormat]='"MM/DD/YYYY"' [placeHolder]='"Date of Birth"' [type]='"calendar"' class="form-control" formControlName="dateOfBirth"
+                            autoClose=false></owl-date-time>-->
+                          <label for="" id="focused">Select Date</label>
+                          <my-date-picker name="mydate" [options]="myDatePickerOptions" formControlName="dateOfBirth" placeholder="MM/DD/YYYY" (inputFieldChanged)='onDateFieldChanged($event)'></my-date-picker>
+                          <div class="show-error" *ngIf="invalidDate">
+                            <div>
+                              Invalid Date
+                            </div>
+                          </div>
+                          <button type="button" class="pop-over" data-container="body" [popover]="popDB" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                            tabindex="-1">?</button>
+                          <ng-template #popDB>
+                            <ul>
+                              <li> Select Date of Birth.</li>
+                            </ul>
+                          </ng-template>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="headingTwo">
+                <h4 class="panel-title">
+                  <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false"
+                    aria-controls="collapseTwo">Contact Details</a>
+                </h4>
+              </div>
+              <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                <div class="panel-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="row">
+                        <div class="form-group col-sm-9 popover-field">
+                          <label for="">Primary Email</label>
+                          <input type="text" class="form-control" id="" placeholder="* Primary Email" formControlName="primaryEmail" (change)="checkPrimaryEmailExists()">
+                          <div class="msg" *ngIf="splitAccountForm.controls['primaryEmail'].invalid && (splitAccountForm.controls['primaryEmail'].dirty || splitAccountForm.controls['primaryEmail'].touched)">
+                            <div *ngIf="splitAccountForm.controls['primaryEmail'].errors.required">
+                              Required.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['primaryEmail'].errors.pattern&&!splitAccountForm.controls['primaryEmail'].errors.minlength">
+                              Invalid email format.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['primaryEmail'].errors.minlength">
+                              Minimum 6 characters are required.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['primaryEmail'].errors.maxlength">
+                              Maximum 100 characters are allowed.
+                            </div>
+                          </div>
+                          <div *ngIf="isPrimaryEmailExists" class="show-error"> <div>  Email already exists </div> </div>
+
+                          <button type="button" data-container="body" class="pop-over" [popover]="popPE" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                            tabindex="-1">?</button>
+                          <ng-template #popPE>
+                            <ul>
+                              <li>Any One Email is required.</li>
+                              <li>Primary Email allows alphanumerics with special characters (@, _, ., -, +)</li>
+                              <li>Spaces are not allowed.</li>
+                              <li>It should be minimum 6 characters and maximum 100 characters long.</li>
+                              <li>It should follow the format yourname@domain.com</li>
+                            </ul>
+                          </ng-template>
+                        </div>
+                        <div class="col-sm-3 m-t-20 custom-control custom-radio">
+                          <input type="radio" name="preferredEmail" id="preferredEmail" value="PrimaryEmail" formControlName="preferredEmail" (change)="changeEmailValidation($event.target.value)">
+                          <label for="preferredEmail" class="custom-control-description">Is Preferred?</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="row">
+                        <div class="form-group col-sm-9 popover-field">
+                          <label for="">Secondary Email</label>
+                          <input type="text" class="form-control" id="" placeholder="Secondary Email" formControlName="secondaryEmail" (change)="checkSecondaryEmailExists()">
+                          <div class="msg" *ngIf="splitAccountForm.controls['secondaryEmail'].invalid && (splitAccountForm.controls['secondaryEmail'].dirty || splitAccountForm.controls['secondaryEmail'].touched)">
+                            <div *ngIf="splitAccountForm.controls['secondaryEmail'].errors.required">
+                              Required.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['secondaryEmail'].errors.pattern &&!splitAccountForm.controls['secondaryEmail'].errors.minlength">
+                              Invalid email format.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['secondaryEmail'].errors.minlength">
+                              Minimum 6 characters are required.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['secondaryEmail'].errors.maxlength">
+                              Maximum 100 characters are allowed.
+                            </div>
+                          </div>
+                          <div *ngIf="isSecondaryEmailExists" class="show-error"><div>Email already exists</div></div>
+
+                          <button type="button" class="pop-over" data-container="body" [popover]="popSE" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                            tabindex="-1">?</button>
+                          <ng-template #popSE>
+                            <ul>
+                              <li>Any One Email is required.</li>
+                              <li>Secondary Email allows alphanumerics with special characters (@, _, ., -, +)</li>
+                              <li>Spaces are not allowed.</li>
+                              <li>It should be minimum 6 characters and maximum 100 characters long.</li>
+                              <li>It should follow the format yourname@domain.com</li>
+                            </ul>
+                          </ng-template>
+                        </div>
+                        <div class="col-md-3 m-t-20 custom-control custom-radio">
+                          <input type="radio" name="preferredEmail" id="secferredEmail" value="SecondaryEmail" formControlName="preferredEmail" (change)="changeEmailValidation($event.target.value)">
+                          <label for="secferredEmail" class="custom-control-description">Is Preferred?</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="row">
+                        <div class="form-group col-sm-9 popover-field">
+                          <label for="">Day Phone Number</label>
+                          <input type="text" class="form-control" id="dayPhone" placeholder="* Day Phone Number" name="dayPhone" formControlName="dayPhone"
+                            (keydown)="formatPhone($event)" maxlength="14">
+                          <div class="msg" *ngIf="splitAccountForm.controls['dayPhone'].invalid && (splitAccountForm.controls['dayPhone'].dirty || splitAccountForm.controls['dayPhone'].touched)">
+                            <div *ngIf="splitAccountForm.controls['dayPhone'].errors.required">
+                              Required.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['dayPhone'].errors.pattern">
+                              Invalid phone format.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['dayPhone'].errors.maxlength">
+                              Maximum 14 characters are allowed.
+                            </div>
+                          </div>
+                          <button type="button" class="pop-over" data-container="body" [popover]="popDPN" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                            tabindex="-1">?</button>
+                          <ng-template #popDPN>
+                            <ul>
+                              <li>Any One Phone # is required</li>
+                              <li>Day Phone allows only numbers</li>
+                            </ul>
+                          </ng-template>
+                        </div>
+                        <div class="col-md-3 m-t-20 custom-control custom-radio">
+                          <input type="radio" name="preferredPhone" id="DayPhone" value="DayPhone" formControlName="preferredPhone" (change)="changePhoneValidation($event.target.value)">
+                          <label for="DayPhone" class="custom-control-description">Is Preferred?</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="row">
+                        <div class="form-group col-sm-9 popover-field">
+                          <label for="">Evening Phone Number</label>
+                          <input type="text" class="form-control" id="eveningPhone" placeholder="Evening Phone Number" formControlName="eveningPhone"
+                            (keydown)="formatPhone($event)" maxlength="14">
+                          <div class="msg" *ngIf="splitAccountForm.controls['eveningPhone'].invalid && (splitAccountForm.controls['eveningPhone'].dirty || splitAccountForm.controls['eveningPhone'].touched)">
+                            <div *ngIf="splitAccountForm.controls['eveningPhone'].errors.required">
+                              Required.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['eveningPhone'].errors.pattern">
+                              Invalid phone format.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['eveningPhone'].errors.maxlength">
+                              Maximum 14 characters are allowed.
+                            </div>
+                          </div>
+
+                          <button type="button" class="pop-over" data-container="body" [popover]="popEP" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                            tabindex="-1">?</button>
+                          <ng-template #popEP>
+                            <ul>
+                              <li>Any One Phone # is required</li>
+                              <li>Evening Phone allows only numbers</li>
+                            </ul>
+                          </ng-template>
+                        </div>
+                        <div class="col-md-3 m-t-20 custom-control custom-radio">
+                          <input type="radio" name="preferredPhone" id="EveningPhone" value="EveningPhone" formControlName="preferredPhone" (change)="changePhoneValidation($event.target.value)">
+                          <label for="EveningPhone" class="custom-control-description">Is Preferred?</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="row">
+                        <div class="form-group col-sm-9 popover-field">
+                          <label for="">Mobile Phone Number</label>
+                          <input type="text" class="form-control" id="mobilePhone" placeholder="* Mobile Phone Number" formControlName="mobilePhone"
+                            (keydown)="formatPhone($event)" maxlength="14">
+                          <div class="msg" *ngIf="splitAccountForm.controls['mobilePhone'].invalid && (splitAccountForm.controls['mobilePhone'].dirty || splitAccountForm.controls['mobilePhone'].touched)">
+                            <div *ngIf="splitAccountForm.controls['mobilePhone'].errors.required">
+                              Required.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['mobilePhone'].errors.pattern">
+                              Invalid phone format.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['mobilePhone'].errors.maxlength">
+                              Maximum 14 characters are allowed.
+                            </div>
+                          </div>
+                          <button type="button" class="pop-over" data-container="body" [popover]="popMN" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                            tabindex="-1">?</button>
+                          <ng-template #popMN>
+                            <ul>
+                              <li>Any One Phone # is required</li>
+                              <li>Mobile Phone allows only numbers</li>
+                            </ul>
+                          </ng-template>
+                        </div>
+                        <div class="col-md-3 m-t-20 custom-control custom-radio">
+                          <input type="radio" name="preferredPhone" id="mobileNo" value="MobileNo" formControlName="preferredPhone" (change)="changePhoneValidation($event.target.value)">
+                          <label for="mobileNo" class="custom-control-description">Is Preferred?</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="row">
+                        <div class="form-group col-sm-5 popover-field">
+                          <label for="">Work Phone Number</label>
+                          <input type="text" class="form-control" id="workPhone" placeholder="Work Phone Number" formControlName="workPhone" (keydown)="formatPhone($event)"
+                            maxlength="14">
+                          <div class="msg" *ngIf="splitAccountForm.controls['workPhone'].invalid && (splitAccountForm.controls['workPhone'].dirty || splitAccountForm.controls['workPhone'].touched)">
+                            <div *ngIf="splitAccountForm.controls['workPhone'].errors.required">
+                              Required.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['workPhone'].errors.pattern">
+                              Invalid phone format.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['workPhone'].errors.maxlength">
+                              Maximum 14 characters are allowed.
+                            </div>
+                          </div>
+                          <button type="button" class="pop-over" data-container="body" [popover]="popEX" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                            tabindex="-1">?</button>
+                          <ng-template #popEX>
+                            <ul>
+                              <li>Any One Phone # is required.</li>
+                              <li>Work Phone allows only numbers.</li>
+                            </ul>
+                          </ng-template>
+                        </div>
+                        <div class="form-group col-sm-4 popover-field">
+                          <label for="">Ext</label>
+                          <input type="text" class="form-control" id="" placeholder="Ext" formControlName="ext" maxlength="5">
+                          <div class="msg" *ngIf="splitAccountForm.controls['ext'].invalid && (splitAccountForm.controls['ext'].dirty || splitAccountForm.controls['ext'].touched)">
+                            <div *ngIf="splitAccountForm.controls['ext'].errors.pattern">
+                              Only numerics are allowed.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['ext'].errors.maxlength">
+                              Maximum 5 characters are allowed.
+                            </div>
+                          </div>
+                          <button type="button" class="pop-over" data-container="body" [popover]="popWP" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                            tabindex="-1">?</button>
+                          <ng-template #popWP>
+                            <ul>
+                              <li>Extension # allows only numbers</li>
+                            </ul>
+                          </ng-template>
+                        </div>
+                        <div class="col-md-3 m-t-20 custom-control custom-radio">
+                          <input type="radio" name="preferredPhone" id="WorkPhone" value="WorkPhone" formControlName="preferredPhone" (change)="changePhoneValidation($event.target.value)">
+                          <label for="WorkPhone" class="custom-control-description">Is Preferred?</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="row">
+                        <div class="form-group col-sm-9 popover-field">
+                          <label for="">Fax</label>
+                          <input type="text" class="form-control" id="fax" placeholder="Fax" formControlName="fax" (keydown)="formatPhone($event)"
+                            maxlength="14">
+                          <div class="msg" *ngIf="splitAccountForm.controls['fax'].invalid && (splitAccountForm.controls['fax'].dirty || splitAccountForm.controls['fax'].touched)">
+                            <div *ngIf="splitAccountForm.controls['fax'].errors.required">
+                              Required.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['fax'].errors.pattern">
+                              Invalid phone format.
+                            </div>
+                            <div *ngIf="splitAccountForm.controls['fax'].errors.maxlength">
+                              Maximum 14 characters are allowed.
+                            </div>
+                          </div>
+                          <button type="button" class="pop-over" data-container="body" [popover]="popFX" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                            tabindex="-1">?</button>
+                          <ng-template #popFX>
+                            <ul>
+                              <li>Fax allows only numbers</li>
+                            </ul>
+                          </ng-template>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="headingThree">
+                <h4 class="panel-title">
+                  <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false"
+                    aria-controls="collapseThree">Address Details</a>
+                </h4>
+              </div>
+              <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+
+                <div class="panel-body">
+                  <!--Registered Vehicles start -->
+                  <div class="panel panel-default">
+                    <div class="panel-heading"> Address Details </div>
+                    <div class="panel-body">
+                      <div *ngIf='customerAddressArray'>
+                        <div class="table-responsive">
+                          <table class="table TableClass table-bordered">
+                            <thead>
+                              <tr>
+                                <th></th>
+                                <th>Address Line1</th>
+                                <th>Address Line2</th>
+                                <th>Address Line3 </th>
+                                <th>City </th>
+                                <th>Country </th>
+                                <th>State</th>
+                                <th>Zip1</th>
+                                <th>Zip2</th>
+                                <th>Type</th>
+                                <th>IsPreferred</th>
+                              </tr>
+                            </thead>
+                            <tr *ngFor="let object of customerAddressArray">
+                              <td>
+                                <div class="checkbox">
+                                  <input type="checkbox" id="{{object.Type}}" (change)='addToMoveList(object,$event)' [disabled]='disableCheck || object.IsPreferred'
+                                    [ngModel]='object.IsChecked' [ngModelOptions]="{standalone: true}">
+                                  <label for="{{object.Type}}"><span></span></label></div>
+                              </td>
+                              <td> {{object.Line1}} </td>
+                              <td> {{object.Line2}}</td>
+                              <td> {{object.Line3}} </td>
+                              <td> {{object.City}} </td>
+                              <td> {{object.Country}} </td>
+                              <td> {{object.State}} </td>
+                              <td> {{object.Zip1}} </td>
+                              <td> {{object.Zip2}} </td>
+                              <td> {{object.Type}} </td>
+                              <td> {{object.IsPreferred}} </td>
+                            </tr>
+                          </table>
+                          <div class="clear"></div>
+                        </div>
+                        <div class="form-group">
+                          <button class="btn btn-primary btn-search btn-sm pull-left" (click)='toggleAddress("Add")'>Add New Address</button>
+
+                          <button class="btn btn-primary btn-search btn-sm pull-right" (click)='moveItems(actionType,moveListArray)' [hidden]='hideCopy'>{{this.actionType}}</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div class="panel panel-default m-t-20" *ngIf='movedItemsArray.length>0'>
+                    <div class="panel-heading">Split Address Details </div>
+                    <div class="panel-body">
+                      <div>
+                        <div class="table-responsive">
+                          <table class="table TableClass table-bordered">
+                            <thead>
+                              <tr>
+                                <th>Address Line1</th>
+                                <th>Address Line2</th>
+                                <th>Address Line3 </th>
+                                <th>City </th>
+                                <th>Country </th>
+                                <th>State</th>
+                                <th>Zip1</th>
+                                <th>Zip2</th>
+                                <th>Type</th>
+                                <th>IsPreferred</th>
+                                <th></th>
+                                <th></th>
+                              </tr>
+                            </thead>
+                            <tr *ngFor="let object of movedItemsArray">
+
+                              <td> {{object.Line1}} </td>
+                              <td> {{object.Line2}}</td>
+                              <td> {{object.Line3}} </td>
+                              <td> {{object.City}} </td>
+                              <td> {{object.Country}} </td>
+                              <td> {{object.State}} </td>
+                              <td> {{object.Zip1}} </td>
+                              <td> {{object.Zip2}} </td>
+                              <td> {{object.Type}} </td>
+                              <td> {{object.IsPreferred}} </td>
+                              <td><a href='javascript:;' (click)='editAddress(object)'>
+                              <img _ngcontent-c26="" class="icon-svg3" title="Edit" src="assets/images/svg/edit.svg"></a></td>
+                              <td><a href='javascript:;' (click)='deleteItem(object)' [hidden]='object.IsPreferred'>
+                              <img _ngcontent-c26="" class="icon-svg3" title="Edit" src="assets/images/svg/delete.svg"></a></td>
+                            </tr>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div id="addressEdit" class="edit-modal  modal fade " role="dialog">
+                    <div class="modal-dialog modal-lg">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h3 class="form-title pull-left">{{btnType}} Address</h3>
+                          <button type="button" class="close pull-right" data-dismiss="modal">&times;</button>
+                          <div class="clear"></div>
+                        </div>
+                        <div class="modal-body">
+                          <div>
+                            <!-- <app-add-address [addressObject]="addressRequest" [customerID]="accountId" [isEnable]="false"></app-add-address> -->
+
+                            <div class="row">
+                              <div class="form-group col-sm-12 popover-field">
+                                <label for="" class="focused">Select Address Type</label>
+                                <select class="form-control" formControlName="addressType" [ngClass]='{"ng-invalid":showAddressTypeError,"ng-valid":!showAddressTypeError}'>
+                    <option value="Billing">Billing Address</option>
+                    <option value="Business">Business Address</option>
+                    <option value="DmvAddr">DMV Address</option>
+                    <option value="Home">Home Address</option>
+                    <option value="Mailing">Mailing Address</option>
+                    <option value="Other">Other Address</option>
+                    <option value="Shipping">Shipping Address</option>
+                    <option value="Primary">Primary Address</option>
+                    <option value="Secondary">Secondary Address</option>
+                  </select>
+                                <div class="msg" *ngIf="showAddressTypeError && (splitAccountForm.controls['addressType'].dirty || splitAccountForm.controls['addressType'].touched)">
+                                  <div *ngIf="showAddressTypeError">
+                                    Required.
+                                  </div>
+                                </div>
+
+
+                                <button type="button" class="pop-over" [popover]="popAT" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                                  placement="left">?</button>
+                                <ng-template #popAT>
+                                  <ul>
+                                    <li>Address Type is Required</li>
+
+                                  </ul>
+                                </ng-template>
+                              </div>
+                            </div>
+                            <div *ngIf='editAddressFlag'>
+                              <app-add-address [addressObject]="addressRequest" [customerID]="0" [isEnable]="false"></app-add-address>
+                            </div>
+                            <!--<div *ngIf="isGetDefaultAddress && !isInitialPageLoad">
+                  <app-add-address [customerID]="accountId" [isEnable]="false"></app-add-address>
+                </div>-->
+                            <div *ngIf="!editAddressFlag">
+                              <app-add-address [customerID]="0" [isEnable]="false"></app-add-address>
+                            </div>
+                            <div class="row">
+                              <div class="form-group col-sm-4 checkbox">
+                                <input type="checkbox" id="prefred" formControlName='preferred'>
+                                <label for="prefred"><span></span> Is Preferred</label>
+                              </div>
+                            </div>
+                            <button type="button" class="btn btn-primary btn-search " (click)='addToList(btnType,addressRequest)'>{{btnType}}</button>
+                            <button type="button" class='btn btn-primary btn-reset ' (click)='formReset()'>Reset</button>
+                            <button type="button" class='btn btn-primary btn-reset ' data-dismiss='modal'>Cancel</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group popover-field">
+                <div class="input-group">
+                  <div class="checkbox">
+                    <input type="checkbox" id="subscribeAlerts" formControlName="subscribeAlerts">
+                    <label for="subscribeAlerts">   <span></span>  Subscribe to Newsletters</label>
+                  </div>
+                  <button type="button" class="pop-over" data-container="body" [popover]="popSub" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                    tabindex="-1">?</button>
+                  <ng-template #popSub>
+                    <ul>
+                      <li>Select the option to Receive news, road closure information and promotions.</li>
+                    </ul>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <div class="input-group">
+                  <div class="checkbox">
+                    <input type="checkbox" id="agreeTermsAndConditions" formControlName="agreeTermsAndConditions">
+                    <label for="agreeTermsAndConditions"> <span></span> * I agree to the <a data-toggle="modal" data-target="#termsconditions-dialog">terms &amp; conditions</a>.
+                    </label>
+                    <div class="msg" *ngIf="splitAccountForm.controls['agreeTermsAndConditions'].invalid && (splitAccountForm.controls['agreeTermsAndConditions'].dirty || splitAccountForm.controls['agreeTermsAndConditions'].touched)">
+                      <div *ngIf="splitAccountForm.controls['agreeTermsAndConditions'].errors.required">
+                        Required.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <a href='javascript:;' class="btn btn-primary btn-search" type="submit" (click)="storeValuesToService()">Plan Selection</a>
+              <button class="btn btn-primary btn-reset" type="submit" (click)="cancelAccount()">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+
+<!--<app-terms-conditions></app-terms-conditions>-->

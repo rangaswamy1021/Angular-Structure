@@ -1,0 +1,405 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">FMC</a>
+        </li>
+        <li>
+          <a href="#">Accounting</a>
+        </li>
+        <li class="active">Chart of Accounts</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Chart of Accounts</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event, 1000)"></app-success-failure-alerts-message>
+  <div class="clearfix"></div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      Chart Of Accounts
+    </div>
+    <div class="panel-body bordered">
+      <form role="form" [formGroup]="chartofAccountsForm" name="chartofAccountsForm" novalidate>
+        <div class="row">
+          <div class="col-sm-6 form-group">
+            <label for="group" class="focused">Account Group</label>
+            <select class="form-control" id="group" name="accountGroupDropDown" formControlName="accountGroupDropDown" (change)="getAccountSubGroupsDetailsInSearch($event.target.value);">
+              <option selected="selected" value="">--select--</option>
+              <option *ngFor="let accountGroup of accountGroupRes" value="{{accountGroup.AccountGroupCode}}">{{accountGroup.AccountGroupDesc}}</option>
+            </select>
+            <div class="msg" *ngIf="chartofAccountsForm.controls['accountGroupDropDown'].invalid && (chartofAccountsForm.controls['accountGroupDropDown'].dirty || chartofAccountsForm.controls['accountGroupDropDown'].touched)">
+              <div *ngIf="chartofAccountsForm.controls['accountGroupDropDown'].errors.required">
+                <div>Required</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 form-group">
+            <label for="subGroup" class="focused">Account SubGroup</label>
+            <select class="form-control" id="subGroup" name="accountSubGroupDropDown" formControlName="accountSubGroupDropDown">
+              <option selected="selected" value="">--select--</option>
+              <option *ngFor="let accountSubGroup of subgroupresponseForSearch" value="{{accountSubGroup.AccountSubGroupCode}}">{{accountSubGroup.Description}}</option>
+            </select>
+            <div class="msg" *ngIf="chartofAccountsForm.controls['accountSubGroupDropDown'].invalid && (chartofAccountsForm.controls['accountSubGroupDropDown'].dirty || chartofAccountsForm.controls['accountSubGroupDropDown'].touched)">
+              <div *ngIf="chartofAccountsForm.controls['accountSubGroupDropDown'].errors.required">
+                <div>Required</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <button type="button" class="btn btn-primary btn-search" (click)="searchCOA()" [disabled]="disableSearchButton">Search</button>
+          <button type="button" class="btn btn-primary btn-reset" (click)="resetForm()">Reset</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="panel-body">
+      <div class="col-md-12">
+        <button class="btn btn-primary btn-search pull-left" *ngIf="addSubChartOfAccountButton" [disabled]="disableCreateButton"
+          (click)="addSubChartOfAccountBtn()">
+          <i class="fa fa-plus-circle" aria-hidden="true"></i> Add Chart of Account</button>
+      </div>
+    </div>
+  </div>
+  <div class="clearfix"></div>
+  <div class="panel panel-default" [hidden]="!addNewSubChartofAccount">
+    <div class="panel-heading">
+      <span *ngIf="addChartOfAccountName">Add Chart of Account</span>
+      <span *ngIf="updateChartOfAccountName">Update Chart of Account</span>
+    </div>
+
+    <form role="form" [formGroup]="addSubChartofAccountForm" name="addSubChartofAccountForm" novalidate>
+      <div class="panel-body bordered">
+        <div class="row">
+          <!--<div class="">-->
+          <div class="col-md-6 form-group popover-field">
+            <label for="groupDropDown" class="focused">Group</label>
+            <select class="form-control" name="groupDropDown" id="groupDropDown" formControlName="groupDropDown" (change)="getAccountSubGroupsDetailsInForm($event.target.value);">
+              <option selected="selected" value="">--select--</option>
+              <option *ngFor="let accountGroup of accountGroupRes" value="{{accountGroup.AccountGroupCode}}">{{accountGroup.AccountGroupDesc}}</option>
+            </select>
+            <div class="msg" *ngIf="addSubChartofAccountForm.controls['groupDropDown'].invalid && (addSubChartofAccountForm.controls['groupDropDown'].dirty || addSubChartofAccountForm.controls['groupDropDown'].touched)">
+              <div *ngIf="addSubChartofAccountForm.controls['groupDropDown'].errors.required">
+                <div>Required</div>
+              </div>
+            </div>
+            <ng-template #popContentGroup>
+              <ul>
+                <li>Group is Required</li>
+                <li>Select Group</li>
+              </ul>
+            </ng-template>
+            <button class="pop-over" placement="left" [popover]="popContentGroup" popovertitle="Help" triggers="mouseenter:mouseleave">?</button>
+          </div>
+          <!--</div>-->
+          <!--<div class="col-md-6">-->
+          <div class="col-md-6 form-group popover-field">
+            <label for="subGroupDropDown" class="focused">Sub Group</label>
+            <select class="form-control" name="subGroupDropDown" id="subGroupDropDown" formControlName="subGroupDropDown" (change)="getParentChartOfAccount($event.target.value);">
+              <option selected="selected" value="">--select--</option>
+              <option *ngFor="let accountSubGroup of subgroupresponseForForm" value="{{accountSubGroup.AccountSubGroupCode}}">{{accountSubGroup.Description}}</option>
+            </select>
+            <div class="msg" *ngIf="addSubChartofAccountForm.controls['subGroupDropDown'].invalid && (addSubChartofAccountForm.controls['subGroupDropDown'].dirty || addSubChartofAccountForm.controls['subGroupDropDown'].touched)">
+              <div *ngIf="addSubChartofAccountForm.controls['subGroupDropDown'].errors.required">
+                <div>Required</div>
+              </div>
+            </div>
+            <ng-template #popContentSubGroup>
+              <ul>
+                <li>Sub Group is Required</li>
+                <li>Select Sub Group</li>
+              </ul>
+            </ng-template>
+            <button class="pop-over" placement="left" [popover]="popContentSubGroup" data-container="body" popovertitle="Help" triggers="mouseenter:mouseleave">?</button>
+          </div>
+          <!--</div>-->
+          <!--<div class="col-md-6" *ngIf="editParentCOA">-->
+          <div class="col-md-6 form-group popover-field" *ngIf="editParentCOA">
+            <label for="parentChartofAccountDropDown" class="focused">Parent Chart of Account</label>
+            <select class="form-control" name="parentChartofAccountDropDown" formControlName="parentChartofAccountDropDown" id="parentChartofAccountDropDown">
+              <option selected="selected" value="">--select--</option>
+              <option *ngFor="let accountName of parentChartOfAccountResponse" value="{{accountName.ChartOfAccountId}}">{{accountName.AccountName}}</option>
+            </select>
+            <ng-template #popContentParentAccount>
+              <ul>
+                <li>Parent Chart of Account is
+                  <br> Not Required</li>
+              </ul>
+            </ng-template>
+            <button class="pop-over" placement="left" [popover]="popContentParentAccount" data-container="body" popovertitle="Help" triggers="mouseenter:mouseleave">?</button>
+          </div>
+          <!--</div>-->
+          <!--<div class="col-md-6">-->
+          <div class="col-md-6 form-group popover-field">
+            <label for="chartOfAccount">Chart of Account#</label>
+            <input type="text" (blur)="blurLowerBound()" autocomplete="off" class="form-control" maxlength="6" id="chartOfAccount" placeholder="Chart of Account"
+              name="chartOfAccount" formControlName="chartOfAccount" required>
+            <div class="msg" *ngIf="addSubChartofAccountForm.controls['chartOfAccount'].invalid && (addSubChartofAccountForm.controls['chartOfAccount'].dirty || addSubChartofAccountForm.controls['chartOfAccount'].touched)">
+              <div *ngIf="addSubChartofAccountForm.controls['chartOfAccount'].errors.required">
+                <div>Required</div>
+              </div>
+              <div *ngIf="addSubChartofAccountForm.controls['chartOfAccount'].errors.pattern">
+                <div>Only numbers allowed and First digit should be a non zero</div>
+              </div>
+              <div *ngIf="addSubChartofAccountForm.controls['chartOfAccount'].errors.minlength && !addSubChartofAccountForm.controls['chartOfAccount'].errors.pattern">
+                <div>Length should be exactly 6 digits long</div>
+              </div>
+            </div>
+            <ng-template #popContentChartofAccount>
+              <ul>
+                <li>Chart of Account# is Required</li>
+                <li>It allows only numbers</li>
+                <li>It should be exactly 6 digits long</li>
+              </ul>
+            </ng-template>
+            <button class="pop-over" placement="left" [popover]="popContentChartofAccount" data-container="body" popovertitle="Help"
+              triggers="mouseenter:mouseleave">?</button>
+          </div>
+          <!--</div>-->
+          <!--<div class="col-md-6">-->
+          <div class="col-md-6 form-group popover-field">
+            <label for="accountName">Account Name</label>
+            <input type="text" autocomplete="off" class="form-control" maxlength="250" placeholder="Account Name" id="accountName" name="accountName"
+              formControlName="accountName">
+            <div class="msg" *ngIf="addSubChartofAccountForm.controls['accountName'].invalid && (addSubChartofAccountForm.controls['accountName'].dirty || addSubChartofAccountForm.controls['accountName'].touched)">
+              <div *ngIf="addSubChartofAccountForm.controls['accountName'].errors.required">
+                <div>Required</div>
+              </div>
+              <div *ngIf="addSubChartofAccountForm.controls['accountName'].errors.pattern">
+                <div>It allows only alphabets and ! / # _ @ % $ & - ( ) {{ '{ ' }} {{ '} ' }} and spaces allowed.</div>
+              </div>
+            </div>
+            <ng-template #popContentName>
+              <ul>
+                <li>Account Name is Required</li>
+                <li>It should be minimum 1 and maximum 250 characters long</li>
+                <li> It allows only alphabets and ! / # _ @ % $ & - ( ) {{ '{ ' }} {{ '} ' }} and space</li>
+              </ul>
+            </ng-template>
+            <button class="pop-over" placement="left" [popover]="popContentName" data-container="body" popovertitle="Help" triggers="mouseenter:mouseleave">?</button>
+          </div>
+          <!--</div>-->
+          <!--<div class="col-md-6">-->
+          <div class="col-md-6 form-group popover-field">
+            <label for="lowerBound">Lower Bound</label>
+            <input type="text" autocomplete="off" (blur)="blurLowerBound();blurUpperBound();" class="form-control" maxlength="6" id="lowerBound"
+              placeholder="Lower Bound" name="lowerBound" formControlName="lowerBound">
+            <div class="msg" *ngIf="addSubChartofAccountForm.controls['lowerBound'].invalid && (addSubChartofAccountForm.controls['lowerBound'].dirty || addSubChartofAccountForm.controls['lowerBound'].touched)">
+              <div *ngIf="addSubChartofAccountForm.controls['lowerBound'].errors.required">
+                <div>Required</div>
+              </div>
+              <div *ngIf="addSubChartofAccountForm.controls['lowerBound'].errors.pattern">
+                <div>Only numbers allowed and First digit should be a non zero</div>
+              </div>
+              <div *ngIf="addSubChartofAccountForm.controls['lowerBound'].errors.minlength && !addSubChartofAccountForm.controls['lowerBound'].errors.pattern">
+                <div>Length should be exactly 6 digits long</div>
+              </div>
+            </div>
+            <div class="show-error" *ngIf="validateLowerBound && !addSubChartofAccountForm.controls['lowerBound'].invalid && (addSubChartofAccountForm.controls['lowerBound'].dirty || addSubChartofAccountForm.controls['lowerBound'].touched)">
+              <div>Lower bound should be greater than or equal to Chart of Account.</div>
+            </div>
+            <ng-template #popContentLowerBound>
+              <ul>
+                <li>Lower Bound is Required</li>
+                <li>It allows only numbers</li>
+                <li>It should be exactly 6 digits long</li>
+              </ul>
+            </ng-template>
+            <button class="pop-over" placement="left" [popover]="popContentLowerBound" data-container="body" popovertitle="Help" triggers="mouseenter:mouseleave">?</button>
+          </div>
+          <!--</div>-->
+          <!--<div class="col-md-6">-->
+          <div class="col-md-6 form-group popover-field">
+            <label for="upperBound">Upper Bound</label>
+            <input type="text" autocomplete="off" (blur)="blurUpperBound()" class="form-control" maxlength="6" placeholder="Upper Bound"
+              id="upperBound" name="upperBound" formControlName="upperBound">
+            <div class="msg" *ngIf="addSubChartofAccountForm.controls['upperBound'].invalid && (addSubChartofAccountForm.controls['upperBound'].dirty || addSubChartofAccountForm.controls['upperBound'].touched)">
+              <div *ngIf="addSubChartofAccountForm.controls['upperBound'].errors.required">
+                <div>Required</div>
+              </div>
+              <div *ngIf="addSubChartofAccountForm.controls['upperBound'].errors.pattern">
+                <div>Only numbers allowed and First digit should be a non zero</div>
+              </div>
+              <div *ngIf="addSubChartofAccountForm.controls['upperBound'].errors.minlength && !addSubChartofAccountForm.controls['upperBound'].errors.pattern">
+                <div>Length should be exactly 6 digits long</div>
+              </div>
+            </div>
+            <div class="show-error" *ngIf="validateUpperBound && !addSubChartofAccountForm.controls['upperBound'].invalid && (addSubChartofAccountForm.controls['upperBound'].dirty || addSubChartofAccountForm.controls['upperBound'].touched)">
+              <div>Upper bound should be greater than lower bound.</div>
+            </div>
+            <ng-template #popContentUpperBound>
+              <ul>
+                <li>Upper Bound is Required</li>
+                <li>It allows only numbers</li>
+                <li>It should be exactly 6 digits long</li>
+              </ul>
+            </ng-template>
+            <button class="pop-over" placement="left" [popover]="popContentUpperBound" popovertitle="Help" triggers="mouseenter:mouseleave">?</button>
+          </div>
+          <!--</div>-->
+          <!--<div class="col-md-6">-->
+          <div class="col-md-6 form-group popover-field">
+            <label for="isControlAccountDropdown" class="focused">IsControl Account</label>
+            <select class="form-control" name="isControlAccountDropdown" formControlName="isControlAccountDropdown" id="isControlAccountDropdown">
+              <option selected="selected" value="">--select--</option>
+              <option value="TRUE">Yes</option>
+              <option value="FALSE">No</option>
+            </select>
+            <div class="msg" *ngIf="addSubChartofAccountForm.controls['isControlAccountDropdown'].invalid && (addSubChartofAccountForm.controls['isControlAccountDropdown'].dirty || addSubChartofAccountForm.controls['isControlAccountDropdown'].touched)">
+              <div *ngIf="addSubChartofAccountForm.controls['isControlAccountDropdown'].errors.required">
+                <div>Required</div>
+              </div>
+            </div>
+            <ng-template #popContentIsControl>
+              <ul>
+                <li>IsControl Account is Required</li>
+                <li>Select IsControl Account</li>
+              </ul>
+            </ng-template>
+            <button class="pop-over" placement="left" [popover]="popContentIsControl" popovertitle="Help" triggers="mouseenter:mouseleave">?</button>
+          </div>
+          <!--</div>-->
+          <!--<div class="col-md-6">-->
+          <div class="col-md-6 form-group popover-field">
+            <label for="normalBalanceDropdown" class="focused">Normal Balance</label>
+            <select class="form-control" name="normalBalanceDropdown" formControlName="normalBalanceDropdown" id="normalBalanceDropdown">
+              <option selected="selected" value="">--select--</option>
+              <option value="Debit">Debit</option>
+              <option value="Credit">Credit</option>
+            </select>
+            <div class="msg" *ngIf="addSubChartofAccountForm.controls['normalBalanceDropdown'].invalid && (addSubChartofAccountForm.controls['normalBalanceDropdown'].dirty || addSubChartofAccountForm.controls['normalBalanceDropdown'].touched)">
+              <div *ngIf="addSubChartofAccountForm.controls['normalBalanceDropdown'].errors.required">
+                <div>Required</div>
+              </div>
+            </div>
+            <ng-template #popContentNormalBalance>
+              <ul>
+                <li>Normal Balance is Required</li>
+                <li>Select Normal Balance</li>
+              </ul>
+            </ng-template>
+            <button class="pop-over" placement="left" [popover]="popContentNormalBalance" popovertitle="Help" triggers="mouseenter:mouseleave">?</button>
+          </div>
+          <!--</div>-->
+          <!--<div class="col-md-6">-->
+          <div class="col-md-6 form-group popover-field">
+            <label for="externalChartofAccount">External Chart of Account #</label>
+            <input type="text" autocomplete="off" class="form-control" id="externalChartofAccount" placeholder="External Chart of Account"
+              name="externalChartofAccount" formControlName="externalChartofAccount">
+            <div class="msg" *ngIf="addSubChartofAccountForm.controls['externalChartofAccount'].invalid && (addSubChartofAccountForm.controls['externalChartofAccount'].dirty || addSubChartofAccountForm.controls['externalChartofAccount'].touched)">
+            </div>
+            <ng-template #popContentExternalAccount>
+              <ul>
+                <li>It allows only numbers</li>
+              </ul>
+            </ng-template>
+            <button class="pop-over" placement="left" [popover]="popContentExternalAccount" popovertitle="Help" triggers="mouseenter:mouseleave">?</button>
+          </div>
+          <!--</div>-->
+          <div class="col-md-6 m-t-20">
+            <div class="row">
+              <label class="col-md-3"> Status </label>
+              <div class="col-md-9">
+                <div *ngFor="let status of radioStatus" class="custom-control custom-radio radio-inline">
+                  <input formControlName="rdostatus" type="radio" [(ngModel)]="chartOfAccountStatus" class="custom-control-input" [value]="status.id"
+                    [id]="status.id">
+                  <!--<span class="custom-control-indicator"> </span>-->
+                  <label [for]="status.id" class="custom-control-description">{{status.Value}}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <button type="button" class="btn btn-primary btn-search" *ngIf="addChartofAccount" (click)="createChartofAccounts()" [disabled]="disableCreateButton">Add</button>
+            <button type="button" class="btn btn-primary btn-search" *ngIf="updateChartofAccount" (click)="updateChartofAccounts()" [disabled]="disableUpdateButton">Update</button>
+            <button type="reset" class="btn btn-default btn-reset" (click)="cancelAddNewSubChartofAccount()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="clearfix"></div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      Chart of Accounts
+    </div>
+    <div class="panel-body bordered">
+      <div *ngIf="getChartofAccountData && getChartofAccountData.length;else empty">
+        <table class="table">
+          <thead class="thead-default">
+            <tr>
+              <th (click)="sortDirection('CHARTOFACCOUNTID')" class="sorting-handle">
+                Chart of Account #
+                <span *ngIf=gridArrowChartOfAccountId><i class="fa fa-sort-amount-asc fa-fw fa-lg" aria-hidden="true" *ngIf=sortingDirection></i><i class="fa fa-sort-amount-desc fa-fw fa-lg" aria-hidden="true" *ngIf=!sortingDirection></i></span>
+              </th>
+              <th (click)="sortDirection('LEGALACCOUNTID')" class="sorting-handle">
+                External Chart of Account #
+                <span *ngIf=gridArrowExternalCOAId><i class="fa fa-sort-amount-asc fa-fw fa-lg" aria-hidden="true" *ngIf=sortingDirection></i><i class="fa fa-sort-amount-desc fa-fw fa-lg" aria-hidden="true" *ngIf=!sortingDirection></i></span>
+              </th>
+              <th (click)="sortDirection('AGCODE')" class="sorting-handle">
+                Group
+                <span *ngIf=gridArrowAccountGroup><i class="fa fa-sort-amount-asc fa-fw fa-lg" aria-hidden="true" *ngIf=sortingDirection></i><i class="fa fa-sort-amount-desc fa-fw fa-lg" aria-hidden="true" *ngIf=!sortingDirection></i></span>
+              </th>
+              <th (click)="sortDirection('ASGCODE')" class="sorting-handle">
+                Sub Group
+                <span *ngIf=gridArrowAccountSubGroup><i class="fa fa-sort-amount-asc fa-fw fa-lg" aria-hidden="true" *ngIf=sortingDirection></i><i class="fa fa-sort-amount-desc fa-fw fa-lg" aria-hidden="true" *ngIf=!sortingDirection></i></span>
+              </th>
+              <!--<th>Chart of Account #</th>
+              <th>External Chart of Account #</th>
+              <th>Group</th>
+              <th>Sub Group</th>-->
+              <th>Name</th>
+              <th>Parent Chart of Account #</th>
+              <th>Balance Type</th>
+              <th>Status</th>
+              <th>Edit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of getChartofAccountData | paginate: { itemsPerPage:pageItemNumber, currentPage: p, totalItems:totalRecordCount}">
+              <td>{{data.ChartOfAccountId}}</td>
+              <td>{{data.LegalAccountID}}</td>
+              <td>{{data.AccountGroupCode}}</td>
+              <td>{{data.AccountSubGroupCode}}</td>
+              <td>{{data.AccountName}}</td>
+              <td *ngIf="data.ParentChartOfAccountId != 0">{{data.ParentChartOfAccountId}}</td>
+              <td *ngIf="data.ParentChartOfAccountId == 0"></td>
+              <td>{{data.NormalBalanceType}}</td>
+              <td>{{data.Status}}</td>
+              <!--<td><i *ngIf="data.Status === 'Active'" class="fa fa-toggle-on" aria-hidden="true"></i>
+                  <i *ngIf="data.Status === 'Inactive'" class="fa fa-toggle-off" aria-hidden="true"></i></td>-->
+              <td>
+                <i class="fa fa-pencil fa-lg" [ngClass]="{'disabletextbox': disableUpdateButton}" (click)="populateChartofAccounts(data)"
+                  aria-hidden="true" style="cursor:pointer"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-template #empty>
+        <div>You have no added Chart of Accounts to display</div>
+      </ng-template>
+    </div>
+    <div class="row page-info" *ngIf='getChartofAccountData && getChartofAccountData.length> 0'>
+      <div *ngIf="totalRecordCount>=11">
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

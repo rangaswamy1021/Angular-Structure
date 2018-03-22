@@ -1,0 +1,396 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li>
+          <a href="#">Search</a>
+        </li>
+        <li>
+          <a href="#">Account Summary</a>
+        </li>
+        <li>
+          <a href="#">Satments and Activity</a>
+        </li>
+        <li class="active">Transaction Activities</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="col-md-6">
+        <div class="page-header">
+          <!-- <h1>Trip #9190</h1> -->
+        </div>
+      </div>
+      <!--<div class="col-md-6">
+        <button type="submit" (click)="redirectPage()" class="btn btn-primary btn-search pull-right">
+          < Back</button>
+      </div>-->
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-account-info></app-account-info>
+  <div class="row">
+    <div class="col-md-12 ">
+      <div class=" adlinks pull-right">
+        <ul>
+          <li class="">
+            <a href='javascript:;' (click)='goToComplaint(iTripresponse.ProblemId)'>Create Complaint</a>
+          </li>
+          <!-- 
+    <td><a href='javascript:;' (click)='getOneTimeTollTransactions(customer.CustomerId)'>View Transactions</a></td> -->
+          <li class="">
+            <a href='javascript:;' (click)='SubmitPopup()'>Adjustment</a>
+          </li>
+          <li class="">
+            <a (click)="transferTransactions()">Transfer</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="pad-20 bordered">
+    <div class="col-md-12">
+      <ngx-gallery [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
+      <div class="col-md-12 ">
+        <div class="row">
+          <div class="col-md-6">
+            <ul class="image-view-options">
+              <li>
+                <a (click)="zoomIn($event)" (keydown)="getKeyCode($event)" tabindex="1">
+                  <img src="assets/images/svg/zoom-tool.svg" alt="">
+                  <span>Zoom in
+                    <strong>F1</strong>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a (click)="zoomOut()" (keyup)="getKeyCode($event)" tabindex="2">
+                  <img src="assets/images/svg/zoom-out1.svg" alt="">
+                  <span>Zoom Out
+                    <strong>F2</strong>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a (click)="resetImageProperties()" (keyup)="getKeyCode($event)" tabindex="3">
+                  <img src="assets/images/svg/reload.svg" alt="">
+                  <span> Reset
+                    <strong>F3</strong>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a (click)="darken()" (keyup)="getKeyCode($event)" tabindex="4">
+                  <img src="assets/images/svg/dark.svg" alt="">
+                  <span>Darken
+                    <strong>F4</strong>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a (click)="brighten()" (keyup)="getKeyCode($event)" tabindex="5">
+                  <img src="assets/images/svg/brigth.svg" alt="">
+                  <span>Brighten
+                    <strong>F5 </strong>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a (click)="print()" (keyup)="getKeyCode($event)" tabindex="6">
+                  <img src="assets/images/svg/printer-.svg" alt="">
+                  <span>print
+                    <strong>F6</strong>
+                  </span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-6 m-t-20 ">
+            <!-- <button type="submit" class="btn btn-primary btn-search  pull-right"> <img src="assets/images/svg/history.svg" class="icon-svg3" alt=""> History</button> -->
+
+            <button type="submit" class="btn btn-primary btn-search  pull-right" (click)='SubmitHistoryPopup()'>
+              History
+            </button>
+          </div>
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 m-t-20">
+          <div class="panel">
+            <table class="table border-none" *ngIf="iTripresponse">
+              <tbody>
+                <tr>
+                  <td>
+                    <strong>Plate#</strong>
+                  </td>
+                  <td>{{iTripresponse.VehicleNumber}}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Lane#</strong>
+                  </td>
+                  <td> {{iTripresponse.LaneName }}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Location</strong>
+                  </td>
+                  <td>{{iTripresponse.LocationName }}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Entry Plaza</strong>
+                  </td>
+                  <td>{{iTripresponse.EntryPlazaName }}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Exit Plaza</strong>
+                  </td>
+                  <td>{{iTripresponse.ExitPlazaName}}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Travel Time</strong>
+                  </td>
+                  <td>{{iTripresponse.TravelTime}}</td>
+                </tr>
+              </tbody>
+
+            </table>
+          </div>
+        </div>
+        <div class="col-md-6 m-t-20">
+          <div class="panel panel-default panel-bg">
+            <table class="table  border-none t-height" *ngIf="iTripresponse">
+              <tbody>
+                <tr>
+                  <td>
+                    <strong>Toll Amount</strong>
+                  </td>
+                  <td>{{iTripresponse.TollAmount | currency:'USD':true:'2.2-4' }}</td>
+
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Discount Amount</strong>
+                  </td>
+                  <td>{{iTripresponse.DiscountAmount | currency:'USD':true:'2.2-4' }}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Processing Fee</strong>
+                  </td>
+                  <td>{{iTripresponse.FeeAmounts | currency:'USD':true:'2.2-4' }}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>OutStanding Amount</strong>
+                  </td>
+                  <td>{{iTripresponse.OutStandingAmount | currency:'USD':true:'2.2-4' }}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Txn Amount</strong>
+                  </td>
+                  <td>{{iTripresponse.TransactionAmount | currency:'USD':true:'2.2-4' }}</td>
+                </tr>
+                <tr>
+                  <td> </td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 m-t-20 p-r-30">
+        <button type="submit" (click)="redirectPage()" class="btn btn-primary btn-search  pull-right">
+          Back</button>
+      </div>
+    </div>
+  </div>
+  <!--History modal popup -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="edit-modal modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel">History Details</h4>
+        </div>
+        <div class="modal-body">
+          <div class="table-responsive">
+            <table class="table" *ngIf="ITriphistory">
+              <thead>
+                <tr>
+                  <th>Trip Stage</th>
+                  <th>Trip Status</th>
+                  <th>Trip Status Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let ITriphistory of ITriphistorys">
+                  <td>{{ITriphistory.TripStageCode}}</td>
+                  <td>{{ITriphistory.TripStatusCode}}</td>
+                  <td>{{ITriphistory.TripStatusDate | customDateTimeFormat}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <table>
+            <tr>
+              <td>
+                {{messagePopup}}
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary btn-search" data-dismiss="modal">Close</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- modal popup -->
+  <div class="modal fade" id="modalAdjustment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="edit-modal modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> -->
+          <h4 class="modal-title" id="myModalLabel">Adjustment Details</h4>
+        </div>
+        <div class="content1">
+          <div align=center>
+            <strong>
+              <p>{{message}}</p>
+            </strong>
+          </div>
+          <div class="modal-body">
+            <form role="form" [formGroup]="form_control" name="form_control">
+              <div class="row">
+                <div class="form-group col-sm-12 popover-field">
+                  <label for="">Adjustment Category</label>
+                  <input type="text" class="form-control" id="" formControlName="customerId" disabled="disabled" placeholder="PrePaid">
+                  <button type="button" class="pop-over" [popover]="popAC" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popAC>
+                    <ul>
+                      <li>Any one combination required</li>
+                      <li>Account # allows only numbers </li>
+                    </ul>
+                  </ng-template>
+                </div>
+
+                <div class="col-md-12">
+                  <label for="" class="">Amount Type</label>
+                  <div class="custom-control custom-radio radio-inline">
+                    <input class="custom-control-input" type="radio" id="Percentage" value="Percentage" formControlName="type1" checked>
+                    <label class="custom-control-discription" for="Percentage"> Percentage</label>
+                  </div>
+
+                  <div class="custom-control custom-radio radio-inline">
+                    <input type="radio" class="custom-control-input" id="Amount" value="Amount" formControlName="type1">
+                    <label class="custom-control-discription" for="Amount"> Amount
+                    </label>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm-12 popover-field">
+                  <label for="" class="">Amount(%)</label>
+                  <input class="form-control" placeholder="*Amount" type="text" maxlength="8" formControlName="amount" id="txtAmount" required>
+                  <div class="msg" *ngIf="form_control.controls['amount'].invalid && (form_control.controls['amount'].dirty)">
+                    <div *ngIf="form_control.controls['amount'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="form_control.controls['amount'].errors.pattern">
+                      Only numerics are allowed.
+                    </div>
+                  </div>
+
+                  <button type="button" class="pop-over" [popover]="popAM" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popAM>
+                    <ul>
+                      <li>Any one combination required</li>
+                      <li>Account # allows only numbers </li>
+                    </ul>
+                  </ng-template>
+                </div>
+
+
+                <div class="col-sm-12">
+                  <label for="" class="">Adjustment Type</label>
+                  <div class="custom-control custom-radio radio-inline">
+                    <input type="radio" class="custom-control-discription" id="C" formControlName="type" (change)="onSelectionChange(0)" checked
+                      value="C">
+                    <label class="custom-control-discription" for="C">Credit</label>
+                  </div>
+                  <div class="custom-control custom-radio radio-inline">
+                    <input type="radio" class="custom-control-discription" id="D" (change)="onSelectionChange(1)" formControlName="type" value="D">
+                    <label class="custom-control-discription" for="D">Debit</label>
+                  </div>
+                </div>
+
+
+
+                <div class="form-group col-sm-12 popover-field">
+                  <label for="" class="focused">Reason Code</label>
+                  <select id="ddlReasonCode" placeholder="*Reason Code" formControlName="ReasonCode" class='form-control'>
+                    <option value="">--Select--</option>
+                    <option *ngFor="let reasonCode of reasonCodes" value="{{reasonCode.TxnTypeDesc}}"> {{reasonCode.TxnTypeDesc}}</option>
+                  </select>
+
+                  <div class="msg" *ngIf="form_control.controls['ReasonCode'].invalid && (form_control.controls['ReasonCode'].dirty)">
+                    <div *ngIf="form_control.controls['ReasonCode'].errors.required">
+                      Required.
+                    </div>
+
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popRC" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popRC>
+                    <ul>
+                      <li>Any one combination required</li>
+                      <li>Account # allows only numbers </li>
+                    </ul>
+                  </ng-template>
+                </div>
+
+                <div class="form-group col-sm-12 popover-field">
+                  <label for="" class="focused">Description</label>
+                  <textarea class="form-control" rows="3" placeholder="* Description" formControlName="description" maxlength="255" (keyup)="descEvent($event)"
+                    required="required"></textarea>
+                  <div class="msg" *ngIf="form_control.controls['description'].invalid && (form_control.controls['description'].dirty)">
+                    <div *ngIf="form_control.controls['description'].errors.required">
+                      Required.
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="form-group col-sm-offset-3 col-sm-9">
+                  <button type="submit" class="btn btn-primary btn-search" (click)="makeAdjustments()">Submit</button>
+
+                  <button type="button" class="btn btn-primary btn-search" data-dismiss="modal">Close</button>
+
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- modal popup end -->
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)" (onOk)="userAction($event)"></app-success-failure-alerts-message>

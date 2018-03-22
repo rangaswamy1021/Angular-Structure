@@ -1,0 +1,618 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">Helpdesk</a>
+        </li>
+        <li class="active">Create Complaints</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Create Complaints</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+
+  <div *ngIf="isAfterSearch && currentSubSystem=='CSC'">
+    <app-account-info></app-account-info>
+  </div>
+  <form role="form" name="createForm" [formGroup]="createForm">
+    <div class="panel">
+      *Indicates Required Field(s)
+    </div>
+    <div class="panel panel-default" [hidden]='isAfterSearch || isInvoiceSearch'>
+      <div class="panel-heading">
+        Customer Personal Details
+      </div>
+      <div class="panel-body bordered">
+        <div class="col-md-12">
+          <label> {{searchCustomerHeading}}: </label>
+          <input type="radio" id="radio1" name="rdoAccExist" checked="checked" value="Exist" formControlName="rdoAccExist" (change)="rdoChange($event.target.value)">
+          <label class="radio-inline" for="radio1"> Yes
+          </label>
+          <input type="radio" id="radio2" name="rdoAccExist" value="NotExist" formControlName="rdoAccExist" (change)="rdoChange($event.target.value)">
+          <label class="radio-inline" for="radio2"> No
+          </label>
+
+          <button class="btn-search-2" type="button" data-toggle="modal" id="btnSearchC" data-target="#myModalC" (click)="searchOpenClick()"
+            *ngIf="!isEnable && currentSubSystem == 'CSC'">
+            Search Customer
+          </button>
+          <button class="btn-search-2" data-toggle="modal" type="button" id="btnSearchV" data-target="#myModalV" (click)="searchOpenClick()"
+            *ngIf="!isEnable && currentSubSystem == 'TVC'">
+            Search Account
+          </button>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label for="FirstName"> First Name </label>
+              <input type="text" id="FirstName" class="form-control" placeholder="* First name" pattern="^[a-zA-Z ]*" minlength="2" maxlength="50"
+                formControlName="FirstName" name="FirstName">
+              <div class="msg" *ngIf="createForm.controls['FirstName'].invalid && (createForm.controls['FirstName'].dirty || createForm.controls['FirstName'].touched)">
+                <div *ngIf="createForm.controls['FirstName'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="createForm.controls['FirstName'].errors.pattern">
+                  Only alphabets and spaces are allowed !
+                </div>
+              </div>
+              <button type="button" class="pop-over" [popover]="popFirstName" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+              <ng-template #popFirstName>
+                <ul>
+                  <li>First Name is required.</li>
+                  <li>It allows only alphabets and spaces.</li>
+                  <li>It should contain minimum 2 and maximum 50 characters.</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label> Last Name </label>
+              <input type="text" class="form-control" placeholder="* Last name" pattern="^[a-zA-Z ]*" minlength="2" maxlength="50" formControlName="LastName"
+                name="LastName">
+              <div class="msg" *ngIf="createForm.controls['LastName'].invalid && (createForm.controls['LastName'].dirty || createForm.controls['LastName'].touched)">
+                <div *ngIf="createForm.controls['LastName'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="createForm.controls['LastName'].errors.pattern">
+                  Only alphabets and spaces are allowed !
+                </div>
+              </div>
+              <button type="button" class="pop-over" [popover]="popLastName" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+              <ng-template #popLastName>
+                <ul>
+                  <li>Last Name is required.</li>
+                  <li>It allows only alphabets and spaces.</li>
+                  <li>It should contain minimum 2 and maximum 50 characters.</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label> Phone No. </label>
+              <input type="text" class="form-control" placeholder="* Phone No." id="Phone" formControlName="Phone" name="Phone" (keydown)="formatPhone($event)"
+                maxlength="14">
+              <div class="msg" *ngIf="createForm.controls['Phone'].invalid && (createForm.controls['Phone'].dirty || createForm.controls['Phone'].touched)">
+                <div *ngIf="createForm.controls['Phone'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="createForm.controls['Phone'].errors.pattern">
+                  Invalid phone format.
+                </div>
+                <div *ngIf="createForm.controls['Phone'].errors.maxlength">
+                  Maximum 14 characters are allowed.
+                </div>
+              </div>
+              <button type="button" class="pop-over" [popover]="popPhone" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+              <ng-template #popPhone>
+                <ul>
+                  <li>Phone is required.</li>
+                  <li>Phone allows only numeric values.</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label for="email"> Email Address </label>
+              <input type="text" id="email" class="form-control" placeholder="* Email Address" formControlName="Email" name="Email">
+              <div class="msg" *ngIf="createForm.controls['Email'].invalid && (createForm.controls['Email'].dirty || createForm.controls['Email'].touched)">
+                <div *ngIf="createForm.controls['Email'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="createForm.controls['Email'].errors.pattern">
+                  Invalid email format.
+                </div>
+                <div *ngIf="createForm.controls['Email'].errors.minlength">
+                  Minimum 6 characters are required.
+                </div>
+                <div *ngIf="createForm.controls['Email'].errors.maxlength">
+                  Maximum 100 characters are allowed.
+                </div>
+              </div>
+              <button type="button" class="pop-over" [popover]="popEmail" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+              <ng-template #popEmail>
+                <ul>
+                  <li>Email is required.</li>
+                  <li>Allows alphanumerics with special characters (@, _, ., -, +)</li>
+                  <li>Spaces are not allowed.</li>
+                  <li>It should be minimum 6 characters and maximum 100 characters long.</li>
+                  <li>It should follow the format yourname@domain.com</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-bdr">
+      <h3>Complaint Details</h3>
+      <div class="pad-10">
+        <div class="row">
+          <div class="form-group col-md-6 popover-field">
+            <label class="focused"> Complaint Type</label>
+            <select class="form-control" formControlName="CmpType" name="CmpType">
+                  <option selected='selected' value="">--Select--</option>
+                  <option *ngFor='let pt of problemTypes' value="{{pt.Key}}">{{pt.Value}}</option>
+                </select>
+            <div class="msg" *ngIf="createForm.controls['CmpType'].invalid && createForm.controls['CmpType'].touched">
+              <div *ngIf="createForm.controls['CmpType'].errors.required">
+                Required.
+              </div>
+            </div>
+            <button type="button" class="pop-over" [popover]="popType" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+            <ng-template #popType>
+              <ul>
+                <li>Complaint Type is required.</li>
+              </ul>
+            </ng-template>
+          </div>
+          <div class="form-group col-md-6 popover-field">
+            <label class="focused"> Priority </label>
+            <select class="form-control" formControlName="CmpPriority" name="CmpPriority">
+                  <option selected='selected' value="">--Select--</option>
+                  <option *ngFor='let p of pmPriority' value="{{p.LookUpTypeCode}}">{{p.LookUpTypeCodeDesc}}</option>
+                </select>
+            <div class="msg" *ngIf="createForm.controls['CmpPriority'].invalid && createForm.controls['CmpPriority'].touched">
+              <div *ngIf="createForm.controls['CmpPriority'].errors.required">
+                Required.
+              </div>
+            </div>
+            <button type="button" class="pop-over" [popover]="popPriority" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+            <ng-template #popPriority>
+              <ul>
+                <li>Priority is required.</li>
+              </ul>
+            </ng-template>
+          </div>
+          <div class="form-group col-md-6 popover-field">
+            <label class="focused"> Source </label>
+            <select class="form-control" formControlName="CmpSource" name="CmpSource">
+                  <option selected='selected' value="">--Select--</option>
+                  <option *ngFor='let p of pmSource' value="{{p.LookUpTypeCode}}">{{p.LookUpTypeCodeDesc}}</option>
+                </select>
+            <div class="msg" *ngIf="createForm.controls['CmpSource'].invalid && createForm.controls['CmpSource'].touched">
+              <div *ngIf="createForm.controls['CmpSource'].errors.required">
+                Required.
+              </div>
+            </div>
+            <button type="button" class="pop-over" [popover]="popSource" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+            <ng-template #popSource>
+              <ul>
+                <li>Source is required.</li>
+              </ul>
+            </ng-template>
+          </div>
+          <div class="form-group col-md-6">
+            <div class="popover-field">
+              <label class="focused"> Severity </label>
+              <select class="form-control" formControlName="CmpSeverity" name="CmpSeverity">
+                  <option selected='selected' value="">--Select--</option>
+                  <option *ngFor='let p of pmSeverity' value="{{p.LookUpTypeCode}}">{{p.LookUpTypeCodeDesc}}</option>
+                </select>
+              <div class="msg" *ngIf="createForm.controls['CmpSeverity'].invalid && createForm.controls['CmpSeverity'].touched">
+                <div *ngIf="createForm.controls['CmpSeverity'].errors.required">
+                  Required.
+                </div>
+              </div>
+              <button type="button" class="pop-over" [popover]="popSeverity" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+              <ng-template #popSeverity>
+                <ul>
+                  <li>Severity is required.</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+          <div class="form-group col-md-6 popover-field">
+            <label> Title </label>
+            <input type="text" class="form-control" placeholder="* Title" formControlName="Title" name="Title" maxlength="128">
+            <div class="msg" *ngIf="createForm.controls['Title'].invalid && createForm.controls['Title'].touched">
+              <div *ngIf="createForm.controls['Title'].errors.required">
+                Required.
+              </div>
+            </div>
+            <button type="button" class="pop-over" [popover]="popTitle" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+            <ng-template #popTitle>
+              <ul>
+                <li>Title is required.</li>
+                <li>It should be maximum of 128 characters.</li>
+              </ul>
+            </ng-template>
+          </div>
+          <div class="form-group col-md-6 popover-field">
+            <label class="focused"> Description</label>
+            <textarea class="form-control" row="3" placeholder="* Description" formControlName="Descr" name="Descr" maxlength="2000">
+                </textarea>
+            <div class="msg" *ngIf="createForm.controls['Descr'].invalid && createForm.controls['Descr'].touched">
+              <div *ngIf="createForm.controls['Descr'].errors.required">
+                Required.
+              </div>
+            </div>
+            <button type="button" class="pop-over" [popover]="popDescr" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+            <ng-template #popDescr>
+              <ul>
+                <li>Description is required.</li>
+                <li>It should be maximum of 2000 characters.</li>
+              </ul>
+            </ng-template>
+          </div>
+        </div>
+        <div class="row">
+          <!--<div class="form-group col-md-12 popover-field">
+               <input type="text" class="form-control" placeholder="Date occured" formControlName="DateOccur" name="DateOccur"> 
+               <owl-date-time [dateFormat]='"MM/DD/YYYY"' [placeHolder]='"* Date occured"' [max]='maxDate' [type]='"calendar"' class="form-control"
+                  formControlName="DateOccur" name="DateOccur" autoClose=false></owl-date-time> 
+              <label> Date occured </label>
+              <input type="text" placeholder="MM/DD/YYYY" formControlName="DateOccur" [maxDate]="maxDate" #dp="bsDatepicker" bsDatepicker
+                class="form-control">
+
+               <input type="text" placeholder="" [minDate]="minDate" [maxDate]="maxDate" #dp="bsDatepicker" bsDatepicker [(bsValue)]="bsValue"
+                formControlName="DateOccur" [(ngModel)]="DateOccur" class="form-control"> 
+
+              <div class="msg" *ngIf="createForm.controls['DateOccur'].invalid && (createForm.controls['DateOccur'].dirty || createForm.controls['DateOccur'].touched)">
+                <div *ngIf="createForm.controls['DateOccur'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="createForm.controls['DateOccur'].errors.pattern">
+                  Invalid date format.
+                </div>
+              </div>
+              <button type="button" class="pop-over" [popover]="popDateOccur" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+              <ng-template #popDateOccur>
+                <ul>
+                  <li>Date occured is required.</li>
+                  <li>Select date of occurence or current date.</li>
+                </ul>
+              </ng-template>
+            </div>-->
+
+
+          <div class="form-group col-md-6 popover-field">
+            <label for="mydate" id="focused">Date occured </label>
+            <my-date-picker name="mydate" [options]="myDatePickerOptions" (inputFieldChanged)='onDateChanged($event)' formControlName="DateOccur"
+              placeholder="MM/DD/YYYY" id="mydate"></my-date-picker>
+            <div class="show-error" *ngIf="!invalidDate&&(createForm.controls['DateOccur'].invalid && (createForm.controls['DateOccur'].dirty || createForm.controls['DateOccur'].touched))">
+              <div *ngIf="createForm.controls['DateOccur'].errors.required">
+                Required
+              </div>
+            </div>
+
+            <button type="button" class="pop-over" [popover]="popDateOccur" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+            <ng-template #popDateOccur>
+              <ul>
+                <li>Date occured is required.</li>
+                <li>Select date of occurence or current date.</li>
+              </ul>
+            </ng-template>
+            <div class="show-error" *ngIf='invalidDate'>
+              <div> Invalid Date</div>
+            </div>
+          </div>
+          <div class="form-inline form-group col-md-6">
+            <label class="focused"> Time </label>
+            <select class="form-control" formControlName="Hours" name="Hours">
+              <!-- <option selected='selected' value="">--Select--</option> -->
+              <option *ngFor='let h of hours' value="{{h}}">{{h}}</option>
+            </select>
+            <select class="form-control" formControlName="Mints" name="Mints">
+              <!-- <option selected='selected' value="">--Select--</option> -->
+              <option *ngFor='let m of minutes' value="{{m}}">{{m}}</option>
+            </select>
+            <select class="form-control" formControlName="AmPm" name="AmPm">
+              <!-- <option selected='selected' value="">--Select--</option> -->
+              <option value="AM">AM</option>
+              <option value="PM">PM</option>
+            </select>
+            <button type="button" class="pop-over" [popover]="popTimeOccur" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+            <ng-template #popTimeOccur>
+              <ul>
+                <li>Select time of occurence or current time.</li>
+              </ul>
+            </ng-template>
+          </div>
+        </div>
+        <div class="row">
+        <div class="col-md-12 m-t-10">
+          <app-pm-attachment></app-pm-attachment>
+        </div>
+        <div class="col-md-12 m-t-10">
+          <button class="btn btn-primary btn-search" type="submit" [disabled]="disableButton" (click)="createCompliant()">Submit</button>
+          <button class="btn btn-primary btn-reset" (click)="resetCompliant()"> Reset </button>
+          <a href='javascript:;' class="btn btn-primary btn-search" [ngStyle]="{'display': (isExistDependency || previousUrl) ? 'inline-block':'none'}"
+            (click)="backClick()">
+            Back </a>
+        </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+
+  <div>
+    <!-- <div *ngIf='searchCustomer'> -->
+    <div class="modal fade bs-example-modal-lg" id="myModalC" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+            <h4 class="modal-title" id="myModalLabel">Search Customer</h4>
+          </div>
+          <div class="modal-body">
+            <div class="alert alert-warning alert-dismissible" role="alert" *ngIf="errorBlockSrch">
+              <button type="button" class="close" (click)="closeAlertC()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <strong>{{errorHeadingSrch}}</strong> {{errorMessageSrch}}
+            </div>
+            <app-advance-search></app-advance-search>
+            <div class="row">
+              <div class="col-md-12">
+                <button class="btn btn-primary btn-search" type="submit" (click)="advancedSearch(1)">Search</button>
+                <button class="btn btn-primary btn-reset" (click)="resetAdvancedSearch()"> Reset </button>
+                <button type="button" class="btn btn-primary btn-reset" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+            <div class="row m-t-20" *ngIf='profileResponse && profileResponse.length'>
+              <div class="col-md-12">
+                <div class="table-bdr">
+                  <h3>Advanced Search</h3>
+                  <div class="pad-20">
+                    <div class="table-responsive advanced-search-model">
+                      <table class="table table-bdr">
+                        <thead>
+                          <tr>
+                            <th></th>
+                            <th>Account Type</th>
+                            <th>Account #</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Address</th>
+                            <th>Phone #</th>
+                            <th>Email Address</th>
+                            <th>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody class="nowrap">
+                          <tr *ngFor="let res of profileResponse| paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems: dataLength }">
+                            <td>
+                              <a data-dismiss="modal" aria-label="Close" (click)="viewButton(res)" style="cursor: pointer;">Select</a>
+                            </td>
+                            <td> {{res.AccountType}} </td>
+                            <td> {{res.AccountId}} </td>
+                            <td> {{res.FirstName}} </td>
+                            <td> {{res.LastName}} </td>
+                            <td> {{res.FullAddress}} </td>
+                            <td style="white-space: nowrap;"> {{res.Phone}} </td>
+                            <td> {{res.Email}} </td>
+                            <td> {{res.AccountStatusDesc}} </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="row page-info">
+                  <div class="col-md-6 text-left">
+                    <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+                  </div>
+                  <div class="col-md-6 text-right">
+                    <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row m-t-20" *ngIf=' !profileResponse || profileResponse.length==0'>
+              <div class="col-md-12">
+                <div class="table-bdr">
+                  <h3> Advanced Search</h3>
+                  <div class="status-content pad-20">
+                    No records to display
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- </div> -->
+
+
+    <!-- <div *ngIf='searchViolator'> -->
+    <div class="modal fade bs-example-modal-lg" id="myModalV" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+            <h4 class="modal-title" id="myModalLabel">Search Account</h4>
+          </div>
+          <div class="modal-body">
+            <div class="alert alert-warning alert-dismissible" role="alert" *ngIf="errorBlockSrch">
+              <button type="button" class="close" (click)="closeAlertC()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <strong>{{errorHeadingSrch}}</strong> {{errorMessageSrch}}
+            </div>
+
+
+            <form name="vioSearch" [formGroup]="vioSearch" role="form">
+              <div class="col-md-6">
+                <div class="col-md-12 form-group">
+                  <label for="trip">Trip #</label>
+                  <input type="text" pattern="[0-9]*" id="trip" name="tripno" maxlength="18" formControlName="trip" class="form-control" placeholder="Trip #">
+                  <div class="msg" *ngIf="vioSearch.controls['trip'].invalid && (vioSearch.controls['trip'].dirty || vioSearch.controls['trip'].touched)">
+                    <div *ngIf="vioSearch.controls['trip'].errors.pattern">
+                      Only numbers allowed.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="col-md-12 form-group">
+                  <label for="Account No.">Account #</label>
+                  <input type="text" pattern="[0-9]*" id="AccountNo" name="AccountNo" maxlength="18" formControlName="AccountNo" class="form-control"
+                    placeholder="Account #">
+                  <div class="msg" *ngIf="vioSearch.controls['AccountNo'].invalid && (vioSearch.controls['AccountNo'].dirty || vioSearch.controls['AccountNo'].touched)">
+                    <div *ngIf="vioSearch.controls['AccountNo'].errors.pattern">
+                      Only numbers allowed.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="col-md-12 form-group">
+                  <label for="First Name">First Name</label>
+                  <input type="text" pattern="^[\sa-zA-Z]+$" id="Fname" name="Fname" formControlName="Fname" class="form-control" placeholder="First Name">
+                  <div class="msg" *ngIf="vioSearch.controls['Fname'].invalid && (vioSearch.controls['Fname'].dirty || vioSearch.controls['Fname'].touched)">
+                    <div *ngIf="vioSearch.controls['Fname'].errors.pattern">
+                      Only alphabets and spaces are allowed !
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="col-md-12 form-group">
+                  <label for="Last Name">Last Name</label>
+                  <input type="text" pattern="^[-\sa-zA-Z]+$" id="Lastname" name="Lastname" formControlName="Lastname" class="form-control"
+                    placeholder="Last Name">
+                  <div class="msg" *ngIf="vioSearch.controls['Lastname'].invalid && (vioSearch.controls['Lastname'].dirty || vioSearch.controls['Lastname'].touched)">
+                    <div *ngIf="vioSearch.controls['Lastname'].errors.pattern">
+                      It allows only alphabets, spaces and (-) !
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="col-md-12 form-group">
+                  <label for="Platno">Plate #</label>
+                  <input type="text" pattern="^[A-Za-z0-9]+$" id="PlateNo" maxlength=10 name="PlateNo" formControlName="PlateNo" class="form-control"
+                    placeholder="Plate #">
+                  <div class="msg" *ngIf="vioSearch.controls['PlateNo'].invalid && (vioSearch.controls['PlateNo'].dirty || vioSearch.controls['PlateNo'].touched)">
+                    <div *ngIf="vioSearch.controls['PlateNo'].errors.pattern">
+                      Only alphanumerics allowed.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="col-md-12 form-group">
+                  <label for="Address">Physical Address</label>
+                  <input type="text" id="Address" name="Address" formControlName="Address" class="form-control" placeholder="Physical Address">
+                </div>
+              </div>
+            </form>
+
+            <div class="row">
+              <div class="col-md-12">
+                <button class="btn btn-primary btn-search" type="submit" (click)="vioSearchClick(1)">Search</button>
+                <button class="btn btn-primary btn-reset" (click)="resetVioSearchClick()"> Reset </button>
+                <button type="button" class="btn btn-primary btn-reset" data-dismiss="modal" (click)="resetVioSearchClick()">Close</button>
+              </div>
+            </div>
+            <div class="row m-t-20" *ngIf='vioSearchResponse && vioSearchResponse.length'>
+              <div class="col-md-12">
+                <div class="table-bdr">
+                  <h3>Account Search Results</h3>
+                  <div class="pad-20">
+                    <div class="table-responsive advanced-search-model">
+                      <table class="table table-bdr">
+                        <thead>
+                          <tr>
+                            <th></th>
+                            <th>Account #</th>
+                            <th>Plate #</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Phone Number</th>
+                            <th>Email Address</th>
+                            <th>Address</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let res of vioSearchResponse| paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems: dataLength }">
+                            <td>
+                              <a (click)="vioViewClick(res)" style="cursor: pointer;" data-dismiss="modal">Select</a>
+                            </td>
+                            <td> {{res.ViolatorID}} </td>
+                            <td> {{res.LicensePlate}} </td>
+                            <td> {{res.ViolatorFirstName}} </td>
+                            <td> {{res.ViolatorSecondName}} </td>
+                            <td style="white-space: nowrap;"> {{res.Phone}} </td>
+                            <td> {{res.EmailAddress}} </td>
+                            <td> {{res.FullAddress}} </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="row page-info">
+                  <div class="col-md-6 text-left">
+                    <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+                  </div>
+                  <div class="col-md-6 text-right">
+                    <pagination-controls (pageChange)="vioSearchPageChanged($event)"></pagination-controls>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row m-t-20" *ngIf=' !vioSearchResponse || vioSearchResponse.length==0'>
+              <div class="col-md-12">
+                <div class="table-bdr">
+                  <h3> Account Search Results</h3>
+                  <div class="status-content pad-20">
+                    No records to display
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- </div> -->
+  </div>
+</div>
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>

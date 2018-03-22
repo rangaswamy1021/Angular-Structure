@@ -1,0 +1,371 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Customer Service</a></li>
+        <li class="active">Change of Plan</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Change of Plan</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-account-info></app-account-info>
+  <div class="content">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-bdr" *ngIf='requestedPlans && requestedPlans.length>0'>
+          <h3>Requested Plan Details</h3>
+          <div class="table-responsive">
+            <table class="table table-type-2">
+              <thead>
+                <tr>
+                  <th>Parent Plan Name</th>
+                  <th>Plan Name</th>
+                  <th>Plan Description</th>
+                  <th>Tag Required</th>
+                  <th>Requested Date</th>
+                  <th>Requested User</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor='let reqPlans of requestedPlans;'>
+                  <td>{{reqPlans.ParentPlanName}}</td>
+                  <td>{{reqPlans.Name}}</td>
+                  <td>{{reqPlans.Desc}}</td>
+                  <td>{{reqPlans.IsTagRequired?"Yes" : "No"}}</td>
+                  <td>{{reqPlans.CustRequestDate | customDateTimeFormat}}</td>
+                  <td>{{reqPlans.UpdateUser}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <div class="accordion-mgc" style="padding: 0;">
+          <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title">
+                  <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Plans</a>
+                </h4>
+              </div>
+              <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <div class="panel-body">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <!--<tabset>
+                      <tab *ngFor="let toll of tollTypes;let row=index" heading="{{toll.Key}}" [active]="row==0"  (select)="bindPlansData(toll.Value)">-->
+                      <div class="tab-title-div">
+                        <div *ngFor="let toll of tollTypes;let row=index">
+                          <div class="tab-title" [class.active]='toll.Key==accountType?"active":""' (click)="bindPlansData(toll.Value)">{{toll.Key}}</div>
+                        </div>
+                      </div>
+                      <div class="table-default table-responsive">
+                        <table class="table table-bordered" *ngIf="plansResponse && (plansResponse.length>0?true:false)">
+                          <thead>
+                            <tr>
+                              <th>Select</th>
+                              <th>Plan Name</th>
+                              <!--<th>Fee ($)</th>
+                              <th>Discount</th>-->
+                              <th>Start Date</th>
+                              <th>End Date</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let plan of plansResponse;let row_no=index">
+                              <td>
+                                <div class="custom-control custom-radio">
+                                  <input type="radio" name="planradio" id="planradio{{plan.PlanId}}" [checked]="plan.IsSelected" (change)="planChange(plan)"
+                                  />
+                                  <label class="custom-control-description" for="planradio{{plan.PlanId}}"> </label>
+                                </div>
+                              </td>
+                              <td>
+                                <span class="icon-space" *ngIf="plan.IsTagRequired">
+                                      <img src="assets/images/svg/tag.svg" alt="" class="icon">
+                                   </span>
+                                <span class="icon-space" *ngIf="!plan.IsTagRequired">
+                                      <img src="assets/images/svg/casino-cctv.svg" alt="" class="icon">
+                                   </span>
+                                <span class="detail">
+                                      {{plan.Name}}<br>
+                                      <small>{{plan.Desc}} <span>Fee:{{plan.FeeDesc}}</span></small>
+                                </span>
+                              </td>
+                              <!--<td width="10%">{{plan.TotalFee}}</td>
+                              <td width="10%">{{plan.DiscountDesc}}</td>-->
+                              <td width="22%">{{plan.StartEffDate | customDateTimeFormat }}</td>
+                              <td width="22%">{{plan.EndEffDate | customDateTimeFormat }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                      <!--</tab>
+                    </tabset>-->
+                    </div>
+                    <!--<div class="col-md-12 m-t-20" *ngIf="row != 0">
+                      <div class="pad-20-bdr">
+                        <h3 *ngIf="(accountType == 'POSTPAID')">Auto Debit Method</h3>
+                        <h3 *ngIf="(accountType == 'PREPAID')">Replenishment Type</h3>
+                        <label class="radio-inline">
+                        <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="CREDITCARD" [checked]="(replenishType=='CREDITCARD')" (click)="onReplenishTypeChange($event.target.value)"> Credit Card
+                      </label>
+                        <label class="radio-inline">
+                        <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="ACH" [checked]="(replenishType=='ACH')" (click)="onReplenishTypeChange($event.target.value)"> ACH
+                      </label>
+                        <label class="radio-inline">
+                        <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="CASH" [checked]="(replenishType=='CASH')" (click)="onReplenishTypeChange($event.target.value)"> Cash
+                      </label>
+                        <div class="Info" *ngIf="(accountType == 'PREPAID')">
+                          <h4>Replenishment Amount</h4>
+                          <ul>
+                            <li>- For Credit Card is {{creditCardReplnAmt|currency:'USD':true}} and Threshold Amount is {{creditCardThresAmt|currency:'USD':true}}</li>
+                            <li>- For ACH is {{bankReplnAmt|currency:'USD':true}} and Threshold Amount is {{bankThresAmt|currency:'USD':true}}</li>
+                            <li>- For Cash is {{cashReplnAmt|currency:'USD':true}} and Threshold Amount is {{cashThresAmt|currency:'USD':true}}</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>-->
+                    <form role="form" name="prefrenecesForm" [formGroup]="prefrenecesForm" novalidate>
+                      <div class="col-md-12 m-t-20">
+                        <div class="pad-20-bdr">
+                          <h3>{{isPostpaidCustomer==false?"Statement Cycle":"Invoice Interval"}}</h3>
+                          <div class="row" *ngIf="!isPostpaidCustomer">
+                            <div class="">
+                              <div class="form-group col-sm-12">
+                                <label for="" class="focused">Statement Cycle</label>
+                                <select class="form-control" id="statementCycle" [(ngModel)]="ngSatamentCycle" disabled="isDisableSatement" name="statementCycle"
+                                  formControlName="statementCycle">
+              <option selected="selected" value="">--Select--</option>
+              <option *ngFor="let statCycle of objStatementCycle" value="{{statCycle.CycleType}}">{{statCycle.CycleDescription}}</option>
+            </select>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row" *ngIf="isPostpaidCustomer">
+                            <div class="">
+                              <div class="form-group col-sm-12">
+                                <label for="" class="focused">Invoice Interval Type </label>
+                                <select class="form-control" [(ngModel)]="ngInvoiceIntrervalType" (change)="getInvoiceInterval($event.target.value)" id="invoiceTypeInterval"
+                                  name="invoiceTypeInterval" formControlName="invoiceTypeInterval">
+              <option selected="selected" value="0">--Select--</option>
+              <option *ngFor="let options of invoiceTypes" value="{{options.CycleID}}">{{options.CycleType}}</option>
+            </select>
+                                <i *ngIf="prefrenecesForm.controls['invoiceTypeInterval'].hasError('required')">Invoice Interval Type is required.</i>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row" *ngIf="isPostpaidCustomer && isInvoiceAmountTextfeild">
+                            <div class="" style="clear:both;">
+                              <div class="form-group col-sm-12">
+                                <label for="invoiceAmountTextbox" class="focused">Invoce Amount ($)</label>
+                                <input type="text" class="form-control" pattern="[1-9999]*" (keyup)="isValidInput()" formControlName="invoiceAmountTextbox"
+                                  id="invoiceAmountTextbox" name="invoiceAmountTextbox" placeholder="Invoice Amount ">
+                                <!-- <div class="msg">error message</div> -->
+                                <div class="msg" *ngIf="prefrenecesForm.controls['invoiceAmountTextbox'].hasError('required') && isInvoiceAmountTextfeild"><div>Invoice Amount is required.</div></div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="row" *ngIf="isPostpaidCustomer && isInvoiceDayFeild">
+                            <div class="">
+                              <div class="form-group col-sm-6">
+                                <label for="" class="focused">Invoice Schedule Day</label>
+                                <select class="form-control" [(ngModel)]="ngInvoiceScheduleDay" id="invoiceScheduleDay" name="invoiceScheduleDay" formControlName="invoiceScheduleDay">
+              <option selected="selected" value="1">1</option>
+              <option *ngFor="let scheduleDay of scheduleDays" value="{{scheduleDay}}">{{scheduleDay}}</option>
+            </select>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+
+                      </div>
+                    </form>
+                    <div class="col-md-12 m-t-20" *ngIf="isTagRequired && currentPlan && !currentPlan.IsTagRequired">
+                      <div class="pad-20-bdr">
+                        <div class="table-bdr">
+                          <h3>Tag Details</h3>
+                          <div class="table-responsive">
+                            <table class="table table-type-2">
+                              <thead>
+                                <tr *ngIf='tagconfigs && tagconfigs.length>0'>
+                                  <th>Protocol</th>
+                                  <th>Mounting</th>
+                                  <th>No. of Tags</th>
+                                  <th>Per Tag Fee ($)</th>
+                                  <th>Per Tag Deposit ($)</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <tr *ngFor='let tagconfig of tagconfigs; let row_no = index'>
+                                    <td>{{tagconfig.Protocol}}</td>
+                                    <td>{{tagconfig.Mounting}}</td>
+                                    <td><input type="number" min="0" [value]="tagconfig.Tagcount" (change)="onTagConfigChange(tagconfig,$event.target.value)"
+                                        [disabled]="!isTagRequired" /></td>
+                                    <td>{{tagconfig.TagFee}}</td>
+                                    <td>{{tagconfig.TagDeposit}}</td>
+                                  </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12 m-t-20" *ngIf="isTagRequired && currentPlan && !currentPlan.IsTagRequired">
+                      <div class="pad-20-bdr" *ngIf="isTagRequired">
+                        <div class="row">
+                          <div class="col-md-12 form-group">
+                            <label id="focused">Tag Delivery Method:</label>
+                            <select class="form-control" style="min-width: 250px;" (change)="onPurchaseMethodChange($event.target.value)">
+                                <option value="{{method.Key}}" [selected]="method.Key == purchaseMethod" *ngFor='let method of tagPurchaseMethod;let row_no=index' >{{method.Value}}</option>
+                              </select>
+                          </div>
+
+                          <table class="table table-type-2 m-t-10" *ngIf="shipmentTypes && shipmentTypes.length>0">
+                            <thead>
+                              <tr>
+                                <th>Service Type</th>
+                                <th>Description</th>
+                                <th>Amount ($)</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let service of shipmentTypes;let row=index">
+                                <td>
+                                  <div class="custom-control custom-radio radio-inline">
+                                    <input type="radio" name="serviceoptions" [id]="row" [checked]="service.IsSelected" value="service.ServiceTypeId" (click)="onServiceTypeChange(service)">
+                                    <label [for]="row" class="custom-control-discription"> {{service.ServiceTypeName}} </label>
+                                  </div>
+                                  <!--<div class="radio">
+                                      <label>
+                                        <input type="radio" name="serviceoptions" id="serviceoptions"  [checked]="service.IsSelected" value="service.ServiceTypeId" (click)="onServiceTypeChange(service)" >{{service.ServiceTypeName}}
+                                      </label>
+                                    </div>-->
+                                </td>
+                                <td>{{service.ServiceDescription}}{{service.IsSelected}} </td>
+                                <td>{{service.Cost|currency:'USD':true}}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12 m-t-20" *ngIf="shipmentTypes && shipmentTypes.length>0 && isTagRequired && currentPlan && !currentPlan.IsTagRequired && customerId">
+                      <div class="pad-20-bdr">
+                        <h3>Shipping Address</h3>
+                        <div class="custom-control custom-radio radio-inline">
+                          <input type="radio" class="custom-control-input" [checked]="!isAddressEnable" name="addressRadioOptions" id="inlineRadio11"
+                            value="exist" (change)="addressChange($event.target.value)">
+                          <label for="inlineRadio11" class="custom-control-discription">  Use Existing Address </label>
+                        </div>
+                        <div class="custom-control custom-radio radio-inline">
+                          <input type="radio" name="addressRadioOptions" class="custom-control-input" id="inlineRadio22" value="new" (change)="addressChange($event.target.value)">
+                          <label for="inlineRadio22" class="custom-control-discription"> Add New Address</label>
+                        </div>
+                        <div *ngIf="!isAddressEnable">
+                          <app-add-address [customerID]="customerId" [isEnable]="true"></app-add-address>
+                        </div>
+                        <div *ngIf="isAddressEnable">
+                          <app-add-address [isEnable]="false"></app-add-address>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-bdr">
+          <h3>Amount Summary Details</h3>
+          <div class="table-default table-responsive">
+            <table class="table plain-header">
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th align='right'>Amount ($)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!--<tr>
+                  <td>Toll Balance</td>
+                  <td>{{tollBalance | number : '1.2-2'}}</td>
+                </tr>-->
+                <tr *ngFor="let fees of feesOfPlan">
+                  <td>{{fees.Key}}</td>
+                  <td>{{fees.Value| number : '1.2-2'}}</td>
+                </tr>
+                <tr>
+                  <td>Total Tag Fee</td>
+                  <td>{{totalTagFee| number : '1.2-2'}}</td>
+                </tr>
+                <tr>
+                  <td>Total Tag Deposit</td>
+                  <td>{{totalTagDeposit| number : '1.2-2'}}</td>
+                </tr>
+                <tr>
+                  <td>Service Tax</td>
+                  <td>{{totalServiceTax| number : '1.2-2'}}</td>
+                </tr>
+                <tr>
+                  <td>Shipping Charge</td>
+                  <td>{{totalShippingCharge| number : '1.2-2'}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Total Amount</strong></td>
+                  <td><strong>{{totalTagFee+totalTagDeposit+totalFee+totalServiceTax+totalShippingCharge| number : '1.2-2'}}</strong></td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+        <div class="table-bdr">
+          <h3>Plan Details:</h3>
+          <p class="pad-10">
+            {{name}}<br>
+            <small>{{planDesc}} <span><br>Fee:{{feeDesc}}</span></small>
+          </p>
+        </div>
+        <div class="Info" *ngIf='isServiceTax'>
+          <h4>Information</h4>
+          <ul>
+            <li *ngIf='isServiceTax'>- Service Tax {{serviceTax}}% applied on Tag Fee.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="row">
+    <div class="col-md-12 m-l-20">
+      <!--<button class="btn btn-primary btn-search" type="submit" (click)="onPrevious()">Account Information</button>
+        <button class="btn btn-primary btn-search" type="submit" (click)="onSubmit()">Vehicle Information </button>
+        <button class="btn btn-primary btn-reset" type="submit" (click)="onCancel()">Cancel</button>-->
+
+      <button class="btn btn-primary btn-search" type="submit" (click)="onChangeClick()" [disabled]="isDisabledSubmit">Submit</button>
+      <button class="btn btn-primary btn-reset" type="submit" (click)="onReset()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"
+  (onOk)="userAction($event)"></app-success-failure-alerts-message>

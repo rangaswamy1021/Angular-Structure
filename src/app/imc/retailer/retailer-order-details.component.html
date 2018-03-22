@@ -1,0 +1,150 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">IMC</a></li>
+        <li class="active"> Retailer Orders </li>
+      </ol>
+    </div>
+    <div class="col-md-6">
+      <div class="page-header">
+        <h1> Retailer Orders </h1>
+      </div>
+    </div>
+    <div class="col-md-6 m-b-10 text-right">  
+        <button class="btn btn-default btn-search btn-small" (click)="backButton()" title="Back">Back</button>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="table-bdr">
+    <h3>Retailer Orders</h3>
+      <div class="table-default table-responsive">
+        <table class="table">
+          <thead class="nowrap">
+            <tr>
+              <th> Retailer # </th>
+              <th> Request # </th>
+              <th> Protocol </th>
+              <th> Mounting </th>
+              <th> Requested Quantity </th>
+              <th> Fulfilled Quantity </th>
+              <th> Fullfilled Date </th>
+              <th> Tag Value </th>
+              <th> Total Amount </th>
+              <th> Invoice Status </th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let retailerOrder of retailerResponse ; let i = index">
+              <td> {{retailerOrder.POSOutletId }} </td>
+              <td> {{retailerOrder.POSRequestId}} </td>
+              <td> {{retailerOrder.Protocol}} </td>
+              <td> {{retailerOrder.Mounting}} </td>
+              <td> {{retailerOrder.RequestQuantity}} </td>
+              <td> {{retailerOrder.FullfiledQuantity}} </td>
+              <td> {{retailerOrder.FullfilledDate | customDateFormat}} </td>
+              <td> {{retailerOrder.TagValue|currencycustom}} </td>
+              <td> {{retailerOrder.TotalAmount|currencycustom}} </td>
+              <td> {{retailerOrder.InvoiceStatus}} </td>
+              <td>
+              <i *ngIf="btnPdfDisable" title="You don't have permission to access" class="fa fa-file-pdf-o fa-fw fa-lg link-disabled"></i>
+              <span *ngIf="!btnPdfDisable"> <a *ngIf="(retailerOrder.InvoiceStatus == 'INVOICED') || (retailerOrder.InvoiceStatus == 'PAID')" tabindex="6" href="{{documentLinked+retailerOrder.InvoicePath}}" target="_blank"
+              title="View PDF"><i class="fa fa-file-pdf-o fa-fw fa-lg"></i></a></span>
+              </td>
+                <td>
+                <i *ngIf="btnMakePaymentDisable && retailerOrder.InvoiceStatus == 'INVOICED'" title="You don't have permission to access" class="fa  fa-lg link-disabled">Make Payment</i>
+                <span *ngIf="!btnMakePaymentDisable && retailerOrder.InvoiceStatus == 'INVOICED'"> <a tabindex="6" (click)="paymentButton(retailerOrder,i)">Make Payment</a></span></td>
+              <!--<td><span *ngIf="retailerOrder.InvoiceStatus == 'INVOICED'"> <a (click)="paymentButton(retailerOrder,i)">Make Payment</a> </span></td>-->
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="table-bdr" *ngIf="diplayCashInformation">
+        <h3>Cash Details</h3>
+        <div class="row">
+        <div class="col-md-6 col-md-offset-1">
+          <div class="panel-body">
+              <div class="form-group col-sm-12">
+                <label>POS Outlet #:</label>
+                <input type="text" class="form-control" id="" name="cash" tabindex="1" value="{{retailerId}}" readonly>
+              </div>
+              <div class="form-group col-sm-12">
+                <label>POS Request #:</label>
+                <input type="text" class="form-control" id="" name="cash" tabindex="1" value="{{PosOutletId}}" readonly>
+              </div>
+              <div class="form-group col-sm-12">
+                <label>Amount:</label>
+                  <input type="text" class="form-control" id="" name="cash" tabindex="1" value="{{totalAmount}}" readonly>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="paymentSelected">
+    <div class="col-md-12">
+      <form [formGroup]="paymentSelectionForm">
+          <label class="display-inline" style="padding-right: 10px; font-weight: 500; font-size: 14px; padding-right: 20px;">Pay By:</label>
+          <div class="display-inline csc-search-radio">
+            <div class="custom-control custom-radio radio-inline">
+              <input type="radio" name="paymentOption" formControlName="paymentOption" value="creditcardPrefrence" (click)="creditcardOptionSelect()" id="paymentOption1" checked />
+              <label for="paymentOption1" class="custom-control-description">Credit Card</label>
+            </div>
+            <div class="custom-control custom-radio radio-inline">
+              <input type="radio" name="paymentOption" formControlName="paymentOption"  value="cashPrefrence" (click)="cashOptionSelect()" id="paymentOption2"/>
+              <label for="paymentOption2" class="custom-control-description">Cash</label>
+            </div>
+          </div>
+      </form>
+
+      <!--<div class="panel panel-default">
+        <div class="panel-body">
+          <div class="form-horizontal">
+            <div class="row">
+              <div class="col-md-6">
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>-->
+    </div>
+  </div>
+  <div class="row m-t-10">
+    <div class="col-md-12">
+      <div class="table-bdr" *ngIf="displayCardInfo">
+        <h3>Credit-Card Details</h3>
+        <div class="row">
+          <div class="col-md-9 col-md-offset-1">
+            <div class="payment-details">
+          <app-credit-card-information [Customerid]="customerId" [IsSaveCheckBox]="false"></app-credit-card-information>
+        </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="displayMakePaymentButton">
+    <div class="col-md-12 text-right">
+        <button class="btn btn-default btn-search" (click)="onMakePayment()" title="Make Payment">Make Payment </button>
+        <button class="btn btn-default btn-reset" (click)="onCancelClick()" title="Cancel">Cancel </button>
+      </div>
+  </div>
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)" (onOk)="paymentOk($event)"></app-success-failure-alerts-message>

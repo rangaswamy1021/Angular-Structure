@@ -1,0 +1,104 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">IMC</a></li>
+        <li class="active">Reports</li>
+        <li class="active">Warranty Tracking Report</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Warranty Tracking Report</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--<div class="alert alert-danger alert-dismissible" role="alert" *ngIf="errorBlock">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>  {{errorMessage}}
+</div>-->
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <form role="form">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="row">
+              <form role="form" name="warrantyTrackingForm" [formGroup]="warrantyTrackingForm" novalidate>
+                <div class="col-md-6">
+                  <div class="col-md-12 form-group" name="warrantyTrackingForm" [formGroup]="warrantyTrackingForm">
+                    <label> Serial #</label>
+                    <input type="text" class="form-control" id="serial" name="serial" formControlName="serial" placeholder="Serial #" maxlength="15">
+                    <div class="msg" *ngIf="warrantyTrackingForm.controls['serial'].invalid && (warrantyTrackingForm.controls['serial'].dirty || warrantyTrackingForm.controls['serial'].touched)">
+                      <div *ngIf="warrantyTrackingForm.controls['serial'].errors.required">
+                        Required.
+                      </div>
+                      <div *ngIf="warrantyTrackingForm.controls['serial'].errors.pattern">
+                        Only numbers allowed
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="focused"> Location</label>
+                    <select class="form-control" name="location" formControlName="location">
+                      <option selected="selected"  value="">ALL</option>
+                       <option *ngFor='let dropdown of dropdownResponse' [value]="dropdown.LocationId" >{{dropdown.LocationName}}</option>
+                    </select>
+                    <!--<div class="msg" *ngIf="warrantyTrackingForm.controls['location'].invalid && (warrantyTrackingForm.controls['location'].dirty || warrantyTrackingForm.controls['location'].touched)">
+                      <div *ngIf="warrantyTrackingForm.controls['location'].errors.required">
+                        *Required.
+                      </div>
+                    </div>-->
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <button type="submit" class="btn btn-primary btn-search" [disabled]="disableSearchButton" (click)="getSearchResults()">Generate Report</button>
+                  <button type="reset" class="btn btn-primary btn-reset" (click)="resetClick()">Reset</button>
+                </div>
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </form>
+
+
+
+
+      <div *ngIf="searchResults">
+        <div class="panel panel-default">
+          <div class="panel-body">
+
+            <table>
+              <tr>
+                <td style="text-align:right"> Serial # &nbsp; : </td>
+                <td>&nbsp; {{serialNumber}} </td>
+              </tr>
+              <tr>
+                <td style="text-align:right"> Location &nbsp; : </td>
+                <td> &nbsp;{{location}} </td>
+              </tr>
+              <tr>
+                <td style="text-align:right"> Warranty Status &nbsp; : </td>
+                <td>&nbsp; {{warrantyStatusValue}} </td>
+              </tr>
+              <tr>
+                <td style="text-align:right"> Warranty End Date &nbsp; : </td>
+                <td> &nbsp;{{warrantyEndDate}} </td>
+              </tr>
+            </table>
+
+            <!--Serial # : {{serialNumber}}<br> Warranty Status : {{warrantyStatusValue}}<br> End Date : {{warrantyEndDate}}-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+</div>

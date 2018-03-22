@@ -1,0 +1,71 @@
+<form role="form" name="searchVehicleForm" [formGroup]="searchVehicleForm" novalidate>
+  <div class="table-bdr">
+    <h3>Search Vehicle</h3>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-6 form-group popover-field">
+          <label for="Plate No.">Plate #</label>
+          <input type="text" class="form-control" placeholder="Plate #" maxlength="10" (keyup)="checkField()" name="pltNumber" formControlName="pltNumber">
+          <div class="msg" *ngIf="searchVehicleForm.controls['pltNumber'].invalid && (searchVehicleForm.controls['pltNumber'].dirty || searchVehicleForm.controls['pltNumber'].touched)">
+            <!-- <div *ngIf="searchVehicleForm.controls['pltNumber'].errors.required">
+                Required.
+              </div> -->
+            <div *ngIf="searchVehicleForm.controls['pltNumber'].errors.maxlength">
+              Maximum 50 characters are allowed.
+            </div>
+            <div *ngIf="searchVehicleForm.controls['pltNumber'].errors.minlength">
+              Minimum 1 characters are allowed.
+            </div>
+            <div *ngIf="searchVehicleForm.controls['pltNumber'].errors.pattern">
+              Plate # allows alphanumerics only.
+            </div>
+          </div>
+          <div class="msg2" *ngIf="isbothFeildEmpty">
+            <div>At least 1 field is required.</div>
+          </div>
+          <button type="button" class="pop-over" [popover]="popAddline1" popoverTitle="Help" triggers="mouseenter:mouseleave" data-container="body"
+            placement="left">?</button>
+          <ng-template #popAddline1>
+            <ul>
+              <li>Plate # allows alphanumerics only </li>
+              <li>It should be minimum 1 character and maximum 10 characters long</li>
+            </ul>
+          </ng-template>
+        </div>
+        <div class="col-md-6 form-group popover-field">
+          <label class="focused">Status</label>
+          <select class="form-control" (change)="checkFieldOnchange()" id="pltContractual" name="pltStatus" formControlName="pltStatus">
+              <option selected="selected" value="">--Select--</option>
+              <option>Active</option>
+              <option>Inactive</option>
+            </select>
+          <button type="button" class="pop-over" [popover]="popAddline2" data-container="body" popoverTitle="Help" triggers="mouseenter:mouseleave"
+            placement="left">?</button>
+          <ng-template #popAddline2>
+            <ul>
+              <li>Select status.</li>
+            </ul>
+          </ng-template>
+        </div>
+        <div class="col-md-6 popover-field form-group">
+          <label class="focused">Contractual Type</label>
+          <select class="form-control" (change)="checkFieldOnchange()" id="pltContractual" name="pltContractual" formControlName="pltContractual">
+              <option selected="selected" value="">--Select--</option>
+              <option *ngFor="let cotracType of contarctualType" value="{{cotracType.Key}}">{{cotracType.Value}}</option>
+            </select>
+          <button type="button" class="pop-over" [popover]="popContarct" data-container="body" popoverTitle="Help" triggers="mouseenter:mouseleave"
+            placement="left">?</button>
+          <ng-template #popContarct>
+            <ul>
+              <li>Select Contractual Type</li>
+            </ul>
+          </ng-template>
+        </div>
+        <div class="col-md-12">
+          <button type="submit" (click)="seacrhClick()" [disabled]="disableButton" class="btn btn-primary btn-search">Search</button>
+          <button type="reset" (click)="resetClick()" class="btn btn-default btn-reset">Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

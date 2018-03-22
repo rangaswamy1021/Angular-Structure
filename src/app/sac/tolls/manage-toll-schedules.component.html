@@ -1,0 +1,115 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">SAC</a>
+        </li>
+        <li>
+          <a href="#">Manage Tolls</a>
+        </li>
+        <li class="active">Manage Toll Schedules</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Toll Schedules</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="content">
+  <div class="row">
+    <div class="col-md-12 m-t-10 m-b-10">
+      <a routerLink="/sac/tolls/add-toll-schedules"><img src="assets/images/svg/add-file2.svg" class="icon-svg3" alt="">Add New Schedule</a>
+    </div>
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <h3>Schedule Details</h3>
+        <!-- {{ tollSchedules | json}} -->
+        <div class="table-responsive" *ngIf="tollSchedules;else noManageDetails">
+          <div class="pad-10">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th (click)="sortDirection('TOLLSCHEDULEHDRDESC')" class="sorting-handle">
+                  Schedule Name
+                  <span *ngIf=gridArrowTOLLSCHEDULEHDRDESC><i class="fa fa-sort-amount-asc fa-fw fa-lg" aria-hidden="true" *ngIf=sortingDirection></i><i class="fa fa-sort-amount-desc fa-fw fa-lg" aria-hidden="true" *ngIf=!sortingDirection></i></span>
+                </th>
+                <th (click)="sortDirection('STARTEFFECTIVEDATE')" class="sorting-handle">Start Effective Date
+                    <span *ngIf=gridArrowSTARTEFFECTIVEDATE><i class="fa fa-sort-amount-asc fa-fw fa-lg" aria-hidden="true" *ngIf=sortingDirection></i><i class="fa fa-sort-amount-desc fa-fw fa-lg" aria-hidden="true" *ngIf=!sortingDirection></i></span>
+                </th>
+                <th (click)="sortDirection('ENDEFFECTIVEDATE')" class="sorting-handle">End Effective Date
+                    <span *ngIf=gridArrowENDEFFECTIVEDATE><i class="fa fa-sort-amount-asc fa-fw fa-lg" aria-hidden="true" *ngIf=sortingDirection></i><i class="fa fa-sort-amount-desc fa-fw fa-lg" aria-hidden="true" *ngIf=!sortingDirection></i></span>
+                </th>
+                <th (click)="sortDirection('SCHEDULETYPE')" class="sorting-handle">Schedule Type
+                    <span *ngIf=gridArrowSCHEDULETYPE><i class="fa fa-sort-amount-asc fa-fw fa-lg" aria-hidden="true" *ngIf=sortingDirection></i><i class="fa fa-sort-amount-desc fa-fw fa-lg" aria-hidden="true" *ngIf=!sortingDirection></i></span>
+                </th>
+                <th (click)="sortDirection('ENTRYPLAZACODE')" class="sorting-handle">Entry Plaza
+                    <span *ngIf=gridArrowENTRYPLAZACODE><i class="fa fa-sort-amount-asc fa-fw fa-lg" aria-hidden="true" *ngIf=sortingDirection></i><i class="fa fa-sort-amount-desc fa-fw fa-lg" aria-hidden="true" *ngIf=!sortingDirection></i></span>
+                </th>
+                <th (click)="sortDirection('ENTRYLANETYPE')" class="sorting-handle">Entry Lane Type
+                    <span *ngIf=gridArrowENTRYLANETYPE><i class="fa fa-sort-amount-asc fa-fw fa-lg" aria-hidden="true" *ngIf=sortingDirection></i><i class="fa fa-sort-amount-desc fa-fw fa-lg" aria-hidden="true" *ngIf=!sortingDirection></i></span>
+                </th>
+                <th (click)="sortDirection('ENTRYLANEDIRECTION')" class="sorting-handle">Entry Lane Direction
+                    <span *ngIf=gridArrowENTRYLANEDIRECTION><i class="fa fa-sort-amount-asc fa-fw fa-lg" aria-hidden="true" *ngIf=sortingDirection></i><i class="fa fa-sort-amount-desc fa-fw fa-lg" aria-hidden="true" *ngIf=!sortingDirection></i></span>
+                </th>
+                <th (click)="sortDirection('TRANSACTIONTYPE')" class="sorting-handle">Transaction Type
+                    <span *ngIf=gridArrowTRANSACTIONTYPE><i class="fa fa-sort-amount-asc fa-fw fa-lg" aria-hidden="true" *ngIf=sortingDirection></i><i class="fa fa-sort-amount-desc fa-fw fa-lg" aria-hidden="true" *ngIf=!sortingDirection></i></span>
+                </th>
+                <th>Transaction Method</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let tollSchedule of tollSchedules | paginate: { itemsPerPage: pageItemNumber, currentPage: p,totalItems:totalRecordCount}">
+                <td>{{tollSchedule.TollScheduleHdrDesc}}</td>
+                <td>{{tollSchedule.StartEffectiveDate | customDateFormat}}</td>
+                <td>{{tollSchedule.EndEffectiveDate | customDateFormat}}</td>
+                <td>{{tollSchedule.ScheduleType}}</td>
+                <td>{{tollSchedule.EntryPlazaCode}}</td>
+                <td>{{tollSchedule.EntryLaneType}}</td>
+                <td>{{tollSchedule.EntryLaneDirection}}</td>
+                <td>{{tollSchedule.TransactionType}}</td>
+                <td>{{tollSchedule.TxnMethod}}</td>
+                <td [hidden]="!tollSchedule.IsActive">Active</td>
+                <td [hidden]="tollSchedule.IsActive">Deactive</td>
+                <td [hidden]="!tollSchedule.IsActive"style="text-align: center;" (click)='deactiveSchedule(tollSchedule)'> <img src="assets/images/svg/block.svg" class="icon-svg3" alt=""></td>
+                <td [hidden]="tollSchedule.IsActive" style="text-align: center;" (click)='deactiveSchedule(tollSchedule)'> <img src="assets/images/svg/activate.svg" class="icon-svg3" alt=""> </td>
+              
+              </tr>
+            </tbody>
+          </table>
+          <div *ngIf='tollSchedules && tollSchedules.length'>
+          <div class="col-md-6 text-left">
+            <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+        </div>
+        </div>
+
+        <ng-template #noManageDetails>
+          <div class="padd-20" style="padding:20px;">
+          <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>No Details Found
+          </div></div>
+        </ng-template>
+
+
+
+      </div>
+    </div>
+  </div>
+</div>

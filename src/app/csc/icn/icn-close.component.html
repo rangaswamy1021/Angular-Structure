@@ -1,0 +1,97 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">ICN</a></li>
+        <li class="active">Close ICN</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1> Close ICN </h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <form name="icnCloseForm" [formGroup]="icnCloseForm">
+    <div class="row">
+      <div class="col-md-6 form-group">
+        <label for="" class="focused">Time Period</label>
+        <div class="show-error" *ngIf="!invalidDate && icnCloseForm.controls['timeperiod'].invalid && (icnCloseForm.controls['timeperiod'].dirty || icnCloseForm.controls['timeperiod'].touched)">
+          <div *ngIf="icnCloseForm.controls['timeperiod'].errors.required">
+            Required.
+          </div>
+        </div>
+        <my-date-range-picker name="timeperiod" (inputFieldChanged)="onDateRangeFieldChanged($event)" [options]="myDateRangePickerOptions"
+          formControlName="timeperiod"></my-date-range-picker>
+        <div class="show-error" *ngIf="invalidDate">
+          <div>Invalid Date Range</div>
+        </div>
+
+        <!--<input class="form-control disbale-to-write" placeholder="Start Date - End Date" bsDaterangepicker #dpr="bsDaterangepicker"
+                  name="timeperiod" [(ngModel)]="timeperiod" readonly>-->
+      </div>
+      <div class="col-md-6 m-t-20">
+        <button class="btn btn-primary btn-search" [disabled]="disableSearchButton" (click)="searchUsers()">Search</button>
+        <button class="btn btn-primary btn-reset" (click)="resetSearchDetails()">Reset</button>
+      </div>
+    </div>
+  </form>
+  <div class="table-bdr">
+    <h3>User Details</h3>
+    <div class="pad-10">
+      <div class="table-responsive">
+        <table class="table">
+          <thead *ngIf='icnDetailsResponseArray && icnDetailsResponseArray.length > 0'>
+            <tr>
+              <th width="80">
+                <div class="checkbox">
+                  <input type="checkbox" id="isCheckAll" (change)="checkandUncheckAllUsers($event)" [(ngModel)]='isCheckAll'>
+                  <label for="isCheckAll"><span></span></label></div>
+              </th>
+              <th> Username </th>
+              <th> ICN Status </th>
+              <th> ICN# </th>
+              <th> </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let icnDetails of icnDetailsResponseArray | paginate: { itemsPerPage:pageItemNumber, currentPage: pageNumber, totalItems:totalRecordCount }">
+              <td>
+                <div class="checkbox" *ngIf="icnDetails.isVisibleCheckbox">
+                  <input type="checkbox" id="{{icnDetails.ICNId}}" (change)="checkorUncheckUser(icnDetails,$event)" [checked]="icnDetails.isICNUserChecked">
+                  <label for="{{icnDetails.ICNId}}"><span></span></label></div>
+              </td>
+              <td>{{icnDetails.UserName}}</td>
+              <td>{{icnDetails.ICNStatus}}</td>
+              <td>{{icnDetails.isVisibleICNNumber ? icnDetails.ICNId : ""}}</td>
+              <td> <a *ngIf="icnDetails.isVisibleReopen" [ngClass]="{'disabletextbox': disableReopenButton}" (click)="reopenIcn(icnDetails)">ReOpen</a></td>
+            </tr>
+            <tr *ngIf='!icnDetailsResponseArray || icnDetailsResponseArray.length==0'>
+              <td colspan="5">No users to display</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="row page-info" *ngIf='icnDetailsResponseArray && icnDetailsResponseArray.length > 0'>
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 text-right" *ngIf="isCloseButtonVisible">
+      <button class="btn btn-primary btn-search" [disabled]="disableCloseButton" (click)="closeIcnUsers()">Close ICN</button>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='' [msgDesc]='msgDesc' (setFlag)="reopenIcnUser($event)"
+  (onOk)="reopenIcnUser($event)"></app-success-failure-alerts-message>

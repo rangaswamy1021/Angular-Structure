@@ -1,0 +1,152 @@
+<div class="page-title-header">
+  <div class="row">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">TVC</a></li>
+        <li><a href="#">Payment Details</a></li>
+        <li class="active">View Payment Plan Details</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>View Payment Plan Details</h1>
+        <div class="text-right">
+          <span id="" class="accno">Account #: {{longViolatorid}}</span>
+          <button class="btn btn-primary btn-reset" (click)='exitClick()' type="submit">Exit</button>
+          <button class="btn btn-default btn-search" (click)='backClick()' type="reset">Back</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)" (onOk)="userAction($event)"></app-success-failure-alerts-message>
+
+
+<div class="content">
+  <a  [ngClass]="{'disabletextbox': disablePaymentButton}" (click)='PayTermClick()'>Make Payment </a>
+  <!--<form role="form" >-->
+  <div class="panel panel-default">
+    <div class="panel-heading">Payment Plan Details</div>
+    <div class="panel-body bordered">
+      <div *ngIf='eMIHeaderDetails && eMIHeaderDetails.length;else NodetailsBlock'>
+        <table class="table table-bordered table-sm">
+          <thead>
+            <tr>
+              <th>Account #</th>
+              <th>Payment Plan Amount</th>
+              <th>Due Amount</th>
+              <th>Last term Due date</th>
+              <th>Status</th>
+              <th *ngIf="isShowPaymentBlock">Amount To Be Paid</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let item of eMIHeaderDetails'>
+              <td>{{item.CustomerId}}</td>
+              <td>{{item.EMIAmount | currency:'USD':true:'1.2-2'}}</td>
+              <td>{{item.EMIDueAmount | currency:'USD':true:'1.2-2'}}</td>
+              <td>{{item.EMILasetTermDueDate | customDateFormat}}
+              </td>
+              <td>{{item.EMIStatus}}</td>
+              <td *ngIf="isShowPaymentBlock && item.EMIStatus != 'VOID'">
+                <input type="text" [(ngModel)]="paymentAmount">
+              </td>
+              <td width='50px' *ngIf="item.EMIStatus != 'VOID' ">
+                <a (click)='viewTermsDetailsClick(item.EMIHeaderId)'><img src="assets/images/svg/docicon.svg" alt="View Terams" class="icon-svg3"></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!--</form>-->
+
+
+  <div class="panel panel-default" *ngIf="isShowTermsGrid">
+    <div class="panel-heading">
+      Payment Plan Term Details
+      <a style="float:right;" (click)='closeTermDetails()'>
+				<img src="assets/images/svg/delete-red.svg" alt="Close" class="icon-svg3">
+			</a>
+    </div>
+
+    <div class="panel-body">
+      <div *ngIf='eMITermDetails && eMITermDetails.length;else NodetailsBlock'>
+        <table class="table table-bordered table-sm">
+          <thead>
+            <tr>
+              <th>Term</th>
+              <th>Term Amount</th>
+              <th>Paid Amount</th>
+              <th>Term Due Date</th>
+              <th>Grace Period</th>
+              <th>Defaulted</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let item of eMITermDetails; let row_no = index'>
+              <td>{{item.EMITermNumber}}</td>
+              <td>{{item.EMITermAmount | currency:'USD':true:'1.2-2'}}</td>
+              <td>{{item.EMITermPaidAmount | currency:'USD':true:'1.2-2'}}</td>
+              <td>
+                <label *ngIf="item.isDispalyDueDate"> {{item.EMITermDuedate |customDateFormat}} </label>
+                <a *ngIf="item.IsExtentDueDate" [ngClass]="{'disabletextbox': disablTermEditButton}" (click)='editGracePeriod(item, row_no)'>Edit</a>
+               
+                  <span *ngIf="item.isSelected">
+                    <my-date-picker name="mydate" [options]="myDatePickerOptions"  [(ngModel)]="startDate"></my-date-picker>
+                  </span>
+                <a *ngIf="item.isSelected" (click)='updateGracePeriod(item,row_no )'>Update</a>
+                <a *ngIf="item.isSelected" (click)='cancelGracePeriod(item)'>Cancel</a>
+              </td>
+  <!--<td>
+                <label > {{item.EMITermDuedate |customDateFormat}} </label>
+                <a  [ngClass]="{'disabletextbox': disablTermEditButton}" (click)='editGracePeriod(item, row_no)'>Edit</a>
+            
+                  <span *ngIf="item.isSelected">
+                    <my-date-picker name="mydate" [options]="myDatePickerOptions"  [(ngModel)]="startDate"></my-date-picker>
+                  </span>
+                <a *ngIf="item.isSelected" (click)='updateGracePeriod(item,row_no )'>Update</a>
+                <a *ngIf="item.isSelected" (click)='cancelGracePeriod(item)'>Cancel</a>
+              </td>-->
+
+
+              <td>{{item.EMIGraceperiod| customDateFormat}}</td>
+              <td>
+                <label *ngIf="item.IsDefault"> Yes</label>
+                <label *ngIf="!item.IsDefault"> No</label>
+                <a *ngIf="item.IsEditDefaultCnt" [ngClass]="{'disabletextbox': disablTermEditButton}" (click)='editDefaultCount(item)'>Edit</a>
+              </td>
+              <td>{{item.EMITermStatusDesc}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #NodetailsBlock>
+    <div class="alert alert-info" role="alert">No details to display</div>
+  </ng-template>
+
+  <div class="row m-t-20" id="paymentBlock" style="display:none;">
+    <div class="col-md-12">
+      <app-make-payment></app-make-payment>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="isShowPaymentBlock">
+    <div class="col-md-12 text-right">
+      <div class="btns-group">
+        <button class="btn btn-primary btn-search" type="submit" (click)="doPayment()" autofocus>Make Payment</button>
+        <button class="btn btn-primary btn-reset" type="submit" (click)="doPaymentReset()">Reset</button>
+        <button class="btn btn-primary btn-reset" type="submit" (click)="doPaymentCancel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>

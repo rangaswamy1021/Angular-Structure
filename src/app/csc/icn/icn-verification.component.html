@@ -1,0 +1,340 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li>
+          <a href="#">ICN</a>
+        </li>
+        <li class="active">ICN Verification</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>ICN Verification</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row" *ngIf="isSearchEnable">
+    <div class="col-md-12">
+      <form role="form" name="icnVerificationForm" [formGroup]="icnVerificationForm" novalidate>
+        <div class="table-bdr">
+          <h3>Clerk Verification</h3>
+          <div class="pad-20">
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <label for="" class="focused">Time Period</label>
+                <div class="show-error" *ngIf="!invalidDate && icnVerificationForm.controls['timeperiod'].invalid && (icnVerificationForm.controls['timeperiod'].dirty || icnVerificationForm.controls['timeperiod'].touched)">
+                  <div *ngIf="icnVerificationForm.controls['timeperiod'].errors.required">
+                    Required.
+                  </div>
+                </div>
+                <my-date-range-picker name="timeperiod" (inputFieldChanged)="onDateRangeFieldChanged($event)" [options]="myDateRangePickerOptions"
+                  formControlName="timeperiod" tabindex="2"></my-date-range-picker>
+                <div class="show-error" *ngIf="invalidDate">
+                  <div>Invalid Date Range</div>
+                </div>
+                <!--<input class="form-control disbale-to-write" placeholder="Start Date - End Date" bsDaterangepicker #dpr="bsDaterangepicker" name="timeperiod"
+                      formControlName="timeperiod" >-->
+              </div>
+              <div class="col-md-6 m-t-15">
+                <button type="submit" class="btn btn-primary btn-search" [disabled]="disableSearch" (click)="searchUsers()">Search</button>
+                <button type="submit" class="btn btn-primary btn-reset" (click)="resetSearchDetails()">Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="table-bdr">
+        <h3>Clerk Count Out Details</h3>
+        <div class="table-responsive">
+          <table class="table">
+            <thead *ngIf='icnUsersDetailsResponseArray && icnUsersDetailsResponseArray.length > 0'>
+              <tr>
+                <th>User #</th>
+                <th>Username</th>
+                <th>ICN #</th>
+                <th>ICN Status</th>
+                <th>Created Date</th>
+                <th>Updated Date</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let icnUsersDetails of icnUsersDetailsResponseArray | paginate: { itemsPerPage:usersPageItemNumber, currentPage: usersPageNumber, totalItems:usersTotalRecordCount, id: 'icnUsersPaging' }">
+                <td>{{icnUsersDetails.UserId}}</td>
+                <td>{{icnUsersDetails.UserName}}</td>
+                <td>{{icnUsersDetails.ICNId}}</td>
+                <td>{{icnUsersDetails.ICNStatus}}</td>
+                <td>{{icnUsersDetails.RevenueDate | customDateFormat}}</td>
+                <td>{{icnUsersDetails.UpdatedDate | customDateFormat}}</td>
+                <td>
+                  <img src="assets/images/svg/view.svg" class="icon-svg3" alt="View" title="View" (click)="getICNTransactionDetails(icnUsersDetails)">
+                </td>
+              </tr>
+              <tr *ngIf='!icnUsersDetailsResponseArray || icnUsersDetailsResponseArray.length==0'>
+                <td colspan="7">No clerk count out details to display</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="page-info" *ngIf='icnUsersDetailsResponseArray && icnUsersDetailsResponseArray.length > 0'>
+            <div class="col-md-6 text-left">
+              <p>Display {{usersStartItemNumber}} - {{usersEndItemNumber}} Records of {{usersTotalRecordCount}}</p>
+            </div>
+            <div class="col-md-6 text-right">
+              <pagination-controls (pageChange)="usersPageChanged($event)" id="icnUsersPaging"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div *ngIf="isClerkVerification">
+      <div class="col-md-6">
+        ICN #: {{icnId}}
+      </div>
+      <div class="col-md-6 text-right">
+        <strong>Status:</strong> Counted
+      </div>
+      <div class="col-md-12 m-t-10">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Clerk Verification</th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Cash Amount</td>
+                <td class="amount-value">{{icnManualEntry.CashAmount | currency:'USD':true:'1.2-2'}}</td>
+                <td>
+                  <img src="assets/images/svg/view.svg" class="icon-svg3" alt="" (click)="getTxns('CASH')">
+                </td>
+              </tr>
+              <tr>
+                <td>Check Amount</td>
+                <td class="amount-value">{{icnManualEntry.CheckAmount| currency:'USD':true:'1.2-2'}}</td>
+                <td>
+                  <img src="assets/images/svg/view.svg" class="icon-svg3" alt="" (click)="getTxns('CHECK')">
+                </td>
+              </tr>
+              <tr>
+                <td>Money Order Amount</td>
+                <td class="amount-value">{{icnManualEntry.MOAmount| currency:'USD':true:'1.2-2'}}</td>
+                <td>
+                  <img src="assets/images/svg/view.svg" class="icon-svg3" alt="" (click)="getTxns('MO')">
+                </td>
+              </tr>
+              <tr>
+                <td>Alloted Tags</td>
+                <td class="amount-value">{{icnManualEntry.ItemAllotedCount}}</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>
+                  <tr>
+                    <td>Assigned Tags</td>
+                  </tr>
+                  <tr>
+                    <td>Returned Tags</td>
+                  </tr>
+                </td>
+                <td>
+                  <tr>
+                    <td class="amount-value">{{icnManualEntry.ItemAssignCount}}</td>
+                  </tr>
+                  <tr>
+                    <td class="amount-value">{{icnManualEntry.ItemReturnedCount}}</td>
+                  </tr>
+                </td>
+                <td>
+                  <img src="assets/images/svg/view.svg" class="icon-svg3" alt="" (click)="getOnlySysTxns(icnManualEntry)">
+                </td>
+              </tr>
+              <tr>
+                <td>Remaining tags</td>
+                <td class="amount-value">{{icnManualEntry.ItemRemainingCount}}</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="btns-group text-right m-t-10">
+          <button class="btn btn-primary btn-search" type="submit" [disabled]="disableVerify" (click)="btnVerify(icnManualEntry)">Verify</button>
+          <button class="btn btn-primary btn-reset" type="submit" (click)="cancel()">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="isVarianceEnable">
+      <div class="col-md-12 m-t-20">
+        <div class="table-bdr">
+          <h3>Variance Details</h3>
+          <div class="pad-10">
+            <div class="table-responsive bordered">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Payment</th>
+                    <th class="amount-value">System Transactions
+                      <br>
+                      <small>System Transactions + Float Amount</small>
+                    </th>
+                    <th class="amount-value">Manual Transactions</th>
+                    <th class="amount-value">Variance</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let variance of varianceDetailsArray">
+                    <td class="amount-value">{{variance.VarianceType}}</td>
+                    <td class="amount-value">{{variance.SystemTxnCount }}</td>
+                    <td class="amount-value">{{variance.ManualTxnCount}}</td>
+                    <td class="amount-value">
+                      <span [ngClass]="{'red': variance.Variance > 0 }">
+                        {{variance.Variance}}
+                      </span>
+                    </td>
+                    <td style="text-align: center">
+                      <img src="assets/images/svg/view.svg" class="icon-svg3" alt="" (click)="getTxns(variance.VarianceType)">
+                    </td>
+                </tbody>
+              </table>
+            </div>
+            <div class="row m-t-10">
+              <div class="col-md-4">
+                <div class="form-horizontal">
+                  <div class="form-group" *ngIf="isNote && isVarianceOccured">
+                    <label for="inputEmail3" class="col-sm-3 control-label">Note
+                      <span class="star-mandate">*</span>
+                    </label>
+                    <div class="col-sm-9">
+                      <textarea maxlength="250" (keyup)="descEvent($event)" name="" id="" class="form-control" [(ngModel)]="txtDescription"></textarea>
+                      <br>
+                      <small class="pull-right">{{descLength}} Charecters left</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 text-right" *ngIf="!isReopen">
+                <button class="btn btn-primary btn-search" type="submit" *ngIf="isVarianceOccured" (click)="submitNotes()">Submit</button>
+                <button class="btn btn-primary btn-reset" type="submit" (click)="cancel()">Cancel</button>
+              </div>
+              <div class="col-md-12 text-right" *ngIf="isReopen">
+                <button class="btn btn-primary btn-search" type="submit" [disabled]="disableReopen" (click)="reopen()">ReOpen</button>
+                <button class="btn btn-primary btn-reset" type="submit" (click)="cancel()">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 m-t-20" *ngIf="isClerkEnable">
+      <div class="table-bdr">
+        <h3>Clerk Entries</h3>
+        <div class="table-responsive pad-10">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="amount-value">Cash Amount</th>
+                <th class="amount-value">Check Amount</th>
+                <th class="amount-value">Money Order Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="clerkEntries">
+                <td class="amount-value">{{clerkEntries.CashAmount | currency:'USD':true:'1.2-2'}}</td>
+                <td class="amount-value">{{clerkEntries.CheckAmount | currency:'USD':true:'1.2-2'}}</td>
+                <td class="amount-value">{{clerkEntries.MOAmount | currency:'USD':true:'1.2-2'}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 m-t-20">
+      <div class="table-bdr">
+        <h3 *ngIf="isClerkEnable || isSysEnable || isItemSysTxns">System Entries</h3>
+        <div *ngIf="isClerkEnable || isSysEnable">
+          <div class="table-responsive pad-10">
+            <table class="table">
+              <thead *ngIf='icnSysEntries && icnSysEntries.length>0'>
+                <tr>
+                  <th>Transaction #</th>
+                  <th>Customer #</th>
+                  <th>Voucher #</th>
+                  <th class="amount-value">Transaction Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let sysEntries of icnSysEntries | paginate: { itemsPerPage:PageItemNumber, currentPage: SysPageNumber, totalItems:TotalRecordCount, id: 'sysPaging' }">
+                  <td>{{sysEntries.TxnId}}</td>
+                  <td>{{sysEntries.CustomerId}}</td>
+                  <td>{{sysEntries.VoucherNo}}</td>
+                  <td>{{sysEntries.TxnAmount}}</td>
+                </tr>
+                <tr *ngIf='!icnSysEntries || icnSysEntries.length==0'>
+                  <td colspan="4">No transaction details to display</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="row page-info" *ngIf="icnSysEntries && icnSysEntries.length > 0">
+            <div class="col-md-6 text-left">
+              <p>Display {{StartItemNumber}} - {{EndItemNumber}} Records of {{TotalRecordCount}}</p>
+            </div>
+            <div class="col-md-6 text-right">
+              <pagination-controls (pageChange)="tagPageChanged($event)" id='sysPaging'></pagination-controls>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="isItemSysTxns">
+          <div class="table-responsive pad-10" >
+            <table class="table">
+              <thead *ngIf="icnTxns && icnTxns.length > 0">
+                <tr>
+                  <th>Serial #</th>
+                  <th>HexTagId #</th>
+                  <th>FacilityCode #</th>
+                  <th>Tag Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let sysEntries of icnTxns | paginate: { itemsPerPage:tagPageItemNumber, currentPage: tagSysPageNumber, totalItems:tagTotalRecordCount, id: 'tag' }">
+                  <td>{{sysEntries.SerialNo}}</td>
+                  <td>{{sysEntries.HEXItemID}}</td>
+                  <td>{{sysEntries.FacilityCode}}</td>
+                  <td>{{sysEntries.ItemStatus}}</td>
+                </tr>
+                <tr *ngIf='!icnTxns || icnTxns.length==0'>
+                  <td colspan="4">No transaction details to display</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="row page-info" *ngIf="icnTxns && icnTxns.length > 0">
+            <div class="col-md-6 text-left">
+              <p>Display {{tagStartItemNumber}} - {{tagEndItemNumber}} Records of {{tagTotalRecordCount}}</p>
+            </div>
+            <div class="col-md-6 text-right">
+              <pagination-controls (pageChange)="tagPageChanged($event)" id='tag'></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

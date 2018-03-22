@@ -1,0 +1,253 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">TVC</a>
+        </li>
+        <li>
+          <a href="#">Search</a>
+        </li>
+        <li>
+          <a href="#">Account Summary</a>
+        </li>
+        <li>
+          <a href="#">Trips</a>
+        </li>
+        <li class="active">Trip Adjustments</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1 style="float:left;">Trip Adjustments -
+          <small>({{totalTripsCount}} Trip(s) with
+            <span class="red">{{totalPenaultyCount}}</span> Penalty)</small>
+        </h1>
+        <div class="text-right">
+          <span id="" class="accno">Account #: {{violatorId}}</span>
+          <button class="btn btn-primary btn-reset" (click)='exitClick()' type="submit">Exit</button>
+          <button class="btn btn-default btn-search" (click)='backClick()' type="button">Back</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)" (onOk)="userAction($event)"></app-success-failure-alerts-message>
+  <div class="row">
+    <div class="col-md-12 radio-big">
+      <label *ngFor="let entry of adjustmentType;let idx = index" class="custom-control custom-radio radio-inline">
+        <input name="inlineRadioOptions" (change)="onSelectionChange(entry.id)" type="radio" [(ngModel)]="defaultAdjustment" class="custom-control-input"
+          [value]="entry.id" [id]="entry.id">
+        <!--<span class="custom-control-indicator"> </span>
+        <span class="custom-control-description">{{ entry.Value }}
+        </span>-->
+         <label [for]="entry.id" class="custom-control-description">{{ entry.Value }}</label>
+      </label>
+    </div>
+  </div>
+  <div class="row" *ngIf="isAllowCreditToggle">
+    <div class="col-md-12">
+      <p class="m-t-20">
+        <span class="red">*</span> Selecting a trip for adjustment will result in 100% waiving off of that trip</p>
+    </div>
+  </div>
+  <div class="row" *ngIf="isAllowCreditToggle && isDiscountBlockVisible">
+    <form role="form" name="tripAdjustmentForm" [formGroup]="tripAdjustmentForm" novalidate>
+      <div class="col-md-12">
+        <div class="pad-20 bg-light-blue">
+          <div class="form-inline">
+            <div class="form-group">
+              <div class="checkbox">                         
+                  <input type="checkbox" id="checkdiscount" formControlName="checkdiscount" (change)="checkDiscount($event)" >
+                   <label for="checkdiscount">
+                  <span></span>
+                </label>
+              </div>
+              <span>Check to apply bulk Discount % all penalties ({{totalPenaultyCount}})</span>
+            </div>
+            <div class="form-group">
+              <input type="number" min="0" max="100" maxlength="3" [attr.disabled]="applyDiscountFields?'':null" class="form-control" formControlName="discountAmount"
+                id="" placeholder="">
+            </div>
+            <button type="submit" [disabled]='applyDiscountFields' class="btn btn-primary btn-search" (click)="applyDiscountButton('C')">Apply</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="row">
+    <div class="col-md-12" *ngIf="vioAmountsList">
+      <div class="table-responsive m-t-20">
+        <table class="table table-border table-collapse trip-adjustment">
+          <thead>
+            <tr>
+              <th></th>
+              <th>
+                <div *ngIf="isAllowCreditToggle" class="checkbox">
+                 
+                    <input type="checkbox"  [(ngModel)]="isParentSelected" (change)=checkAll($event); id="isParentSelected">
+                     <label for="isParentSelected">
+                       <span ></span>
+                  </label>
+                </div>
+              </th>
+              <th>Trip #</th>
+              <th>Toll Amount($)</th>
+              <th>Penalty($)</th>
+              <th>Total Due($)</th>
+              <th>Adjusted Toll Amount($)</th>
+              <th>Adjusted Penalty($)</th>
+              <th>Total Due($)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let viotrips of vioAmountsList; let Headrow_no=index' [ngClass]="(viotrips.objViolationFees.length>0)?'row-expand':''">
+              <td colspan="9" style="width: 100%; padding: 0;">
+                <table style="width: 100%;">
+                  <tr [ngClass]="(viotrips.objViolationFees.length>0)?'row-expand-bg':''">
+                    <td style="text-align: center;">
+                      <div *ngIf="viotrips.FineFee>0">
+                        <button class="btn btn-default row-btn" [disabled]="viotrips.boolDisableFeeAll" (click)="showFees(viotrips)">
+                          <img src="assets/images/svg/right-arrow-blue.svg" [ngClass]="viotrips.boolShowFee? 'icon-svg4 icon-rotate':'icon-svg4'" alt="">
+                        </button>
+                      </div>
+                    </td>
+                    <td>
+                      <div *ngIf="isAllowCreditToggle" class="checkbox">
+                    
+                          <input type="checkbox" id="{{viotrips.CitationId}}" [(ngModel)]="viotrips.checkedStatus" [disabled]="viotrips.TotalFee==0 || viotrips.boolShowFee" (change)=checkChangeCreditAdjustment(viotrips);>
+                              <label for="{{viotrips.CitationId}}">
+                                <span ></span>
+                        </label>
+                      </div>
+                    </td>
+                    <td>{{viotrips.CitationId}}</td>
+                    <td>{{viotrips.Tollfee | currency:'USD':true:'1.2-2'}}</td>
+                    <td>{{viotrips.FineFee | currency:'USD':true:'1.2-2'}}</td>
+                    <td class="border-right">{{viotrips.TotalFee | currency:'USD':true:'1.2-2'}}</td>
+                    <td class="form-inline">
+                      <div *ngIf="isAllowCreditToggle && !viotrips.checkedStatus">
+                        {{viotrips.AdjTollfee | currency:'USD':true:'1.2-2'}}
+                      </div>
+                      <div *ngIf="isAllowCreditToggle && viotrips.checkedStatus">
+                      <input type="number" style="height: 27px;"  maxlength="8" class="form-control" [(ngModel)]="viotrips.AdjTollfee" value="{{(viotrips.AdjTollfee)}}"
+                      (change)="applyPartialAdjustment(viotrips);">
+                    </div>
+                      <div *ngIf="!isAllowCreditToggle">
+                        <input type="number" style="height: 27px;" maxlength="8" class="form-control" [(ngModel)]="viotrips.AdjTollfee" value="{{(viotrips.AdjTollfee)}}"
+                          (change)="applyDebitAdjustment(viotrips);">
+                      </div>
+                    </td>
+                    <td>
+                      <div *ngIf="isAllowCreditToggle">
+                        {{viotrips.AdjFineFee | currency:'USD':true:'1.2-2'}}
+                      </div>
+                      <div *ngIf="!isAllowCreditToggle && viotrips.objViolationFees.length>0 && viotrips.FineFee==0; else NoPenaluty">
+                        <input type="number" style="height: 27px;" maxlength="8" class="form-control" [(ngModel)]="viotrips.AdjFineFee" value="{{(viotrips.AdjFineFee)}}"
+                          (change)="applyDebitAdjustmentForFee(viotrips);">
+                      </div>
+                      <ng-template #NoPenaluty>
+                        <div *ngIf="!isAllowCreditToggle">
+                          {{viotrips.AdjFineFee | currency:'USD':true:'1.2-2'}}</div>
+                      </ng-template>
+                    </td>
+                    <td>{{viotrips.AdjTotalFee | currency:'USD':true:'1.2-2'}}</td>
+                  </tr>
+                  <tr *ngFor='let vioFeedetail of viotrips.objViolationFees; let rowno=index'>
+                    <td *ngIf="viotrips.boolShowFee"></td>
+                    <td *ngIf="viotrips.boolShowFee" colspan="8" class="feeStyle">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Fee Description</th>
+                            <th>Amount($)</th>
+                            <th>Adjusted Amount($)</th>
+                            <th></th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>{{vioFeedetail.FeeDesc}}</td>
+                            <td>{{vioFeedetail.Amount | currency:'USD':true:'1.2-2'}}</td>
+                            <td>
+                              <input type="number" maxlength="8" class="form-control" [(ngModel)]="vioFeedetail.AdjAmount" value="{{(vioFeedetail.AdjAmount)}}">
+                            </td>
+                            <td>
+                              <button type="submit" class="btn btn-primary btn-search btn-small" (click)="applyFeeAdjustment(vioFeedetail)">Apply</button>
+                            </td>
+                            <td></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr class="adjustmentFooter" *ngIf="vioAmountsList[0]">
+              <td></td>
+              <td></td>
+              <td>
+                Total({{totalTripsCount}})
+              </td>
+              <td>
+                {{vioAmountsList[0].TotalTripsAmount | currency:'USD':true:'1.2-2'}}
+              </td>
+              <td>
+                {{vioAmountsList[0].TotalPenaltyAmount | currency:'USD':true:'1.2-2'}}
+              </td>
+              <td>
+                {{vioAmountsList[0].TotalTripsPenaltyAmount | currency:'USD':true:'1.2-2'}}
+              </td>
+              <td>
+                {{vioAmountsList[0].TotalAdjustedTripsAmount | currency:'USD':true:'1.2-2'}}
+              </td>
+              <td>
+                {{vioAmountsList[0].TotalAdjustedPenaltyAmount | currency:'USD':true:'1.2-2'}}
+              </td>
+              <td>
+                {{vioAmountsList[0].TotalAdjustedTripsPenaltyAmount | currency:'USD':true:'1.2-2'}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="row m-t-20">
+    <div class="col-md-12 text-right">
+      <button class="btn btn-primary btn-reset" *ngIf="isAllowCreditToggle" type="submit" (click)="moveTripsToCustomer()">Move to Customer</button>
+      <button class="btn btn-primary btn-reset" type="submit" (click)="makePayment()">Make Payment</button>
+      <button class="btn btn-primary btn-reset" type="submit" (click)="updateTripStatus()">Update Trip Status</button>
+      <button class="btn btn-primary btn-search" type="submit" [disabled]="disableAdjustmentbtn" (click)="applyAdjustment()">Apply Adjustment</button>
+      <button class="btn btn-primary btn-reset" type="submit" (click)="resetButton()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="modal fade" id="violation-confirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        Are you sure you want to move to customer?
+        <div class="m-t-10">
+          <button class="btn btn-primary btn-search" (click)='btnYes()'>OK</button>
+          <button class="btn btn-primary btn-search" (click)='btnNo()'>Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->

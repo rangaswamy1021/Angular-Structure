@@ -1,0 +1,224 @@
+<div class="page-title-header">
+  <div class="row">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">TVC</a>
+        </li>
+        <li>
+          <a href="#">Violator Details</a>
+        </li>
+        <li class="active">Transaction Activities</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Transaction Activities</h1>
+        <div class="text-right">
+          <span id="" class="accno">Account #: {{longViolatorId}}</span>
+          <button class="btn btn-primary btn-reset" (click)='exitClick()' type="submit">Exit</button>
+          <button class="btn btn-default btn-search" (click)='backClick()' type="reset">Back</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+
+<div class="content">
+  <form role="form" [formGroup]="tripActivityForm" name="tripActivityForm" (ngSubmit)="tripSearch()">
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="timePeriod" class="focused">Time Period</label>
+        <!--<label style="color:red; " *ngIf="tripActivityForm.controls['bsRangeValue'].invalid && (tripActivityForm.controls['bsRangeValue'].touched)">
+                            Date Range is required
+                           </label>-->
+        <!--<input class="form-control" placeholder="Daterangepicker" bsDaterangepicker #dpr="bsDaterangepicker" [(ngModel)]="bsRangeValue"
+							 id="bsRangeValue" name="bsRangeValue" formControlName="bsRangeValue">-->
+        <my-date-range-picker  id="timePeriod" name="mydaterange" [options]="myDateRangePickerOptions" placeholder="MM/DD/YYYY-MM/DD/YYYY" formControlName="bsRangeValue"
+          (inputFieldChanged)='onInputFieldRangeChanged($event)' (inputFocusBlur)='onInputFocusBlur($event)'></my-date-range-picker>
+        <div class="show-error" *ngIf=" !invalidDateRange && (tripActivityForm.controls['bsRangeValue'].invalid && (tripActivityForm.controls['bsRangeValue'].dirty || tripActivityForm.controls['bsRangeValue'].touched))">
+          <div *ngIf="tripActivityForm.controls['bsRangeValue'].errors.required">
+            Date Range is required.
+          </div>
+        </div>
+        <div *ngIf="invalidDateRange" class="show-error">
+          <div>Invalid Date Range</div>
+        </div>
+
+      </div>
+      <div class="form-group col-md-6">
+        <label for="plateNumber">Plate #</label>
+        <input class="form-control" MaxLength="10" placeholder="Plate #" pattern="^[A-Za-z0-9]+$" type="text" [(ngModel)]="vehicleNUmber"
+          id="plateNumber" name="plateNumber" formControlName="plateNumber">
+        <div class="msg" *ngIf="tripActivityForm.controls['plateNumber'].invalid && (tripActivityForm.controls['plateNumber'].dirty || tripActivityForm.controls['plateNumber'].touched)">
+          <div *ngIf="tripActivityForm.controls['plateNumber'].errors.pattern">
+            Invalid Plate #
+          </div>
+        </div>
+      </div>
+        <div class="clear">
+            </div>
+      <div class="form-group col-md-6">
+        <label for="tripNumber">Trip #</label>
+        <input class="form-control" MaxLength="18" placeholder="Trip #" pattern="^[0-9]+$" type="text" [(ngModel)]="tripId" id="tripNumber"
+          name="tripNumber" formControlName="tripNumber">
+        <div class="msg" *ngIf="tripActivityForm.controls['tripNumber'].invalid && (tripActivityForm.controls['tripNumber'].dirty || tripActivityForm.controls['tripNumber'].touched)">
+          <div *ngIf="tripActivityForm.controls['tripNumber'].errors.pattern">
+            Invalid Trip #
+          </div>
+        </div>
+      </div>
+     
+
+      <div class="form-group col-md-6">
+        <label for="tollTransactionType" class="focused">Transaction Type</label>
+        <select class="form-control" [(ngModel)]="tollTransactionType" id="tollTransactionType" formControlName="tollTransactionType"
+          name="tollTransactionType">
+                <option selected="selected" value="">--Select--</option>
+                <option *ngFor="let tolltypes of dropDownList" value="{{tolltypes.Key}}">
+                  {{tolltypes.Value}}
+                </option>
+              </select>
+      </div>
+
+      <div class="form-group col-md-6">
+        <label for="billingStatus" class="focused">Transaction Status</label>
+        <select class="form-control" [(ngModel)]="billingStatus" id="billingStatus" formControlName="billingStatus" name="billingStatus">
+                <option selected="selected" value="">--Select--</option>
+                <option *ngFor="let tolltypes of txnCategotyLst" value="{{tolltypes.LookUpTypeCodeDesc}}">
+                  {{tolltypes.LookUpTypeCodeDesc}}
+                </option>
+              </select>
+      </div>
+
+      <div class="col-md-6 m-t-20">
+        <button class="btn btn-primary btn-search" [disabled]="disableSearchButton" type="submit">Search</button>
+        <button class="btn btn-default btn-reset" (click)='resetClick()'>Reset</button>
+      </div>
+
+    </div>
+  </form>
+  <!--<div class="text-right" *ngIf='isDisplayShowAll'>
+    <button class="btn btn-primary btn-search" (click)='showAllClick()' type="submit">Show All</button>
+    <button class="btn btn-default btn-reset" (click)='restShowAllClick()' type="reset">Reset</button>
+  </div>
+  <div class="clearfix"></div>-->
+
+  <form role="form" [formGroup]="tripGridForm" name="tripGridForm">
+    <div class="panel panel-default m-t-20">
+      <div class="panel-heading">Transaction Activities
+        <div class="pull-right display-inline" *ngIf='isDisplayShowAll'>
+          <a (click)='showAllClick()'>Show All</a>|
+          <a (click)='restShowAllClick()'>Reset</a>
+        </div>
+      </div>
+      <div class="panel-body table-bdr">
+        <div *ngIf='tripResponse && tripResponse.length;else NodetailsBlock'>
+          <table class="table table-bordered table-sm">
+            <thead>
+              <tr>
+                <th>
+                  <div class="checkbox">
+                    <input type="checkbox" (change)='checkAllClick($event)' [checked]="isParentSelected" id="checkAll" name="checkAll" formControlName="checkAll">
+                    <label for="checkAll">
+                    <span></span>
+                      </label>
+                  </div>
+                </th>
+                <th (click)="sortDirection('CitationId')" class="sorting-handle"> Trip #
+                  <span *ngIf="gridArrowCitationId">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+                <th (click)="sortDirection('ENTRYTRIPDATETIME')" class="sorting-handle"> Txn Date
+                  <span *ngIf="gridArrowENTRYTRIPDATETIME">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+                <th>Location</th>
+                <th (click)="sortDirection('VehicleNumber')" class="sorting-handle"> Plate #
+                  <span *ngIf="gridArrowVehicleNumber">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+                <th>Stage/Status/Type</th>
+                <th>Toll Fee</th>
+                <th>Penalty</th>
+                <th>Balance Due</th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let item of tripResponse | paginate: { itemsPerPage:pageItemNumber, currentPage: p, totalItems:totalRecordCount}'
+                [ngClass]="item.IsDisputed? 'disputeBackground':''">
+                <td>
+                  <div class="checkbox">
+                    <input type="checkbox" (change)='checkboxCheckedEvent(item, $event)' id="{{item.CitationId}}" name="indCheckBox" [checked]="item.istripSelected"
+                      formControlName="indCheckBox">
+                    <label for="{{item.CitationId}}"> 
+                 <span></span> 
+                  </label>
+                  </div>
+                </td>
+                <td>{{item.CitationId}}</td>
+                <td>{{item.Entry_TripDateTime | customDateTimeFormat}}</td>
+                <td>{{item.LocationName}}</td>
+                <td>{{item.VehicleNumber}}</td>
+                <td>{{item.AuditStatus}}</td>
+                <td>{{item.TollAmount | currency:'USD':true:'1.2-2'}}</td>
+                <td>{{item.FeeAmounts | currency:'USD':true:'1.2-2'}}</td>
+                <td>{{item.OutstandingAmount | currency:'USD':true:'1.2-2'}}</td>
+                <td width='50px'>
+                  <a (click)='viewTripDetailsClick(item)'>
+                    <img src="assets/images/svg/docicon.svg" alt="view details" class="icon-svg3">
+                  </a>
+                </td>
+                <td>
+                  <a *ngIf='item.ProblemId>0' (click)='viewComplaintDetailsClick(item.ProblemId)'>
+                    <img src="assets/images/svg/warnicon.svg" alt="view details" class="icon-svg3">
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+
+        <ng-template #NodetailsBlock>
+          No trip details to display
+        </ng-template>
+        <div class="row page-info" *ngIf='tripResponse && tripResponse[0].RecordCount > 10 && !isShowAll'>
+          <div class="col-md-6 text-left">
+            <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+      </div>
+      <div id="" class="clear m-b-10 m-l-10" *ngIf='tripResponse && tripResponse.length'>
+        <input type="submit" (click)='makePaymentClick()' value="Make Payment" title="Make Payment" class="btn btn-primary btn-search btn-sm">
+        <input type="submit" (click)='AdjustmentClick()' value="Adjustment" title="Adjustment" class="btn btn-primary btn-search btn-sm">
+        <input type="submit" (click)='disputeClick()' value="Dispute" title="Dispute" class="btn btn-primary btn-search btn-sm">
+        <div class="dropup">
+          <button class="btn btn-primary btn-search dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+            More Actions
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+            <li><a title="Create Correspondence" (click)='createCorrespondenceClick()'>Create Correspondence</a></li>
+            <li><a title="Submit Inquiry" (click)='submitInquiryClick()'>Submit Inquiry</a></li>
+            <li><a title="Overpayment Transfer" (click)='overpaymentTransferClick()'>Overpayment Transfer</a></li>
+            <li><a title="Admin Hearing Transfer" (click)='adminHearingTransferClick()'>Admin Hearing Transfer</a></li>
+            <li><a title="Trip Status Update" (click)='tripStatusUpdateClick()'>Trip Status Update</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

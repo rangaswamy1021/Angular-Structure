@@ -1,0 +1,40 @@
+<div class="table-bdr">
+    <h3>Toll Transactions</h3>
+    <div class="pad-10">
+      <div *ngIf='tripsRes && tripsRes.length;else NoDetailsBlock'>
+        <div class="table-responsive">
+        <table class="table TableClass">
+          <thead> 
+          <tr>
+            <th>Trip Date/Time</th>
+            <th>Location</th>
+            <th>Serial #</th>
+            <th>Plate #</th>
+            <th>Toll Amount</th>
+            <th>Outstanding Amount</th>
+          </tr>
+          </thead>
+          <tr *ngFor="let object of tripsRes">
+            <td> {{object.PostedDate | customDateTimeFormat}} </td>
+            <td> {{object.LocationName}} </td>
+            <td> {{object.TagId | DisplayNA}} </td>
+            <td> {{object.VehicleNumber | DisplayNA}} </td>
+            <td> {{object.TollAmount | currency:'USD':true:'1.2-2'}} </td>
+            <td> {{object.OutStandingAmount | currency:'USD':true:'1.2-2'}} </td>
+          </tr>
+          <!--<tr *ngIf='tripsRes.length>=5'>
+          <td style="float:right" > <a href=""> More </a></td>
+          </tr>-->
+        </table>
+        </div>
+        <div class="row">
+        <div class="col-md-12 text-right" *ngIf='tripsRes.length>=5'>
+          <a (click)="goToTransactions('TOLL')"> More </a></div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #NoDetailsBlock>
+    <div>No details to display</div>
+  </ng-template>

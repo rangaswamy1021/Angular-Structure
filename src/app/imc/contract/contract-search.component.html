@@ -1,0 +1,103 @@
+
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">IMC</a></li>
+        <li class="active">Set up</li>
+        <li class="active">Manage Contract</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Contract</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="content">
+ <form role="form" name="contractSearchForm" [formGroup]="contractSearchForm">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      Manage Contract
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="col-md-12 form-group">
+            <label> Contact #</label>
+            <input type="text" id="ContractId" name="ContractId" formControlName="ContractId" class="form-control" placeholder="contact #">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="col-md-12 form-group">
+            <label> Contact Name</label>
+            <input type="text" id="ContractName" name="ContractName" formControlName="ContractName" class="form-control" placeholder="contact #">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="col-md-12 form-group">
+            <label class="focused"> Contact Status</label>
+            <select class="form-control" id="ContractStatus" name="ContractStatus" formControlName="ContractStatus">
+                 <option> --select--</option>
+                 <option>Active</option>
+                 <option>InActive</option>
+               </select>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <button type="submit" class="btn btn-primary btn-search" (click)="searchContract()">Search</button>
+          <button type="reset" (click)="resetclick()" class="btn btn-default btn-reset">Reset</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+   <button type="submit" class="btn btn-primary btn-search" (click)="addContract()">Add New Contract</button>
+  <div class="table-bdr">
+    <h3>Search Result</h3>
+    <div class="pad-10"> 
+        <table class="table">
+          <thead> 
+  
+          <tr>
+              <th> Contract # </th>
+              <th> Contract Name </th>
+              <th> Vendor Name </th>
+              <th> IsActive </th>
+              <th> </th>
+              <th> </th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody> 
+            <tr>        
+              <td> CExpress </td>
+              <td> ConExpresstags </td>
+              <td> FastCreations </td>
+              <td> True </td>
+              <td> Pdf  </td>       
+              <td> Edit </td>  
+              <td> Delete  </td>                        
+            </tr>
+            <tr>        
+              <td> CExpress </td>
+              <td> ConExpresstags </td>
+              <td> FastCreations </td>
+              <td> True </td>
+              <td> Pdf  </td>       
+              <td> Edit </td>  
+              <td> Delete  </td>                        
+            </tr>
+          </tbody>
+
+        </table>
+    </div>
+  </div>
+  </form>
+</div>

@@ -1,0 +1,136 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">IMC</a></li>
+        <li class="active">Set up</li>
+        <li class="active"> Manage Vendor </li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1> Manage Vendor </h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <form role="form" name="vendorSearchForm" [formGroup]="vendorSearchForm">
+    <div class="panel panel-default">
+      <!-- <div class="panel-heading">
+        Manage Vendor
+      </div> -->
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-5">
+            <div class="row">
+              <div class="form-group col-sm-12">
+                <label> Company Name </label>
+                <input type="text" class="form-control" tabindex="1" placeholder="Company Name" maxlength="50" name="Company Name" formControlName="CompanyName"
+                  required>
+                <div class="msg" *ngIf="vendorSearchForm.controls['CompanyName'].invalid && (vendorSearchForm.controls['CompanyName'].dirty || vendorSearchForm.controls['CompanyName'].touched)">
+                  <div *ngIf="vendorSearchForm.controls['CompanyName'].errors.required">
+                    Company Name is required
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-7 m-t-10">
+            <button type="submit" class="btn btn-primary btn-search" tabindex="2" (click)="getVendoSearchDetails()" title="Search" [disabled]="disableSearchbtn">Search</button>
+            <button type="reset" class="btn btn-default btn-reset" tabindex="3" (click)="resetVendorSearchPage()" title="Reset">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="panel panel-default">
+    <div class="row">
+      <div class="col-md-12">
+        <button class="btn btn-primary btn-search" tabindex="4" (click)="addNewVendor()" [disabled]="disableAddNewVendorbtn">Add New Vendor</button>
+      </div>
+    </div>
+  </div>
+  <!--Upto Here MOdel Conforim Box-->
+  <div class="table-bdr">
+    <h3>Search Results</h3>
+    <div class="pad-10">
+      <div class="table-responsive">
+        <table class="table" *ngIf='vendorResponse && vendorResponse.length'>
+          <thead>
+            <tr>
+              <th (click)="sortDirection('CompanyName')" class="sorting-handle"> Company Name
+                <span *ngIf="gridArrowCompanyName">
+                        <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                      </span>
+              </th>
+              <th (click)="sortDirection('CEONAME')" class="sorting-handle"> CEO/Owner Name
+                <span *ngIf="gridArrowCEONAME">
+                        <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                      </span>
+              </th>
+              <th> Address </th>
+              <th> Contact Information </th>
+              <th> Status </th>
+              <th> </th>
+              <th> </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let vendor of vendorResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount }'>
+              <td> {{vendor.CompanyName}} </td>
+              <td>{{vendor.CeoName==""?"N/A": vendor.CeoName}} </td>
+              <td> {{vendor.FAddress}} </td>
+              <td> CEO/Owner Name:{{vendor.CeoName==""?"N/A": vendor.CeoName}} <br> Phone Number: {{vendor.PhoneNumber==""?"N/A":
+                vendor.PhoneNumber}}
+                <br> Email:{{vendor.EmailAddress==""?"N/A": vendor.EmailAddress}}. </td>
+              <td> {{vendor.VendorStatus}} </td>
+              <!--<span *ngIf='({{vendor.VendorStatus}}=="Active")'>        </span>-->
+              <td>
+                <i *ngIf="disableEditVendorbtn" title="you don't have permission to access" class="fa fa-pencil-square-o fa-lg fa-fw link-disabled"
+                  aria-hidden="true"></i>
+                <span *ngIf="!disableEditVendorbtn"> <a *ngIf='(vendor.VendorStatus=="Active")' tabindex="6"  (click)="editVendorData(vendor.VendorId)"
+                  title=Edit><i class="fa fa-pencil-square-o fa-lg fa-fw" aria-hidden="true"></i></a></span>
+              </td>
+              <td>
+                <i *ngIf="disableDeleteVendorbtn" title="you don't have permission to access" class="fa fa-trash-o fa-lg fa-fw link-disabled"
+                  aria-hidden="true"></i>
+                <span *ngIf="!disableDeleteVendorbtn">    <a *ngIf='(vendor.VendorStatus=="Active"); else OtherContant' tabindex="7" name="{{vendor.VendorId}}" (click)="venodrDelete(vendor.VendorId, vendor.VendorStatus)"
+                   title="Deactivate"><i class="fa fa-trash-o fa-fw fa-lg" aria-hidden="true"></i></a>
+                </span>
+                <ng-template #OtherContant>
+                  <i *ngIf="disableDeleteVendorbtn" title="you don't have permission to access" class="fafa-trash-o fa-lg fa-fw link-disabled"
+                    aria-hidden="true"></i>
+                  <a *ngIf="!disableDeleteVendorbtn" tabindex="7" name="{{vendor.VendorId}}" (click)="venodrDelete(vendor.VendorId, vendor.VendorStatus)"
+                    title="Activate">Active</a>
+                </ng-template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf='!vendorResponse || vendorResponse.length==0'>
+        <div class="status-content">
+          <div class="alert alert-success alert-dismissible" role="alert">
+            <span><span class="glyphicon glyphicon-exclamation-sign">&nbsp;</span>No Vendors to display</span>
+          </div>
+        </div>
+      </div>
+      <div class="row page-info" *ngIf='vendorResponse && vendorResponse.length > 0 && !isSearch'>
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)" (onOk)="btnYesClick($event)"></app-success-failure-alerts-message>
+</div>

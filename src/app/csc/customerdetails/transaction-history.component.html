@@ -1,0 +1,103 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li class="active">{{menuHeading}}</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8">
+      <div class="page-header">
+        <h1>Transaction History</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-account-info *ngIf="isAfterSearch"></app-account-info>
+  <form role="form" name="transactionHistoryForm" [formGroup]="transactionHistoryForm" novalidate>
+    <div class="row">
+      <div class="form-group col-md-4">
+        <label for="accountId">Account No.</label>
+        <input type="text" class="form-control" id="accountId" name="accountId" formControlName="accountId" required>
+        <div class="msg" *ngIf="!transactionHistoryForm.controls['accountId'].valid && transactionHistoryForm.controls['accountId'].touched">
+          <div>required</div>
+        </div>
+      </div>
+      <div class="col-md-4 form-group">
+        <label for="" class="focused">Time Period</label>
+        <div *ngIf="!invalidDate && transactionHistoryForm.controls['timeperiod'].invalid && (transactionHistoryForm.controls['timeperiod'].touched)"
+          class="show-error">
+          <div *ngIf="transactionHistoryForm.controls['timeperiod'].errors.required">
+            Required.
+          </div>
+        </div>
+        <div class="show-error" *ngIf="invalidDate">
+          <div> Invalid Date Range</div>
+        </div>
+        <!--<input class="form-control  disbale-to-write" placeholder="Start Date - End Date" bsDaterangepicker #dpr="bsDaterangepicker"
+              name="timeperiod" formControlName="timeperiod" readonly>-->
+        <my-date-range-picker name="timeperiod" [options]="myDateRangePickerOptions" formControlName="timeperiod" placeholder="MM/DD/YYYY-MM/DD/YYYY"
+          (inputFieldChanged)='onDateRangeFieldChanged($event)'></my-date-range-picker>
+        <!--<div  *ngIf=invalidDate  class="msg" style="color:red; " >
+                    Invalid Date Range
+                </div>
+          -->
+      </div>
+      <div class="col-md-4">
+        <div class="btns-grouop m-t-20">
+          <button class="btn btn-primary btn-search" [disabled]="disableButtonSearch" (click)="serachActivity()">Search</button>
+          <button class="btn btn-primary btn-search" (click)="resetActivity()">Reset</button>
+          <button class="btn btn-primary btn-search" [disabled]="disableButtonPDF" (click)="generateActivityPDF()" *ngIf="activityPopUp">View PDF</button>
+        </div>
+      </div>
+    </div>
+    <div class="table-bdr">
+      <h3>Transaction History Details</h3>
+      <div class="pad-10" *ngIf="searchPaymentResponse?.length > 0">
+        <div class="table-responsive">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Txn Posted Date/Time</th>
+                <th>Activity</th>
+                <th>Previous Balance</th>
+                <th>Transaction Amount</th>
+                <th>Current Balance</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let rep of searchPaymentResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: pageNumber, totalItems:totalRecordCount };'>
+                <td>{{rep.Date | customDateTimeFormat }}</td>
+                <td>{{rep.Activity}}</td>
+                <td>{{rep.PreviousBalanceTxt}}</td>
+                <td>{{rep.TxnAmountTxt}}</td>
+                <td>{{rep.CurrentBalanceTxt}}</td>
+                <td>{{rep.Description}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row page-info">
+          <div class="col-md-6 text-left">
+            <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+      </div>
+      <div class="panel-body" *ngIf="searchPaymentResponse?.length == 0">
+        <p>No records to display</p>
+      </div>
+    </div>
+  </form>
+</div>
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

@@ -1,0 +1,130 @@
+<div *ngIf="isModesVisisble">
+
+  <div class="row payment-details m-t-0" *ngIf="isCreditCardModesVisible">
+    <div class="col-md-12">
+      <form name='select-pay'>
+        <div class="custom-control custom-radio container">
+          <strong>  Pay By : </strong>
+          <div class="radio-inline">
+            <input type="radio" name="inlineRadioOptions1" id="creditCard" [disabled]="ccDisable" value="CreditCard" (change)='changePayment()'
+              [(ngModel)]='payMethod' class="custom-control-input">
+            <label for="creditCard" class="custom-control-description">Credit Card</label>
+          </div>
+          <!--<div class="col-sm-2">
+            <input type="radio" name="inlineRadioOptions1" id="inlineRadio1" [disabled]="ccDisable" value="CreditCard" (change)='changePayment()'
+              [(ngModel)]='payMethod' class="custom-control-input">
+            <label for="inlineRadio1" class="custom-control-description">Credit Card</label>
+          </div>-->
+
+          <div class="radio-inline">
+            <input type="radio" name="inlineRadioOptions1" id="bankAccount" [disabled]="achDisable" value="ACH" (change)='changePayment()'
+              [(ngModel)]='payMethod' class="custom-control-input">
+            <label for="bankAccount" class="custom-control-description">Bank Account</label>
+          </div>
+          <div class="radio-inline">
+            <input type="radio" name="inlineRadioOptions1" id="cashId" [disabled]="cashDisable" value="Cash" (change)='changePayment()'
+              [(ngModel)]='payMethod' class="custom-control-input">
+            <label for="cashId" class="custom-control-description">Cash</label>
+          </div>
+
+          <div class="radio-inline">
+            <input type="radio" name="inlineRadioOptions1" id="checkId" [disabled]="checkDisable" value="Cheque" (change)='changePayment()'
+              [(ngModel)]='payMethod' class="custom-control-input">
+            <label for="checkId" class="custom-control-description">Check</label>
+          </div>
+          <div class="radio-inline">
+            <input type="radio" name="inlineRadioOptions1" id="moneyOrder" [disabled]="moDisable" value="MO" (change)='changePayment()'
+              [(ngModel)]='payMethod' class="custom-control-input">
+            <label for="moneyOrder" class="custom-control-description">Money Order</label>
+          </div>
+          <div class="radio-inline" *ngIf='isGiftCertificateAvailable'>
+            <input type="radio" name="inlineRadioOptions1" id="giftCerti" value="GF" [(ngModel)]='payMethod' class="custom-control-input">
+            <label for="giftCerti" class="custom-control-description">Gift Certificate</label>
+          </div>
+          <div class="radio-inline" *ngIf='isPromoAvailable'>
+            <input type="radio" name="inlineRadioOptions1" id="promoId" value="Promo" [(ngModel)]='payMethod' class="custom-control-input">
+            <label for="promoId" class="custom-control-description">Promo</label>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row m-t-20">
+    <div class="col-md-12">
+      <div class="table-bdr" *ngIf="payMethod=='Cash'?false:true">
+        <h3 *ngIf="!isCreditCardModesVisible" style="margin-top: 0;">{{paymentDetailsHeading}}</h3>
+        <div class="pad-10">
+          <div class="payment-details" [ngSwitch]="payMethod" style="max-width: inherit; margin-top: 0;">
+            <div *ngSwitchCase="'CreditCard'">
+              <div *ngIf="creditCardRequest && replenishmentType">
+                <app-credit-card-information [IsSaveCheckBox]="isSaveCheckBox" [ReplenishMentType]="replenishmentType" [CreditcardObjet]="creditCardRequest"
+                  (saveClicked)='onSaveClicked($event)' [Customerid]="customerid"></app-credit-card-information>
+              </div>
+            </div>
+            <div *ngSwitchCase="'ACH'">
+              <div *ngIf="bankRequest && replenishmentType">
+                <app-bank-information [IsSaveBankCheckBox]="isSaveCheckBox" (saveClicked)='onSaveClicked($event)' [Customerid]="customerid"
+                  [BankObject]="bankRequest" [ReplenishMentType]="replenishmentType"></app-bank-information>
+              </div>
+            </div>
+            <div *ngSwitchCase="'Cheque'">
+              <div *ngIf="chequeNumber">
+                <app-cheque [chequeNumber]="chequeNumber" [chequeDate]="chequeDate" [checkRoutingNumber]="checkRoutingNumber"></app-cheque>
+              </div>
+            </div>
+            <div *ngSwitchCase="'MO'">
+              <div *ngIf="mONumber">
+                <app-money-order [mONumber]="mONumber" [mODate]="mODate"></app-money-order>
+              </div>
+            </div>
+            <div *ngSwitchCase="'option5'">
+              <app-payment-giftcertificate></app-payment-giftcertificate>
+            </div>
+            <div *ngSwitchCase="'Promo'">
+              <form role="form" name="promoForm" [formGroup]="promoForm">
+                <div class="*form-horizontal">
+                  <div class="row">
+                    <div class="form-group col-md-12 popover-field">
+                      <label for="promoCode">Promo Code</label>
+                      <input type="text" class="form-control" pattern="^[a-zA-Z0-9]*" maxlength="50" id="" placeholder="Promo Code" formControlName="promoCode"
+                        name="promoCode" (change)="promoChnaged($event.target.value);">
+                      <div class="msg" *ngIf="promoForm.controls['promoCode'].invalid && (promoForm.controls['promoCode'].dirty || promoForm.controls['promoCode'].touched)">
+                        <div *ngIf="promoForm.controls['promoCode'].errors.required">
+                          Required.
+                        </div>
+                        <div *ngIf="promoForm.controls['promoCode'].errors.pattern">
+                          Only alphanumerics are allowed !
+                        </div>
+                      </div>
+                      <button data-container="body" type="button" class="pop-over" [popover]="popAHN" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                        placement="left">?</button>
+                      <ng-template #popAHN>
+                        <ul>
+                          <li>Promo Code is required</li>
+                          <li>It allows only alphanumerics</li>
+                        </ul>
+                      </ng-template>
+                      <!--<button type="button" tabindex="-1" class="tool-tip" data-toggle="tooltip" data-placement="right" title="{{tootltipAccountHolderName}}">?</button>-->
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-7" *ngIf='isCCTaxShow && checkServiceTax && ccServiceTax>0 && (payMethod=="CreditCard" || payMethod=="OldCreditCard")'>
+    <div class="Info" style="margin-top: 0;">
+      <h4>Information</h4>
+      <ul>
+        <li>- Service Tax {{ccServiceTax}}% applied on Credit Card Payment</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<app-blocked-list [blockListArray]="objBlockListRes" (status)="allowVioMakePayment()"></app-blocked-list>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

@@ -1,0 +1,172 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">SAC</a>
+        </li>
+        <li>
+          <a href="#">Dashboard</a>
+        </li>
+
+        <li class="active">Help Desk Dashboard</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Help Desk Dashboard</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="customer-heading heading col-md-12 main-b-title">Total Complaints count related to Statuses :</div>
+        <div class="customer-heading heading col-md-12 cus-bg">Total complaint statuses with count</div>
+        <div class="card-body">
+          <table class="table" [hidden]='complaintStatusesError'>
+            <thead>
+              <tr>
+                <th>Complaint Statuses</th>
+                <th>Total Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let complaintStatus of complaintStatuses'>
+                <td>
+                 {{complaintStatus.ReturnValue[0]}}
+                </td>
+                <td>
+                    {{complaintStatus.ReturnValue[1]}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h3 class="error-msg" [hidden]='!complaintStatusesError'>No Data Available</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="customer-heading heading col-md-12 main-b-title">Top 5 Users who resolved more Complaints :</div>
+        <div class="customer-heading heading  cus-bg  col-md-12">Top 5 CSR Users with complaints count
+          <!-- <span class="pull-right">(Till Yesterday)</span> -->
+        </div>
+        <div class="card-body">
+          <table class="table" [hidden]='topUsernamesError'>
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Resolved Complaints Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let topUsernamesCount of topUsernamesCounts">
+                <td>
+                  {{topUsernamesCount.ReturnValue[0]}}
+                </td>
+                <td>
+                    {{topUsernamesCount.ReturnValue[1]}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h3 class="error-msg" [hidden]='!topUsernamesError'>No Data Available</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="customer-heading heading col-md-12">Complaint statuses based on Time period :</div>
+        <div class="card-body">
+          <div  [hidden]='pmStatusGraphError'>
+            <div class="graph-duration">
+              <ul>
+                <li>
+                  <a href="javascript:;" [ngClass]="{'active': timePeriodSelectedItem=='WEEKLY' }" (click)="getPMStatusCount('WEEKLY')">Current Week</a>
+                </li>
+                <li>
+                  <a href="javascript:;" [ngClass]="{'active': timePeriodSelectedItem=='MONTHLY' }" (click)="getPMStatusCount('MONTHLY')">Current Month</a>
+                </li>
+
+                <li>
+                  <a href="javascript:;" [ngClass]="{'active': timePeriodSelectedItem=='YEARLY' }" (click)="getPMStatusCount('YEARLY')">Yearly</a>
+                </li>
+
+              </ul>
+            </div>
+            <div id="pmStatusGraph" [style.width.%]="100" [style.height.px]="400"></div>
+          </div>
+          <h3 class="error-msg" [hidden]='!pmStatusGraphError'>No Data Available</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="customer-heading heading col-md-12">Complaints created based on Severity :</div>
+        <div class="card-body">
+          <div [hidden]='pmSeverityCountError'>
+            <div class="graph-duration">
+              <ul>
+                <li>
+                  <a href="javascript:;" [ngClass]="{'active': severitySelectedItem=='WEEKLY' }" (click)="getPMSeverityCount('WEEKLY')">Current Week</a>
+                </li>
+                <li>
+                  <a href="javascript:;" [ngClass]="{'active': severitySelectedItem=='MONTHLY' }" (click)="getPMSeverityCount('MONTHLY')">Current Month</a>
+                </li>
+
+                <li>
+                  <a href="javascript:;" [ngClass]="{'active': severitySelectedItem=='YEARLY' }" (click)="getPMSeverityCount('YEARLY')">Yearly</a>
+                </li>
+
+              </ul>
+            </div>
+            <div id="pmSeverityCount" [style.width.%]="100" [style.height.px]="400"></div>
+          </div>
+          <h3 class="error-msg" [hidden]='!pmSeverityCountError'>No Data Available</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="customer-heading heading col-md-12">Complaints created based on Problem types :</div>
+        <div class="card-body">
+          <div [hidden]='problemTypeError'>
+            <div class="graph-duration">
+              <ul>
+                <li>
+                  <a href="javascript:;" [ngClass]="{'active': pmTypeSelectedItem=='WEEKLY' }" (click)="getPMTypeCount('WEEKLY')">Current Week</a>
+                </li>
+                <li>
+                  <a href="javascript:;" [ngClass]="{'active': pmTypeSelectedItem=='MONTHLY' }" (click)="getPMTypeCount('MONTHLY')">Current Month</a>
+                </li>
+
+                <li>
+                  <a href="javascript:;" [ngClass]="{'active': pmTypeSelectedItem=='YEARLY' }" (click)="getPMTypeCount('YEARLY')">Yearly</a>
+                </li>
+                <li>
+                  <a href="javascript:;" [ngClass]="{'active': pmTypeSelectedItem=='' }" (click)="getPMTypeCount('')">Till Now</a>
+                </li>
+
+              </ul>
+            </div>
+            <div id="problemTypeGraph" [style.width.%]="100" [style.height.px]="400"></div>
+          </div>
+          <h3 class="error-msg" [hidden]='!problemTypeError'>No Data Available</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

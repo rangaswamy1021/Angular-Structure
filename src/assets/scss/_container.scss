@@ -1,0 +1,358 @@
+@charset "utf-8";
+/* CSS Document */
+
+body
+{
+background-color: #eaeaea !important
+}
+
+.extiButton
+{
+	margin-top:-5px !important;
+}
+
+.breadcrumb
+{
+	padding-top:10px;
+	padding-bottom:0px;
+	padding-left:0px;
+	background-color:transparent;
+}
+
+.breadcrumb-item a
+{
+	color:#004791;
+	text-decoration:none;
+}
+
+.card-header
+{
+	padding-top:7px;
+	padding-bottom:4px;
+	color:#6e7c8c;
+}
+
+.table-bordered th
+{
+	background-color:#a2a3a2;
+	color:#fff;
+	font-weight:normal;
+}
+
+.top-menu
+{
+	width:100%;
+	margin:0px auto;
+	border:2px solid black;
+}
+
+.max-height-245-scroll
+{
+	max-height: 245px;
+	overflow-y: scroll;
+}
+
+.text-wrap
+{
+	white-space: nowrap;
+}
+
+.panel
+{
+	border-radius: 0px!important;
+}
+
+.panel-default .panel-heading
+{
+	background-color: #e1e4e7 !important;
+	color:#647385 !important;
+}
+
+.panel .panel-body .table>thead>tr>td, .panel .panel-body .table>thead>tr>th {
+	background-color:#a1a1a1!important;
+	color:#fff !important;
+	white-space: nowrap;
+}
+.panel .panel-body .table>thead.wrap>tr>th
+{
+  white-space: normal;
+}
+.panel .invoiceDetails .table>tbody>tr>td {
+ word-break:break-all;
+}
+.panel .regVehDetails .table>tbody>tr>td {
+  word-break:break-all !important;
+}
+.panel .noWrap
+{
+	white-space: nowrap !important;
+}
+
+.btn-bs-file{
+    position:relative;
+	background-color: #085db0;
+}
+.btn-bs-file input[type="file"]{
+    position: absolute;
+    top: -9999999;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    width:0;
+    height:0;
+    outline: none;
+    cursor: inherit;
+}
+.fileUploadBorder
+{
+	border:1px dotted black;
+	padding:10px;
+	margin:10px;
+}
+
+#invoice-details
+{
+	.table
+	{
+		td
+		{
+			strong
+			{
+				font-weight: bold;
+				color:#5b6b7d;
+			}
+		}
+	}
+}
+
+#amount-panel
+{
+	.previous-balance
+	{
+		color:#f44755;
+		font-size:15px;
+		font-weight: bold;
+	}
+
+		tr {
+			td
+			{
+				&.amount-calc{
+						vertical-align: middle;
+						font-size:26px;
+			  }
+				div
+				{
+					.billed-amount
+						{
+						color:#0068b3;
+						font-size:14px;
+						font-weight: bold;
+						}
+
+					.amount
+					{
+						color:#4a5c6f;
+						font-size:19px;
+					}
+
+				}
+			}
+		}
+
+
+}
+
+
+#userInfo
+{
+	border:1px solid #286090;
+	margin-top:16px;
+	.panel-body
+	{
+		padding-bottom: 0px;
+
+		.row .rowMargins
+			{
+				margin-top:-32px;
+				margin-bottom:20px;
+			}
+
+	}
+
+}
+
+#accountInfo
+{  .well
+	{
+	border:none;
+	box-shadow: none;
+	background-color:transparent;
+	.account-no
+	{
+		color:#9d9d9c;
+	}
+	.active
+	{
+		color:#699e29 !important;
+	}
+	.account-no-details
+	{
+		color:#738191;
+		font-weight:bold;
+		border-right:1px solid #cbdae9;
+		padding-right:10px;
+		margin-right:10px;
+	}
+	}
+}
+
+.plan-heading
+{
+	font-weight: bold;
+	color:#637283;
+	font-size:14px;
+}
+
+.selected-plan-bg
+{
+	background-color:#e3f0fa!important;
+}
+.page-loader
+{
+	margin-top:20% !important;
+}
+
+// Styles for Total Amount in tfoot
+.tfoot-total {
+  width: 104px;
+  height: 15px;
+  font-family: Roboto;
+  font-weight: bold;
+  text-align: right;
+  font-size: 14px;
+  letter-spacing: -0.3px;
+  color: #0279bb;
+}
+
+.total-amount {
+  width: 46px;
+  height: 14px;
+  font-family: Roboto;
+  font-size: 14px;
+  letter-spacing: -0.5px;
+  color: #637283;
+}
+
+
+.exclamation-color
+{
+	color: #448ccb;
+}
+
+
+// text-area msg in the FMC
+// textarea.ng-invalid + div.msg{
+//     bottom: 104px!important;
+// }
+
+.shipmentDetails-info-block
+{
+	min-height: 280px;
+}
+
+select.multipleSelect
+{
+	height: 250px;
+}
+
+// ng-select dropdown
+label {
+    +ng-select.ng-invalid+div.msg
+   {
+        bottom: calc(100% - 17px);
+    }
+}
+
+ng-select.ng-invalid+div.msg {
+    position: absolute;
+    bottom: 100%;
+    left: 15px;
+    z-index: 99;
+    >div {
+        background-color: #448ccb;
+        color: #FFF;
+        width: auto;
+        padding: 5px 10px;
+        max-width: 100%;
+        border-radius: 3px;
+        &:after {
+            top: 100%;
+            left: 25px;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+            border-color: rgba(136, 183, 213, 0);
+            border-top-color: #448ccb;
+            border-width: 6px;
+            margin-left: -6px;
+        }
+    }
+}
+
+.m-t-17
+{
+	margin-top:17px;
+}
+
+
+#privileges {
+	width:100%;
+}
+
+#privileges .privilege-table-fixed thead {
+  width: 100%;
+}
+#privileges .privilege-table-fixed tbody {
+  height: 380px;
+  overflow-y: auto;
+  width: 100%;  
+}
+#privileges .privilege-table-fixed thead, #privileges .privilege-table-fixed tbody, #privileges .privilege-table-fixed tr, #privileges .privilege-table-fixed td, #privileges .privilege-table-fixed th {
+  display: block;
+}
+#privileges .privilege-table-fixed tbody td, #privileges .privilege-table-fixed thead > tr> th {
+  float:left;
+  border-bottom-width: 0;
+}
+#privileges .privilege-table-fixed thead > tr> th {
+	padding-left: 40px;
+}
+#privileges .privilege-table-fixed tbody td:nth-of-type(1)
+{
+	 clear: left;
+}
+.one
+{
+   font-size:30px;
+}
+
+.two
+{
+	font-size: 50px;
+}
+
+.link-disabled
+{
+    cursor:not-allowed;
+}
+.transactionDetailsTrMerge
+{
+	padding-left:12px !important;
+	vertical-align: middle !important;
+	border-bottom: 0px !important;
+}
+
+

@@ -1,0 +1,44 @@
+<div id="blocklist-dialog" class="modal fade refund-request-modal" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <p>The Information you have entered is matched with block list. Are you sure you want to proceed?</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <table class='table table-bordered table-sm'>
+              <thead class="nowrap">
+                <tr>
+                  <th>Field Name</th>
+                  <th> Field Value </th>
+                  <th>Created By</th>
+                  <th> Created Date</th>
+                  <th>Flag Reason</th>
+                </tr>
+              </thead>
+              <tbody class="nowrap">
+                <tr *ngFor='let blockList of blockListArray'>
+                  <td>{{blockList.SourceName}}</td>
+                  <td>{{blockList.FieldValue}}</td>
+                  <td>{{blockList.CreatedUser}}</td>
+                  <td>{{blockList.CreatedDateTime}}</td>
+                  <td>{{blockList.FlagReason}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="row m-t-10">
+          <div class="col-md-12 text-right">
+            <button class="btn btn-primary btn-search" (click)='continueProcess()'>Yes</button>
+            <button class="btn btn-primary btn-search" data-dismiss="modal">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,168 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">IMC</a></li>
+        <li class="active">Tag Requests and Distribution by Location</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Tag Requests and Distribution by Location</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <!--<app-tags-distribution-to-location  [childTagResponse]="childobject"></app-tags-distribution-to-location>-->
+  <form role="form" name="tagDistributionLocationForm" [formGroup]="tagDistributionLocationForm" novalidate>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="row">
+          <div class="form-group col-md-12">
+            <label for="daterange" class="focused"> Date </label>
+            <my-date-range-picker name="daterange" [options]="myDateRangePickerOptions" formControlName="daterange" (inputFieldChanged)='onDateRangeFieldChanged($event)'></my-date-range-picker>
+            <div *ngIf=invalidDate class="show-error">
+              <div> Invalid Date Range</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4 popover-field">
+        <div class="pull-right m-t-20 m-r-20 ">
+          <button type="submit" class="btn btn-primary btn-search" [disabled]="disableSearchButton" (click)="tagDetailsSearch()">Search</button>
+          <button type="submit" class="btn btn-default btn-reset" (click)="dateResetClick()">Reset</button>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="row m-b-20">
+    <div class="col-md-12">
+      <button *ngIf="!hidetag" type="submit" class="btn btn-primary btn-search" (click)="locationTagDetails()" [disabled]="disableCreateButton"> Location Request</button>
+    </div>
+  </div>
+  <div class="table-bdr" *ngIf="hidetag">
+    <h3>Location Request</h3>
+    <div class="pad-20">
+      <form role="form" name="tagDistributionForm" [formGroup]="tagDistributionForm" novalidate>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group col-md-12">
+              <label for="tagid" class="focused"> Select Location </label>
+              <select class="form-control" name="tagsList" formControlName="tagsList">
+                <option selected="selected"  value="">--Select--</option>
+                 <option *ngFor='let dropdown of dropdownResponse' [value]="dropdown.LocationName" >{{dropdown.LocationName}}</option>
+                      </select>
+              <div class="msg" *ngIf="tagDistributionForm.controls['tagsList'].invalid && (tagDistributionForm.controls['tagsList'].dirty || tagDistributionForm.controls['tagsList'].touched)">
+                <div *ngIf="tagDistributionForm.controls['tagsList'].errors.required">
+                  *Required.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <table class="table table-bordered m-t-20">
+              <thead>
+                <tr>
+                  <th>Protocol</th>
+                  <th>Mounting</th>
+                  <th>No.Of Tags</th>
+                  <th *ngIf='isDisabled'>Tag Fee($)</th>
+                  <th *ngIf='isDisabled'>Tag Deposit($)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr #getTagAmounts *ngFor="let tagconfigs of getTagconfigResponse;let row_no = index">
+                  <td>{{tagconfigs.Protocol}}</td>
+                  <td>{{tagconfigs.Mounting}}</td>
+                  <td><input type="text" min="0" value="" (change)="onChange(tagconfigs,$event.target.value,row_no)" (keypress)="onlyNumberKey($event)"
+                      maxlength="3" /></td>
+                  <td *ngIf='isDisabled'>{{tagconfigs.TagFee |number : '1.2-2'}}</td>
+                  <td *ngIf='isDisabled'>{{tagconfigs.TagDeposit|number : '1.2-2' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-md-6 m-t-20">
+            <div class="row">
+              <div class="panel panel-default">
+                <div class="panel-body form-group">
+                  <label for="" class="focused">Comment</label>
+                  <small class="pull-right">Left: {{commentTextLength}} characters </small>
+                  <textarea class="form-control" rows="3" class="form-control" formControlName="comments" name="comments" maxlength="255" (keyup)="descEvent($event)"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="row">
+        <div class="col-md-12">
+          <button class="btn btn-primary btn-search" [disabled]="disableCreateButton" (click)="insertTagDistribution()"> Submit </button>
+          <button class="btn btn-default btn-reset" (click)="cancelClick()"> Cancel </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-bdr">
+    <div *ngIf='tagsDistributionRes && tagsDistributionRes.length;else NodetailsRequestTagBlock'>
+      <table class="table ">
+        <thead>
+          <tr>
+            <th *ngIf='tadreqiddisable'>Tagreqid</th>
+            <th>Protocol</th>
+            <th>Mounting</th>
+            <th>Requested Count</th>
+            <th *ngIf='tadreqiddisable'>Location Id</th>
+            <th>Location Name</th>
+            <th>User Name</th>
+            <th>Assigned Count</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr #getTagAmounts *ngFor="let tagsDistribution of tagsDistributionRes | paginate: { itemsPerPage: pageItemNumber, currentPage: currentPage, totalItems:totalRecordCount}">
+            <td *ngIf='tadreqiddisable'>{{tagsDistribution.TagReqId}}</td>
+            <td>{{tagsDistribution.Protocol}}</td>
+            <td>{{tagsDistribution.Mounting}}</td>
+            <td>{{tagsDistribution.ReqCount}}</td>
+            <td *ngIf='tadreqiddisable'>{{tagsDistribution.LocationId}}</td>
+            <td>{{tagsDistribution.LocationName}}</td>
+            <td>{{tagsDistribution.UserName}}</td>
+            <td>{{tagsDistribution.AssignedCount}}</td>
+            <td><a *ngIf="(tagsDistribution.AssignedCount==0)" data-toggle="modal" [ngClass]="{'disabletextbox': disableDeleteButton}"
+                (click)="cancelTagRequest(tagsDistribution.TagReqId)">Cancel Request</a>
+              <i *ngIf="(tagsDistribution.AssignedCount!=0)" class="fa  fa-lg link-disabled" title="Assigned Items Can't Cancel"> Cancel Request</i></td>
+            <td><a *ngIf="(tagsDistribution.AssignedCount!=tagsDistribution.ReqCount)" [ngClass]="{'disabletextbox': disableUpdateButton}"
+                (click)="redirectPage(tagsDistribution)">Distribute</a>
+              <i *ngIf="(tagsDistribution.AssignedCount==tagsDistribution.ReqCount)" class="fa  fa-lg link-disabled" title="Assigned Items Can't Distribute "> Distribute</i>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row page-info" *ngIf='tagsDistributionRes && tagsDistributionRes.length>0'>
+      <div class="col-md-6 text-left">
+        <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+      </div>
+      <div class="col-md-6 text-right">
+        <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+      </div>
+    </div>
+    <ng-template #NodetailsRequestTagBlock>
+      <div class="pad-10">No records to display</div>
+    </ng-template>
+  </div>
+
+  <app-tags-distribution-to-location *ngIf="childFlag" [childTagResponse]="childobject" [childFlag]='childFlag' (createClicked)='onDistributeClicked($event)'
+    (cancelClicked)="onCancelClicked($event)"></app-tags-distribution-to-location>
+</div>
+<div>
+ 
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event, 1000)"
+  (onOk)="userAction($event)"></app-success-failure-alerts-message>

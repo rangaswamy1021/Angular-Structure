@@ -1,0 +1,189 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">FMC</a></li>
+        <li><a href="#">Accounting</a></li>
+        <li class="active">Manual Journal Entries</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manual Journal Entries</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <form [formGroup]="createManualJournalEntryForm">
+    <div class="row">
+      <!--<div class="col-md-6">
+        <div class="row">-->
+      <div class="col-md-6 form-group">
+        <label for="journalEntryDate" id="focused">Journal Entry Date</label>
+        <my-date-picker id="journalEntryDate" placeholder="MM/DD/YYYY" [options]="myDatePickerOptions" (inputFieldChanged)='onDateRangeFieldChanged($event)'
+          name="journalEntryDate" formControlName="journalEntryDate"></my-date-picker>
+        <div class="show-error" *ngIf="!invalidDate && createManualJournalEntryForm.controls['journalEntryDate'].invalid && (createManualJournalEntryForm.controls['journalEntryDate'].dirty || createManualJournalEntryForm.controls['journalEntryDate'].touched)">
+          <div *ngIf="createManualJournalEntryForm.controls['journalEntryDate'].errors.required">
+            Required
+          </div>
+        </div>
+        <div class="show-error" *ngIf="invalidDate">
+          <div>Invalid Date</div>
+        </div>
+      </div>
+      <!--</div>
+      </div>-->
+      <!--<div class="col-md-6">-->
+      <!--<div class="row">-->
+      <div class="col-md-6 form-group popover-field">
+        <label for="description" class="focused">Description</label>
+        <textarea class="form-control" rows="3" maxlength="256" placeholder="Description" id="description" name="description" formControlName="description"></textarea>
+        <div class="msg" *ngIf="(createManualJournalEntryForm.controls['description'].invalid && (createManualJournalEntryForm.controls['description'].dirty || createManualJournalEntryForm.controls['description'].touched))">
+          <div *ngIf="createManualJournalEntryForm.controls['description'].errors.required">
+            Required
+          </div>
+        </div>
+        <button type="button" class="pop-over" [popover]="popDesc" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+          placement="left">?</button>
+        <ng-template #popDesc>
+          <ul>
+            <li>It allows maximum 256 characters long.</li>
+          </ul>
+        </ng-template>
+      </div>
+      <!--</div>-->
+      <!--</div>-->
+    </div>
+    <div class="row m-b-10">
+      <div class="col-md-12 text-right">
+        <button type="submit" class="btn btn-primary btn-search" *ngIf='!addGl' (click)='addGl = true'><i class="fa fa-plus-circle" aria-hidden="true"></i> Add Journal Line Items</button>
+      </div>
+    </div>
+  </form>
+  <div class="row" [hidden]='!addGl'>
+    <form [formGroup]="addJournalLineItemsForm">
+      <div class="col-md-12">
+        <div class="table-bdr">
+          <h3>Add GL Account</h3>
+          <div class="pad-20">
+            <div class="row">
+              <div class="col-md-5">
+                <div class="row">
+                  <div class="form-group col-md-12">
+                    <label for="glAccountId" class="focused"> G/L Account # </label>
+                    <ng-select [active]="genAccountName" [(ngModel)]="genAccountName" [allowClear]="true" [items]="items" (selected)="selected($event)"
+                      placeholder="No chart of account selected" id="glAccountId" name="glAccountId" formControlName="glAccountId"
+                      required>
+                    </ng-select>
+                    <div class="msg" *ngIf="addJournalLineItemsForm.controls['glAccountId'].invalid && (addJournalLineItemsForm.controls['glAccountId'].dirty || addJournalLineItemsForm.controls['glAccountId'].touched)">
+                      <div *ngIf="addJournalLineItemsForm.controls['glAccountId'].errors.required">
+                        Required
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="row">
+                  <div class="form-group col-md-12">
+                    <label for="debitOrCreditSelect" class="focused"> Select either Debit or Credit</label>
+                    <select class="form-control" formControlName="debitOrCreditSelect" name="debitOrCreditSelect" id="debitOrCreditSelect">
+                    <option selected="selected" value="">--Select--</option>
+                    <option value="Debit">Debit</option>
+                    <option value="Credit">Credit</option>
+                     </select>
+                    <div class="msg" *ngIf="addJournalLineItemsForm.controls['debitOrCreditSelect'].invalid && (addJournalLineItemsForm.controls['debitOrCreditSelect'].dirty || addJournalLineItemsForm.controls['debitOrCreditSelect'].touched)">
+                      <div *ngIf="addJournalLineItemsForm.controls['debitOrCreditSelect'].errors.required">
+                        Required
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group col-md-12">
+                  <label for="amountOfDebitOrCredit" class="focused"> Amount to be debited or credited</label>
+                  <input type="text" autocomplete="off" (keypress)="removeAmount($event)" (blur)="ifZeroAmount();" class="form-control" id="amountOfDebitOrCredit"
+                    placeholder="Amount ($)" formControlName="amountOfDebitOrCredit" name="amountOfDebitOrCredit">
+                  <div class="msg" *ngIf="addJournalLineItemsForm.controls['amountOfDebitOrCredit'].invalid && (addJournalLineItemsForm.controls['amountOfDebitOrCredit'].dirty || addJournalLineItemsForm.controls['amountOfDebitOrCredit'].touched)">
+                    <div *ngIf="addJournalLineItemsForm.controls['amountOfDebitOrCredit'].errors.required">
+                      <div>Required</div>
+                    </div>
+                    <div *ngIf="addJournalLineItemsForm.controls['amountOfDebitOrCredit'].errors.pattern">
+                      <div>Only 2 digits allowed after decimal.</div>
+                    </div>
+                  </div>
+                  <div *ngIf="isZeroAmount" class="show-error">
+                    <div>Amount should be greater than zero.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 text-right">
+                <button *ngIf="addData" class="btn btn-primary btn-search" type="submit" (click)="addJournalLineItems()">Add</button>
+                <button *ngIf="!addData" class="btn btn-primary btn-search" type="submit" (click)="updateDetails(updatedPurposeData)">Update</button>
+                <button class="btn btn-primary btn-reset" type="button" (click)="resetAddRowTable();">Reset</button>
+                <button class="btn btn-primary btn-reset" type="button" (click)="addGl=!addGl;cancelAddLineItems();">Cancel</button>
+                <button *ngIf="tableRowCount == 0" class="btn btn-primary btn-search" type="button" (click)="backToGeneralJournalPage()">Back</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="row" *ngIf="tableRowCount > 0">
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <h3>Transction Details</h3>
+        <div class="pad-20">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>G/L Account #</th>
+                <th>Type</th>
+                <th>Amount ($)</th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let lineItemRow of journalLineItems" style="margin-bottom: 10px;">
+                <td>{{lineItemRow.glAccountName}}</td>
+                <td>{{lineItemRow.debitOrCredit}}</td>
+                <td>
+                  <p class="pull-right">{{lineItemRow.amount | currencycustom}}</p>
+                </td>
+                <td><img src="assets/images/svg/edit-blue.svg" class="icon-svg3" alt="" (click)="edit(lineItemRow)"></td>
+                <td><img src="assets/images/svg/delete-blue.svg" class="icon-svg3" alt="" (click)="removeRow(lineItemRow)"></td>
+              </tr>
+            </tbody>
+            <tfoot class="total-amount">
+              <tr>
+                <td colspan="2" class="tfoot-total">Variance:</td>
+                <td>
+                  <p class="pull-right">{{varianceAmount | currencycustom}}</p>
+                </td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="row m-t-20">
+        <div class="col-md-12 text-right">
+          <button type="button" class="btn btn-primary btn-reset" (click)="totalReset();">Reset</button>
+          <button data-toggle="tooltip" title="Variance amount is {{varianceAmount | currencycustom}}" class="btn btn-primary btn-search"
+            type="submit" [disabled]="variance || disableCreateButton" (click)="createJournalEntries()">Save</button>
+          <button class="btn btn-primary btn-search" type="button" (click)="backToGeneralJournalPage()">Back</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event, 1000)"></app-success-failure-alerts-message>

@@ -1,0 +1,338 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">SAC</a></li>
+        <li><a href="#">Work flow</a></li>
+        <li class="active">Invoice Aging Workflow</li>
+      </ol>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Invoice Aging WorkFlow : {{stageName}}</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row" *ngIf="!showPanel">
+    <div class="col-md-12">
+      <div class="form-group">
+        <button [disabled]="isDisabledAdd" class="btn btn-default btn-search" (click)="showAddPanel();"> 
+                <i aria-hidden="true" class="fa fa-plus-square-o fa-lg fa-fw"> </i> Add New Configuration
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default" [hidden]="!showPanel">
+    <div class="panel-heading">
+      Add New Configuration
+    </div>
+    <form name="invoiceAgingForm" [formGroup]="invoiceAgingForm" role="form">
+      <div class="panel-body bordered">
+        <div class=" col-md-12 row">
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label for="stageCode"> Stage Step Code </label>
+              <input [attr.disabled]="lblButtonText !='ADD'?true:null" id="stageCode" formControlName="stageCode" (change)="checkAvailabilityCheck($event);"
+                maxlength="50" pattern="^[a-zA-Z0-9-/ ]*$" name="stageCode" type="text" class="form-control" placeholder="Stage Step Code">
+
+              <div class="msg" *ngIf="(invoiceAgingForm.controls['stageCode'].invalid && (invoiceAgingForm.controls['stageCode'].dirty || invoiceAgingForm.controls['stageCode'].touched)) || msgAvailable!=''"
+                style='float: left;'>
+                <div *ngIf="msgAvailable=='' && invoiceAgingForm.controls['stageCode'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="msgAvailable=='' && invoiceAgingForm.controls['stageCode'].errors.pattern">
+                  Only alphanumerics - / and spaces are allowed
+                </div>
+                <div [ngClass]="msgAvailable!=''?'show-error':''" *ngIf="msgAvailable!=''">
+                  <div>{{msgAvailable}}</div>
+                </div>
+              </div>
+              <button type="button" class="pop-over" data-container="body" [popover]="popCode" popoverTitle="Help
+" triggers="mouseenter:mouseleave" placement='left'>?</button>
+              <ng-template #popCode>
+                <ul>
+                  <li>Stage Step Code is required</li>
+                  <li>It allows only alphanumerics - / and spaces</li>
+                  <li>It allows maximum of 50 characters length</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+
+
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label for="stageDesc"> Stage Description </label>
+              <input [attr.disabled]="lblButtonText =='ADD' || lblButtonText =='Update'? null:true" maxlength="50" pattern="^[a-zA-Z0-9 ]*$"
+                formControlName="stageDesc" name="stageDesc" type="text" class="form-control" placeholder="Stage Description">
+              <div class="msg" *ngIf="invoiceAgingForm.controls['stageDesc'].invalid && (invoiceAgingForm.controls['stageDesc'].dirty || invoiceAgingForm.controls['stageDesc'].touched)">
+                <div *ngIf="invoiceAgingForm.controls['stageDesc'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="invoiceAgingForm.controls['stageDesc'].errors.pattern">
+                  Only alphanumerics and spaces are allowed
+                </div>
+              </div>
+              <button type="button" class="pop-over" data-container="body" [popover]="popstageDesc" popoverTitle="Help
+" triggers="mouseenter:mouseleave" placement='left'>?</button>
+              <ng-template #popstageDesc>
+                <ul>
+                  <li>Stage Description is required</li>
+                  <li>It allows only alphanumerics and spaces</li>
+                  <li>It allows maximum of 50 characters length</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+
+
+        <div class=" col-md-12 row">
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label for="agingDays"> Aging Days </label>
+              <input [attr.disabled]="lblButtonText =='ADD' || lblButtonText =='Update'? null:true" maxlength="9" pattern="^[0-9]*$" formControlName="agingDays"
+                name="agingDays" id="agingDays" type="text" class="form-control" placeholder="Aging Days">
+              <div class="msg" *ngIf="invoiceAgingForm.controls['agingDays'].invalid && (invoiceAgingForm.controls['agingDays'].dirty || invoiceAgingForm.controls['agingDays'].touched)">
+                <div *ngIf="invoiceAgingForm.controls['agingDays'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="invoiceAgingForm.controls['agingDays'].errors.pattern">
+                  Only numbers allowed
+                </div>
+              </div>
+              <button type="button" class="pop-over" data-container="body" [popover]="popAgingDays" popoverTitle="Help
+" triggers="mouseenter:mouseleave" placement='left'>?</button>
+              <ng-template #popAgingDays>
+                <ul>
+                  <li>Aging Days is required</li>
+                  <li>Aging Days allows only numbers</li>
+                  <li>It allows maximum of 9 characters length</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+
+
+
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label class="focused" style="width: 100%"> Fee </label>
+              <select [attr.disabled]="lblButtonText =='ADD' || lblButtonText =='Update'? null:true" formControlName="feeType" name="feeType"
+                class="form-control"> 
+                   <option selected='selected' value="">--Select--</option>
+          <option *ngFor="let feeType of feeTypes" value="{{feeType.FeeCode}}">{{feeType.FeeAlias}}</option>
+                </select>
+              <div class="msg" *ngIf="invoiceAgingForm.controls['feeType'].invalid && (invoiceAgingForm.controls['feeType'].dirty || invoiceAgingForm.controls['feeType'].touched)">
+                <div *ngIf="invoiceAgingForm.controls['feeType'].errors.required">
+                  Required.
+                </div>
+              </div>
+              <button type="button" class="pop-over" data-container="body" [popover]="popFeeType" popoverTitle="Help
+" triggers="mouseenter:mouseleave" placement='left'>?</button>
+              <ng-template #popFeeType>
+                <ul>
+                  <li>Fee is required</li>
+                  <li>Select Fee</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+
+        <div class=" col-md-12 row">
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label for="feeAmount"> Fee Amount </label>
+              <input [attr.disabled]="lblButtonText =='ADD' || lblButtonText =='Update'? null:true" maxlength="14" pattern="^[0-9]+(\.{1}[0-9]{1,2})?$"
+                formControlName="feeAmount" id="feeAmount" name="feeAmount" type="text" class="form-control" placeholder="Fee Amount">
+              <div class="msg" *ngIf="invoiceAgingForm.controls['feeAmount'].invalid && (invoiceAgingForm.controls['feeAmount'].dirty || invoiceAgingForm.controls['feeAmount'].touched)">
+                <div *ngIf="invoiceAgingForm.controls['feeAmount'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="invoiceAgingForm.controls['feeAmount'].errors.pattern">
+                  Only numerics with two decimals allowed
+                </div>
+              </div>
+              <button type="button" class="pop-over" data-container="body" [popover]="popFeeAmount" popoverTitle="Help
+" triggers="mouseenter:mouseleave" placement='left'>?</button>
+              <ng-template #popFeeAmount>
+                <ul>
+                  <li>Fee amount is required</li>
+                  <li>Fee Amount should be money format only</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+
+
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label for="gracePeriod"> Grace Period </label>
+              <input [attr.disabled]="lblButtonText =='ADD' || lblButtonText =='Update'? null:true" maxlength="9" pattern="^[0-9]*$" formControlName="gracePeriod"
+                name="gracePeriod" id="gracePeriod" type="text" class="form-control" placeholder="Grace Period">
+              <div class="msg" *ngIf="invoiceAgingForm.controls['gracePeriod'].invalid && (invoiceAgingForm.controls['gracePeriod'].dirty || invoiceAgingForm.controls['gracePeriod'].touched)">
+                <div *ngIf="invoiceAgingForm.controls['gracePeriod'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="invoiceAgingForm.controls['gracePeriod'].errors.pattern">
+                  Only numbers allowed
+                </div>
+              </div>
+              <button type="button" class="pop-over" data-container="body" [popover]="popGracePeriod" popoverTitle="Help
+" triggers="mouseenter:mouseleave" placement='left'>?</button>
+              <ng-template #popGracePeriod>
+                <ul>
+                  <li>Grace Period is required</li>
+                  <li>Grace Period allows only numbers</li>
+                  <li>It allows maximum of 9 characters length</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+
+        <div class=" col-md-12 row">
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label for="thresholdAmount"> Threshold Amount </label>
+              <input [attr.disabled]="lblButtonText =='ADD' || lblButtonText =='Update'? null:true" maxlength="14" pattern="^[0-9]+(\.{1}[0-9]{1,2})?$"
+                formControlName="thresholdAmount" id="thresholdAmount" name="thresholdAmount" type="text" class="form-control"
+                placeholder="Threshold Amount">
+              <div class="msg" *ngIf="invoiceAgingForm.controls['thresholdAmount'].invalid && (invoiceAgingForm.controls['thresholdAmount'].dirty || invoiceAgingForm.controls['thresholdAmount'].touched)">
+                <div *ngIf="invoiceAgingForm.controls['thresholdAmount'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="invoiceAgingForm.controls['thresholdAmount'].errors.pattern">
+                  Only numerics with two decimals allowed
+                </div>
+              </div>
+              <button type="button" class="pop-over" data-container="body" [popover]="popThresholdAmount" popoverTitle="Help
+" triggers="mouseenter:mouseleave" placement='left'>?</button>
+              <ng-template #popThresholdAmount>
+                <ul>
+                  <li>Threshold amount is required</li>
+                  <li>Threshold Amount should be money format only</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+
+
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label class="focused"> Applicable For </label>
+              <select [attr.disabled]="lblButtonText =='ADD' || lblButtonText =='Update'? null:true" formControlName="applicationFor" name="applicationFor"
+                class="form-control"> 
+                        <option selected='selected' value="">--Select--</option>
+          <option *ngFor="let feeApplied of feesAppliedFor" value="{{feeApplied.LookUpTypeCode}}">{{feeApplied.LookUpTypeCodeDesc}}</option>        
+              </select>
+
+              <button type="button" class="pop-over" data-container="body" [popover]="popApplicableFor" popoverTitle="Help
+" triggers="mouseenter:mouseleave" placement='left'>?</button>
+              <ng-template #popApplicableFor>
+                <ul>
+                  <li>Select Applicable For</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <button type="button" class="btn btn-default btn-search" (click)="addConfigurationClick(1);"> 
+            {{lblButtonText}}
+          </button>
+          <button type="button" class="btn btn-default btn-reset" (click)="resetClick();" *ngIf="(lblButtonText=='Deactivate' || lblButtonText=='Activate')?false:true"> 
+            Reset
+          </button>
+          <button type="button" class="btn btn-default btn-reset" (click)="cancelClick();"> 
+            Cancel
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+
+  <div class="panel panel-default" *ngIf="lstWorkFlowStages && lstWorkFlowStages.length">
+    <div class="panel-heading">
+      {{stageName}}
+    </div>
+    <div class="panel-body bordered">
+      <table class="table">
+        <thead>
+          <tr>
+            <th> Stage Step Code </th>
+            <th> Stage Description </th>
+            <th> Aging Days </th>
+            <th> Fee </th>
+            <th> Fee Amount </th>
+            <th> Grace Period </th>
+            <th> Threshold Amount </th>
+            <th> Applicable For </th>
+            <th> </th>
+            <th> </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let res of lstWorkFlowStages">
+            <td> {{res.StageStepCode}} </td>
+            <td> {{res.StepDesc}} </td>
+            <td> {{res.AgingPeriodDays}} </td>
+            <td> {{res.FeeCode}} </td>
+            <td> {{res.Amount | currency:'USD':true:'1.2-2'}} </td>
+            <td> {{res.GracePeriodDays}} </td>
+            <td> {{res.ThresholdAmount | currency:'USD':true:'1.2-2'}} </td>
+            <td> {{res.AppliedFor | DisplayNA}} </td>
+            <td class="text-center">
+
+              <a title="Activate" [ngClass]="isDisabledActivate?'disabletextbox':''" *ngIf="!res.StageStepFeeIsActive" (click)="onActivateClick(res);">                         
+                <i class="fa fa-check-circle-o fa-2x"></i> 
+              </a>
+              <!--<img *ngIf="!res.StageStepFeeIsActive" (click)="onActivateClick(res);" title="Activate" src='assets/images/svg/activate.svg'
+                class='icon-svg3' />-->
+
+              <a title="Edit" [ngClass]="isDisabledUpdate?'disabletextbox':''" *ngIf="res.StageStepFeeIsActive">  <i class="fa fa-pencil-square-o fa-2x" aria-hidden="true" (click)="onEditClick(res);" > </i>   </a>
+            </td>
+            <td class="text-center"> <a title="Deactivate" [ngClass]="isDisabledDeActivate?'disabletextbox':''" *ngIf="res.StageStepFeeIsActive">  <i class="fa fa-ban fa-2x" aria-hidden="true" (click)="onDeactivateClick(res);"> </i>  </a>
+              <!--<a *ngIf="!res.StageStepFeeIsActive">  <i class="fa fa-ban fa-2x" aria-hidden="true" (click)="onActivateClick(res);"> </i>  </a>-->
+              <label *ngIf="!res.StageStepFeeIsActive" class="text-nowrap">Inactive</label>
+            </td>
+
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+  <div class="row m-t-20" *ngIf='!lstWorkFlowStages || lstWorkFlowStages.length==0'>
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <h3>{{stageName}}</h3>
+        <div class="status-content pad-20">
+          No records to display
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group pull-right">
+        <button class="btn btn-default btn-search" (click)="backClick();"> 
+            Back
+          </button>
+        <button class="btn btn-default btn-search" *ngIf="isNextBtnVisible" (click)="nextClick();"> 
+            Next
+          </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"
+  (onOk)="userAction($event)"></app-success-failure-alerts-message>

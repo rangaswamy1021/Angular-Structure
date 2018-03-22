@@ -1,0 +1,152 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Payments</a></li>
+        <li class="active">Make Payment</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Make Payment</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-account-info></app-account-info>
+
+  <div class="alert alert-danger alert-dismissible" role="alert" *ngIf="isHidePayment">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>    The account status is not in Active. You are not allowed to do this operation
+  </div>
+
+
+  <div [ngStyle]="{'display': isHidePayment ? 'none':'block'}">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="payment-steps-2" style="padding-top: 10px;">
+          <ul>
+            <li class="active"><span>1</span>Enter Amount</li>
+            <li><span>2</span>Verify</li>
+            <li><span>3</span>Thank You</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="m-t-20">
+          <!--<div class="row">
+          <div class="col-md-4">
+            <div class="row">
+              <div class="col-md-offset-5 col-sm-7">
+                
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="row">
+              <div class="col-md-offset-5 col-sm-7">
+                
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4"></div>
+          <div class="col-md-12 border-bottom"></div>
+        </div>-->
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <strong class="col-md-offset-5 col-sm-7 m-b-10">Payment With</strong>
+                <div class="col-sm-12 form-group">
+                <label for="inputEmail3" class="focused">Credit Card(s)</label>
+                  <select [disabled]="ccDisable" class="form-control" [(ngModel)]="creditCardId" (click)="onCreditCardSelectionChanged($event.target.value);">
+                  <option selected='selected' value="">--Select--</option>
+                  <option *ngFor="let objCC of creditCardRequest" value="{{objCC.CCID}}">{{objCC.CCType}}_{{objCC.prefixsuffix}}</option>
+                </select>
+                </div>
+              </div>
+                <div class="col-sm-12 form-group">
+                <label for="inputEmail3" class="focused">Bank Account(s)</label>
+                  <select [disabled]="achDisable" *ngIf="bankRequest" class="form-control" [(ngModel)]="bankId" (click)="onBankSelectionChanged($event.target.value);">
+                  <option selected='selected' value="">--Select--</option>
+                  <option *ngFor="let objBank of bankRequest" value="{{objBank.CustomerBankAccountId}}">{{objBank.BankName}}_{{objBank.prefixsuffix}}</option>
+                </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <strong class="col-md-offset-5 col-sm-7 m-b-10">Payment Amount</strong>
+                <div class="col-sm-5 form-group">{{currentBalanceMsg}}</div>
+                <div class="col-sm-7 form-group">
+                  <span for="inputEmail3" class="control-label">{{currentBalance  | currencycustom}}</span>
+                </div>
+              </div>
+              <div class="form-group" *ngIf="collectionBalance">
+                <div class="col-sm-5">Collection Balance</div>
+                <div class="col-sm-7">
+                  <span for="inputEmail3" class="control-label">{{collectionBalance  | currencycustom}}</span>
+                </div>
+              </div>
+                <form role="form" name="paymentForm" [formGroup]="paymentForm">
+                  <div class="form-group col-sm-12 popover-field">
+                  <label for="inputEmail3">Payment Amount</label>
+                    <input pattern="^[0-9]*(\.)?[0-9]{1,2}$" maxlength="9" formControlName="paymentAmount" name="paymentAmount" type="text" class="form-control"
+                      [(ngModel)]="paymentAmount">
+                    <div class="msg" *ngIf="paymentForm.controls['paymentAmount'].invalid && (paymentForm.controls['paymentAmount'].dirty || paymentForm.controls['paymentAmount'].touched)">
+                      <div *ngIf="paymentForm.controls['paymentAmount'].errors.required">
+                        Required.
+                      </div>
+                      <div *ngIf="paymentForm.controls['paymentAmount'].errors.pattern">
+                        Invalid amount.
+                      </div>
+                    </div>
+                    <button type="button" data-container="body" class="pop-over" [popover]="popCN" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                      placement="left">?</button>
+                    <ng-template #popCN>
+                      <ul>
+                        <li>Amount is required </li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </form>
+            </div>
+            <div class="col-md-4">
+              <div class="payment-list-labels">
+                <span [ngClass]="ccDisable?'disabletextbox':''" (click)="payMethodClick('CreditCard');">Pay by New Credit Card</span>
+                <span [ngClass]="achDisable?'disabletextbox':''" (click)="payMethodClick('ACH');">Pay by New Bank Account</span>
+                <span [ngClass]="checkDisable?'disabletextbox':''" (click)="payMethodClick('Cheque');">Pay by Check</span>
+                <span [ngClass]="cashDisable?'disabletextbox':''" (click)="payMethodClick('Cash');">Pay by Cash</span>
+                <span [ngClass]="moDisable?'disabletextbox':''" (click)="payMethodClick('MO');">Pay by Money Order</span>
+                <span [ngClass]="pormoDisable?'disabletextbox':''" (click)="payMethodClick('Promo');">Pay by Promo</span>
+                <!--<span (click)="payMethodClick('CreditCard');">Pay by Gift Certificate</span>
+              <span (click)="payMethodClick('CreditCard');">Pay by Promo</span>-->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+            <app-make-payment [IsCCTaxShow]="isCCTaxShow" [IsPromoAvailable]="isPromoAvailable" (sendPromoValue)="populatePromoValue($event);"></app-make-payment>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="btns-group">
+          <button class="btn btn-primary btn-reset" type="submit" (click)="cancelClick(0);">Cancel</button>
+          <button class="btn btn-primary btn-search" type="submit" [disabled]="(!paymentForm.valid && modeOfPayment!='Promo') || (modeOfPayment=='Promo' && !(paymentForm.status == 'DISABLED'))  || modeOfPayment==''"
+            (click)="doPayment()" autofocus>Make Payment</button>
+          <button class="btn btn-primary btn-reset" type="submit" (click)="resetClick();">Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"
+  (onOk)="userAction($event)"></app-success-failure-alerts-message>

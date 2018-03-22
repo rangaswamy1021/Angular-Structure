@@ -1,0 +1,124 @@
+<div class="page-title-header container">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li class="active">Reports</li>
+        <li class="active">Daily Adjustments</li>
+      </ol>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Daily Adjustments</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <form role="form" name="generateReportSearchForm" [formGroup]="generateReportSearchForm">
+    <div class="row">
+      <div class="col-md-6 form-group">
+        <label>ICN #</label>
+        <input type="text" tabindex="1" (keypress)="_keyPress($event)" class="form-control" maxlength="10" id="icnNumber" placeholder="ICN #"
+          name="icnNumber" formControlName="icnNumber">
+        <div class="msg" *ngIf="generateReportSearchForm.controls['icnNumber'].invalid && (generateReportSearchForm.controls['icnNumber'].dirty || generateReportSearchForm.controls['icnNumber'].touched)">
+          <div *ngIf="generateReportSearchForm.controls['icnNumber'].errors.required">
+            Required.
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 form-group">
+        <label class="focused"> Location </label>
+        <select class="form-control" formControlName="location" name="location">
+                <option selected='selected' value="">--Select--</option>
+                <option *ngFor='let loc of locationResponse' value="{{loc.LocationName}}">{{loc.LocationName}}</option>
+              </select>
+      </div>
+      <div class="col-md-6 form-group">
+        <label id="focused">Posting Date</label>
+
+        <!--<input type="text" tabindex="2" class="form-control" placement='bottom'  id="postingDate" name="postingDate"
+                formControlName="postingDate" #dp="bsDatepicker" bsDatepicker placeholder="MM/DD/YYYY">-->
+        <my-date-picker name="mydate" [options]="myDatePickerOptions" formControlName="postingDate" placeholder="MM/DD/YYYY" (inputFieldChanged)='onDateFieldChanged($event)'></my-date-picker>
+        <div class="show-error" *ngIf="invalidDate">
+          <div> Invalid Date</div>
+        </div>
+      </div>
+      <div class="col-md-6 m-t-20">
+        <button type="submit" tabindex="3" class="btn btn-primary btn-search" (click)="generateReport()" [disabled]="allowSearch">Generate Report</button>
+        <button type="submit" tabindex="4" class="btn btn-default btn-reset" (click)="generateReportReset()">Reset</button>
+      </div>
+    </div>
+  </form>
+  <div class="table-bdr m-t-20" *ngIf="dailyAdjustments">
+    <h3>Transaction Details</h3>
+    <!--gridBind table for clerk details-->
+    <div class="pad-10">
+      <div class="table-responsive" *ngIf="dailyResponse && dailyResponse.length>0">
+        <div class="table-default table-responsive">
+          <table class="table">
+            <thead class="nowrap">
+              <tr>
+                <th (click)="sortDirection('CUSTOMERID')" class="sorting-handle">Account #
+                  <span *ngIf="gridArrowCUSTOMERID">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+                <th (click)="sortDirection('LINKID')" class="sorting-handle">Transaction #
+                  <span *ngIf="gridArrowLINKID">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+                <th (click)="sortDirection('TXNTYPE')" class="sorting-handle">Transaction Type
+                  <span *ngIf="gridArrowTXNTYPE">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+                <th (click)="sortDirection('AMOUNT')" class="sorting-handle">Transaction Amount
+                  <span *ngIf="gridArrowAMOUNT">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+                <th (click)="sortDirection('TRANSACTIONDATE')" class="sorting-handle">Transaction Date
+                  <span *ngIf="gridArrowTRANSACTIONDATE">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+                <th (click)="sortDirection('LOCATIONNAME')" class="sorting-handle">Location
+                  <span *ngIf="gridArrowLOCATIONNAME">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let daily of dailyResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p,totalItems:totalRecordCount,id:'clerk'}; let i = index">
+                <td>{{daily.CustomerId}}</td>
+                <td>{{daily.TransactionId}}</td>
+                <td>{{daily.TransactionType}}</td>
+                <td>{{daily.TransactionAmount | currencycustom}}</td>
+                <td>{{daily.TransactionDate | customDateFormat}}</td>
+                <td>{{daily.LocationName}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div *ngIf='dailyResponse && dailyResponse.length > 0'>
+          <div class="col-md-6 text-left">
+            <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls id="clerk" (pageChange)="pageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+      </div>
+      <div *ngIf='!dailyResponse || dailyResponse.length==0'>
+        <div class="status-content">
+          No daily adjustment details to  display
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,33 @@
+import { AccountStatus } from '../constants';
+
+export interface IProfileResponse {
+    AccountId: number,
+    FirstName: string,
+    LastName: string,
+    ParentId: number,
+    Email: string,
+    Mobile: string,
+    CsrUserId: number,
+    CsrUser: string,
+    InvoiceNumber: string,
+    Phone: string,
+    Line1: string,
+    Line2: string,
+    Line3: string,
+    City: string,
+    State: string,
+    Country: string,
+    Zip1: string,
+    Zip2: string,
+    FullAddress: string,
+    FormattedFullAddress: string,
+    RecordCount: number,
+    CustomerId: number,
+    PlanId: number,
+    AccountStatusDesc: string,
+    IsValid: boolean,
+    Status: string,
+    IsOneTimeTollCustomer: boolean,
+    AccountType: string,
+    AccountStatus: AccountStatus
+}

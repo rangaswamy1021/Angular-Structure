@@ -1,0 +1,152 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li>
+          <a href="#">Disputes</a>
+        </li>
+        <li class="active">Affidavit Of Non-Liability</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Affidavit Of Non-Liability</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-account-info></app-account-info>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 style="margin-top: 10px;">Account #: {{accountId}}</h3>
+    </div>
+    <div class="col-md-6 text-right">
+      <button class="btn btn-primary btn-search" type="submit" (click)="goToBackPrePage()">Back</button>
+    </div>
+  </div>
+  <div class="row m-t-10 m-b-10">
+    <div class="col-md-12">
+      <p>An affidavit of non-liability is any document received from an Account on file that provides proof that the vehicle
+        has been sold, stolen, leased, or rented to another party prior to, or at the time that the Trip occurred. Valid
+        affidavits of non-liability submitted within the allotted time will result in the Trip being transferred to the responsible
+        party.
+      </p>
+    </div>
+  </div>
+  <div class="row m-b-10">
+    <div class="col-md-2">
+      Trip #: {{customerTripIds}}
+    </div>
+    <div class="col-md-6" style="padding-left: 55px;">
+      <div *ngFor="let status of radioStatus" class="custom-control custom-radio radio-inline" style="padding-left: 24px;">
+        <input type="radio" class="custom-control-input" [(ngModel)]="statusValue" [value]="status.id" [id]="status.id">
+        <label [for]="status.id" class="custom-control-description">{{status.Value}}
+                  </label>
+      </div>
+    </div>
+  </div>
+  <div class="table-bdr pad-20">
+    <div class="row">
+      <div class="col-md-6 col-md-offset-2">
+        <form role="form" name="disputeTransaction" [formGroup]="disputeTransaction" novalidate>
+          <div class="row common-fields">
+            <div class="form-group col-md-12 popover-field">
+              <label class="focused">Non-Liability Reason *</label>
+              <select class="form-control col-md-3" formControlName="disputeTransactionType" name="disputeTransactionType" (change)="onReasonCodeChange($event)">
+                          <option selected='selected' value="">--Select--</option>
+                          <option *ngFor="let nonLiabilityReason of nonLiabilityReasons" value="{{nonLiabilityReason.LookUpTypeCode}}">{{nonLiabilityReason.LookUpTypeCodeDesc}}</option>
+                        </select>
+              <div class="msg" *ngIf="disputeTransaction.controls['disputeTransactionType'].invalid && (disputeTransaction.controls['disputeTransactionType'].dirty || disputeTransaction.controls['disputeTransactionType'].touched)">
+                <div *ngIf="disputeTransaction.controls['disputeTransactionType'].errors.required">
+                  Required.
+                </div>
+              </div>
+              <button type="button" class="pop-over" [popover]="popNonL" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+              <ng-template #popNonL>
+                <ul>
+                  <li>Non-Liability reason is required</li>
+                  <li>Select Non-Liability reason</li>
+                </ul>
+              </ng-template>
+            </div>
+            <div class="form-group col-md-12 popover-field">
+              <label class="focused" for="">Additional Comment/Information</label>
+              <textarea name="" id="" cols="30" rows="4" class="form-control" formControlName="comments" maxlength="255"></textarea>
+              <div class="msg" *ngIf="disputeTransaction.controls['comments'].invalid && (disputeTransaction.controls['comments'].dirty || disputeTransaction.controls['comments'].touched)">
+                <div *ngIf="disputeTransaction.controls['comments'].errors.required">
+                  Required.
+                </div>
+              </div>
+              <button type="button" class="pop-over" [popover]="popACI" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+              <ng-template #popACI>
+                <ul>
+                  <li>Provide additional comments/information</li>
+                </ul>
+              </ng-template>
+            </div>
+            <div class="form-group col-sm-12">
+              <label for="">Attach File *</label>
+              <div class="file-upload-field" style="width: calc(100% - 30px); display: inline-block;">
+                <input type="file" class="form-control" accept=".xls,.jpg,.jpeg,.txt,.gif,.docx,.pdf,.doc,.png,.xlsx" #cmpFile formControlName="cmpFile"
+                  style="width:calc(100% - 90px); display: inline-block; ">
+                <button type="submit" (click)="uploadFile()" [disabled]="!isUpload" style="width:80px !important; margin-top: -15px;" class="btn-bs-file btn btn-primary btn-search btn-small">
+                            Upload
+                          </button>
+              </div>
+              <button type="button" class="pop-over" [popover]="popAFile" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+              <ng-template #popAFile>
+                <ul>
+                  <li>Attach file is required</li>
+                  <li>It allows files of jpg, jpeg, txt. gif, dox, pdf, doc, png, xlsx, xls</li>
+                  <li>It should not exceed 1MB</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+          <div class="row p-b-10" *ngIf='attachmentsList.length'>
+            <div class="col-md-12">
+              <div class="table-responsive">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>File Name</th>
+                      <th style="text-align: center;">Delete</th>
+                      <th style="text-align: center;">View</th>
+                    </tr>
+                  </thead>
+                  <tr *ngFor='let f of attachmentsList'>
+                    <td> {{f.FileName}}</td>
+                    <td style="text-align: center;">
+                      <img src="assets/images/svg/delete.svg" class="icon-svg3" alt="Delete" (click)="deleteFile(f.Path)">
+                    </td>
+                    <td style="text-align: center;">
+                      <!-- <img src="" alt="View"> -->
+                      <a href="{{viewPath + f.Path}}" target="_blank">View</a>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group">
+              <div class="col-sm-12">
+                <button type="submit" (click)="submitDisputeRequest()" class="btn btn-primary btn-search" [disabled]="disableDisputeButton">Mark as Dispute</button>
+                <button type="reset" (click)="resetDisputeRequest()" class="btn btn-primary btn-reset">Reset</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)">
+</app-success-failure-alerts-message>

@@ -1,0 +1,445 @@
+<div id="addressEdit" class="edit-modal modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="form-title">{{title}}</h3>
+      </div>
+      <div class="modal-body">
+
+        <div class="row add-address">
+          <form [formGroup]='addressForm' [hidden]='formType!="address"'>
+            <div class="col-md-4">
+              <div class="row">
+                <div class="form-group col-sm-11 popover-field">
+                  <label for="" class="focused">Select Address Type1</label>
+                  <select class="form-control" formControlName="addressType" (change)='selectAddressType()' required>
+                    <option value="" selected="selected">* Address Type</option>
+                    <option value="Billing" >Billing Address</option>
+                    <option value="Home" *ngIf='!isBusiness || isBusiness.length<=0'>Home Address</option>
+                    <option value="Mailing">Mailing Address</option>
+                    <option value="Other">Other Address</option>
+                    <option value="Shipping">Shipping Address</option>
+                    <option value="Primary">Primary Address</option>
+                    <option value="Secondary">Secondary Address</option>
+                    <option value="Business" *ngIf='isBusiness && isBusiness.length>0'>Business Address</option>
+                  </select>
+                  <div class="msg" *ngIf="addressForm.controls['addressType'].invalid && (addressForm.controls['addressType'].dirty || addressForm.controls['addressType'].touched)">
+                    <div *ngIf="addressForm.controls['addressType'].errors.required">
+                      Required.
+                    </div>
+                  </div>
+
+                  <button type="button" class="pop-over" [popover]="popAT" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popAT>
+                    <ul>
+                      <li>Address Type is Required</li>
+
+                    </ul>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="row">
+                <div class="form-group col-sm-11 popover-field">
+                  <label for="">AddressLine1</label>
+                  <input type="text" class="form-control" formControlName="addressLine1" placeholder="Address Line 1">
+                  <div class="msg" *ngIf="addressForm.controls['addressLine1'].invalid && (addressForm.controls['addressLine1'].dirty || addressForm.controls['addressLine1'].touched)">
+                    <div *ngIf="addressForm.controls['addressLine1'].errors.required">
+                      Required.
+
+                    </div>
+                    <div *ngIf="addressForm.controls['addressLine1'].errors.pattern">
+                      Special characters
+                      <> are not allowed.
+                    </div>
+                    <div *ngIf="addressForm.controls['addressLine1'].errors.maxlength">
+                      Maximum 50 characters are allowed.
+                    </div>
+                  </div>
+
+                  <button type="button" class="pop-over" [popover]="popL1" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popL1>
+                    <ul>
+                      <li>Address Line 1 is required</li>
+                      <li>It allows alphanumerics, spaces and all special characters except(
+                        <>).</li>
+                      <li>It should be minimum 1 character and maximum 50 characters long</li>
+                    </ul>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="row">
+                <div class="form-group col-sm-11 popover-field">
+                  <label for="">AddressLine2</label>
+                  <input type="text" class="form-control" formControlName="addressLine2" placeholder="Address Line 2">
+                  <div class="msg" *ngIf="addressForm.controls['addressLine2'].invalid && (addressForm.controls['addressLine2'].dirty || addressForm.controls['addressLine2'].touched)">
+                    <div *ngIf="addressForm.controls['addressLine2'].errors.pattern">
+                      Special characters are not allowed.
+                    </div>
+                    <div *ngIf="addressForm.controls['addressLine2'].errors.maxlength">
+                      Maximum 50 characters are allowed.
+                    </div>
+                  </div>
+
+
+                  <button type="button" class="pop-over" [popover]="popL2" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popL2>
+                    <ul>
+                      <li>Address Line 2 allows alphanumerics, spaces and all special characters except(
+                        <>) .</li>
+                      <li>It should be minimum 1 character and maximum 50 characters long.</li>
+                    </ul>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="row">
+                <div class="form-group col-sm-11 popover-field">
+                  <label for="">AddressLine3</label>
+                  <input type="text" class="form-control" formControlName="addressLine3" placeholder="Address Line 3">
+
+                  <div class="msg" *ngIf="addressForm.controls['addressLine3'].invalid && (addressForm.controls['addressLine3'].dirty || addressForm.controls['addressLine3'].touched)">
+                    <div *ngIf="addressForm.controls['addressLine3'].errors.pattern">
+                      Special characters are not allowed.
+                    </div>
+                    <div *ngIf="addressForm.controls['addressLine3'].errors.maxlength">
+                      Maximum 50 characters are allowed.
+                    </div>
+                  </div>
+
+                  <button type="button" class="pop-over" [popover]="popL2" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popL2>
+                    <ul>
+                      <li>Address Line 3 allows alphanumerics, spaces and all special characters except(
+                        <>) .</li>
+                      <li>It should be minimum 1 character and maximum 50 characters long.</li>
+                    </ul>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="row">
+                <div class="form-group col-sm-11 popover-field">
+                  <label for="">City</label>
+                  <input type="text" class="form-control" placeholder="City" formControlName="city">
+                  <div class="msg" *ngIf="addressForm.controls['city'].invalid && (addressForm.controls['city'].dirty || addressForm.controls['city'].touched)">
+                    <div *ngIf="addressForm.controls['city'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="addressForm.controls['city'].errors.pattern">
+                      Only alphanumerics and space are allowed.
+                    </div>
+                    <div *ngIf="addressForm.controls['city'].errors.maxlength">
+                      Maximum 50 characters are allowed.
+                    </div>
+                  </div>
+
+                  <button type="button" class="pop-over" [popover]="popC" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popC>
+                    <ul>
+                      <li>City is required.</li>
+                      <li>It allows alphanumerics and spaces.</li>
+                      <li>Special Characters are not allowed.</li>
+                      <li>It should be minimum 1 character and maximum 50 characters long</li>
+                    </ul>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="row">
+                <div class="form-group col-sm-11 popover-field">
+                  <label for="" class="focused">Country</label>
+                  <select class="form-control" formControlName="country" (change)='countrySelected($event.target.value)'>
+                    <option value="" selected disabled>* Country</option>
+
+                    <option *ngFor='let country of countries' value="{{country.CountryCode}}">{{country.CountryName}}</option>
+                  </select>
+                  <div class="msg" *ngIf="addressForm.controls['country'].invalid && (addressForm.controls['country'].dirty || addressForm.controls['country'].touched)">
+                    <div *ngIf="addressForm.controls['country'].errors.required">
+                      Required.
+                    </div>
+                  </div>
+
+                  <button type="button" class="pop-over" [popover]="popSC" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popSC>
+                    <ul>
+                      <li>Country is required.</li>
+                      <li> Select Country.</li>
+                    </ul>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="row">
+                <div class="form-group col-sm-11 popover-field">
+                  <label for="" class="focused">State</label>
+                  <select class="form-control" formControlName="state">
+                    <option value="" selected disabled>* State</option>
+
+                    <option *ngFor='let state of states' value="{{state.StateCode}}">{{state.StateName}}</option>
+                  </select>
+                  <div class="msg" *ngIf="addressForm.controls['state'].invalid && (addressForm.controls['state'].dirty || addressForm.controls['state'].touched)">
+                    <div *ngIf="addressForm.controls['state'].errors.required">
+                      Required.
+                    </div>
+                  </div>
+
+                  <button type="button" class="pop-over" [popover]="popSS" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popSS>
+                    <ul>
+                      <li>State is required.</li>
+                      <li>Select State</li>
+                    </ul>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="row">
+                <div class="form-group col-sm-11 popover-field">
+                  <label for="">Zip Code1</label>
+                  <input type="text" class="form-control" placeholder="Zip Code" formControlName="zip1">
+                  <div class="msg" *ngIf="addressForm.controls['zip1'].invalid && (addressForm.controls['zip1'].dirty || addressForm.controls['zip1'].touched)">
+                    <div>
+
+                      <span *ngIf="addressForm.controls['zip1'].errors.required">
+                      Required.
+                    </span>
+                      <span *ngIf="addressForm.controls['zip1'].errors.pattern">
+                      Only numerics are allowed.
+                    </span>
+                      <span *ngIf="addressForm.controls['zip1'].errors.minlength && !addressForm.controls['zip1'].errors.pattern">
+                      Minimum {{zipMinlength}} characters are required.
+                    </span>
+                      <span *ngIf="addressForm.controls['zip1'].errors.maxlength && !addressForm.controls['zip1'].errors.pattern">
+                      Maximum {{zipMaxlength}} characters are allowed.
+                    </span>
+                      <!-- <div *ngIf="addressForm.controls['zip1'].errors.minlength">
+                              Minimum 5 characters are required.
+                            </div>
+                            <div *ngIf="addressForm.controls['zip1'].errors.maxlength">
+                              Maximum 6 characters are allowed.
+                            </div> -->
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popZ1" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popZ1>
+                    <ul>
+                      <li>Zip 1 is required</li>
+                      <li>It allows only numbers.</li>
+                    </ul>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4" [hidden]='!showZip2'>
+              <div class="row">
+                <div class="form-group col-sm-11 popover-field">
+                  <label for="">Zip Code2</label>
+                  <input type="text" class="form-control" placeholder="Zip Code 2" formControlName="zip2" maxlength="4">
+                  <div class="msg" *ngIf="addressForm.controls['zip2'].invalid && (addressForm.controls['zip2'].dirty || addressForm.controls['zip2'].touched)">
+                    <div *ngIf="addressForm.controls['zip2'].errors.pattern">
+                      Only numerics are allowed.
+                    </div>
+                    <div *ngIf="addressForm.controls['zip2'].errors.maxlength">
+                      Maximum 4 characters are allowed.
+                    </div>
+                  </div>
+
+                  <button type="button" class="pop-over" [popover]="popZ2" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #popZ2>
+                    <ul>
+                      <li>Zip 2 is required</li>
+                      <li>It allows only numbers.</li>
+                    </ul>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="row">
+                <div class="col-sm-12 checkbox">
+                  <input type="checkbox" formControlName='isPreferred' id="prefered">
+                  <label for="prefered"><span></span> Is Preferred</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2" [hidden]='!showIsValid'>
+              <div class="row">
+                <div class="col-sm-12 checkbox">
+                  <input type="checkbox" formControlName='isValid' id="validcheck">
+                  <label for="validcheck"><span></span>  Is Valid</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 m-t-10">
+
+              <button type="submit" class="btn btn-primary btn-search" (click)="changeAddress(buttonType,true)" [disabled]='disableButton'>{{buttonType}}</button>
+              <button type="button" class="btn btn-default btn-reset" (click)=resetAddress(buttonType)>Reset</button>
+              <button type="button" class="btn btn-default btn-reset" data-dismiss="modal">Cancel</button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel-heading" role="tab" id="headingOne">
+  <h4 class="panel-title pull-left">
+    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Address</a>
+  </h4>
+  <div class="edit-history-link pull-right">
+    <a href="javascript:;" (click)='editDetails("address","Add")'>Add </a>
+    <a href="javascript:;" (click)='editDetails("address","edit")'>Edit</a>
+    <a href="javascript:;" [ngClass]="disableHistorybtn?'disabletextbox':''" (click)='showAddressHistory()'>View History</a>
+  </div>
+  <div class="clear"></div>
+</div>
+<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+  <div class="panel-body">
+
+    <div class="clear"></div>
+    <div class="row contact-item">
+      <div class="col-md-4">
+        <h3>Billing Address</h3>
+        <h4 *ngIf='addressTypes.Billing'>{{addressTypes.Billing.FullAddress}}
+          <a href="javascript:;" [ngClass]="disabledeletebtn?'disabletextbox':''" (click)="deleteAddress(addressTypes.Billing)" *ngIf='!addressTypes.Billing.IsPreferred'>Delete</a>
+        </h4>
+        <h4 *ngIf='!addressTypes.Billing'>No Details Found</h4>
+      </div>
+      <div class="col-md-4" *ngIf='!isBusiness || isBusiness.length<=0'>
+        <h3>Home Address</h3>
+        <h4 *ngIf='addressTypes.Home'>{{addressTypes.Home.FullAddress}}
+          <a href="javascript:;" [ngClass]="disabledeletebtn?'disabletextbox':''" (click)="deleteAddress(addressTypes.Home)" *ngIf='!addressTypes.Home.IsPreferred'>Delete</a>
+
+        </h4>
+        <h4 *ngIf='!addressTypes.Home'>No Details Found</h4>
+      </div>
+      <div class="col-md-4" *ngIf='isBusiness && isBusiness.length>0'>
+        <h3>Business Address</h3>
+        <h4 *ngIf='addressTypes.Business'>{{addressTypes.Business.FullAddress}}
+          <a href="javascript:;" [ngClass]="disabledeletebtn?'disabletextbox':''" (click)="deleteAddress(addressTypes.Business)" *ngIf='!addressTypes.Business.IsPreferred'>Delete</a>
+
+        </h4>
+        <h4 *ngIf='!addressTypes.Business'>No Details Found</h4>
+      </div>
+      <div class="col-md-4">
+        <h3>Mailing Address</h3>
+        <h4 *ngIf='addressTypes.Mailing'>{{addressTypes.Mailing.FullAddress}}
+          <a href="javascript:;" [ngClass]="disabledeletebtn?'disabletextbox':''" (click)="deleteAddress(addressTypes.Mailing)" *ngIf='!addressTypes.Mailing.IsPreferred'>Delete</a>
+
+        </h4>
+        <h4 *ngIf='!addressTypes.Mailing'>No Details Found</h4>
+      </div>
+      <div class="col-md-4">
+        <h3>Other Address</h3>
+        <h4 *ngIf='addressTypes.Other'>{{addressTypes.Other.FullAddress}}
+          <a href="javascript:;" [ngClass]="disabledeletebtn?'disabletextbox':''" (click)="deleteAddress(addressTypes.Other)" *ngIf='!addressTypes.Other.IsPreferred'>Delete</a>
+
+        </h4>
+        <h4 *ngIf='!addressTypes.Other'>No Details Found</h4>
+      </div>
+      <div class="col-md-4">
+        <h3>Primary Address</h3>
+        <h4 *ngIf='addressTypes.Primary'>{{addressTypes.Primary.FullAddress}}
+          <a href="javascript:;" [ngClass]="disabledeletebtn?'disabletextbox':''" (click)="deleteAddress(addressTypes.Primary)" *ngIf='!addressTypes.Primary.IsPreferred'>Delete</a>
+        </h4>
+        <h4 *ngIf='!addressTypes.Primary'>No Details Found</h4>
+      </div>
+      <div class="col-md-4">
+        <h3>Secondary Address</h3>
+        <h4 *ngIf='addressTypes.Secondary'>{{addressTypes.Secondary.FullAddress}}
+          <a href="javascript:;" [ngClass]="disabledeletebtn?'disabletextbox':''" (click)="deleteAddress(addressTypes.Secondary)" *ngIf='!addressTypes.Secondary.IsPreferred'>Delete</a>
+
+        </h4>
+        <h4 *ngIf='!addressTypes.Secondary'>No Details Found</h4>
+      </div>
+      <div class="col-md-4">
+        <h3>Shipping Address</h3>
+        <h4 *ngIf='addressTypes.Shipping'>{{addressTypes.Shipping.FullAddress}}
+          <a href="javascript:;" [ngClass]="disabledeletebtn?'disabletextbox':''" (click)="deleteAddress(addressTypes.Shipping)" *ngIf='!addressTypes.Shipping.IsPreferred'>Delete</a>
+        </h4>
+        <h4 *ngIf='!addressTypes.Shipping'>No Details Found</h4>
+      </div>
+      <div class="col-md-4">
+        <h3>Preferences</h3>
+        <h4 *ngIf='preferredAddress'>{{preferredAddress.Type}}</h4>
+        <h4 *ngIf='!preferredAddress'>No Details Found</h4>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="addressHistory" class="edit-modal  modal fade history-modal" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="form-title">Address History</h3>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="table-bdr m-t-10">
+          <div class="table-default table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Address Type</th>
+                  <th>Address</th>
+                  <th>Preference</th>
+                  <th>Created by</th>
+                  <th>Created Date/Time</th>
+                  <th>Updated by</th>
+                  <th>Update Date/Time</th>
+                  <th>Action</th>
+                  <th>Is Valid</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor='let item of addressHistory | paginate: { itemsPerPage: pageItemNumber, currentPage: p,totalItems:totalRecordCount }'>
+                  <td>{{item.Type}}</td>
+                  <td>{{item.FullAddress}}</td>
+                  <td>{{item.IsPreferred?"Yes":"No"}}</td>
+                  <td>{{item.CreatedUser}}</td>
+                  <td>{{item.CreatedDate | customDateTimeFormat}}</td>
+
+                  <td>{{item.UpdatedUser}}</td>
+                  <td>{{item.UpdatedDate | customDateTimeFormat}}</td>
+                  <td>{{item.HistoryAction}}</td>
+                  <td>{{item.IsValid?"Yes":"No"}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class=" page-info">
+              <div class="col-md-6 text-left">
+                <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+              </div>
+              <div class="col-md-6 text-right">
+                <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

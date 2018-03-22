@@ -1,0 +1,330 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">IMC</a></li>
+        <li class="active"> Shipment </li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1> Batch Information </h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="table-bdr">
+    <h3>Batch Information For Received Shipment</h3>
+    <form role="form" name="batchInformationForm" [formGroup]="batchInformationForm">
+      <div class="pad-10">
+        <div class="row">
+
+          <div class="col-md-6">
+            <div class="form-group popover-field col-md-12">
+              <label class="focused"> Purchase Order # </label>
+              <select class="form-control" tabindex="1" id="purchaseOrder" name="purchaseOrder" formControlName="purchaseOrder" (change)="getOrderDetailsBasedOnOrderNum($event)">
+                  <option selected="selected" value="">--Select--</option>
+                    <option *ngFor="let purchase of purchaseResponse" value="{{purchase.PurchaseOrderID}}">{{purchase.PurchaseOrderNumber}}</option>
+               </select>
+              <div class="msg" *ngIf="batchInformationForm.controls['purchaseOrder'].invalid && (batchInformationForm.controls['purchaseOrder'].dirty || batchInformationForm.controls['purchaseOrder'].touched)">
+                <div *ngIf="batchInformationForm.controls['purchaseOrder'].errors.required">
+                  Required
+                </div>
+              </div>
+              <ng-template #popContentPurchase>
+                <ul>
+                  <li>Purchase Order# is mandatory</li>
+                  <li>Select Purchase Order # </li>
+                </ul>
+              </ng-template>
+              <button type="button" data-container="body" class="pop-over" popoverTitle="Help" [popover]="popContentPurchase" triggers="mouseenter:mouseleave"
+                placement='left'>
+                  ?
+                </button>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group popover-field col-md-12">
+              <label>Purchase Order Date </label>
+              <input type="text" class="form-control" placeholder="Purchase Order Date" id="purchaseOrderDate" name="purchaseOrderDate"
+                formControlName="purchaseOrderDate" [readonly]="true">
+              <ng-template #PurchaseOrderDate>
+                <ul>
+                  <li>Purchase Order Date Required</li>
+                </ul>
+              </ng-template>
+              <button type="button" data-container="body" class="pop-over" popoverTitle="Help" [popover]="PurchaseOrderDate" triggers="mouseenter:mouseleave"
+                placement='left'>
+                  ?
+                </button>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group popover-field col-md-12">
+              <label> Vendor Name </label>
+              <input type="text" class="form-control" placeholder="Vendor Name" id="vendorName" name="vendorName" formControlName="vendorName"
+                [readonly]="true">
+              <ng-template #VendorName>
+                <ul>
+                  <li>Vendor Name Required</li>
+                </ul>
+              </ng-template>
+              <button type="button" data-container="body" class="pop-over" popoverTitle="Help" [popover]="VendorName" triggers="mouseenter:mouseleave"
+                placement='left'>
+                  ?
+                </button>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group popover-field col-md-12">
+              <label> Contract # </label>
+              <input type="text" class="form-control" placeholder="Contract #" id="contract" name="contract" formControlName="contract"
+                [readonly]="true">
+              <ng-template #popContract>
+                <ul>
+                  <li>Contract Required</li>
+                </ul>
+              </ng-template>
+              <button type="button" data-container="body" class="pop-over" popoverTitle="Help" [popover]="popContract" triggers="mouseenter:mouseleave"
+                placement='left'>
+                  ?
+                </button>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group popover-field col-md-12">
+              <label  class="focused"> Items </label>
+              <select class="form-control" tabindex="2" id="items" name="items" formControlName="items" (change)="getMountingByItemId($event)">
+                 <option  selected="selected" value="">--Select--</option> 
+                <option *ngFor="let items of shipmentResponse" value="{{items.ItemID}}">{{items.ItemName}}</option>
+              </select>
+              <div class="msg" *ngIf="batchInformationForm.controls['items'].invalid && (batchInformationForm.controls['items'].dirty || batchInformationForm.controls['items'].touched)">
+                <div *ngIf="batchInformationForm.controls['items'].errors.required">
+                  Required
+                </div>
+              </div>
+              <ng-template #popContentItems>
+                <ul>
+                  <li>Item Purchase Order# is mandatory</li>
+                  <li> Select Item Name </li>
+                </ul>
+              </ng-template>
+              <button type="button" data-container="body" class="pop-over" popoverTitle="Help" [popover]="popContentItems" triggers="mouseenter:mouseleave"
+                placement='left'>
+                  ?
+                </button>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="form-group col-md-12 popover-field">
+              <label class="focused"> Item Description</label>
+              <textarea class="form-control" placeholder="Item Description" rows="4" id="itemDescription" name="itemDescription" formControlName="itemDescription"
+                [readonly]="true"> 
+              </textarea>
+              <ng-template #ItemDescription>
+                <ul>
+                  <li>Item Description Required</li>
+                </ul>
+              </ng-template> <button type="button" data-container="body" class="pop-over" popoverTitle="Help" [popover]="ItemDescription"
+                triggers="mouseenter:mouseleave" placement='left'>
+                  ?
+                </button>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label> Product # </label>
+              <input type="text" class="form-control" placeholder="Product #" id="product" name="product" formControlName="product" [readonly]="true">
+              <ng-template #Contract>
+                <ul>
+                  <li>Product Required</li>
+                </ul>
+              </ng-template>
+              <button type="button" data-container="body" class="pop-over" popoverTitle="Help" [popover]="Contract" triggers="mouseenter:mouseleave"
+                placement='left'>
+                  ?
+                </button>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label> Mounting</label>
+              <input type="text" class="form-control" placeholder="Mounting" id="mounting" name="mounting" formControlName="mounting" [readonly]="true">
+              <ng-template #Mounting>
+                <ul>
+                  <li>Mounting Required</li>
+                </ul>
+              </ng-template>
+              <button type="button" data-container="body" class="pop-over" popoverTitle="Help" [popover]="Mounting" triggers="mouseenter:mouseleave"
+                placement='left'>
+                  ?
+                </button>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label> Packing List </label>
+              <input type="text" class="form-control" placeholder="Packing List" tabindex="3" id="packingList" name="packingList" formControlName="packingList"
+                maxlength="50">
+              <div class="msg" *ngIf="batchInformationForm.controls['packingList'].invalid && (batchInformationForm.controls['packingList'].dirty || batchInformationForm.controls['packingList'].touched)">
+                <div *ngIf="batchInformationForm.controls['packingList'].errors.pattern">
+                  Only alphanumerics and spaces are allowed, initial spaces are not allowed
+                </div>
+              </div>
+              <ng-template #popContentPacking>
+                <ul>
+                  <li>Packing List</li>
+                  <li>It allows only alphanumeric characters </li>
+                  <li> It should be minimum 1<br> characters and maximum 50 <br> characters long </li>
+                </ul>
+              </ng-template> <button type="button" data-container="body" class="pop-over" popoverTitle="Help" [popover]="popContentPacking"
+                triggers="mouseenter:mouseleave" placement='left'>
+                  ?
+                </button>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="">
+              <!--<div class="form-group col-xs-6 popover-field">
+                <label> Ship Date </label>
+                <owl-date-time [dateFormat]='"MM/DD/YYYY"' type="text" [min]='shipMinDate' [max]='maxDate' [type]='"calendar"' [placeHolder]='"MM/DD/YYYY "'
+                  class="form-control" tabindex="4" id="shipDate" name="shipDate" formControlName="shipDate" autoClose=false></owl-date-time>
+                <div class="msg" *ngIf="batchInformationForm.controls['shipDate'].invalid && (batchInformationForm.controls['shipDate'].dirty || batchInformationForm.controls['shipDate'].touched)">
+                  <div *ngIf="batchInformationForm.controls['shipDate'].errors.required">
+                    Required.
+                  </div>
+                </div>
+                <ng-template #popContentShipped>
+                  <ul>
+                    <li>Ship Date is mandatory</li>
+                    <li> Date should be valid</li>
+                  </ul>
+                </ng-template>
+                <button type="button" data-container="body" class="pop-over" popoverTitle="Help" [popover]="popContentShipped" triggers="mouseenter:mouseleave"
+                  placement='left'>
+                  ?
+                </button>
+              </div>-->
+
+              <div class="col-md-6 form-group popover-field">
+                <label for="Date Range" id="focused">Ship Date</label>
+                <div  class="show-error" *ngIf="!invalid&&(batchInformationForm.controls['shipDate'].invalid && (batchInformationForm.controls['shipDate'].dirty || batchInformationForm.controls['shipDate'].touched))">
+                  <div *ngIf="batchInformationForm.controls['shipDate'].errors.required">
+                    Required.
+                  </div>
+                </div>
+                <my-date-picker name="mydate" [options]="myDatePickerOptions1" (inputFieldChanged)='onDateChanged1($event)'    formControlName="shipDate"></my-date-picker>
+               <div class="show-error"  *ngIf='invalid'><div> Invalid Date</div></div>
+                <ng-template #popContentShipped>
+                  <ul>
+                    <li>Ship Date is mandatory</li>
+                    <li> Date should be valid</li>
+                  </ul>
+                </ng-template>
+                <button type="button" data-container="body" class="pop-over" popoverTitle="Help" [popover]="popContentShipped" triggers="mouseenter:mouseleave"
+                  placement='left'>
+                  ?
+                </button>
+              </div>
+
+
+              <div class="col-md-6 form-group popover-field">
+                <label for="Date Range" id="focused">Received Date</label>
+               <div  class="show-error" *ngIf="!invalidDate&&(batchInformationForm.controls['receivedDate'].invalid && (batchInformationForm.controls['receivedDate'].dirty || batchInformationForm.controls['receivedDate'].touched))">
+                  <div *ngIf="batchInformationForm.controls['receivedDate'].errors.required">
+                    Required
+                  </div>
+                </div>
+                <my-date-picker name="mydate" [options]="myDatePickerOptions2" (inputFieldChanged)='onDateChanged2($event)' formControlName="receivedDate"></my-date-picker>
+                <div class="show-error" *ngIf='invalidDate'><div> Invalid Date</div></div>
+                <ng-template #popContentReceived>
+                  <ul>
+                    <li>Receive Date is mandatory</li>
+                    <li> Date should be valid</li>
+                  </ul>
+                </ng-template>
+                <button type="button" data-container="body" class="pop-over" popoverTitle="Help" [popover]="popContentReceived" triggers="mouseenter:mouseleave"
+                  placement='left'>
+                  ?
+                </button>
+              </div>
+
+
+              <!--<div class="col-xs-6 popover-field">
+                <label> Received Date </label>
+                <owl-date-time [dateFormat]='"MM/DD/YYYY"' type="text" (click)="receiveShipDate()" [min]='receiveMinDate' [max]='maxDate'
+                  [type]='"calendar"' [placeHolder]='"MM/DD/YYYY "' class="form-control" tabindex="5" id="receivedDate" name="receivedDate"
+                  formControlName="receivedDate" autoClose=false></owl-date-time>
+                <div class="msg" *ngIf="batchInformationForm.controls['receivedDate'].invalid && (batchInformationForm.controls['receivedDate'].dirty || batchInformationForm.controls['receivedDate'].touched)">
+                  <div *ngIf="batchInformationForm.controls['receivedDate'].errors.required">
+                    Required.
+                  </div>
+                </div>
+                <ng-template #popContentReceived>
+                  <ul>
+                    <li>Receive Date is mandatory</li>
+                    <li> Date should be valid </li>
+                  </ul>
+                </ng-template>
+                <button type="button" data-container="body" class="pop-over" popoverTitle="Help" [popover]="popContentReceived" triggers="mouseenter:mouseleave"
+                  placement='left'>
+                  ?
+                </button>
+              </div>-->
+            </div>
+          </div>
+
+              <div class="col-md-12">
+                <div>
+                <div class="form-group col-md-12 popover-field">
+                  <label class="focused"> Note </label>
+                  <textarea class="form-control" placeholder="Note" tabindex="6" rows="4" id="note" name="note" formControlName="note" (keyup)="descEvent($event)"
+                    maxlength="128">  
+              </textarea>
+                  <div class="msg" *ngIf="batchInformationForm.controls['note'].invalid && (batchInformationForm.controls['note'].dirty || batchInformationForm.controls['note'].touched)">
+                    <div *ngIf="batchInformationForm.controls['note'].errors.pattern">
+                      Only alphanumerics and spaces are allowed,initial spaces are not allowed
+                    </div>
+                  </div>
+                  <ng-template #popContentNote>
+                    <ul>
+                      <li>Note</li>
+                      <li>It allows only alphanumeric characters and spaces
+                      </li>
+                      <li> It should be minimum 1<br> characters and maximum 128 <br> characters long </li>
+                    </ul>
+                  </ng-template>
+                  <button type="button" data-container="body" class="pop-over" popoverTitle="Help" [popover]="popContentNote" triggers="mouseenter:mouseleave"
+                    placement='left'>
+                  ?
+                </button>
+                 </div>
+                <small class="col-md-12">Left: {{descLength}} Characters</small>
+                </div>
+              </div>
+
+              <div class="col-md-12">
+                <a href='javascript:;' type="submit" class="btn btn-default btn-search" tabindex="7" (click)="goToReceiveShipment()">Next</a>
+                <a href='javascript:;' class="btn btn-default btn-reset" tabindex="8" (click)="cancelBatchInformation()">Cancel</a>
+              </div>
+            </div>
+          </div>
+    </form>
+    </div>
+    <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+      (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+
+    </div>

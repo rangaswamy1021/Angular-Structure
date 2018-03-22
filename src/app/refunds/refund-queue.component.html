@@ -1,0 +1,160 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">{{menuHeading}}</a>
+        </li>
+        <li class="active">
+          {{menuSubSystem}}
+        </li>
+        <li class="active">Refund Queue</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Refund Queue</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <form role="form" name="refundQueueFrom" [formGroup]="refundQueueFrom">
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label class="focused"> Pay Type </label>
+        <select class="form-control" name="payType" id="payType" formControlName="payType">
+              <option selected="selected" value=""> All </option>
+              <option value="CHEQUE"> Check </option>
+              <option value="CREDITCARD"> Credit Card </option>
+            </select>
+      </div>
+      <div class="form-group col-md-6">
+        <label class="focused"> Status </label>
+        <select class="form-control" name="Status" id="Stauts" formControlName="Status">
+              <option value="">All</option>
+              <option *ngFor="let states of objCommonResponseRefundSates" value="{{states.LookUpTypeCode}}">{{states.LookUpTypeCode}}</option>
+            </select>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="RRID"> RRID </label>
+        <input type="text" class="form-control" placeholder="RRID" name="RRID" id="RRID" formControlName="RRID">
+      </div>
+      <div class="form-group col-md-6">
+        <label for="AccountId"> Account # </label>
+        <input type="text" class="form-control" placeholder="Account Id" name="AccountId" id="AccountId" formControlName="AccountId">
+      </div>
+      <div class="form-group col-md-6">
+        <label for="Date Range" class="focused">Date</label>
+        <!-- <input class="form-control" placeholder="Daterangepicker" bsDaterangepicker #dpr="bsDaterangepicker" name="bsRangeValue"
+              formControlName="bsRangeValue" [(ngModel)]="bsRangeValue"> -->
+
+        <my-date-range-picker name="bsRangeValue" [options]="myDateRangePickerOptions" formControlName="bsRangeValue" (inputFieldChanged)='onInputFieldRangeChanged($event)'
+          (inputFocusBlur)='onInputFocusBlur($event)'></my-date-range-picker>
+
+        <div class="show-error" *ngIf="!invalidDateRange && refundQueueFrom.controls['bsRangeValue'].invalid && (refundQueueFrom.controls['bsRangeValue'].dirty || refundQueueFrom.controls['bsRangeValue'].touched)">
+          <div *ngIf="refundQueueFrom.controls['bsRangeValue'].errors.required">
+            Date Range is required
+          </div>
+        </div>
+        <div *ngIf="invalidDateRange" class="show-error">
+          <div>Invalid date Range </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <button class="btn btn-default btn-search" [disabled]="disableButton" (click)='refundQueueSearch()'>Search </button>
+        <button class="btn btn-default btn-reset" (click)="searchReset()">Reset </button>
+      </div>
+    </div>
+  </form>
+  <form role="form" #refundForm="ngForm">
+    <div class="table-bdr m-t-20">
+      <h3>Refund Search</h3>
+      <div class="pad-10" *ngIf='refundResponse && refundResponse.length>0'>
+        <div class="table-responsive">
+          <table class="table  table-bdr">
+            <thead>
+              <tr>
+                <th>
+                  <div class="checkbox">
+                    <input type="checkbox" id="checkAll" name="check" [checked]="isParentSelected" (change)="checkAllClick($event)">
+                    <label for="checkAll"><span></span></label></div>
+                </th>
+                <th>RRID</th>
+                <th>Account #</th>
+                <th>Mode Of Payment</th>
+                <th class="text-right">Amount ($)</th>
+                <th style='padding-left: 20px;'>Request Type</th>
+                <th>Status</th>
+                <th>Requested Date/Time</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let rep of refundResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount }; let row_no=index'>
+                <td>
+                  <div class="checkbox" *ngIf='rep.isSelectIndividual '>
+                    <input type="checkbox" [id]="rep.RRID" name="check" [checked]="rep.checked" (change)="checkboxCheckedEvent(rep,$event,row_no)">
+                    <label for="{{rep.RRID}}"><span></span></label></div>
+                </td>
+                <td>{{rep.RRID}}</td>
+                <td>{{rep.AccountID}}</td>
+                <td>
+                  <select class="form-control" [disabled]='rep.isModeOfPaymentEnable' (change)="onChangeModeofPayment($event.target.value,rep)">
+                    <option *ngFor="let refund of modeOfRefunds" [selected]="refund.Value == rep.ModeofPayment" value="{{refund.Id}}">{{refund.Value}}</option>
+                  </select>
+                </td>
+                <td class="text-right">
+                  <div class="col-md-12">
+                    <div class="popover-field" ngModelGroup="refundAmounts">
+                      <input type="text" pattern="^[0-9]*(\.)?[0-9]{1,2}$" (change)="onChnage($event.target.value,rep)" maxlength="9" #invList="ngModel"
+                        required name="Amount[{{row_no}}]" class="form-control" ngModel="{{rep.checked?(rep.Amount  | number : '1.2-2'):(rep.OriginalAmount | number : '1.2-2')}}"
+                        [readonly]="rep.istxtAmountEnable">
+                      <div class="msg" *ngIf="invList.invalid && (invList.dirty || invList.touched)">
+                        <div *ngIf="invList.errors.required">
+                          Required.
+                        </div>
+                        <div *ngIf="invList.errors.pattern">
+                          Invalid amount.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td style='padding-left: 20px; '>{{rep.RefundType}}</td>
+                <td>{{rep.RefundRequestState}}</td>
+                <td>{{rep.RefundRequestedDate | customDateTimeFormat }}</td>
+                <td class="text-right">
+                  <div *ngIf='rep.isProcessRefund '>
+                    <a (click)="refundProcess(rep)">Process</a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row page-info">
+          <div class="col-md-6 text-left">
+            <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+        <div class="col-md-12" *ngIf='isDisplay '>
+          <button class="btn btn-default btn-search" [disabled]="disableSaveButton" (click)='refundQueueSave() '>Save </button>
+          <button class="btn btn-default btn-reset" (click)="resetData()">Reset </button>
+          <button class="btn btn-default btn-search" (click)='printFrom() '>Print</button>
+        </div>
+      </div>
+      <div *ngIf='refundResponse && refundResponse.length==0 '>
+        <div class="pad-10">
+          No records to display
+        </div>
+      </div>
+    </div>
+  </form>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+</div>

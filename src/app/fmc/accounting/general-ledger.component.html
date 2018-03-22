@@ -1,0 +1,118 @@
+<div class="page-title-header">
+    <div class="row no-gutters">
+        <div class="col-md-12">
+            <ol class="breadcrumb">
+                <li><a href="#">FMC</a></li>
+                <li><a href="#">Accounting</a></li>
+                <li class="active">General Ledger</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-header">
+                <h1>General Ledger</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            General Ledger
+        </div>
+        <div class="panel-body bordered">
+            <form role="form" name="generalLedgerForm" [formGroup]="generalLedgerForm" novalidate (ngSubmit)="search()">
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label class="focused" for="glAccount"> G/L Account # </label>
+                        <ng-select [allowClear]="true" [items]="items" (selected)="selected($event)" placeholder="No chart of account selected" name="gLAccount"
+                            id="glAccount" formControlName="gLAccount" required>
+                        </ng-select>
+                        <div class="msg" *ngIf="generalLedgerForm.controls['gLAccount'].invalid && (generalLedgerForm.controls['gLAccount'].dirty || generalLedgerForm.controls['gLAccount'].touched)">
+                            <div *ngIf="generalLedgerForm.controls['gLAccount'].errors.required">
+                                Required
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 form-group">
+                        <label for="dateRange" class="focused">Time Period</label>
+                        <my-date-range-picker (inputFieldChanged)='onDateRangeFieldChanged($event)' name="dateRange" [options]="myDateRangePickerOptions"
+                            formControlName="dateRange" id="dateRange" placeholder="MM/DD/YYYY - MM/DD/YYYY"></my-date-range-picker>
+                        <div class="show-error" *ngIf="!invalidDate && generalLedgerForm.controls['dateRange'].invalid && (generalLedgerForm.controls['dateRange'].dirty || generalLedgerForm.controls['dateRange'].touched)">
+                            <div *ngIf="generalLedgerForm.controls['dateRange'].errors.required">
+                                Required
+                            </div>
+                        </div>
+                        <div class="show-error" *ngIf="invalidDate">
+                            <div>Invalid Date Range</div>
+                        </div>
+                        <!--<input class="form-control" autocomplete="off" placeholder="Daterangepicker" bsDaterangepicker #dpr="bsDaterangepicker" name="dateRange"
+                                formControlName="dateRange" [(ngModel)]="timePeriodValue">
+                            <div class="msg" *ngIf="generalLedgerForm.controls['dateRange'].invalid && (generalLedgerForm.controls['dateRange'].dirty || generalLedgerForm.controls['dateRange'].touched)">
+                                <div *ngIf="generalLedgerForm.controls['dateRange'].errors.pattern">
+                                    Date Range is required
+                                </div>
+                            </div>-->
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <!--buttons-->
+                    <button class="btn btn-default btn-search" type="submit" [disabled]="disableSearchButton"> Search </button>
+                    <button class="btn btn-default btn-reset" type="button" (click)="resetData()"> Reset </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!--Grid data start-->
+    <div *ngIf="successBlock">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                General Ledger
+            </div>
+            <!--Heading-->
+
+            <div class="panel-body bordered">
+                <table class="table">
+                    <thead class="thead-default">
+                        <tr>
+                            <!--Table Headings -->
+                            <th>G/L Account #</th>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Beginning Balance</th>
+                            <th>Debit</th>
+                            <th>Credit</th>
+                            <th>Ending Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let generalLedger of generalLedgerResponse">
+                            <td> {{generalLedger.ChartOfAccountId}}</td>
+                            <td> {{generalLedger.TxnDate | customDateFormat }} </td>
+                            <td> {{generalLedger.TxnDescription}} </td>
+                            <td><span class="pull-right">{{generalLedger.OpeningBalance |currencycustom}}</span></td>
+                            <td><span class="pull-right">{{generalLedger.DebitAmount |currencycustom}}</span></td>
+                            <td><span class="pull-right">{{generalLedger.CreditAmount |currencycustom}}</span></td>
+                            <td><span class="pull-right">{{generalLedger.RunningBalance |currencycustom}}</span></td>
+                        </tr>
+                    </tbody>
+                    <tfoot class="total-amount">
+                        <tr>
+                            <td colspan="3" class="tfoot-total">Total</td>
+                            <td></td>
+                            <td><span class="pull-right">{{totDebitAmount |currencycustom}}</span></td>
+                            <td><span class="pull-right">{{totCreditAmount |currencycustom}}</span></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div *ngIf="searchCheck">
+                    No records to display
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+<div class="row fileUploadBorder">
+  <div class="form-group col-md-6 popover-field">
+   
+    <div class="file-upload-field">
+       <label for="Browsefile" class="" id="focused">Browse to upload file</label>
+      <input type="file" id="Browsefile" class="form-control" accept=".xls,.jpg,.jpeg,.txt,.gif,.docx,.pdf,.doc,.png,.xlsx" #cmpFile
+        style="width: calc(100% - 180px);display:inline-block;" />
+      <button type="submit" (click)="uploadFile()" class="btn-bs-file btn btn-small btn-primary btn-search">Upload</button>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <label for="Extension">
+        You can attach {{maxFiles}} files maximum (each file cannot exceed {{fileMaxSize}} MB)
+      </label>
+    <br/>
+    <label for="Extension">Allowed extensions are
+        <strong> jpg, jpeg, txt, gif, docx, pdf, doc, png, xlsx, xls. </strong>
+      </label>
+  </div>
+  <div *ngIf='attachmentsList.length'>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>File Name</th>
+                <th style="text-align: center;">Delete</th>
+                <th style="text-align: center;">View</th>
+              </tr>
+            </thead>
+            <tr *ngFor='let f of attachmentsList'>
+              <td> {{f.FileName}}</td>
+              <td style="text-align: center;">
+                <img src="assets/images/svg/delete.svg" class="icon-svg3" alt="Delete" (click)="deleteFile(f.Path)">
+              </td>
+              <td style="text-align: center;">
+                <!-- <img src="" alt="View"> -->
+                <a href="{{viewPath + f.Path}}" target="_blank">View</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

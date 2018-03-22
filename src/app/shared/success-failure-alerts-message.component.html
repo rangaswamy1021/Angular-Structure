@@ -1,0 +1,21 @@
+<div class="background-hidden" data-wow-duration="0.5s" *ngIf='messageFlag'></div>
+<div class="message" data-wow-duration="0.5s" [ngClass]="{'error':msgType=='error','success':msgType=='success','alert':msgType=='alert','info':msgType=='info'}"
+  *ngIf='messageFlag'>
+  <div class="close-msg" (click)='emitFlag()'>Close</div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="icon-msg">
+        <span>Icon</span>
+      </div>
+      <div class="msg-text">
+        <div class="title">{{msgTitle}}</div>
+        <div class="desc" [innerHTML]='msgDesc'></div>
+      </div>
+      <div class="btn-msg">
+        <button class="btn btn-primary btn-search" *ngIf='msgType!="info"' type="button" (click)="onClickOk()">OK</button>
+        <button class="btn btn-primary btn-search" *ngIf='msgType=="info"' type="button" (click)='emitFlag()'>OK</button>
+        <button class="btn btn-primary btn-reset" type="button" (click)='emitFlag()'>Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>

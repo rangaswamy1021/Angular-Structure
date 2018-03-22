@@ -1,0 +1,493 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+
+        <li class="active">Dashboard</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Dashboard</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="main-content">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card status-card">
+        <div class="card-body b-b-0">
+          <div class="total-cust" [hidden]='activityError'>
+            <h3>Total Customers Attended
+          
+            </h3>
+            <h2>{{attendedCustomersCount.TotalCustomersAttended}}</h2>
+          </div>
+              <h3 class="error-msg" [hidden]='!activityError'>No Data Available</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card status-card">
+
+        <div class="customer-heading heading col-md-12">Top 5 CSR users who attended more customers
+          <span class="pull-right">(Yesterday)</span>
+        </div>
+        <div class="card-body">
+          <table class="table" [hidden]='activityError'>
+            <tbody>
+              <tr *ngIf="attendedCustomersCount.Top1CSRAttendedMore">
+                <td>{{attendedCustomersCount.Top1CSRAttendedMore }}
+                </td>
+                <td>{{attendedCustomersCount.Top1CSRAttendedMoreCount }}
+                </td>
+
+              </tr>
+              <tr *ngIf="attendedCustomersCount.Top2CSRAttendedMore">
+                <td>{{attendedCustomersCount.Top2CSRAttendedMore }}
+                </td>
+                <td>{{attendedCustomersCount.Top2CSRAttendedMoreCount }}
+                </td>
+
+              </tr>
+              <tr *ngIf="attendedCustomersCount.Top3CSRAttendedMore">
+                <td>{{attendedCustomersCount.Top3CSRAttendedMore }}
+                </td>
+                <td>{{attendedCustomersCount.Top3CSRAttendedMoreCount }}
+                </td>
+
+              </tr>
+              <tr *ngIf="attendedCustomersCount.Top4CSRAttendedMore">
+                <td>{{attendedCustomersCount.Top4CSRAttendedMore }}
+                </td>
+                <td>{{attendedCustomersCount.Top4CSRAttendedMoreCount }}
+                </td>
+
+              </tr>
+              <tr *ngIf="attendedCustomersCount.Top5CSRAttendedMore">
+                <td>{{attendedCustomersCount.Top5CSRAttendedMore }}
+                </td>
+                <td>{{attendedCustomersCount.Top5CSRAttendedMoreCount }}
+                </td>
+
+              </tr>
+
+            </tbody>
+          </table>
+          <h3 class="error-msg" [hidden]='!activityError'>No Data Available</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card status-card">
+
+        <div class="customer-heading heading col-md-12">Top 5 CSR users who attended less customers<span class="pull-right">(Yesterday)</span></div>
+        <div class="card-body">
+          <table class="table" [hidden]='activityError'>
+            <tbody>
+              <tr *ngIf="attendedCustomersCount.Top1CSRAttendedless">
+                <td>{{attendedCustomersCount.Top1CSRAttendedless }}
+                </td>
+                <td>{{attendedCustomersCount.Top1CSRAttendedlessCount }}
+                </td>
+
+              </tr>
+              <tr *ngIf="attendedCustomersCount.Top2CSRAttendedless">
+                <td>{{attendedCustomersCount.Top2CSRAttendedless }}
+                </td>
+                <td>{{attendedCustomersCount.Top2CSRAttendedlessCount }}
+                </td>
+
+              </tr>
+              <tr *ngIf="attendedCustomersCount.Top3CSRAttendedless">
+                <td>{{attendedCustomersCount.Top3CSRAttendedless }}
+                </td>
+                <td>{{attendedCustomersCount.Top3CSRAttendedlessCount }}
+                </td>
+
+              </tr>
+              <tr *ngIf="attendedCustomersCount.Top4CSRAttendedless">
+                <td>{{attendedCustomersCount.Top4CSRAttendedless }}
+                </td>
+                <td>{{attendedCustomersCount.Top4CSRAttendedlessCount }}
+                </td>
+
+              </tr>
+              <tr *ngIf="attendedCustomersCount.Top5CSRAttendedless">
+                <td>{{attendedCustomersCount.Top5CSRAttendedless }}
+                </td>
+                <td>{{attendedCustomersCount.Top5CSRAttendedlessCount }}
+                </td>
+
+              </tr>
+
+            </tbody>
+          </table>
+          <h3 class="error-msg" [hidden]='!activityError'>No Data Available</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card ">
+        <div class="customerRequest">
+          <div class="customer-heading col-md-12">Top 5 Requests by Time<span class="pull-right">(Yesterday)</span></div>
+          <div class="cust-table" [hidden]='requestByTimeError'>
+
+            <div class="cust-table-row" *ngFor='let request of requestTimeSpentData'>
+              <div class="table-cell">
+                <div class="prof-pic"><img src="assets/images/profile-pic.png" class="icon-svg2"></div>
+              </div>
+              <div class="table-cell">
+                <div class="cust-name">
+                  <span class="Person-name">{{request.ReturnValue[0]}}</span> <span class="person-id"> Customer Id: </span>
+                  <span
+                    class="person-num">{{request.ReturnValue[1]}}</span>
+                </div>
+              </div>
+              <div class="table-cell">
+                <div class="date-time"><span><img src="assets/images/clock-pic.png"class="icon-svg3 icon-svg4"></span> {{request.ReturnValue[2]}}
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+          <h3 class="error-msg" [hidden]='!requestByTimeError'>No Data Available</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card ">
+        <div class="customerRequest">
+          <div class="customer-heading col-md-12">Top 5 Features by Time<span class="pull-right">(Yesterday)</span></div>
+          <div class="cust-table" [hidden]='featureByTimeError'>
+
+            <div class="cust-table-row" *ngFor='let feature of featureTimeSpentData'>
+              <div class="table-cell">
+                <div class="prof-pic"><img src="assets/images/profile-pic.png" class="icon-svg2"></div>
+              </div>
+              <div class="table-cell">
+                <div class="cust-name">
+                  <span class="Person-name">{{feature.ReturnValue[0]}}</span> <span class="person-id"> Feature Action: </span>
+                  <span
+                    class="person-num">{{feature.ReturnValue[1]}}</span>
+                </div>
+              </div>
+              <div class="table-cell">
+                <div class="date-time"><span><img src="assets/images/clock-pic.png"class="icon-svg3 icon-svg4"></span> {{feature.ReturnValue[2]}}
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+          <h3 class="error-msg" [hidden]='!featureByTimeError'>No Data Available</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="customer-heading heading col-md-12">Customer Trending<span class="pull-right">(Yesterday)</span></div>
+        <div class="card-body cust-trending">
+          <table class="table" [hidden]='customerTrendingError'>
+            <tbody>
+              <tr>
+                <td>Violators As Customers:</td>
+                <td>{{customerTrending.ViolatorsAsCustomers}}</td>
+                <td>
+                  <img src="assets/images/svg/up.svg" [hidden]="customerTrendingComparisonArray[0]!='high'"/>
+                  <img src="assets/images/svg/down.svg" [hidden]="customerTrendingComparisonArray[0]!='low'"/>
+                </td>
+              </tr>
+              <tr>
+                <td>Customers in Negative Balance:</td>
+                <td>{{customerTrending.CustomersInNegativeBalance}}</td>
+                <td>
+                  <img src="assets/images/svg/up.svg" [hidden]="customerTrendingComparisonArray[1]!='high'"/>
+                  <img src="assets/images/svg/down.svg" [hidden]="customerTrendingComparisonArray[1]!='low'"/>
+                </td>
+              </tr>
+              <tr>
+                <td>Customer Auto Replenishments:</td>
+                <td>{{customerTrending.CustomerAutoRenewals}}</td>
+                <td>
+                  <img src="assets/images/svg/up.svg" [hidden]="customerTrendingComparisonArray[2]!='high'"/>
+                  <img src="assets/images/svg/down.svg" [hidden]="customerTrendingComparisonArray[2]!='low'"/>
+                </td>
+              </tr>
+              <tr>
+                <td>Manual Replenishments:</td>
+                <td>{{customerTrending.ManualRenewals}}</td>
+                <td>
+                  <img src="assets/images/svg/up.svg" [hidden]="customerTrendingComparisonArray[3]!='high'"/>
+                  <img src="assets/images/svg/down.svg" [hidden]="customerTrendingComparisonArray[3]!='low'"/>
+                </td>
+              </tr>
+              <tr>
+                <td>New Account Creations:</td>
+                <td>{{customerTrending.NewAccountCreations}}</td>
+                <td>
+                  <img src="assets/images/svg/up.svg" [hidden]="customerTrendingComparisonArray[4]!='high'"/>
+                  <img src="assets/images/svg/down.svg" [hidden]="customerTrendingComparisonArray[4]!='low'"/>
+                </td>
+              </tr>
+              <tr>
+                <td>Accounts Closed:</td>
+                <td>{{customerTrending.AccountsClosed}}</td>
+                <td>
+                  <img src="assets/images/svg/up.svg" [hidden]="customerTrendingComparisonArray[5]!='high'"/>
+                  <img src="assets/images/svg/down.svg" [hidden]="customerTrendingComparisonArray[5]!='low'"/>
+                </td>
+              </tr>
+              <tr>
+                <td>Accounts Reopened:</td>
+                <td>{{customerTrending.ReopenAccounts}}</td>
+                <td>
+                  <img src="assets/images/svg/up.svg" [hidden]="customerTrendingComparisonArray[6]!='high'"/>
+                  <img src="assets/images/svg/down.svg" [hidden]="customerTrendingComparisonArray[6]!='low'"/>
+                </td>
+              </tr>
+              <tr>
+                <td>Transaction Disputes:</td>
+                <td>{{customerTrending.TransactionDisputes}}</td>
+                <td>
+                  <img src="assets/images/svg/up.svg" [hidden]="customerTrendingComparisonArray[7]!='high'"/>
+                  <img src="assets/images/svg/down.svg" [hidden]="customerTrendingComparisonArray[7]!='low'"/>
+                </td>
+              </tr>
+              <tr>
+                <td>Post Paid Accounts:</td>
+                <td>{{customerTrending.PostPaidAccounts}}</td>
+                <td>
+                  <img src="assets/images/svg/up.svg" [hidden]="customerTrendingComparisonArray[8]!='high'"/>
+                  <img src="assets/images/svg/down.svg" [hidden]="customerTrendingComparisonArray[8]!='low'"/>
+                </td>
+              </tr>
+              <tr>
+                <td>Customer Complaints:</td>
+                <td>{{customerTrending.CustomerComplaints}}</td>
+                <td>
+                  <img src="assets/images/svg/up.svg" [hidden]="customerTrendingComparisonArray[9]!='high'"/>
+                  <img src="assets/images/svg/down.svg" [hidden]="customerTrendingComparisonArray[9]!='low'"/>
+                </td>
+              </tr>
+              <tr>
+                <td>Requested Statements:</td>
+                <td>{{customerTrending.RequestedStatements}}</td>
+                <td>
+                  <img src="assets/images/svg/up.svg" [hidden]="customerTrendingComparisonArray[10]!='high'"/>
+                  <img src="assets/images/svg/down.svg" [hidden]="customerTrendingComparisonArray[10]!='low'"/>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h3 class="error-msg" [hidden]='!customerTrendingError'>No Data Available</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card payment-adjst">
+       
+          <div class="customer-heading heading ">Received Payments and Adjustments<span class="pull-right">(Yesterday)</span></div>
+           <div class="card-body">
+          <div class="left-sec" [hidden]='paymentError'>
+            <h3>Payments</h3>
+            <div class="item payment-and-adjustment">
+              <h4 class="pull-left">Credit Card</h4>
+              <h4 class="pull-right">$ {{paymentAndAdjustment.CreditCardAmount}}</h4>
+              <div class="clear"></div>
+            </div>
+            <div class="item payment-and-adjustment">
+              <h4 class="pull-left">Bank</h4>
+              <h4 class="pull-right">$ {{paymentAndAdjustment.BankAmount}}</h4>
+              <div class="clear"></div>
+            </div>
+            <div class="item payment-and-adjustment">
+              <h4 class="pull-left">Check</h4>
+              <h4 class="pull-right">$ {{paymentAndAdjustment.ChequeAmount}}</h4>
+              <div class="clear"></div>
+            </div>
+            <div class="item payment-and-adjustment">
+              <h4 class="pull-left">Money Order</h4>
+              <h4 class="pull-right">$ {{paymentAndAdjustment.MOAmount}}</h4>
+              <div class="clear"></div>
+            </div>
+            <div class="item payment-and-adjustment">
+              <h4 class="pull-left">Cash</h4>
+              <h4 class="pull-right">$ {{paymentAndAdjustment.CashAmount}}</h4>
+              <div class="clear"></div>
+            </div>
+            <div class="item payment-and-adjustment">
+              <h4 class="pull-left">Gift Certificates</h4>
+              <h4 class="pull-right">$ {{paymentAndAdjustment.GiftCertificateAmount}}</h4>
+              <div class="clear"></div>
+            </div>
+            <div class="item payment-and-adjustment">
+              <h4 class="pull-left">Promo</h4>
+              <h4 class="pull-right">$ {{paymentAndAdjustment.PromoAmount}}</h4>
+              <div class="clear"></div>
+            </div>
+          </div>
+          <div class="right-sec" [hidden]='paymentError'>
+            <h3>Adjustments</h3>
+            <div class="item payment-and-adjustment">
+              <h4 class="pull-left">Accounts</h4>
+              <h4 class="pull-right">$ {{paymentAndAdjustment.OtherAccountsAmount}}</h4>
+              <div class="clear"></div>
+            </div>
+            <div class="item payment-and-adjustment">
+              <h4 class="pull-left">Violations</h4>
+              <h4 class="pull-right">$ {{paymentAndAdjustment.ViolationAmount}}</h4>
+              <div class="clear"></div>
+            </div>
+            <div class="item payment-and-adjustment">
+              <h4 class="pull-left">NSF Fee</h4>
+              <h4 class="pull-right">$ {{paymentAndAdjustment.NSFFee}}</h4>
+              <div class="clear"></div>
+            </div>
+          </div>
+
+          <div class="clear"></div>
+          <div class="total-payment-amount" [hidden]='paymentError'>
+            <h3 class="pull-left">Total Amount</h3>
+            <h3 class="pull-right">$ {{paymentAndAdjustment.TotalCollection}}</h3>
+            <div class="clear"></div>
+          </div>
+
+        <h3 class="error-msg" [hidden]='!paymentError'>No Data Available</h3>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="customer-heading heading ">Top 5 CSR users with resolved complaint count<span class="pull-right">(Yesterday)</span></div>
+         <div class="card-body">
+           <div class="table-responsive">
+        <table class='table table-bordered' [hidden]='resolvedComplaintCountError'>
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let count of reolvedComplaintCount'>
+                <td>{{count.ReturnValue[0]}}</td>
+                <td>{{count.ReturnValue[1]}}</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        <h3 class="error-msg" [hidden]='!resolvedComplaintCountError'>No Data Available</h3>
+         </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="customer-heading heading col-md-12">Customer Status Trending</div>
+        <div class="card-body">
+          <div class="graph-duration">
+            <ul>
+              <li><a href="javascript:;" [ngClass]="{'active': statusSelectedItem =='YESTERDAY' }" (click)="getCustomerStatusTrending('YESTERDAY')">Yesterday</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': statusSelectedItem =='WEEKLY' }" (click)="getCustomerStatusTrending('WEEKLY')">Weekly</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': statusSelectedItem =='MONTHLY' }" (click)="getCustomerStatusTrending('MONTHLY')">Monthly</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': statusSelectedItem =='QUARTERLY' }" (click)="getCustomerStatusTrending('QUARTERLY')">Quarterly</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': statusSelectedItem =='HALF-YEARLY' }" (click)="getCustomerStatusTrending('HALF-YEARLY')">Half-Yearly</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': statusSelectedItem =='YEARLY' }" (click)="getCustomerStatusTrending('YEARLY')">Yearly</a></li>
+            </ul>
+          </div>
+          <div [hidden]='customerStatusError'>
+            <div id="customerStatusGraph" [style.width.%]="100" [style.height.px]="600"></div>
+          </div>
+          <h3 class="error-msg" [hidden]='!customerStatusError'>No Data Available</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="customer-heading heading col-md-12">Amount Received For Payment Mode</div>
+        <div class="card-body">
+          <div class="graph-duration">
+            <ul>
+              <li><a href="javascript:;" [ngClass]="{'active': getPaymentRecievedSelectedItem =='YESTERDAY' }" (click)="getPaymentRecieved('YESTERDAY')">Yesterday</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': getPaymentRecievedSelectedItem =='WEEKLY' }" (click)="getPaymentRecieved('WEEKLY')">Weekly</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': getPaymentRecievedSelectedItem =='MONTHLY' }" (click)="getPaymentRecieved('MONTHLY')">Monthly</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': getPaymentRecievedSelectedItem =='QUARTERLY' }" (click)="getPaymentRecieved('QUARTERLY')">Quarterly</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': getPaymentRecievedSelectedItem =='HALF-YEARLY' }" (click)="getPaymentRecieved('HALF-YEARLY')">Half-Yearly</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': getPaymentRecievedSelectedItem =='YEARLY' }" (click)="getPaymentRecieved('YEARLY')">Yearly</a></li>
+            </ul>
+          </div>
+          <div [hidden]='amountReceivedError'>
+            <div id="amountReceivedGraph" [style.width.%]="100" [style.height.px]="400"></div>
+          </div>
+          <h3 class="error-msg" [hidden]='!amountReceivedError'>No Data Available</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="customer-heading heading col-md-12">Toll Type Trip Count</div>
+        <div class="card-body">
+          <div class="graph-duration">
+            <ul>
+              <li><a href="javascript:;" class="active" [ngClass]="{'active': tripSelectedItem=='YESTERDAY' }" (click)="getTollTypeTripCount('YESTERDAY')">Yesterday</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': tripSelectedItem =='WEEKLY' }" (click)="getTollTypeTripCount('WEEKLY')">Weekly</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': tripSelectedItem =='MONTHLY' }" (click)="getTollTypeTripCount('MONTHLY')">Monthly</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': tripSelectedItem =='QUARTERLY' }" (click)="getTollTypeTripCount('QUARTERLY')">Quarterly</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': tripSelectedItem =='HALF-YEARLY' }" (click)="getTollTypeTripCount('HALF-YEARLY')">Half-Yearly</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': tripSelectedItem =='YEARLY' }" (click)="getTollTypeTripCount('YEARLY')">Yearly</a></li>
+
+            </ul>
+          </div>
+          <div [hidden]='tollTypeTripError'>
+            <div id="tollTypeTripGraph" [style.width.%]="100" [style.height.px]="400"></div>
+          </div>
+          <h3 class="error-msg" [hidden]='!tollTypeTripError'>No Data Available</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="customer-heading heading col-md-12">Trips For Plan</div>
+        <div class="card-body">
+          <div class="graph-duration">
+            <ul>
+              <li><a href="javascript:;" class="active" [ngClass]="{'active': tripPlanSelectedItem=='YESTERDAY' }" (click)="getPlanWiseTripcount('YESTERDAY')">Yesterday</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': tripPlanSelectedItem=='WEEKLY' }" (click)="getPlanWiseTripcount('WEEKLY')">Weekly</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': tripPlanSelectedItem=='MONTHLY' }" (click)="getPlanWiseTripcount('MONTHLY')">Monthly</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': tripPlanSelectedItem=='QUARTERLY' }" (click)="getPlanWiseTripcount('QUARTERLY')">Quarterly</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': tripPlanSelectedItem=='HALF-YEARLY' }" (click)="getPlanWiseTripcount('HALF-YEARLY')">Half-Yearly</a></li>
+              <li><a href="javascript:;" [ngClass]="{'active': tripPlanSelectedItem=='YEARLY' }" (click)="getPlanWiseTripcount('YEARLY')">Yearly</a></li>
+
+            </ul>
+          </div>
+          <div [hidden]='tripsForPlanError'>
+            <div id="tripsForPlanGraph" [style.width.%]="100" [style.height.px]="400"></div>
+          </div>
+          <h3 class="error-msg" [hidden]='!tripsForPlanError'>No Data Available</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="note">Note: Dashboard Data is NOT real-time, shown data based on upto yesterday statistics.</p>
+</div>

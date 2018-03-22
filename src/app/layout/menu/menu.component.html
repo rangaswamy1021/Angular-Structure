@@ -1,0 +1,55 @@
+<nav class="navbar navbar-default wow fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <nav class="navbar navbar-default">
+                    <div class="navbar-header">
+                        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".js-navbar-collapse"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+                        <a class="navbar-brand affix-logo" href="#"> <img alt="Brand" src="assets/images/tollPlusLogInternal.png"> </a>
+                    </div>
+                    <div class="collapse navbar-collapse js-navbar-collapse">
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown tp-dropdown text-center" *ngFor='let mainMenuItem of menuItems' [routerLinkActive]="['active']">
+                                <a href="#" title="{{mainMenuItem.title | capitalize }}" class="dropdown-toggle" data-toggle="dropdown" *ngIf="mainMenuItem.links && mainMenuItem.name!='PRC'"> 
+                                    <span *ngIf="mainMenuItem.links||(!mainMenuItem.links&&mainMenuItem.url)"> <img src="assets/images/{{mainMenuItem.name}}.svg" width="32" height="28"></span>
+                                    <span>{{mainMenuItem.name}}</span> 
+                                </a>
+                                <a routerLink="{{mainMenuItem.url}}" *ngIf="!mainMenuItem.links&&mainMenuItem.url">
+                                    {{mainMenuItem.name}} 
+                                </a>
+                                <ul class="dropdown-menu tp-dropdown-menu row">
+                                    <li>
+                                        <ul class="masonary">
+                                            <li class="item" *ngFor='let sublinks of mainMenuItem.links' [hidden]="(sublinks.ismenuitem==0)">
+                                                <h3 class="dropdown-header" *ngIf='sublinks.links && (sublinks.ismenuitem==1) && !sublinks.url'>{{sublinks.name}}</h3>
+                                                <a routerLink='{{sublinks.url}}' *ngIf='!sublinks.links && (sublinks.ismenuitem==1) || sublinks.url'>{{sublinks.name}}</a>
+                                                <ul>
+                                                    <li *ngFor='let sublinkitem of sublinks.links' [hidden]="(sublinkitem.ismenuitem==0) || (postPaidFlag&& sublinkitem.name=='Request Statement') || (!postPaidFlag && sublinkitem.name=='Unbilled Transactions') || (!postPaidFlag && sublinkitem.name=='Invoice Details')"><a routerLink="{{sublinkitem.url}}" *ngIf="(sublinkitem.ismenuitem==1)">{{sublinkitem.name}}</a></li>
+
+                                                </ul>
+                                            </li>
+
+                                        </ul>
+                                    </li>
+
+                                </ul>
+                            </li>
+                            <li class="tp-dropdown text-center" [routerLinkActive]="['active']" *ngIf='showCountOut'>
+                                <a title="Shift Management Center" routerLink="csc/icn/icn-count-out" class="dropdown-toggle" data-toggle="dropdown"> 
+                                    <span> <img src="assets/images/cash.svg" width="32" height="28"></span>
+                                    <span>SMC</span>
+                                </a>
+                            </li>
+                            <li class="tp-dropdown text-center" [routerLinkActive]="['active']">
+                                <a title="Knowledge Management System" target="_blank" href="http://thub.tollplus.com:8181/kms" class="dropdown-toggle"> 
+                                    <span> <img src="assets/images/svg/resource.svg" width="32" height="28"></span>
+                                    <span>Resources</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+</nav>

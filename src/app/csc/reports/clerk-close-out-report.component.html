@@ -1,0 +1,338 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li class="#"> Reports </li>
+        <li class="active"> Clerk Closeout</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1> Clerk Closeout </h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <form role="form" name="shipmentForm" [formGroup]="clerkCloseOutForm">
+    <div class="row">
+      <div class="col-md-6 form-group">
+        <label for="purchaseOrder"> ICN #</label>
+        <input type="text" placeholder="ICN #" class="form-control" id="purchaseOrder" name="purchaseOrder" formControlName="icnNumber"
+          maxlength="10">
+        <div class="msg" *ngIf="clerkCloseOutForm.controls['icnNumber'].invalid && (clerkCloseOutForm.controls['icnNumber'].dirty || clerkCloseOutForm.controls['icnNumber'].touched)">
+
+          <div *ngIf="clerkCloseOutForm.controls['icnNumber'].errors.pattern">
+            Only Numbers Allowed
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-md-6 form-group">
+        <label class="focused"> Location </label>
+        <select class="form-control" formControlName="location" name="location">
+                <option selected='selected' value="">--Select--</option>
+                <option *ngFor='let loc of locationResponse' value="{{loc.LocationName}}">{{loc.LocationName}}</option>
+              </select>
+      </div>
+
+      <div class="col-md-6 form-group">
+        <label class="focused">Time Period </label>
+
+        <!--<input class="form-control" bsDaterangepicker #dpr="bsDaterangepicker" placeholder="select data range" name="timePeriod"
+                formControlName="timePeriod" [(ngModel)]="timePeriod" (bsValueChange)='bsValueChange($event)'>-->
+        <my-date-range-picker name="mydaterange" [options]="myDateRangePickerOptions" placeholder="MM/DD/YYYY-MM/DD/YYYY" formControlName="timePeriod"
+          (inputFieldChanged)='onInputFieldRangeChanged($event)'></my-date-range-picker>
+        <div class="show-error" *ngIf=" !invalidDateRange && (clerkCloseOutForm.controls['timePeriod'].invalid && (clerkCloseOutForm.controls['timePeriod'].dirty || clerkCloseOutForm.controls['timePeriod'].touched))">
+          <div *ngIf="clerkCloseOutForm.controls['timePeriod'].errors.required">
+            Date Range is required.
+          </div>
+        </div>
+        <div *ngIf="invalidDateRange" class="show-error">
+          <div>Invalid Date Range</div>
+        </div>
+      </div>
+      <div class="col-md-6 m-t-20">
+        <button type="submit" class="btn btn-default btn-search" (click)="clerkCloseOutReportSearchButton()" [disabled]="searchDisableButton">Search </button>
+        <button type="submit" class="btn btn-default btn-reset" (click)="clerkCloseOutReportReset()"> Reset </button>
+      </div>
+    </div>
+  </form>
+  <div class="table-bdr" *ngIf="clerk">
+    <h3>
+      Clerk Closeout Report
+    </h3>
+    <div class="pad-10" *ngIf='clerkCountResponse && clerkCountResponse.length;else clerkDetailsElseBlock'>
+      <table class="table">
+        <thead>
+          <tr>
+            <th (click)="sortDirection('UserId')" class="sorting-handle">User #
+              <span *ngIf="gridArrowUserId">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+            </th>
+            <th (click)="sortDirection('Username')" class="sorting-handle">Username
+              <span *ngIf="gridArrowUsername">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+            </th>
+            <th (click)="sortDirection('ICNID')" class="sorting-handle">ICN #
+              <span *ngIf="gridArrowICNID">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+            </th>
+            <th (click)="sortDirection('ICNStatus')" class="sorting-handle">ICN Status
+              <span *ngIf="gridArrowICNStatus">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+            </th>
+            <th (click)="sortDirection('LOCATIONNAME')" class="sorting-handle">Location
+              <span *ngIf="gridArrowLOCATIONNAME">
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+            </th>
+            <th (click)="sortDirection('RevenueDate')" class="sorting-handle">Created Date
+              <span *ngIf="gridArrowRevenueDate">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+            </th>
+            <th (click)="sortDirection('UpdatedDate')" class="sorting-handle">Updated Date
+              <span *ngIf="gridArrowUpdatedDate">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+            </th>
+            <th> </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let clerk of clerkCountResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: pageNumber, totalItems:totalRecordCount,id:'first'}">
+            <td>{{clerk.UserId}}</td>
+            <td>{{clerk.UserName}}</td>
+            <td>{{clerk.ICNId}}</td>
+            <td>{{clerk.ICNStatus}}</td>
+            <td>{{clerk.LocationName}}</td>
+            <td>{{clerk.CreatedDate | customDateFormat}}</td>
+            <td>{{clerk.UpdatedDate | customDateFormat}}</td>
+            <td>
+              <span *ngIf="viewDisableButton">
+                  <img src="assets/images/svg/view.svg" alt="" class="icon-svg3" title="Not Allowed To View" tabindex="7">
+                </span>
+              <span *ngIf="!viewDisableButton">
+                  <img src="assets/images/svg/view.svg" alt="" class="icon-svg3" (click)="viewTransactionDetails(clerk.ICNId,clerk.ICNStatus)"
+                    title="View" tabindex="7">
+                </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="row page-info">
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls id='first' (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="row" *ngIf="transaction">
+    <div class="col-md-6">
+      <strong>ICN #:</strong> {{icnId}}</div>
+    <div class="col-md-6">
+      <span class="pull-right">
+        <strong> Status:</strong> {{status}}</span>
+    </div>
+  </div>
+  <div class="table-bdr" *ngIf="transaction">
+    <h3> Transaction Details </h3>
+    <div class="pad-10" *ngIf='transactionDetails && transactionDetails.length;else transactionDetailsElseBlock'>
+      <div class="table-responsive m-t-10 fee-details-table">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Payment</th>
+              <th> System Transactions
+                <br>
+                <font size="0.1">(System Transactions + Float Amount)</font>
+              </th>
+              <th>Manual Transactions</th>
+              <th>Variance</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let transaction of transactionDetails; let i=index'>
+              <td> {{transaction.VarianceType}} </td>
+              <td>
+                <span *ngIf="i==0">{{systemTransactionAmount| currencycustom}}+{{floatAmount | currencycustom}}</span>
+                <span *ngIf="i==1 || i==2">{{transaction.SystemTxnCount | currencycustom }}</span>
+                <span *ngIf="i==3||i==4">{{transaction.SystemTxnCount}}</span>
+              </td>
+              <td>
+                <span *ngIf="i!=3&&i!=4">{{transaction.ManualTxnCount | currencycustom}}</span>
+                <span *ngIf="i==3||i==4">{{transaction.ManualTxnCount }}</span>
+              </td>
+              <td>
+                <span *ngIf="i!=3&&i!=4">{{transaction.Variance | currencycustom}}</span>
+                <span *ngIf="i==3||i==4">{{transaction.Variance }}</span>
+              </td>
+              <td *ngIf="i!=3&&i!=4">
+                <img src="assets/images/svg/view.svg" alt="" class="icon-svg3" (click)=" viewClerkAndSystemEntries(transaction.VarianceType,1)"
+                  title="View" tabindex="7">
+              </td>
+              <td *ngIf="i==3" rowspan="2" class="transactionDetailsTrMerge">
+                <img src="assets/images/svg/view.svg" alt="" class="icon-svg3" (click)=" viewClerkAndSystemEntries(transaction.VarianceType,1)"
+                  title="View" tabindex="7">
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="transaction">
+    <div class="col-md-12  text-right">
+      <div class="form-horizontal m-b-10">
+        <button type="submit" class="btn btn-primary btn-search" (click)="backToClerkDetails()"> Back</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-bdr" *ngIf="transaction && clerkSystem">
+    <h3> Clerk Entries </h3>
+    <div class="pad-10" *ngIf='clerkEntries ;else clerkEntriesElseBlock'>
+      <div class="table-responsive m-t-10">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Cash Amount</th>
+              <th>Check Amount</th>
+              <th>Money Order Amount</th>
+
+            </tr>
+          </thead>
+          <tr>
+            <td>{{clerkEntries.CashAmount | currencycustom}} </td>
+            <td>{{clerkEntries.CheckAmount | currencycustom}}</td>
+            <td>{{clerkEntries.MOAmount | currencycustom}}</td>
+
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-bdr" *ngIf="transaction && clerkSystem">
+    <h3> System Entries </h3>
+    <div class="pad-10" *ngIf='transactionSystemDetails && transactionSystemDetails.length;else systemEntriesElseBlock'>
+
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Transaction #</th>
+              <th> Customer #</th>
+              <th> Voucher #</th>
+              <th> Transaction Amount</th>
+            </tr>
+          </thead>
+          <tr *ngFor="let transaction of transactionSystemDetails | paginate: { itemsPerPage: txnPageItemNumber, currentPage: txnPageNumber, totalItems:txnTotalRecordCount,id:'second' }">
+            <td> {{transaction.TxnId}}</td>
+            <td>{{transaction.CustomerId}} </td>
+            <td> {{transaction.VoucherNo}}</td>
+            <td>{{transaction.TxnAmount | currencycustom}}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="row page-info">
+        <div class="col-md-6 text-left">
+          <p>Display {{txnStartItemNumber}} - {{txnEndItemNumber}} Records of {{txnTotalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls id='second' (pageChange)="txnPageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-bdr" *ngIf="transaction && item">
+    <h3> Items Entries </h3>
+    <div class="pad-10" *ngIf='itemDetails && itemDetails.length;else itemsElseBlock'>
+
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+
+              <th> Serial #</th>
+              <th> Hex Tag #</th>
+              <th> Facility Code</th>
+              <th>Tag Status</th>
+            </tr>
+          </thead>
+          <tr *ngFor="let items of itemDetails | paginate: { itemsPerPage: itemPageItemNumber, currentPage: itemPageNumber, totalItems:itemTotalRecordCount,id:'third' }">
+
+            <td>{{items.SerialNo}} </td>
+            <td> {{items.HEXItemID}}</td>
+            <td>{{items.FacilityCode}}</td>
+            <td>{{items.ItemStatus}}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="row page-info">
+        <div class="col-md-6 text-left">
+          <p>Display {{itemStartItemNumber}} - {{itemEndItemNumber}} Records of {{itemTotalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls id='third' (pageChange)="itemPageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+    <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+      (setFlag)="setOutputFlag($event, 1000)" (onOk)="btnYesClick($event)"></app-success-failure-alerts-message>
+  </div>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+
+</div>
+<ng-template #clerkDetailsElseBlock>
+  <div class="pad-10">
+    No clerk closeout details to display
+  </div>
+</ng-template>
+
+<ng-template #transactionDetailsElseBlock>
+  <div class="pad-10">
+    No clerk transaction details to display
+  </div>
+</ng-template>
+
+<ng-template #clerkEntriesElseBlock>
+  <div class="pad-10">
+    No manual entries to display
+  </div>
+</ng-template>
+
+<ng-template #systemEntriesElseBlock>
+  <div class="pad-10">
+    No system entries to display
+  </div>
+</ng-template>
+
+<ng-template #itemsElseBlock>
+  <div class="pad-10">
+    No items to display
+  </div>
+</ng-template>

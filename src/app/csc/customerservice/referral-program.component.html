@@ -1,0 +1,98 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Customer Service</a></li>
+        <li class="active">Referral Program</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1> Referral Program </h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <!--Account infromation shared component-->
+  <app-account-info></app-account-info>
+  <div *ngIf='isShowAddLink'>
+    <button type="submit" style="margin-bottom: 15px;" [disabled]="disableButton" (click)="addlinkclick()" class="btn btn-primary btn-search">Add Referred Account #</button>
+  </div>
+
+  <!--<div class="alert alert-danger alert-dismissible" role="alert" *ngIf="errorBlock">
+    <button type="button" class="close" (click)="errorBlock=false">
+                <span aria-hidden="true">&times;</span></button> {{errorMessage}}
+  </div>
+  <div class="alert alert-success alert-dismissible" role="alert" *ngIf="successBlock">
+    <button type="button" class="close" (click)="successBlock=false">
+               <span aria-hidden="true">&times;</span></button> {{successMessage}}
+  </div>-->
+
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+
+  <form [hidden]='!isShowAddBlock' role="form" name="referralProgramForm" [formGroup]="referralProgramForm" (ngSubmit)="addRefAccClick()">
+    <div class="panel panel-default">
+      <div class="panel-body bordered">
+        
+          <div class="col-md-6">
+            <div class="row">
+              <div class="form-group col-sm-12">
+                <label for="referredAccountId">Referred Account# </label>
+                <input type="text" class="form-control" pattern="^[0-9]+$" MaxLength="10" AutoComplete="off" placeholder="Referred Account#"
+                  id="referredAccountId" name="referredAccountId" formControlName="referredAccountId">
+                <div class="msg" *ngIf="referralProgramForm.controls['referredAccountId'].invalid && (referralProgramForm.controls['referredAccountId'].dirty || referralProgramForm.controls['referredAccountId'].touched)">
+                  <div *ngIf="referralProgramForm.controls['referredAccountId'].errors.required">
+                    Required.
+                  </div>
+                  <div *ngIf="referralProgramForm.controls['referredAccountId'].errors.pattern">
+                    Invalid Referred Account#
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-primary btn-search">Submit </button>
+            <input type="reset" (click)='resetClick()' class="btn btn-default btn-reset" name="Reset">
+            <button (click)='cancelClick()' class="btn btn-default btn-reset">Cancel</button>
+          </div>
+        
+      </div>
+    </div>
+  </form>
+
+  <div class="panel panel-default" *ngIf='customerAttributesResponse; else NodetailsDiv'>
+    <div class="panel-heading"> Referred Customer Details </div>
+    <div class="panel-body bordered">
+      <table class="table">
+        <thead>
+          <tr>
+            <th> Referred Account# </th>
+            <th> Requested Date/Time </th>
+            <th> Refer Status </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td> {{customerAttributesResponse.ReferralCustomerId }} </td>
+            <td> {{customerAttributesResponse.RequestDate| customDateTimeFormat}} </td>
+            <td> {{customerAttributesResponse.RequestStatusString}} </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <ng-template #NodetailsDiv>
+    <div class="panel panel-default">
+      <div class="panel-heading"> Referred Customer Details </div>
+      <div class="panel-body bordered">
+        <div>No records to display </div>
+      </div>
+    </div>
+  </ng-template>
+</div>
+<app-blocked-list [blockListArray]="blockListDetails" (status)="blocklistYesClick()"></app-blocked-list>

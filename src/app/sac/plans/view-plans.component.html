@@ -1,0 +1,71 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li><a href="#">SAC</a></li>
+            <li><a href="#">Manage Plans</a></li>
+            <li class="active">View Plans</li>
+          </ol>    
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>View Plans</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container p-b-11 p-t-2" style="background:#fff;">
+  <div class="row m-t-10">
+    <div class="col-md-12">
+      <a (click)="buttonclick()" [ngClass]="disableButton?'disabletextbox':''"><i class="fa fa-plus-square-o fa-lg fa-fw" aria-hidden="true"></i>Add New Plan</a>
+    </div>
+  </div>
+  <div class="panel panel-default m-t-10">
+    <div class="panel-heading"> Available Plans </div>
+    <div class="panel-body bordered" *ngIf='getPlanResponse && getPlanResponse.length'>
+      <div class="table-responsive available-plans">
+        <table class="table table-bordered table-sm">
+          <thead>
+            <tr>
+              <th>Plan Name</th>
+              <th>Plan Code</th>
+              <th>Plan Description</th>
+              <th>Is Tag Required</th>
+              <th>Start Effective Date</th>
+              <th>End Effective Date </th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let plan of getPlanResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount }'>
+              <td style="display:none;">{{plan.PlanId}} </td>
+              <td>{{plan.ParentPlanName}}</td>
+              <td>{{plan.Name}}</td>
+              <td>{{plan.Desc}}</td>
+              <td>{{plan.IsTagRequired}}</td>
+              <td>{{plan.StartEffDate | date: 'MM/dd/yyyy'}}</td>
+              <td>{{plan.EndEffDate | date: 'MM/dd/yyyy'}}</td>
+              <td style="display:none;">{{plan.isFeeRequired}}</td>
+              <td>
+                <a [ngClass]="disableUpdateButton?'disabletextbox':''" (click)="onSelect(plan.PlanId)" title=Edit><i class="fa fa-pencil-square-o fa-lg fa-fw" aria-hidden="true"></i></a>
+              </td>
+              <!--<td (click)="onSelect(plan.PlanId)"><span class="underline pointer"><i class="fa fa-pencil-square-o fa-2x fa-fw" aria-hidden="true"></i></span></td>-->
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="row page-info" *ngIf='getPlanResponse && getPlanResponse.length > 0'>
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

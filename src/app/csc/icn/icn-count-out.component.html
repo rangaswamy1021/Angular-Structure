@@ -1,0 +1,733 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li>
+          <a href="#">ICN</a>
+        </li>
+        <li class="active">SMC</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>SMC</h1>
+        <div class="back-btn pull-right">
+          <button class="btn btn-primary btn-search btn-small" type="submit" (click)="goBack()">Back</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+<div class="content">
+
+  <div class="row">
+    <div class="col-md-12 text-right">
+
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <tabset>
+
+        <tab heading='SMC Details'>
+          <form role="form" #countOutForm="ngForm">
+            <div class="accordion-mgc">
+              <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                  <div class="panel-heading" role="tab" id="headingOne">
+                    <h4 class="panel-title">
+                      <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Cash</a>
+                    </h4>
+                  </div>
+                  <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                      <div class="row">
+                        <div class="col-md-4">
+                          <div class="form-group popover-field">
+                            <input type="number" class="form-control" id="" min="0" pattern="^[0-9]*(\.)?[0-9]{1,2}$" placeholder="" #cashAmounts="ngModel"
+                              name="cashAmount" [(ngModel)]="cashAmount">
+                            <div class="msg" *ngIf="cashAmounts.invalid && (cashAmounts.dirty || cashAmounts.touched)">
+                              <div *ngIf="cashAmounts.errors.pattern">
+                                Amount is invalid
+                              </div>
+                            </div>
+                            <button type="button" class="pop-over" [popover]="poppCAmount" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                              placement="left">?</button>
+                            <ng-template #poppCAmount>
+                              <ul>
+                                <li>Enter total cash amount received</li>
+                              </ul>
+                            </ng-template>
+                          </div>
+                        </div>
+                        <div class="col-md-6 col-md-offset-3">
+                          <div class="table-responsive">
+                            <table class="table table-bordered">
+                              <thead>
+                                <tr>
+                                  <th style='text-align: right;'>Denomination</th>
+                                  <th width='30%' style='text-align: center;'>Quantity</th>
+                                  <th width='30%' style='text-align: center;'>Amount</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td style='text-align: right;'>$100</td>
+                                  <td style='position:relative;'>
+                                    <div>
+                                      <input type="number" pattern="[0-9]*" class="form-control" min="0" id="" name="denom100" #denom100s="ngModel" [(ngModel)]="denom100"
+                                        (change)="calculateTotal()" width="100">
+                                      <div class="msg" *ngIf="denom100s.invalid && (denom100s.dirty || denom100s.touched)">
+                                        <div *ngIf="denom100s.errors.pattern">
+                                          Amount is invalid, Decimals are not accepted
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td style='text-align: center;'>
+                                    <input type="number" class="form-control" id="" [value]="denom100*100" disabled>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style='text-align: right;'>$50</td>
+                                  <td style='position:relative;'>
+                                    <input type="number" class="form-control" min="0" id="" name="denom50" pattern="[0-9]*" #denom50s="ngModel" [(ngModel)]="denom50"
+                                      (change)="calculateTotal()">
+                                    <div class="msg" *ngIf="denom50s.invalid && (denom50s.dirty || denom50s.touched)">
+                                      <div *ngIf="denom50s.errors.pattern">
+                                        Amount is invalid, Decimals are not accepted
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td style='text-align: center;'>
+                                    <input type="number" class="form-control" id="" [value]="denom50*50" disabled>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style='text-align: right;'>$20</td>
+                                  <td style='position:relative;'>
+                                    <input type="number" class="form-control" min="0" id="" name="denom20" [(ngModel)]="denom20" pattern="[0-9]*" #denom20s="ngModel"
+                                      (change)="calculateTotal()">
+                                    <div class="msg" *ngIf="denom20s.invalid && (denom20s.dirty || denom20s.touched)">
+                                      <div *ngIf="denom20s.errors.pattern">
+                                        Amount is invalid, Decimals are not accepted
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td style='text-align: center;'>
+                                    <input type="number" class="form-control" id="" [value]="denom20*20" disabled>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style='text-align: right;'>$10</td>
+                                  <td style='position:relative;'>
+                                    <input type="number" class="form-control" min="0" id="" name="denom10" [(ngModel)]="denom10" pattern="[0-9]*" #denom10s="ngModel"
+                                      (change)="calculateTotal()">
+                                    <div class="msg" *ngIf="denom10s.invalid && (denom10s.dirty || denom10s.touched)">
+                                      <div *ngIf="denom10s.errors.pattern">
+                                        Amount is invalid, Decimals are not accepted
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td style='text-align: center;'>
+                                    <input type="number" class="form-control" id="" [value]="denom10*10" disabled>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style='text-align: right;'>$5</td>
+                                  <td style='position:relative;'>
+                                    <input type="number" class="form-control" min="0" id="" name="denom5" [(ngModel)]="denom5" pattern="[0-9]*" #denom5s="ngModel"
+                                      (change)="calculateTotal()">
+                                    <div class="msg" *ngIf="denom5s.invalid && (denom5s.dirty || denom5s.touched)">
+                                      <div *ngIf="denom5s.errors.pattern">
+                                        Amount is invalid, Decimals are not accepted
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td style='text-align: center;'>
+                                    <input type="number" class="form-control" id="" [value]="denom5*5" disabled>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style='text-align: right;'>$2</td>
+                                  <td style='position:relative;'>
+                                    <input type="number" class="form-control" min="0" id="" name="denom2" [(ngModel)]="denom2" pattern="[0-9]*" #denom2s="ngModel"
+                                      (change)="calculateTotal()">
+                                    <div class="msg" *ngIf="denom2s.invalid && (denom2s.dirty || denom2s.touched)">
+                                      <div *ngIf="denom2s.errors.pattern">
+                                        Amount is invalid, Decimals are not accepted
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td style='text-align: center;'>
+                                    <input type="number" class="form-control" id="" [value]="denom2*2" disabled>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style='text-align: right;'>$1</td>
+                                  <td style='position:relative;'>
+                                    <input type="number" class="form-control" min="0" id="" name="denom1" [(ngModel)]="denom1" pattern="[0-9]*" #denom1s="ngModel"
+                                      (change)="calculateTotal()">
+                                    <div class="msg" *ngIf="denom1s.invalid && (denom1s.dirty || denom1s.touched)">
+                                      <div *ngIf="denom1s.errors.pattern">
+                                        Amount is invalid, Decimals are not accepted
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td style='text-align: center;'>
+                                    <input type="number" class="form-control" id="" [value]="denom1*1" disabled>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style='text-align: right;'>Half Dollar</td>
+                                  <td style='position:relative;'>
+                                    <input type="number" class="form-control" min="0" id="" name="denomHalf" [(ngModel)]="denomHalf" pattern="[0-9]*" #denomHal="ngModel"
+                                      (change)="calculateTotal()">
+                                    <div class="msg" *ngIf="denomHal.invalid && (denomHal.dirty || denomHal.touched)">
+                                      <div *ngIf="denomHal.errors.pattern">
+                                        Amount is invalid, Decimals are not accepted
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td style='text-align: center;'>
+                                    <input type="number" class="form-control" id="" [value]="denomHalf*0.5" disabled>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style='text-align: right;'>Quarter</td>
+                                  <td style='position:relative;'>
+                                    <input type="number" class="form-control" min="0" id="" name="denomQuater" [(ngModel)]="denomQuater" pattern="[0-9]*" #denomQat="ngModel"
+                                      (change)="calculateTotal()">
+                                    <div class="msg" *ngIf="denomQat.invalid && (denomQat.dirty || denomQat.touched)">
+                                      <div *ngIf="denomQat.errors.pattern">
+                                        Amount is invalid, Decimals are not accepted
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td style='text-align: center;'>
+                                    <input type="number" class="form-control" id="" [value]="denomQuater*0.25" disabled>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style='text-align: right;'>Dime</td>
+                                  <td style='position:relative;'>
+                                    <input type="number" class="form-control" min="0" id="" name="denomDime" [(ngModel)]="denomDime" pattern="[0-9]*" #denomdim="ngModel"
+                                      (change)="calculateTotal()">
+                                    <div class="msg" *ngIf="denomdim.invalid && (denomdim.dirty || denomdim.touched)">
+                                      <div *ngIf="denomdim.errors.pattern">
+                                        Amount is invalid, Decimals are not accepted
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td style='text-align: center;'>
+                                    <input type="number" class="form-control" id="" [value]="denomDime*0.1" disabled>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style='text-align: right;'>Nickel</td>
+                                  <td style='position:relative;'>
+                                    <input type="number" class="form-control" min="0" id="" name="denomNickel" [(ngModel)]="denomNickel" pattern="[0-9]*" #denomNic="ngModel"
+                                      (change)="calculateTotal()">
+                                    <div class="msg" *ngIf="denomNic.invalid && (denomNic.dirty || denomNic.touched)">
+                                      <div *ngIf="denomNic.errors.pattern">
+                                        Amount is invalid, Decimals are not accepted
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td style='text-align: center;'>
+                                    <input type="number" class="form-control" id="" [value]="denomNickel*0.05" disabled>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style='text-align: right;'>Penny</td>
+                                  <td style='position:relative;'>
+                                    <input type="number" class="form-control" min="0" id="" name="denomPenny" [(ngModel)]="denomPenny" pattern="[0-9]*" #denomPen="ngModel"
+                                      (change)="calculateTotal()">
+                                    <div class="msg" *ngIf="denomPen.invalid && (denomPen.dirty || denomPen.touched)">
+                                      <div *ngIf="denomPen.errors.pattern">
+                                        Amount is invalid, Decimals are not accepted
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td style='text-align: center;'>
+                                    <input type="number" class="form-control" id="" [value]="denomPenny*0.01" disabled>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style='text-align: right;'>
+                                    <strong>Total Amount</strong>
+                                  </td>
+                                  <td style='text-align: center;'></td>
+                                  <td style='text-align: center;'>
+                                    <input type="number" class="form-control" id="" name="totalAmount" [value]="totalAmount" disabled>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                          <div class="row m-t-20">
+                            <div class="col-md-12 text-center">
+                              <button class="btn btn-primary btn-reset" type="submit" (click)="amountReset()">Reset</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="panel panel-default">
+                  <div class="panel-heading" role="tab" id="headingTwo">
+                    <h4 class="panel-title">
+                      <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false"
+                        aria-controls="collapseTwo">Money Order and Check</a>
+                    </h4>
+                  </div>
+                  <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                    <div class="panel-body">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div class="row">
+                            <div class="col-md-4 col-md-offset-4">
+                              <div class="form-group col-sm-12 popover-field">
+                                <label for="">Money Order Amout</label>
+                                <input type="number" min="0" class="form-control" id="" placeholder="" name="moAmnt" [(ngModel)]="moAmnt" pattern="^[0-9]*(\.)?[0-9]{1,2}$"
+                                  #moAmount="ngModel">
+                                <div class="msg" *ngIf="moAmount.invalid && (moAmount.dirty || moAmount.touched)">
+                                  <div *ngIf="moAmount.errors.pattern">
+                                    Amount is invalid
+                                  </div>
+                                </div>
+                                <button type="button" class="pop-over" [popover]="poppMOAmount" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                                  placement="left">?</button>
+                                <ng-template #poppMOAmount>
+                                  <ul>
+                                    <li>Enter total money order amount received</li>
+                                  </ul>
+                                </ng-template>
+
+                              </div>
+                              <div class="form-group col-sm-12 popover-field">
+                                <label for="">Check Amount</label>
+                                <input type="number" class="form-control" min="0" id="" placeholder="" name="checkAmnt" [(ngModel)]="checkAmnt" pattern="^[0-9]*(\.)?[0-9]{1,2}$"
+                                  #checkAmount="ngModel">
+                                <div class="msg" *ngIf="checkAmount.invalid && (checkAmount.dirty || checkAmount.touched)">
+                                  <div *ngIf="checkAmount.errors.pattern">
+                                    Amount is invalid
+                                  </div>
+                                </div>
+                                <button type="button" class="pop-over" [popover]="popQuantity" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                                  placement="left">?</button>
+                                <ng-template #popQuantity>
+                                  <ul>
+                                    <li>Enter total cheque amount received</li>
+                                  </ul>
+                                </ng-template>
+
+                              </div>
+                            </div>
+                            <div class="col-md-6 col-md-offset-4 m-t-20">
+                              <button class="btn btn-primary btn-reset" type="submit" (click)="resetMo()">Reset</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="panel panel-default">
+                  <div class="panel-heading" role="tab" id="headingThree">
+                    <h4 class="panel-title">
+                      <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false"
+                        aria-controls="collapseThree">Items</a>
+                    </h4>
+                  </div>
+                  <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                    <div class="panel-body">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div class="row">
+                            <div class="col-md-6 border-right">
+                              <div class="row">
+                                <div class="col-sm-8 form-group popover-field">
+                                  <label for="">Assigned Items to Customers :</label>
+                                  <input type="number" min="0" class="form-control" id="" placeholder="Assigned Items" name="assignedItems" [(ngModel)]="assignedItems"
+                                    pattern="[0-9]*" #assingItem="ngModel">
+                                  <div class="msg" *ngIf="assingItem.invalid && (assingItem.dirty || assingItem.touched)">
+                                    <div *ngIf="assingItem.errors.pattern">
+                                      Enter valid count
+                                    </div>
+                                  </div>
+                                  <button type="button" class="pop-over" [popover]="poppAssItems" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                                    placement="left">?</button>
+                                  <ng-template #poppAssItems>
+                                    <ul>
+                                      <li>Enter number of tags assigned to customer</li>
+                                    </ul>
+                                  </ng-template>
+                                </div>
+                              </div>
+                              <div class="m-t-20">
+                                <table class="table no-border">
+                                  <thead>
+                                    <tr>
+                                      <th>Item Assigned Details</th>
+                                      <th width='30%' style='text-align: center;'>No. of Items</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr *ngFor="let item of tagAssignItems">
+                                      <td>{{item.ItemName}}</td>
+                                      <td style='text-align: center;'>
+                                        <input type="number" class="form-control" min="0" pattern="[0-9]*" [value]="item.ItemQuantity" id="" (change)="tagAssingItemChange(item,$event.target.value)">
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="row">
+                                <div class="form-group col-sm-8 popover-field">
+                                  <label for="">Returned Items from Customers :</label>
+                                  <input type="number" min="0" class="form-control" id="" name="returnItems" placeholder="Returned Items" [(ngModel)]="returnItems">
+                                  <button type="button" class="pop-over" [popover]="popRetItems" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                                    placement="left">?</button>
+                                  <ng-template #popRetItems>
+                                    <ul>
+                                      <li>Enter number of tags returned</li>
+                                    </ul>
+                                  </ng-template>
+                                </div>
+                              </div>
+                              <div class="m-t-20">
+                                <table class="table no-border">
+                                  <thead>
+                                    <tr>
+                                      <th>Item Returned Details</th>
+                                      <th width='30%' style='text-align: center;'>No. of Items</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr *ngFor="let item of tagReturnItems;">
+                                      <td>{{item.ItemName}}</td>
+                                      <td style='text-align: center;'>
+                                        <input type="number" class="form-control" min="0" [value]="item.ItemQuantity" id="" (change)="tagReturnItemChange(item,$event.target.value)">
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-12 text-right m-t-20">
+                              <button class="btn btn-primary btn-reset" type="button" (click)="resetItems()">Reset</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12 text-right m-t-20" *ngIf="isCountOut">
+                  <button class="btn btn-primary btn-search" [disabled]="disableCountOutBtn" type="submit" (click)="onSubmit()">Count Out</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </tab>
+
+        <tab heading='Transaction Details'>
+          <div class="accordion-mgc">
+            <div class="panel-group" id="accordion2" role="tablist" aria-multiselectable="true">
+              <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="tdHeadingOne">
+                  <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#accordion2" href="#tdCollapseOne" aria-expanded="true" aria-controls="tdCollapseOne">
+                      Credit Card Transactions
+                    </a>
+                    <span class="pull-right">Total Amount: ${{ccTotAmount}}</span>
+                  </h4>
+                </div>
+                <div id="tdCollapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="tdHeadingOne">
+                  <div class="panel-body">
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead *ngIf="icnCCTxns && icnCCTxns.length > 0">
+                          <tr>
+                            <th>Transaction #</th>
+                            <th>Customer #</th>
+                            <th>Voucher #</th>
+                            <th>Transaction Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let item of icnCCTxns | paginate: { itemsPerPage: ccPageItemNumber, currentPage: CCPageNumber, totalItems:ccTotalRecordCount,id: 'first' }">
+                            <td>{{item.TxnId}}</td>
+                            <td>{{item.CustomerId}}</td>
+                            <td>{{item.VoucherNo}}</td>
+                            <td>{{item.TxnAmount}}</td>
+                          </tr>
+                          <tr *ngIf='!icnCCTxns || icnCCTxns.length==0'>
+                            <td colspan="4">No details to display</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="row page-info" *ngIf="icnCCTxns && icnCCTxns.length > 0">
+                      <div class="col-md-6 text-left">
+                        <p>Display {{ccStartItemNumber}} - {{ccEndItemNumber}} Records of {{ccTotalRecordCount}}</p>
+                      </div>
+                      <div class="col-md-6 text-right">
+                        <pagination-controls (pageChange)="ccPageChanged($event)" id="first"></pagination-controls>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="tdHeadingTwo">
+                  <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion2" href="#tdCollapseTwo" aria-expanded="false"
+                      aria-controls="tdCollapseTwo">Check Transactions</a>
+                    <span class="pull-right">Total Amount: ${{checkTotAmount}}</span>
+                  </h4>
+                </div>
+                <div id="tdCollapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="tdHeadingTwo">
+                  <div class="panel-body">
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead *ngIf="icnChequeTxns && icnChequeTxns.length > 0">
+                          <tr>
+                            <th>Transaction #</th>
+                            <th>Customer #</th>
+                            <th>Voucher #</th>
+                            <th>Transaction Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let check of icnChequeTxns | paginate: { itemsPerPage: checkPageItemNumber, currentPage: checkPageNumber, totalItems:checkTotalRecCount,id: 'check' }">
+                            <td>{{check.TxnId}}</td>
+                            <td>{{check.CustomerId}}</td>
+                            <td>{{check.VoucherNo}}</td>
+                            <td>{{check.TxnAmount}}</td>
+                          </tr>
+                          <tr *ngIf='!icnChequeTxns || icnChequeTxns.length==0'>
+                            <td colspan="4">No details to display</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="row page-info" *ngIf="icnChequeTxns && icnChequeTxns.length > 0 ">
+                      <div class="col-md-6 text-left">
+                        <p>Display {{checkStartItemNumber}} - {{checkEndItemNumber}} Records of {{checkTotalRecCount}}</p>
+                      </div>
+                      <div class="col-md-6 text-right">
+                        <pagination-controls (pageChange)="checkPageChanged($event)" id="check"></pagination-controls>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="tdHeadingThree">
+                  <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion2" href="#tdCollapseThree" aria-expanded="false"
+                      aria-controls="tdCollapseThree">Money Order Transactions</a>
+                    <span class="pull-right">Total Amount: ${{moTotAmount}}</span>
+                  </h4>
+                </div>
+                <div id="tdCollapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="tdHeadingThree">
+                  <div class="panel-body">
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead *ngIf='icnMoTxn && icnMoTxn.length > 0'>
+                          <tr>
+                            <th>Transaction #</th>
+                            <th>Customer #</th>
+                            <th>Voucher #</th>
+                            <th>Transaction Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let mo of icnMoTxn | paginate: { itemsPerPage: moPageItemNumber, currentPage: moPageNumber, totalItems:moTotalRecordCount,id: 'mo'}">
+                            <td>{{mo.TxnId}}</td>
+                            <td>{{mo.CustomerId}}</td>
+                            <td>{{mo.VoucherNo}}</td>
+                            <td>{{mo.TxnAmount}}</td>
+                          </tr>
+                          <tr *ngIf='!icnMoTxn || icnMoTxn.length==0'>
+                            <td colspan="4">No details to display</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="row page-info" *ngIf="icnMoTxn && icnMoTxn.length > 0">
+                      <div class="col-md-6 text-left">
+                        <p>Display {{moStartItemNumber}} - {{moEndItemNumber}} Records of {{moTotalRecordCount}}</p>
+                      </div>
+                      <div class="col-md-6 text-right">
+                        <pagination-controls (pageChange)="moPageChanged($event)" id="mo"></pagination-controls>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="tdHeadingFour">
+                  <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion2" href="#tdCollapseFour" aria-expanded="false"
+                      aria-controls="tdCollapseFour">Cash Transactions</a>
+                    <span class="pull-right">Total Amount: ${{cashTotAmount}}</span>
+                  </h4>
+                </div>
+                <div id="tdCollapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="tdHeadingFour">
+                  <div class="panel-body">
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead *ngIf="icnCashTxns && icnCashTxns.length > 0 ">
+                          <tr>
+                            <th>Transaction #</th>
+                            <th>Customer #</th>
+                            <th>Voucher #</th>
+                            <th>Transaction Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let cash of icnCashTxns | paginate: { itemsPerPage: cashPageItemNumber, currentPage: cashPageNumber, totalItems:cashTotalRecordCount,id: 'cash' }">
+                            <td>{{cash.TxnId}}</td>
+                            <td>{{cash.CustomerId}}</td>
+                            <td>{{cash.VoucherNo}}</td>
+                            <td>{{cash.TxnAmount}}</td>
+                          </tr>
+                          <tr *ngIf='!icnCashTxns || icnCashTxns.length==0'>
+                            <td colspan="4">No details to display</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="row page-info" *ngIf="icnCashTxns && icnCashTxns.length > 0 ">
+                      <div class="col-md-6 text-left">
+                        <p>Display {{cashkStartItemNumber}} - {{cashEndItemNumber}} Records of {{cashTotalRecordCount}}</p>
+                      </div>
+                      <div class="col-md-6 text-right">
+                        <pagination-controls (pageChange)="cashPageChanged($event)" id="cash"></pagination-controls>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="tdHeadingFive">
+                  <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion2" href="#tdCollapseFive" aria-expanded="false"
+                      aria-controls="tdCollapseFive">Bank Transactions</a>
+                    <span class="pull-right">Total Amount: ${{bankTotAmount}}</span>
+                  </h4>
+                </div>
+                <div id="tdCollapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="tdHeadingFive">
+                  <div class="panel-body">
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead *ngIf="icnBankTxns && icnBankTxns.length > 0 ">
+                          <tr>
+                            <th>Transaction #</th>
+                            <th>Customer #</th>
+                            <th>Voucher #</th>
+                            <th>Transaction Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let bank of icnBankTxns | paginate: { itemsPerPage: bankPageItemNumber, currentPage: bankPageNumber, totalItems:bankTotalRecordCount,id: 'bank' }">
+                            <td>{{bank.TxnId}}</td>
+                            <td>{{bank.CustomerId}}</td>
+                            <td>{{bank.VoucherNo}}</td>
+                            <td>{{bank.TxnAmount}}</td>
+                          </tr>
+                          <tr *ngIf='!icnBankTxns || icnBankTxns.length==0'>
+                            <td colspan="4">No details to display</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="row page-info" *ngIf="icnBankTxns && icnBankTxns.length > 0">
+                      <div class="col-md-6 text-left">
+                        <p>Display {{bankkStartItemNumber}} - {{bankEndItemNumber}} Records of {{bankTotalRecordCount}}</p>
+                      </div>
+                      <div class="col-md-6 text-right">
+                        <pagination-controls (pageChange)="bankPageChanged($event)" id="bank"></pagination-controls>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="tdHeadingSix">
+                  <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion2" href="#tdCollapseSix" aria-expanded="false"
+                      aria-controls="tdCollapseSix">Tags</a>
+                    <span class="pull-right">Total Assigned Count: {{totAssignCount}} Total Returned Count: {{totReturnCount}}</span>
+                  </h4>
+                </div>
+                <div id="tdCollapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="tdHeadingSix">
+                  <div class="panel-body">
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead *ngIf="icnTagTxn && icnTagTxn.length > 0">
+                          <tr>
+                            <th>Serial #</th>
+                            <th>Customer #</th>
+                            <th>TagType #</th>
+                            <th>Hex Tag #</th>
+                            <th>Facility Code</th>
+                            <th>Tag Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let tag of icnTagTxn | paginate: { itemsPerPage: tagPageItemNumber, currentPage: tagPageNumber, totalItems:tagTotalRecordCount,id:'tag' }">
+                            <td>{{tag.SerialNo}}</td>
+                            <td>{{tag.UserId}}</td>
+                            <td>{{tag.ItemType}}</td>
+                            <td>{{tag.HEXItemID}}</td>
+                            <td>{{tag.FacilityCode}}</td>
+                            <td>{{tag.ItemStatus}}</td>
+                          </tr>
+                          <tr *ngIf='!icnTagTxn || icnTagTxn.length==0'>
+                            <td colspan="4">No details to display</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="row page-info" *ngIf="icnTagTxn && icnTagTxn.length > 0">
+                      <div class="col-md-6 text-left">
+                        <p>Display {{tagStartItemNumber}} - {{tagEndItemNumber}} Records of {{tagTotalRecordCount}}</p>
+                      </div>
+                      <div class="col-md-6 text-right">
+                        <pagination-controls (pageChange)="tagPageChanged($event)" id='tag'></pagination-controls>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </tab>
+      </tabset>
+    </div>
+  </div>
+</div>

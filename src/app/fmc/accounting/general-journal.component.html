@@ -1,0 +1,216 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">FMC</a>
+        </li>
+        <li>Accounting</li>
+        <li class="active">General Journal</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>General Journal</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="col-md-3 col-md-offset-6">
+        <button type="button" class="btn btn-link" (click)="createJournalEntryMethod();">Create Manual General Journal Entry</button>
+      </div>
+      <div class="col-md-3">
+        <button type="button" class="btn btn-link" (click)="manualJournalEntry();">Manual General Journal Entry Approve</button>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      General Journal
+    </div>
+    <div class="panel-body bordered">
+      <form role="form" [formGroup]="searchForm" name="searchForm" novalidate (ngSubmit)="journalEntriesSearchOnClick();">
+        <div class="row">
+          <div class="col-md-6 form-group">
+            <label for="journalId"> Journal # </label>
+            <input type="text" class="form-control" maxlength="10" placeholder="Journal #" id="journalId" formControlName="journalId"
+              name="journalId">
+            <div class="msg" *ngIf="searchForm.controls['journalId'].invalid && (searchForm.controls['journalId'].dirty || searchForm.controls['journalId'].touched)">
+              <div *ngIf="searchForm.controls['journalId'].errors.pattern">
+                Only numbers allowed.
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 form-group">
+            <label for="customerId"> Customer # </label>
+            <input type="text" class="form-control" maxlength="17" placeholder="Customer #" id="customerId" formControlName="customerId"
+              name="customerId">
+            <div class="msg" *ngIf="searchForm.controls['customerId'].invalid && (searchForm.controls['customerId'].dirty || searchForm.controls['customerId'].touched)">
+              <div *ngIf="searchForm.controls['customerId'].errors.pattern">
+                Only numbers allowed.
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 form-group">
+            <label for="categoryTypeId" class="focused">Category Type </label>
+            <select class="form-control" id="categoryTypeId" formControlName="categoryTypeId" name="categoryTypeId">
+              <option selected="selected" [ngValue]="0">--select--</option>
+              <option *ngFor="let categoryTypes of objCategoryTypesResponse" [value]="categoryTypes.CategoryId">{{categoryTypes.CategoryName}}</option>
+            </select>
+          </div>
+          <div class="col-md-6 form-group">
+            <label for="linkId"> Link # </label>
+            <input type="text" class="form-control" maxlength="10" placeholder="Link #" id="linkId" formControlName="linkId" name="linkId">
+            <div class="msg" *ngIf="searchForm.controls['linkId'].invalid && (searchForm.controls['linkId'].dirty || searchForm.controls['linkId'].touched)">
+              <div *ngIf="searchForm.controls['linkId'].errors.pattern">
+                Only numbers allowed.
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 form-group">
+            <label for="timePeriod" class="focused">Time Period</label>
+            <my-date-range-picker (inputFieldChanged)='onDateRangeFieldChanged($event)' id="timePeriod" name="timePeriod" [options]="myDateRangePickerOptions"
+              formControlName="timePeriod" placeholder="MM/DD/YYYY - MM/DD/YYYY"></my-date-range-picker>
+            <div class="show-error" *ngIf="!invalidDate && searchForm.controls['timePeriod'].invalid && (searchForm.controls['timePeriod'].dirty || searchForm.controls['timePeriod'].touched)">
+              <div *ngIf="searchForm.controls['timePeriod'].errors.required">
+                Required
+              </div>
+            </div>
+            <div class="show-error" *ngIf="invalidDate">
+              <div>
+                Invalid Date Range
+              </div>
+
+            </div>
+            <!--<input class="form-control" placeholder="Daterangepicker" id="timePeriod" autocomplete="off" bsDaterangepicker #dpr="bsDaterangepicker"
+                            name="timePeriod" formControlName="timePeriod" [(ngModel)]="timePeriod">-->
+          </div>
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-default btn-search" [disabled]="disableSearchButton"> Search </button>
+            <button type="button" class="btn btn-default btn-reset" (click)="reset()"> Reset </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      General Journal Entries
+    </div>
+    <div class="panel-body bordered">
+      <div *ngIf="generalJournalResponseLength >= 1">
+        <table class="table">
+          <thead>
+            <tr>
+              <th (click)="sortDirection('GL_TXNID')" class="sorting-handle"> Journal #
+                <span *ngIf="gridArrowGL_TXNID">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th>Date</th>
+              <th>Customer #</th>
+              <th>Description</th>
+              <th (click)="sortDirection('LinkId')" class="sorting-handle"> Link #
+                <span *ngIf="gridArrowLinkId">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let generalJournal of objGeneralJournalResponse | paginate: { itemsPerPage:pageItemNumber, currentPage: p, totalItems:totalRecordCount}">
+              <td>
+                <a [ngClass]="{'disabletextbox': disableGlTxnViewButton}" (click)="getPopUpDataOfJournalId(generalJournal.GLTxnId)" data-toggle="modal"
+                  data-target="#myModal"> {{generalJournal.GLTxnId}}</a>
+              </td>
+              <td> {{generalJournal.PostingDate | customDateFormat}} </td>
+              <td> {{generalJournal.CustomerId}} </td>
+              <td> {{generalJournal.Description}} </td>
+              <td> {{generalJournal.LinkId}} </td>
+              <td>
+                <p class="pull-right"> {{generalJournal.TxnAmount | currencycustom}}</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="generalJournalResponseLength == 0">No General Journal entries to display</div>
+    </div>
+    <div *ngIf="totalRecordCount >= 11">
+      <div class="row page-info" *ngIf="(objGeneralJournalResponse && objGeneralJournalResponse.length > 0)">
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="popUpModel">
+  <div class="modal fade " id="myModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Journal #: {{genTxnId}}</h4>
+        </div>
+        <div class="modal-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Txn Type</th>
+                <th>G/L Account #</th>
+                <th>Account Name</th>
+                <th>Debit</th>
+                <th>Credit</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let listItems of objGetJournalLineItemsResponse">
+                <td> {{listItems.TxnType}} </td>
+                <td> {{listItems.ChartofAccountId}} </td>
+                <td> {{listItems.AccountName}} </td>
+                <td>
+                  <p class="pull-right"> {{listItems.DebitAmount | currencycustom}}</p>
+                </td>
+                <td>
+                  <p class="pull-right">{{listItems.CreditAmount |currencycustom}}</p>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot class="total-amount">
+              <tr>
+                <td colspan="3" class="tfoot-total">Total:</td>
+                <td>
+                  <p class="pull-right">{{totDebitAmount | currencycustom}}</p>
+                </td>
+                <td>
+                  <p class="pull-right">{{totCreditAmount | currencycustom}}</p>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>

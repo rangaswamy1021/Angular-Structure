@@ -1,0 +1,44 @@
+.dropdown-toggle::after{
+display: inline-block;
+width: 0;
+height: 0;
+margin-left: .255em;
+vertical-align: .255em;
+content: "";
+border-top: 0;
+border-right: .3em solid transparent;
+border-bottom: .3em solid;
+border-left: .3em solid transparent;
+}
+
+.dropdown-item {
+    display: block;
+    width: 100%;
+    padding: .25rem 1.5rem;
+    clear: both;
+    font-weight: 400;
+    color: #212529;
+    text-align: inherit;
+    white-space: nowrap;
+    background: 0 0;
+    border: 0;
+}
+.btn-secondary {
+    color: #fff;
+    background-color: #727b84;
+    border-color: #6c757d;
+}
+
+dropdown-item:focus, .dropdown-item:hover {
+    color: #16181b;
+    text-decoration: none;
+    background-color: #f8f9fa;
+}
+
+.dropup{
+    display: inline;
+}
+
+.disputeBackground{
+    background-color: #f2f3f2;
+}

@@ -1,0 +1,206 @@
+<div id="emailEdit" class="edit-modal modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="form-title">{{title}}</h3>
+      </div>
+      <div class="modal-body">
+        <div class="row add-address">
+          <form [formGroup]='emailForm' *ngIf='formType=="email"'>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-sm-7 popover-field popover-2field">
+                  <label for="">Primary Email</label>
+                  <input type="text" class="form-control" formControlName="PrimaryEmail" placeholder="Primary Email">
+                  
+                  <div class="msg" *ngIf="emailForm.controls['PrimaryEmail'].invalid && (emailForm.controls['PrimaryEmail'].dirty || emailForm.controls['PrimaryEmail'].touched)">
+                    <div *ngIf="emailForm.controls['PrimaryEmail'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="emailForm.controls['PrimaryEmail'].errors.pattern">
+                      Invalid email format.
+                    </div>
+                    <div *ngIf="emailForm.controls['PrimaryEmail'].errors.minlength && !emailForm.controls['PrimaryEmail'].errors.pattern">
+                      Minimum 6 characters are required.
+                    </div>
+                    <div *ngIf="emailForm.controls['PrimaryEmail'].errors.maxlength && !emailForm.controls['PrimaryEmail'].errors.pattern">
+                      Maximum 100 characters are allowed.
+                    </div>
+                  </div>
+                  <button type="button" placement="left" class="pop-over" [popover]="popPE" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1">?</button>
+                <ng-template #popPE>
+                  <ul>
+                    <li>Any One Email is required.</li>
+                    <li>Primary Email allows alphanumerics with special characters (@, _, ., -, +)</li>
+                    <li>Spaces are not allowed.</li>
+                    <li>It should be minimum 6 characters and maximum 100 characters long.</li>
+                    <li>It should follow the format yourname@domain.com</li>
+                  </ul>
+                </ng-template>
+                </div>
+                
+                <div class="form-group col-sm-4 preferred-cont custom-control custom-radio">
+                  <input type="radio" id="email1" class="preferred" name='emailPreference' value="PrimaryEmail" formControlName="emailPreference" (change)="prefferedEmailTypeChange($event.target.value)">
+                  <label for="email1" class="custom-control-description">Is Preferred</label>
+                </div>
+                <div class="col-md-2" [hidden]='emailTypes.PrimaryEmail.IsPreferred'>
+                  <div class="row">
+                    <div class="form-group col-sm-11 nowrap checkbox">
+                      <input type="checkbox" id="primarymail" formControlName='isValid' value="PrimaryEmail">
+                      <label for="primarymail"><span></span> Is Valid</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-sm-7 popover-field popover-2field">
+                  <label for="">Secondary Email</label>
+                  <input type="text" class="form-control" formControlName="SecondaryEmail" placeholder="Secondary Email">
+                  
+                  <div class="msg" *ngIf="emailForm.controls['SecondaryEmail'].invalid && (emailForm.controls['SecondaryEmail'].dirty || emailForm.controls['SecondaryEmail'].touched)">
+                    <div *ngIf="emailForm.controls['SecondaryEmail'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="emailForm.controls['SecondaryEmail'].errors.pattern">
+                      Invalid email format.
+                    </div>
+                    <div *ngIf="emailForm.controls['SecondaryEmail'].errors.minlength && !emailForm.controls['SecondaryEmail'].errors.pattern">
+                      Minimum 6 characters are required.
+                    </div>
+                    <div *ngIf="emailForm.controls['SecondaryEmail'].errors.maxlength && !emailForm.controls['SecondaryEmail'].errors.pattern">
+                      Maximum 100 characters are allowed.
+                    </div>
+                  </div>
+                  <button type="button" placement="left" class="pop-over" [popover]="popSE" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1">?</button>
+                <ng-template #popSE>
+                  <ul>
+                    <li>Any One Email is required.</li>
+                    <li>Secondary Email allows alphanumerics with special characters (@, _, ., -, +)</li>
+                    <li>Spaces are not allowed.</li>
+                    <li>It should be minimum 6 characters and maximum 100 characters long.</li>
+                    <li>It should follow the format yourname@domain.com</li>
+                  </ul>
+                </ng-template>
+                </div>
+                
+                <div class="form-group col-sm-4 preferred-cont custom-radio custom-control">
+                  <input type="radio" id="secEmail21" class="preferred custom-control-input" name='emailPreference' value="SecondaryEmail" formControlName="emailPreference" (change)="prefferedEmailTypeChange($event.target.value)">
+                  <label for="secEmail21" class="custom-control-description">Is Preferred</label>
+                </div>
+                 <div class="col-md-2" *ngIf='emailTypes.SecondaryEmail.IsPreferred'>
+                  <div class="row">
+                    <div class="form-group col-sm-11 checkbox">
+                      <input type="checkbox" id="secmail2" formControlName='isValid' value="SecondaryEmail" >
+                      <label for="secmail2"><span></span> Is Valid</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 m-t-10">
+              <button type="submit" class="btn btn-primary btn-search" (click)=changeEmail(true) [disabled]='disableButton'>Update</button>
+              <button type="button" class="btn btn-default btn-reset" (click)=resetEmail()>Reset</button>
+              <button type="button" class="btn btn-default btn-reset" data-dismiss="modal">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="panel-heading" role="tab" id="headingThree">
+  <h4 class="panel-title pull-left">
+    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false"
+      aria-controls="collapseThree">Email Address</a>
+  </h4>
+  <div class="edit-history-link pull-right">
+      <a href="javascript:;" (click)='editDetails("email","edit")'>Edit</a>
+      <a href="javascript:;" [ngClass]="disableEmailHistorybtn?'disabletextbox':''" (click)='showEmailHistory()'>View History</a>
+    </div>
+    <div class="clear"></div>
+</div>
+<div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+  <div class="panel-body">
+    <div class="clear"></div>
+    <div class="row contact-item">
+      <div class="col-md-4">
+        <h3>Primary E-mail Address</h3>
+        <h4 *ngIf='emailTypes.PrimaryEmail'>{{emailTypes.PrimaryEmail.EmailAddress}} <a href="javascript:;" [ngClass]="disableDeletebtn?'disabletextbox':''" (click)="deleteEmail(emailTypes.PrimaryEmail)" *ngIf='!emailTypes.PrimaryEmail.IsPreferred'>Delete</a></h4>
+        <h4 *ngIf='!emailTypes.PrimaryEmail'>No Details Found</h4>
+      </div>
+      <div class="col-md-4">
+        <h3>Secondary E-mail Address</h3>
+        <h4 *ngIf='emailTypes.SecondaryEmail'>{{emailTypes.SecondaryEmail.EmailAddress}}
+          <a href="javascript:;" (click)="deleteEmail(emailTypes.SecondaryEmail)" [ngClass]="disableDeletebtn?'disabletextbox':''" *ngIf='!emailTypes.SecondaryEmail.IsPreferred'>Delete</a></h4>
+        <h4 *ngIf='!emailTypes.SecondaryEmail'>No Details Found</h4>
+      </div>
+      <div class="col-md-4">
+        <h3>Email Preference</h3>
+        <h4 *ngIf="preferredEmail"> {{ preferredEmail.Description }}
+          <a href="javascript:;" [ngClass]="disableVerifybtn?'disabletextbox':''" (click)="verifyEmail(preferredEmail)" *ngIf='!preferredEmail.IsVerified'>Verify E-Mail</a>
+
+        </h4>
+        <h4 *ngIf="!preferredEmail"> No Details Found</h4>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="emailHistory" class="edit-modal  modal fade history-modal" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="form-title">Email History</h3>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" *ngIf="showEmailHistoryFlag">
+        <div class="table-bdr m-t-10">
+          <div class="table-default table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Email Address</th>
+                  <th>Preference</th>
+                  <th>Created by</th>
+                  <th>Created Date/Time</th>
+                  <th>Updated by</th>
+                  <th>Update Date/Time</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor='let item of emailHistory | paginate: { itemsPerPage: pageItemNumber, currentPage: p,totalItems:totalRecordCount }'>
+                  <td>{{item.Type}}</td>
+                  <td>{{item.EmailAddress}}</td>
+                  <td>{{item.IsPreferred?"Yes":"No"}}</td>
+                  <td>{{item.CreatedUser}}</td>
+                  <td>{{item.CreatedDate | customDateTimeFormat }}</td>
+
+                  <td>{{item.UpdatedUser}}</td>
+                  <td>{{item.UpdatedDate | customDateTimeFormat}}</td>
+                  <td>{{item.HistoryAction}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class=" page-info">
+              <div class="col-md-6 text-left">
+                <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+              </div>
+              <div class="col-md-6 text-right">
+                <pagination-controls (pageChange)="emailHistoryPageChanged($event)"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

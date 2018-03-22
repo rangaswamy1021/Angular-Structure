@@ -1,0 +1,107 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">SAC</a>
+        </li>
+        <li>
+          <a href="#">User Management</a>
+        </li>
+        <li class="active">Manage Privileges </li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Privileges</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-body bordered">
+      <div class="row">
+        <div class="col-md-6">
+          <!--<div class="form-group">
+            <label for="Time period" class="control-label">Select Role</label>
+            <select class="form-control ">
+                  <option>select</option>
+                  <option>Admin</option>
+             </select>
+          </div>-->
+          <div class="form-inline">
+            <div class="form-group col-md-12">
+              <label  class="focused">Select Role</label>              
+              <select class="form-control" id="roles" (change)="bindRolesPrivileges($event.target.value)" name="roles">
+                <option selected="Role" value="">------------Select Role------------</option>
+                <option *ngFor="let role of manageRolesResponse" value="{{role.RoleId}}">{{role.RoleName}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="selectedRoleID">
+    <div class="table-responsive">
+      <div class="panel panel-default" id="privileges">
+        <div class="panel-heading"> Privileges Details </div>
+        <table class="table privilege-table-fixed">
+          <thead>
+            <tr>
+              <th class="col-xs-3">Features</th>
+              <th class="col-xs-7">Actions</th>
+              <th class="col-xs-2 checkbox">
+                <input type="checkbox" [checked]="checkAll" id="chekall" (change)="checkedAllValues(checkAll)" value="">
+                <label for="chekall"><span></span>Check All</label>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr *ngFor="let feature of privilegeWrapper;let currentRowNo=index">
+              <td class="col-xs-3"> {{feature.Features.DisplayName}}</td>
+              <td class="col-xs-7">
+                <ul class="list-inline checkbox">
+                  <li *ngFor="let action of feature.Features.Actions">
+                    <input type="checkbox"  id="{{action.ActionName+action.FeatureId}}" (change)="getCheckedValues(currentRowNo,feature.Features.FeatureId,action.ActionId,action.IsActionAssigned)"
+                      [checked]="action.IsActionAssigned" value="{{action.ActionId}}">
+                      <label for="{{action.ActionName+action.FeatureId}}"> <span></span>{{action.ActionDescription}}</label>
+                  </li>
+
+                </ul>
+              </td>
+              <td class="col-xs-2 checkbox">
+                <input id="{{feature.Features.FeatureId}}" (change)="getAllCheckedValues(currentRowNo,feature.Features.FeatureId,feature.Features.IsAllActionAvailable)" [checked]="feature.Features.IsAllActionAvailable"
+                  type="checkbox" value="">
+                  <label for="{{feature.Features.FeatureId}}"> <span></span></label>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group pull-right">
+          <form role="form" name="addAddressForm" novalidate>
+            <button *ngIf="!isUpdatePrivileges" type="submit" [ngClass]="isAddAllowed?'disabletextbox':''" (click)="createThePrivileges()"  class="btn btn-default btn-search">Create</button>
+            <button *ngIf="isUpdatePrivileges" [ngClass]="isUpdateAllowed?'disabletextbox':''" (click)="updateThePrivileges()" class="btn btn-default btn-search">Update</button>
+            <button type="submit" class="btn btn-default btn-reset" (click)="resetThePrivileges()">Reset</button>
+          </form>
+        </div>
+        <div class="clearfix">
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

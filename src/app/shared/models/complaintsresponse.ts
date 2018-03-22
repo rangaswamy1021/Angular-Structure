@@ -1,0 +1,44 @@
+export interface IComplaintResponse {
+    ProblemId: number;
+    TicketId: number;
+    ProblemType: string;
+    ProblemSource: string;
+    ProblemTitle: string;
+    ProblemAbstract: string;
+    DateOccurred: Date;
+    RootProblemTicket: number;
+    DateReported: Date;
+    RootCauseDate: Date;
+    ReportedBy: number;
+    RecordedBy: number;
+    ProblemCategory: number;
+    Severity: string;
+    Priority: string;
+    Status: string;
+    SubSystem: string;
+    ExpectedResolveDate: Date;
+    TargetDate: Date;
+    AssignedTo: number;
+    AssignedDate: Date;
+    TransformationProblemId: number;
+    TransformationEventTypeId: string;
+    OwnerId: number;
+    ProblemRCA: string;
+    UserName: string;
+    CustomerId: number;
+    FirstName: string;
+    LastName: string;
+    Email: string;
+    Mobile: string;
+    Phone: string;
+    RecCount: number;
+    PriorityDesc: string;
+    SeverityDesc: string;
+    ProblemTypeDesc: string;
+    HistId: number;
+    HistDate: Date;
+    StatusDate: Date;
+    OwnerName: string;
+    isSearchBoxSelected:boolean;
+    
+}

@@ -1,0 +1,20 @@
+export interface IVehicleResponse {
+    VehicleId: number,
+    VehicleNumber: string,
+    TagSerialNumber: string,
+    VehicleClass: string,
+    State: string,
+    VehicleDescription: string,
+    VehicleClassDesc: string,
+    Color: string,
+    Country: string,
+    StartEffectiveDate: any,
+    EndEffectiveDate: any,
+    RecordCount: number,
+    custTagId: number,
+    Endrow_no: Date,
+    Startrow_no: Date,
+    TagType: string,
+    IsSelected: boolean,
+    IsExempted: boolean
+}

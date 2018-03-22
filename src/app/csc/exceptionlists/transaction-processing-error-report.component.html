@@ -1,0 +1,124 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Exception List</a></li>
+        <li class="active">Transaction Processing Errors</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Transaction Processing Errors</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="alert alert-danger alert-dismissible" role="alert" *ngIf="failureMessage && failureMessage.length">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="failureMessage=false"><span aria-hidden="true">&times;</span></button>    {{failureMessage}}
+  </div>
+  <div class="alert alert-success alert-dismissible" role="alert" *ngIf="successMessage && successMessage.length">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="successMessage=false"><span aria-hidden="true">&times;</span></button>    {{successMessage}}
+  </div>
+  <form role="form" name="searchForm" [formGroup]="searchForm" novalidate>
+    <div class="row">
+      <div class="col-md-4 form-group">
+        <label class="focused">Time Period</label>
+        <div class="show-error" *ngIf="!invalidDate && searchForm.controls['date'].invalid && (searchForm.controls['date'].dirty || searchForm.controls['date'].touched)">
+          <div *ngIf="searchForm.controls['date'].errors.required">
+            Required.
+          </div>
+        </div>
+        <my-date-range-picker name="date" (inputFieldChanged)="onDateRangeFieldChanged($event)" [options]="myDateRangePickerOptions"
+          formControlName="date" tabindex="2"></my-date-range-picker>
+        <div class="show-error" *ngIf="invalidDate">
+          <div>Invalid Date Range</div>
+        </div>
+
+
+        <!--<input class="form-control disbale-to-write" placeholder="Daterangepicker" bsDaterangepicker #dpr="bsDaterangepicker" name="date"
+                formControlName="date" [(ngModel)]="dateRange" readonly="readonly">-->
+        <!--<owl-date-time [selectionMode]='"range"' formControlName="date" [dateFormat]='"DD/MM/YYYY"' [placeHolder]='"DD/MM/YYYY"'
+                [type]='"calendar"' class="form-control"></owl-date-time>-->
+        <!--<div class="msg" *ngIf="searchForm.controls['date'].invalid && (searchForm.controls['date'].dirty || searchForm.controls['date'].touched)">
+                <div *ngIf="searchForm.controls['date'].errors.required">
+                  Required.
+                </div>
+              </div>-->
+      </div>
+      <div class="col-md-8">
+        <button type="submit" class="btn btn-primary btn-search btn-small m-t-20" [disabled]="disableButton" (click)="searchReport()">Search</button>
+      </div>
+    </div>
+    <div class="p-b-11 p-t-2" style="background:#fff;" *ngIf='exceptionResponse && exceptionResponse.length>0;else NodetailsBlock'>
+      <div class="panel panel-default m-t-10">
+        <div class="panel-heading"> Transaction Processing Error Report
+          <span class="pull-right" *ngIf='exceptionResponse && exceptionResponse.length>0;'>
+          <a (click)="reProcessTran()" [ngClass]="disableReprocessButton?'disabletextbox':''"><i class="fa fa-plus-square-o fa-lg fa-fw" aria-hidden="true"></i>Reprocess</a>
+          </span>
+        </div>
+        <div class="panel-body">
+          <div class="table-responsive available-plans">
+            <table class="table table-bdr">
+              <thead>
+                <tr>
+                  <th>
+                    <div class="checkbox">
+                      <input type="checkbox" [checked]="isParentSelected" id="checkAll" name="checkAll" formControlName="checkAll" (change)='checkAllClick($event)'>
+                      <label for="checkAll"><span></span></label></div>
+                  </th>
+                  <th>Trip #</th>
+                  <th style="white-space: inherit">Entry Trip Date/Time</th>
+                  <th style="white-space: inherit">Exit Trip Date/Time</th>
+                  <th>Entry Plaza</th>
+                  <th>Entry Lane</th>
+                  <th>Exit Plaza</th>
+                  <th>Exit Lane</th>
+                  <th>Plate #</th>
+                  <th>Tag #</th>
+                  <th>Toll Amount</th>
+                  <th>Error Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor='let exception of exceptionResponse'>
+                  <td>
+                    <div class="checkbox">
+                      <input type="checkbox" (change)='checkboxCheckedEvent(exception, $event)' id="indCheckBox" name="indCheckBox" [checked]="exception.isSelected"
+                        formControlName="indCheckBox" />
+                      <label for="indCheckBox"><span></span></label></div>
+                  </td>
+                  <td>{{exception.TripId}}</td>
+                  <td style="display:none;">{{exception.PlanId}}</td>
+                  <td>{{exception.Entry_TripDateTime | customDateTimeFormat }}</td>
+                  <td>{{exception.Exit_TripDateTime | customDateTimeFormat}}</td>
+                  <td>{{exception.EntryPlazaName}}</td>
+                  <td>{{exception.EntryLaneName}}</td>
+                  <td>{{exception.ExitPlazaName}}</td>
+                  <td>{{exception.ExitLaneName}}</td>
+                  <td>{{exception.VehicleNumber =="" ? "N/A":exception.VehicleNumber}}</td>
+                  <td>{{exception.TagId=="" ? "N/A": exception.TagId}}</td>
+                  <td>{{exception.TollAmount | currency:'USD':true:'1.2-2'}}</td>
+                  <td>{{exception.PlanDescription}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #NodetailsBlock>
+      <!--<div class="alert alert-info" role="alert">No details to display</div>-->
+      <div class="status-content">
+        <div class="alert alert-success alert-dismissible" role="alert">
+          <span><span class="glyphicon glyphicon-exclamation-sign">&nbsp;</span>No Transactions to display</span>
+        </div>
+      </div>
+    </ng-template>
+  </form>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)" (onOk)="reProcess($event)"></app-success-failure-alerts-message>

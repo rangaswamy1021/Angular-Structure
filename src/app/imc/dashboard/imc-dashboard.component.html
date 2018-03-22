@@ -1,0 +1,202 @@
+<!--imc dashboard start-->
+<div class="page-title-header" style="margin: 0;">
+  <div class="row no-gutters">
+    <div class="col-md-6">
+      <ol class="breadcrumb">
+        <li><a href="#">IMC</a></li>
+        <li class="active">Dashboard</li>
+      </ol>
+      <div class="page-header">
+        <h1>Dashboard</h1>
+      </div>
+    </div>
+    <div class='col-md-6'>
+      <div class="pull-right">
+        <div class="noti-setting">
+          <div id="notifications" class="notifications dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <span class="label">Alerts</span>
+            <span class="notif-count">{{alertResponse.length}}</span>
+            <span class="caret"></span>
+          </div>
+          <ul class="dropdown-menu" aria-labelledby="notifications">
+            <li *ngFor="let alert of alertResponse; let i=index">
+              {{alert}}
+            </li>
+          </ul>
+        </div>
+        <div class="noti-setting">
+          <div id="reminders" class="clock dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="label">Reminders </span>
+            <span class="notif-count">1</span>
+            <span class="caret"></span>
+          </div>
+          <ul class="dropdown-menu" aria-labelledby="reminders">
+            <li>No. of items which are pending to receive from vendor(s):{{reminderResponse}}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div style="font-size: 14px;padding-bottom: 5px;">Total Customer Item Status Requested, Fulfilled and Pending counts</div>
+        <div class="customer-heading heading head-Color col-md-12" > Total Customer Tags Count
+          <span *ngIf="customerNoRecordsToDisplay">
+          <img src="assets/images/svg/menu.svg" class="icon-svg3 pull-right" (click)="getCountsBasedOnItemType()" *ngIf="!customerGridData"/>
+        <i class="fa fa-bar-chart fa-lg pull-right" 
+style="cursor:pointer" aria-hidden="true" (click)="changeEventCustomerTagsCount()" *ngIf="customerGridData"></i></span></div>
+        <div class="card-body" *ngIf="customerGridData">
+          <table class="table table-sm" [style.height.px]="300" *ngIf='getCountsBasedOnItemTypeResponse && getCountsBasedOnItemTypeResponse.length;else noRecordsToDisplayCustomer;'>
+            <thead>
+              <tr>
+                <th>Protocol</th>
+                <th>Mounting</th>
+                <th>Requested</th>
+                <th>Fulfilled</th>
+                <th>Pending</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let Tags of getCountsBasedOnItemTypeResponse'>
+                <td>{{Tags.ReturnValue[0]}}</td>
+                <td>{{Tags.ReturnValue[1]}}</td>
+                <td>{{Tags.ReturnValue[2]}}</td>
+                <td>{{Tags.ReturnValue[3]}}</td>
+                <td>{{Tags.ReturnValue[4]}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <ng-template #noRecordsToDisplayCustomer>
+            <div class="status-content">
+              <div class="alert alert-success alert-dismissible" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign">&nbsp;</span>No records to display
+              </div>
+            </div>
+          </ng-template>
+        </div>
+        <div class="card-body" *ngIf="!customerGridData">
+          <div>
+            <div id="getCountsBasedOnItemTypeChart" [style.width.%]="100" [style.height.px]="300"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card">
+          <div style="font-size: 14px;padding-bottom: 5px;">Total Retailer Item Status Requested, Fulfilled and Pending counts</div>
+        <div class="customer-heading heading head-Color col-md-12" >Total Retailer Tags Count
+          <span *ngIf="iconsShow">
+          <img src="assets/images/svg/menu.svg" class="icon-svg3 pull-right" (click)=" getRetailerItemsPendingCount()" *ngIf="!retailerGridData"/>
+        <i class="fa fa-bar-chart fa-lg pull-right" 
+style="cursor:pointer" aria-hidden="true" (click)="changeEventRetailerTagsCount()" *ngIf="retailerGridData"></i></span>
+        </div>
+        <div class="card-body" *ngIf="retailerGridData">
+          <table class="table table-sm" *ngIf='getRetailerItemsPendingCountResponse && getRetailerItemsPendingCountResponse.length;else noRecordsToDisplayRetailer'>
+            <thead>
+              <tr>
+                <th>Item Type</th>
+                <th>Requested</th>
+                <th>Fulfilled</th>
+                <th>Pending</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let PendingCount of getRetailerItemsPendingCountResponse'>
+                <!--*ngFor='let tag of getRetailerItemsPendingCountResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p,totalItems:totalRecordCount }; let i = index'-->
+                <td>{{PendingCount.ReturnValue[0]}}</td>
+                <td>{{PendingCount.ReturnValue[1]}}</td>
+                <td>{{PendingCount.ReturnValue[2]}}</td>
+                <td>{{PendingCount.ReturnValue[3]}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <ng-template #noRecordsToDisplayRetailer>
+            <div class="status-content">
+              <div class="alert alert-success alert-dismissible" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign">&nbsp;</span>No records to display
+              </div>
+            </div>
+          </ng-template>
+        </div>
+        <div class="card-body" *ngIf="!retailerGridData">
+          <div>
+            <div id="getRetailerTagsCountChart" [style.width.%]="100" [style.height.px]="300"></div>
+          </div>
+        </div>
+        <!--<div  class="customer-heading heading head-Color col-md-12" >Total Retailer Tags Count<a (click)="gridDisplay()"> <img src="assets/images/svg/menu.svg" class="icon-svg3 pull-right"></a></div>-->
+        <!--<div class="card-body">
+    <div id="getRetailerTagsCountChart" [style.width.%]="100" [style.height.px]="100"></div>
+        </div></div>-->
+
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="customer-heading heading head-Color col-md-12">Assigned Tag Details</div>
+        <div class="card-body">
+          <div id="itemCountChart" [style.width.%]="100" [style.height.px]="700"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="customer-heading heading head-Color col-md-12">Vendor Requested and Received Items Count</div>
+        <div class="card-body">
+          <div>
+            <div id="vendorRequestedAndReceivedItemsCount" [style.width.%]="100" [style.height.px]="550"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="customer-heading heading head-Color col-md-12">Item Status Count</div>
+        <div class="card-body">
+          <div>
+            <div id="itemStatusCountChart" [style.width.%]="100" [style.height.px]="550"></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="customer-heading heading head-Color col-md-12">Customer Requested and Received Count</div>
+        <div class="graph-duration">
+          <ul>
+            <li><a href="javascript:;" [ngClass]="{'active': statusSelectedItem =='WEEKLY' }" (click)="customerRequestedAndReceivedCountWithTime('WEEKLY')">Current Week</a></li>
+            <li><a href="javascript:;" [ngClass]="{'active': statusSelectedItem =='MONTH' }" (click)="customerRequestedAndReceivedCountWithTime('MONTH')">Current Month</a></li>
+            <li><a href="javascript:;" [ngClass]="{'active': statusSelectedItem =='QUARTER' }" (click)="customerRequestedAndReceivedCountWithTime('QUARTER')">Quarterly</a></li>
+            <li><a href="javascript:;" [ngClass]="{'active': statusSelectedItem =='YEAR' }" (click)="customerRequestedAndReceivedCountWithTime('YEAR')">Yearly</a></li>
+          </ul>
+        </div>
+        <div class="card-body">
+          <div>
+            <div id="customerRequestedAndReceivedCountChart" [style.width.%]="100" [style.height.px]="550"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>
+<!-- imc dashboard end-->

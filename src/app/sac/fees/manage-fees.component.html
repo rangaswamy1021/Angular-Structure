@@ -1,0 +1,94 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">SAC</a>
+        </li>
+        <li>
+          <a href="#">Manage Fees</a>
+        </li>
+        <li class="active">Fee Types</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Fee Types</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+
+  <div class="row" #BtnAddFeediv>
+    <div class="col-md-12">
+      <a [ngClass]="{'disabletextbox': disableAddButton}" (click)="toggleFeeType()">
+        <img src="assets/images/svg/add-file2.svg" class="icon-svg3">Add New Fee Type</a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <!--[routerLink]="['/AddFeeType']"-->
+      <div class="add-fee-data" *ngIf="isAdd">
+        <app-add-fees (isAdd)='closeAddDiv($event)'></app-add-fees>
+      </div>
+
+      <div class="add-fee-data" *ngIf="isUpdate">
+        <app-update-fees [id]='feeTypeId' (isUpdate)='closeDiv($event)'></app-update-fees>
+      </div>
+      <div class="table-default table-responsive m-t-10 fee-details-table bordered">
+        <table class="table tablecondensed">
+          <thead *ngIf='getFeeResponse && getFeeResponse.length > 0'>
+            <tr>
+              <th width="" class="hide"></th>
+              <th width="">Fee Code</th>
+              <th width="">Fee Name</th>
+              <th width="">Fee Description</th>
+              <th width="">Fee Factor</th>
+              <th width="">Amount/
+                <br>Percentage</th>
+              <th width="">Start Effective Date</th>
+              <th width="">End Effective Date</th>
+              <th width="">Status</th>
+              <th width="">Apply at
+                <br>Create Account</th>
+              <th width=""></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let FeeType of getFeeResponse | paginate: { itemsPerPage: PageItemNumber, currentPage: PageNumber, totalItems:TotalRecordCount }'>
+              <td class="hide">{{FeeType.FeeTypeId}}</td>
+              <td>{{FeeType.FeeCode}}</td>
+              <td>{{FeeType.FeeName}}</td>
+              <td title="{{FeeType.FeeDescription }}">{{FeeType.FeeDescription | limitTo : 30}}</td>
+              <td>{{FeeType.FeeFactor ==0?'$':'%'}}</td>
+              <td>{{FeeType.Amount }}</td>          
+              <td>{{FeeType.StartDate | customDateFormat }}</td>              
+              <td>{{FeeType.EndDate | customDateFormat }}</td>            
+              <td>{{FeeType.IsActive==true? 'Acitve': 'Inactive'}}</td>
+              <td>{{FeeType.IsFeeAppliedatCreateAccount==true? 'Yes':'No'}}</td>
+              <td>
+                <img src="assets/images/svg/edit-blue.svg" [ngClass]="{'disabletextbox': disableUpdateButton}" class="icon-svg3" alt="" style="margin-right: 0 "
+                  (click)="editFeeType(FeeType.FeeTypeId)"> </td>
+            </tr>
+            <tr *ngIf='!getFeeResponse || getFeeResponse.length==0'>
+              <td colspan="11">No details to display</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="row page-info" *ngIf="getFeeResponse && getFeeResponse.length > 0">
+        <div class="col-md-6 text-left">
+          <p>Display {{StartItemNumber}} - {{EndItemNumber}} Records of {{TotalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

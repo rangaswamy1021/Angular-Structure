@@ -1,0 +1,355 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC </a></li>
+        <li><a href="#">Customer Accounts</a></li>
+        <li class="active">Manage Block List</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Block List</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="table-default table-responsive">
+        <table class="table table-bordered" *ngIf='getBlockListResp && getBlockListResp.length;'>
+          <thead class="nowrap">
+            <tr>
+              <th>Account #</th>
+              <th>Name</th>
+              <th>Address</th>
+              <th>Email Address</th>
+              <th>Phone #</th>
+              <th>Plate #</th>
+              <th>Credit Card #</th>
+              <th>Flag Reason</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let blkList of getBlockListResp | paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount }'>
+              <td>{{blkList.CustomerId == ''? 'N/A' :blkList.CustomerId }}</td>
+              <td>{{blkList.FullName == ''? 'N/A' : blkList.FullName}}</td>
+              <td>
+                {{blkList.FullAddress == ''? 'N/A' :blkList.FullAddress}}
+              </td>
+              <td>{{blkList.EmailAddress == ''? 'N/A' :blkList.EmailAddress}}</td>
+              <td class="nowrap">{{blkList.PhoneNumber == ''? 'N/A' : blkList.PhoneNumber}}</td>
+              <td>{{blkList.VehicleNumber == ''? 'N/A' : blkList.VehicleNumber}}</td>
+              <td>{{blkList.CCNumber == ''? 'N/A' : blkList.CCNumber}}</td>
+              <td>{{blkList.FlagReason == ''? 'N/A' :blkList.FlagReason}}</td>
+              <td style="display: none;">{{blkList.BlockListId }}</td>
+              <td style="display: none;">{{blkList.FlagIndicator}}</td>
+              <td style="width: 80px;" *ngIf='blkList.FlagIndicator'>
+                <img src="assets/images/svg/edit.svg" [ngClass]="disableUpdateButton?'disabletextbox':''" alt="" class="icon-svg3" (click)="editBlockList(blkList)">
+                <img src="assets/images/svg/block.svg" alt="" class="icon-svg3" [ngClass]="disableDeleteButton?'disabletextbox':''" (click)="deleteBlockList(blkList)">
+              </td>
+              <td *ngIf='!blkList.FlagIndicator'> Inactive </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="row page-info" *ngIf='getBlockListResp && getBlockListResp.length > 0'>
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+      <div class="table-bdr m-t-20">
+        <h3>Add/Edit Block List</h3>
+        <div class="pad-20">
+          <form role="form" name="blockListForm" [formGroup]="blockListForm" novalidate>
+            <div class="table-bdr">
+              <h3>Account # Block</h3>
+              <div class="m-t-10">
+                <div class="row">
+                  <div class="col-md-offset-3 col-md-9">
+                  <div class="form-group col-md-8 popover-field">
+                    <label for="" >Account #</label>
+                    <input type="text" class="form-control" maxlength="17" id="exampleInputAmount" placeholder="Account#" formControlName="account">
+                    <div class="msg" *ngIf="blockListForm.controls['account'].invalid && (blockListForm.controls['account'].dirty || blockListForm.controls['account'].touched)">
+                      <div *ngIf="blockListForm.controls['account'].errors.required">
+                        Required.
+                      </div>
+                      <div *ngIf="blockListForm.controls['account'].errors.pattern">
+                        Only numbers are allowed.
+                      </div>
+                    </div>
+                    <button type="button" class="pop-over" [popover]="popAccount" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                    <ng-template #popAccount>
+                      <ul>
+                        <li>Any one combination required</li>
+                        <li>Account # allows only numbers </li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+                </div>
+              </div>
+            </div>
+            <div class="table-bdr">
+              <h3>Name Block</h3>
+              <div class="m-t-10">
+                <div class="row">
+                  <div class="col-sm-12">
+                  <div class="form-group col-sm-6 popover-field">
+                    <label for="">First Name</label>
+                    <input type="text" class="form-control" maxlength="50" id="FirstName" placeholder="First Name" formControlName="firstName">
+                    <div class="msg" *ngIf="blockListForm.controls['firstName'].invalid && (blockListForm.controls['firstName'].dirty || blockListForm.controls['firstName'].touched)">
+                      <div *ngIf="blockListForm.controls['firstName'].errors.required">
+                        Required.
+                      </div>
+                      <div *ngIf="blockListForm.controls['firstName'].errors.pattern">
+                        Only Alphabets and space are allowed.
+                      </div>
+                      <div *ngIf="blockListForm.controls['firstName'].errors.minlength">
+                        Minimum 2 characters are required.
+                      </div>
+                      <div *ngIf="blockListForm.controls['firstName'].errors.maxlength">
+                        Maximum 50 characters are allowed.
+                      </div>
+                    </div>
+                    <button type="button" class="pop-over" [popover]="popfname" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                    <ng-template #popfname>
+                      <ul>
+                        <li>Any One Combination is required.</li>
+                        <li>It allows only alphabets and spaces</li>
+                        <li>It should be minimum 2 characters <br>and maximum 50 characters long.</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                  
+                  <div class="form-group col-sm-6 popover-field">
+                    <label for="" >Middle Name</label>
+                    <input type="text" class="form-control" maxlength="2" id="MiddleName" placeholder="Middle Name" formControlName="middleName">
+                    <div class="msg" *ngIf="blockListForm.controls['middleName'].invalid && (blockListForm.controls['middleName'].dirty || blockListForm.controls['middleName'].touched)">
+                      <div *ngIf="blockListForm.controls['middleName'].errors.pattern">
+                        Only Alphabets are allowed.
+                      </div>
+                      <div *ngIf="blockListForm.controls['middleName'].errors.maxlength">
+                        Maximum 2 characters are allowed.
+                      </div>
+                    </div>
+                    <button type="button" class="pop-over" [popover]="popmname" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                    <ng-template #popmname>
+                      <ul>
+                        <li>It allows only alphabets</li>
+                        <li>Special Characters and spaces <br>are not allowed. It is maximum <br>2 characters long</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                 
+                  <div class="form-group col-sm-6 popover-field">
+                    <label for="">Last Name</label>
+                    <input type="text" class="form-control" maxlength="50" id="LastName" placeholder="Last Name" formControlName="lastName">
+                    <div class="msg" *ngIf="blockListForm.controls['lastName'].invalid && (blockListForm.controls['lastName'].dirty || blockListForm.controls['lastName'].touched)">
+                      <div *ngIf="blockListForm.controls['lastName'].errors.required">
+                        Required.
+                      </div>
+                      <div *ngIf="blockListForm.controls['lastName'].errors.pattern">
+                        Only Alphabets, space and (-) are allowed.
+                      </div>
+                      <div *ngIf="blockListForm.controls['lastName'].errors.minlength">
+                        Minimum 2 characters are required.
+                      </div>
+                      <div *ngIf="blockListForm.controls['lastName'].errors.maxlength">
+                        Maximum 50 characters are allowed.
+                      </div>
+                    </div>
+                    <button type="button" class="pop-over" [popover]="poplname" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                    <ng-template #poplname>
+                      <ul>
+                        <li>It allows only alphabets, spaces and (-).</li>
+                        <li>It should be minimum 2 characters <br>and maximum 50 characters long</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+                </div>
+              </div>
+            </div>
+            <div class="table-bdr">
+              <h3>Address Block</h3>
+              <div class="pad-20" *ngIf='isEditable'>
+                <app-add-address [addressObject]="addressRequest" [customerID]="0" [isEnable]="false"></app-add-address>
+              </div>
+              <div class="pad-20" *ngIf='!(isEditable)'>
+                <app-add-address></app-add-address>
+              </div>
+            </div>
+            <div class="table-bdr">
+              <h3>Email Address Block</h3>
+              <div class="m-t-10 row">
+                  <div class="col-md-9 col-md-offset-3">
+                  <div class="form-group col-md-8 popover-field">
+                    <label for="" >Email Address</label>
+                    <input type="email" class="form-control" maxlength="100" id="EmailAddress" placeholder="Email Address" formControlName="email">
+                    <div class="msg" *ngIf="blockListForm.controls['email'].invalid && (blockListForm.controls['email'].dirty || blockListForm.controls['email'].touched)">
+                      <div *ngIf="blockListForm.controls['email'].errors.required">
+                        Required.
+                      </div>
+                      <div *ngIf="blockListForm.controls['email'].errors.pattern">
+                        Invalid email format.
+                      </div>
+                      <div *ngIf="blockListForm.controls['email'].errors.minlength">
+                        Minimum 6 characters are required.
+                      </div>
+                      <div *ngIf="blockListForm.controls['email'].errors.maxlength">
+                        Maximum 100 characters are allowed.
+                      </div>
+                    </div>
+                    <button type="button" class="pop-over" [popover]="popename" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                    <ng-template #popename>
+                      <ul>
+                        <li>Any One Combination is required.</li>
+                        <li>Email allows alphanumerics with special characters (@, _, ., -, +)</li>
+                        <li>Spaces are not allowed.</li>
+                        <li>It should be minimum 6 characters and maximum 100 characters long.</li>
+                        <li>It should follow the format yourname@domain.com</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                  </div>
+              </div>
+            </div>
+            <div class="table-bdr">
+              <h3>Phone # Block</h3>
+              <div class="row m-t-10">
+                <div class="col-md-9 col-md-offset-3">
+                  <div class="form-group col-md-8 popover-field">
+                  <label for="pdone">Phone #</label>
+                    <input type="text" class="form-control" id="Phone" placeholder="Phone #" formControlName="phone" (keydown)="formatPhone($event)"
+                      maxlength="14">
+                    <div class="msg" *ngIf="blockListForm.controls['phone'].invalid && (blockListForm.controls['phone'].dirty || blockListForm.controls['phone'].touched)">
+                      <div *ngIf="blockListForm.controls['phone'].errors.required">
+                        Required.
+                      </div>
+                      <div *ngIf="blockListForm.controls['phone'].errors.pattern">
+                        Invalid phone format.
+                      </div>
+                      <div *ngIf="blockListForm.controls['phone'].errors.maxlength">
+                        Maximum 14 characters are allowed.
+                      </div>
+                    </div>
+                    <button type="button" class="pop-over" [popover]="poppname" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                    <ng-template #poppname>
+                      <ul>
+                        <li>Any One Combination is required.</li>
+                        <li>Phone# allows only numbers</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="table-bdr">
+              <h3>Plate # Block</h3>
+              <div class="row m-t-10">
+                <div class="col-md-9 col-md-offset-3">
+                  <div class="form-group col-md-8 popover-field">
+                  <label for="plate">Plate #</label>
+                    <input type="text" class="form-control" maxlength="10" id="Plate" placeholder="Plate #" formControlName="plate">
+                    <div class="msg" *ngIf="blockListForm.controls['plate'].invalid && (blockListForm.controls['plate'].dirty || blockListForm.controls['plate'].touched)">
+                      <div *ngIf="blockListForm.controls['plate'].errors.required">
+                        Required.
+                      </div>
+                      <div *ngIf="blockListForm.controls['plate'].errors.pattern">
+                        allows alphanumerics and spaces.
+                      </div>
+                      <div *ngIf="blockListForm.controls['plate'].errors.maxlength">
+                        Maximum 10 characters are allowed.
+                      </div>
+                    </div>
+                    <button type="button" class="pop-over" [popover]="popplname" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                    <ng-template #popplname>
+                      <ul>
+                        <li>Any One Combination is required.</li>
+                        <li>It allows alphanumerics only</li>
+                        <li>It should be minimum 1 characters and maximum 10 characters long.</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="table-bdr">
+              <h3>Credit Card # Block</h3>
+              <div class="row m-t-10">
+                <div class="col-md-9 col-md-offset-3">
+                  <div class="form-group col-md-8 popover-field">
+                  <label for="creditCard">Credit Card #</label>
+                    <input type="text" class="form-control" maxlength="16" id="CreditCard" placeholder="Credit Card #" formControlName="creditCard">
+                    <div class="msg" *ngIf="blockListForm.controls['creditCard'].invalid && (blockListForm.controls['creditCard'].dirty || blockListForm.controls['creditCard'].touched)">
+                      <div *ngIf="blockListForm.controls['creditCard'].errors.required">
+                        Required.
+                      </div>
+                      <div *ngIf="blockListForm.controls['creditCard'].errors.pattern">
+                        allows numbers only.
+                      </div>
+                      <div *ngIf="blockListForm.controls['creditCard'].errors.minlength">
+                        Maximum 16 characters are allowed.
+                      </div>
+                      <div *ngIf="blockListForm.controls['creditCard'].errors.maxlength">
+                        Maximum 16 characters are allowed.
+                      </div>
+                    </div>
+                    <button type="button" class="pop-over" [popover]="popccname" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                    <ng-template #popccname>
+                      <ul>
+                        <ul>
+                          <li>Any One Combination is required.</li>
+                          <li>Only numbers allowed for the Credit Card #</li>
+                          <li>It should contain a minimum of 15 and maximim of 16 numbers .</li>
+                        </ul>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="table-bdr">
+              <h3>Block Reason</h3>
+              <div class="row m-t-10">
+                <div class="col-md-9 col-md-offset-3">
+                  <div class="form-group col-md-8">
+                  <label for="message" class="focused">Reason Description</label>
+                    <textarea name="" id="" cols="30" rows="4" class="form-control" formControlName="description" maxlength="255" (keyup)="descEvent($event)"></textarea>
+                    <div class="msg" *ngIf="blockListForm.controls['description'].invalid && (blockListForm.controls['description'].dirty || blockListForm.controls['description'].touched)">
+                      <div *ngIf="blockListForm.controls['description'].errors.required">
+                        Required.
+                      </div>
+                    </div>
+                    <span class="text-count">Left: {{descLength}} characters </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 text-right">
+                <button class="btn btn-primary btn-search" (click)="addBlockLists()" [disabled]="disableAddButton" *ngIf='IsSubmit' type="button">Submit</button>
+                <button class="btn btn-primary btn-search" *ngIf='IsUpdate' type="button" [disabled]="disableUpdateButton" (click)="updateBlockLists()">Update</button>
+                <button class="btn btn-primary btn-search" *ngIf='IsDeactivate' [disabled]="disableDeleteButton" (click)="deleteBlockLists()"
+                  type="button">Deactivate</button>
+                <button class="btn btn-primary btn-search" *ngIf='IsDeactivate' (click)="reset()" type="button">Cancel</button>
+                <button class="btn btn-primary btn-reset" (click)="reset()" *ngIf='IsReset' type="button">Reset</button>
+                <button class="btn btn-primary btn-reset" (click)="updateReset()" *ngIf='IsUpdate && isUpdateReset' type="button">Reset</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+        (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+    </div>
+  </div>
+</div>

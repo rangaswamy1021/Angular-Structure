@@ -1,0 +1,97 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Customer Service</a></li>
+        <li class="active">Close Account</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Close Account </h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-account-info></app-account-info>
+  <div class="panel border-b-0 boxshadows-none">
+
+    <div class="panel-body border-0">
+      <div class="col-md-12">
+        <p class="text-left m-b-0"> <span class="glyphicon glyphicon-exclamation-sign" style="color:green" aria-hidden="true"></span> TollPlus customer
+          account will be closed based on the fixed period (currently '' {{parameterValue}} '' days) from the date of initializing
+          the request for closure. </p>
+      </div>
+    </div>
+    <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+      (setFlag)="setOutputFlag($event)" (onOk)="closeCustomerAccountOk($event)">
+    </app-success-failure-alerts-message>
+
+    <form role="form" name="closeAccount" [formGroup]="closeAccount">
+ <div class="panel panel-default">
+      <div class="col-md-4">
+       
+          <div class="panel-heading"> Contact Information </div>
+          <div *ngIf="customerStatus">Status of account:{{customerStatus}}</div>
+          <ul class="list-group">
+            <li *ngIf="addressResponse" class="list-group-item"> Address :
+              <div *ngIf="addressResponse.Line1">{{addressResponse.Line1}},</div>
+              <div *ngIf="addressResponse.Line2">{{addressResponse.Line2}},</div>
+              <div *ngIf="addressResponse.Line3">{{addressResponse.Line3}},</div>
+              <div> {{addressResponse.City}},{{addressResponse.State}},{{addressResponse.Country}},{{addressResponse.Zip1}}</div>
+            </li>
+            <li *ngIf="phoneResponse" class="list-group-item"> Day Phone: {{phoneResponse.PhoneNumber}}</li>
+            <li *ngIf="emailResponse" class="list-group-item"> Primary Email: {{emailResponse.EmailAddress}} </li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="panel panel-default">
+          <div class="panel-heading"> Account Closure Date: </div>
+          <div class="panel-body bordered">
+          <div class="row">
+            <div class="form-group col-md-12">
+              <label class="focused">Account Closure Date: </label>
+              <my-date-picker name="mydate" (inputFieldChanged)="onDateRangeFieldChanged($event)" [options]="myDatePickerOptions" formControlName="accountClosureDate"
+                placeholder="MM/DD/YYYY"></my-date-picker>
+              <div class="show-error" [hidden]="!invalidDate">
+                <div> Invalid Date</div>
+              </div>
+            </div>
+            </div>
+         
+        </div>
+      </div>
+       </div>
+      <div class="col-md-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">Reason for closing the Account: </div>
+          <div class="panel-body bordered">
+            <div class="form-group col-md-12">
+              <label class="focused"> <span style="color:red">*</span>Reason for closing the Account: </label>
+              <textarea class="form-control" id="reason" name="reason" formControlName="reason" maxlength="255" (keyup)="descEvent($event)"> </textarea>
+              <span #desc class="text-count">Left: {{descLength}} characters </span>
+              <!--<div class="msg" *ngIf="closeAccount.controls['reasons'].invalid && (closeAccount.controls['reason'].dirty || closeAccount.controls['reason'].touched)">
+                <div *ngIf="closeAccount.controls['reason'].errors.required">
+                  Reason Required.
+                </div>
+              </div>-->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div>
+            <button type="submit" (click)="closeCustomerAccount()" class="btn btn-primary btn-search" [disabled]="isClosed">Close Account</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

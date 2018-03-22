@@ -1,0 +1,46 @@
+import { IAddressRequest } from "./addressrequest";
+import { IEmailRequest } from "./emailrequest";
+import { IPhoneRequest } from "./phonerequest";
+import { IKYCDocumentRequest } from "../../csc/customerdetails/models/kycdocumentsrequest";
+
+export interface ICustomerRequest {
+    AccountId: number;
+    ContactId: number;
+    AccountStatus: string;
+    RevenueCategory: string;
+    UserType: string;
+    CustomerStatus: string;
+    SourceOfEntry: string;
+    FirstName: string;
+    MiddleName: string;
+    LastName: string;
+    Gender: string;
+    Title: string;
+    Suffix: string;
+    NameType: string;
+    InitiatedBy: string;
+    UserName: string;
+    Password: string;
+    RetypePassword: string;
+    AddressList: IAddressRequest[];
+    PhoneList: IPhoneRequest[];
+    EmailList: IEmailRequest[];
+    Email: IEmailRequest;
+    OrganizationName: string;
+    SubSystem: string;
+    ActivitySource: string;
+    boolActivityRequired: boolean;
+    convertToCustomer: boolean;
+    UserId: number;
+    LoginId: number;
+    User: string;
+    CheckBlockList: boolean;
+    KYCStatus: string;
+    KYCRequired: boolean;
+    AddKYCDocument: IKYCDocumentRequest[];
+    DOB: Date;
+    IsPrimary: boolean;
+    Alerts: boolean;
+    ParentId:number;
+    LoginStatus:string;
+    }

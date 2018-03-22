@@ -1,0 +1,233 @@
+<div class="page-title-header wow fadeInDown">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">COURT</a>
+        </li>
+        <li class="active">Precourt Tracking</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Precourt Tracking</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+  <div class="table-bdr">
+    <h3>Precourt Tracking</h3>
+
+    <div class="pad-10">
+      <form role="form" name="preCourtSearchForm" [formGroup]="preCourtSearchForm" novalidate>
+        <div class="row">
+          <div class="col-md-6 form-group">
+            <label for="Account No.">Account #</label>
+            <input type="text" pattern="[0-9]*" id="AccountId" name="AccountId" formControlName="AccountId" class="form-control" placeholder="Account #">
+            <div class="msg" *ngIf="preCourtSearchForm.controls['AccountId'].invalid && (preCourtSearchForm.controls['AccountId'].dirty || preCourtSearchForm.controls['AccountId'].touched)">
+              <div *ngIf="preCourtSearchForm.controls['AccountId'].errors.pattern">
+                Only numbers allowed.
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 form-group">
+            <label for="" class="focused">Select Group</label>
+            <select class="form-control" formControlName="groupStatusSelected" name="groupStatusSelected">
+              <option value="" selected="selected">--SELECT--</option>
+              <option *ngFor="let groupStatus of groupStatuses" value="{{groupStatus.Value}}"> {{groupStatus.Value}}</option>
+            </select>
+          </div>
+
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-default btn-search" (click)="searchPreCourtCustomers()">Search</button>
+            <button type="submit" (click)="resetclick()" class="btn btn-default btn-reset">Reset</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      Precourt Customers Details
+    </div>
+    <div class="panel-body bordered">
+      <div class="table-responsive" *ngIf='preCourtSelectionResponse && preCourtSelectionResponse.length > 0;else noData'>
+        <table class="table">
+          <thead class="nowrap">
+            <tr>
+              <th> Account# </th>
+              <th> Name </th>
+              <th> No.of Notices </th>
+              <th> Outstanding Amount </th>
+              <th> Aging Days </th>
+              <th> Customer Response </th>
+              <th> Last Chance Letter </th>
+              <th> Group Status </th>
+              <th> Last Contact Date </th>
+              <th> View </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let resp of preCourtSelectionResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p , totalItems:totalRecordCount,id:'first' }">
+              <td> {{resp.CustomerId}} </td>
+              <td class="nowrap"> {{resp.FullName}} </td>
+              <td> {{resp.NumberofNotices}} </td>
+              <td> {{resp.OutstandingTotalAmount | currencycustom}} </td>
+              <td> {{resp.PreCourtAgingDays}} </td>
+              <td>
+                <a (click)="getPopUp(resp.CustomerId,resp.CollectionCustId)" data-toggle="modal" data-target="#responseModel" *ngIf="resp.Response==''">
+                N/A</a>
+                <a (click)="getPopUp(resp.CustomerId,resp.CollectionCustId)" data-toggle="modal" data-target="#responseModel" *ngIf="resp.Response!=''">{{resp.Response}}</a>
+              </td>
+              <td>
+                <span *ngIf=" resp.LastChanceLetter ">Yes</span>
+                <span *ngIf="!resp.LastChanceLetter ">No</span>
+              </td>
+              <td> {{resp.GroupNo}} </td>
+              <td>
+                {{resp.LastContactDate =='0001-01-01T00:00:00' ? '-' : resp.LastContactDate | customDateTimeFormat}}
+              </td>
+              <!--{{resp.LastContactDate| customDateFormat }}-->
+              <td>
+                <a class="fa fa-file-text-o " title="View History " (click)="goToView(resp.CollectionCustId,false) "></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-template #noData>
+        <div>No details to display</div>
+      </ng-template>
+    </div>
+    <div *ngIf="totalRecordCount>= 11">
+      <div class="row page-info" *ngIf="(preCourtSelectionResponse && preCourtSelectionResponse.length > 0)">
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)" id="first"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="responseBlock">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Customer Response History
+      </div>
+      <div class="panel-body bordered">
+        <div class="table-responsive" *ngIf='viewResponse && viewResponse.length > 0;else noDetails'>
+          <table class="table">
+            <thead>
+              <tr>
+                <th> Account# </th>
+                <th> Customer Response </th>
+                <th> Last Contact Date </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let view of viewResponse | paginate: { itemsPerPage: pageItemNumberResponse, currentPage: pResp , totalItems:totalRecordCountOfResponse,id:'second'}">
+                <td> {{view.CustomerId}} </td>
+                <td> {{view.Response}} </td>
+                <td> {{view.ContactDate| customDateTimeFormat}} </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #noDetails>
+          <div>No details to display</div>
+        </ng-template>
+      </div>
+      <div *ngIf="totalRecordCountOfResponse >= 11">
+        <div class="row page-info" *ngIf="(viewResponse && viewResponse.length > 0)">
+          <div class="col-md-6 text-left">
+            <p>Display {{startItemNumberResponse}} - {{endItemNumberResponse}} Records of {{totalRecordCountOfResponse}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls (pageChange)="pageChangedOfResponse($event)" id="second"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="responseModel" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Customer Response
+          </div>
+          <div class="panel-body bordered">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="col-md-2">
+                  <label>Account #</label>
+                </div>
+                <div class="col-md-6">
+                  {{customerId}}
+                </div>
+              </div>
+              <div class="col-md-12">
+                <label class="col-md-2">Response</label>
+                <div class="col-md-6">
+                  <div class="display-inline">
+                    <div *ngFor="let response of response" class="custom-control custom-radio radio-inline">
+                      <input type="radio" (change)="responseChanged()" [(ngModel)]="defaultResponse" class="custom-control-input" [value]="response.id"
+                        [id]="response.id">
+                      <label [for]="response.id" class="custom-control-description">{{response.Value}}</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-md-offset-2" *ngIf="isProceedToPay">
+                <form [formGroup]="dateForm" name="dateForm">
+                  <div class="col-md-6 popover-field">
+                    Days
+                    <select class="form-control" name="days" formControlName="days" (change)="daysChanged()">
+                      <option value="15">15</option>
+                      <option value="30">30</option>
+                    </select>
+                    <button type="button" class="pop-over" [popover]="popDesc" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                      placement="left">?</button>
+                    <ng-template #popDesc>
+                      <ul>
+                        <li>Select Promise Days</li>
+                        <li>Promise Days is required</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                  <div class="col-md-6">
+                    <my-date-picker name="date" formControlName="date" placeholder="MM/DD/YYYY" [options]="myDatePickerOptions" (inputFieldChanged)='onDateRangeFieldChanged($event)'></my-date-picker>
+                    <div class="msg red" *ngIf="!invalidDate && dateForm.controls['date'].invalid && (dateForm.controls['date'].dirty || dateForm.controls['date'].touched)">
+                      <div *ngIf="dateForm.controls['date'].errors.required">
+                        Required
+                      </div>
+                    </div>
+                    <div class="msg red" *ngIf="invalidDate">
+                      <div>Invalid Date</div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="text-right">
+          <button type="button" class="btn btn-default btn-search" (click)="responseSubmit()">Submit</button>
+          <button type="button" class="btn btn-default btn-reset" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

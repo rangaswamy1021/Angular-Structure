@@ -1,0 +1,63 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">IMC</a></li>
+        <li class="active">Manage Items</li>
+        <li class="active"> Tag History</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Tag History</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12 text-right">
+    <div class="form-group">
+      <button class="btn btn-default btn-search btn-small" (click)="backClick()">
+       Back </button>
+      <div class="clear"> </div>
+    </div>
+  </div>
+</div>
+<div class="panel panel-default" *ngIf="tagDetails">
+  <div>
+    <div class="panel-heading">
+      Tag Details
+    </div>
+  </div>
+
+  <div class="panel-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th> Hex Tag #</th>
+          <th> Item Status</th>
+          <th> Status Date </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let tagHistory of responseTagHistory | paginate: { itemsPerPage: pageItemNumber, currentPage: currentPage, totalItems:totalRecordCount }">
+          <td>{{tagHistory.HexTagNumber}}</td>
+          <td>{{tagHistory.TagStatus}}</td>
+          <td>{{tagHistory.StatusDate| customDateFormat}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="row page-info" *ngIf='responseTagHistory && responseTagHistory.length'>
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+  </div>
+</div>

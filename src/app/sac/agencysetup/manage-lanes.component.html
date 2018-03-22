@@ -1,0 +1,329 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">SAC</a></li>
+        <li><a href="#">Agency Setup</a></li>
+        <li class="active">Manage Lanes</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Lanes</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <form role="form" name="lanesSearchForm" [formGroup]="lanesSearchForm" novalidate>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-bdr">
+          <div class="pad-20">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group col-md-12 popover-field">
+                  <label class="focused">Location</label>
+                  <select name="locationSelected" id="locationSelected" class="form-control" formControlName="locationSelected" (change)='locationChanged()'>
+                        <option selected="selected" value="">Select</option>
+                        <option *ngFor="let location of locations" value="{{location.LocationCode}}">{{location.LocationName}}</option>
+                      </select>
+                  <div class="msg" *ngIf="lanesSearchForm.controls['locationSelected'].invalid && (lanesSearchForm.controls['locationSelected'].dirty || lanesSearchForm.controls['locationSelected'].touched)">
+                    <div *ngIf="lanesSearchForm.controls['locationSelected'].errors.required">
+                      Required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group col-md-12 popover-field">
+                  <label class="focused">Plaza</label>
+                  <select name="plazaSelected" id="plazaSelected" class="form-control" formControlName="plazaSelected">
+                        <option selected="selected" value="">Select</option>
+                        <option *ngFor="let plaza of plazas" value="{{plaza.PlazaCode}}">{{plaza.PlazaName}}</option>
+                    </select>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <div class="col-sm-12">
+                    <button type="submit" class="btn btn-primary btn-search btn-small" [disabled]="disableSearchButton" (click)="searchLanes()">Search</button>
+                    <button type="submit" class="btn btn-primary btn-reset btn-small" (click)="searchReset()">Reset</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="row m-b-10">
+    <div class="col-md-12" *ngIf='!isVisibleAddLane'>
+      <a (click)='showAddNewLane()' [ngClass]="{'disabletextbox': disableCreateButton}"><img src="assets/images/svg/add-file2.svg" class="icon-svg3" alt="">Add New Lane</a>
+    </div>
+    <div class="col-md-12" [hidden]='!isVisibleAddLane'>
+      <form role="form" name="lanesAddBlockForm" [formGroup]="lanesAddBlockForm" novalidate>
+        <div class="table-bdr">
+          <h3>Lane Details</h3>
+          <div class="pad-20">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group col-md-12 popover-field">
+                  <label for="" class="focused">Location Name</label>
+                  <select name="aLocationSelected" id="aLocationSelected" class="form-control" formControlName="aLocationSelected" (change)="locationChangedAddBlock()">
+                        <option selected="selected" value="">Select</option>
+                        <option *ngFor="let location of locations" value="{{location.LocationCode}}">{{location.LocationName}}</option>
+                      </select>
+                  <div class="msg" *ngIf="lanesAddBlockForm.controls['aLocationSelected'].invalid && (lanesAddBlockForm.controls['aLocationSelected'].dirty || lanesAddBlockForm.controls['aLocationSelected'].touched)">
+                    <div *ngIf="lanesAddBlockForm.controls['aLocationSelected'].errors.required">
+                      Required.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popLocation" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popLocation>
+                    <ul>
+                      <li>Location Name is required.</li>
+                      <li>Select Location Name</li>
+                    </ul>
+                  </ng-template>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group col-md-12 popover-field">
+                  <label class="focused">Plaza Name</label>
+                  <select name="aPlazaSelected" id="aPlazaSelected" class="form-control" formControlName="aPlazaSelected">
+                        <option selected="selected" value="">Select</option>
+                        <option *ngFor="let aPlaza of plazasAddBlock" value="{{aPlaza.PlazaCode}}">{{aPlaza.PlazaName}}</option>
+                      </select>
+                  <div class="msg" *ngIf="lanesAddBlockForm.controls['aPlazaSelected'].invalid && (lanesAddBlockForm.controls['aPlazaSelected'].dirty || lanesAddBlockForm.controls['aPlazaSelected'].touched)">
+                    <div *ngIf="lanesAddBlockForm.controls['aPlazaSelected'].errors.required">
+                      Required.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popPlaza" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popPlaza>
+                    <ul>
+                      <li>Plaza Name is required.</li>
+                      <li>Select Plaza Name</li>
+                    </ul>
+                  </ng-template>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group col-md-12 popover-field">
+                  <label>Lane Code</label>
+                  <input type="text" class="form-control" placeholder="*Lane Code" id="laneCode" name="laneCode" formControlName="laneCode"
+                    maxlength="10">
+                  <div class="msg" *ngIf="lanesAddBlockForm.controls['laneCode'].invalid && (lanesAddBlockForm.controls['laneCode'].dirty || lanesAddBlockForm.controls['laneCode'].touched)">
+                    <div *ngIf="lanesAddBlockForm.controls['laneCode'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="lanesAddBlockForm.controls['laneCode'].errors.pattern">
+                      Only alphabets and numerics are allowed.
+                    </div>
+                    <div *ngIf="lanesAddBlockForm.controls['laneCode'].errors.maxlength">
+                      Maximum 10 characters are allowed.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popLaneCode" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popLaneCode>
+                    <ul>
+                      <li>Lane Code is required.</li>
+                      <li>It allows only alphabets and numbers</li>
+                      <li>Special characters and spaces are not allowed</li>
+                      <li>Lane Code should be minimum of 1 and maximum of 10 characters in length</li>
+                    </ul>
+                  </ng-template>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group col-md-12 popover-field">
+                  <label>Lane Name</label>
+                  <input type="text" class="form-control" placeholder="*Lane Name" id="laneName" name="laneName" formControlName="laneName"
+                    maxlength="50">
+                  <div class="msg" *ngIf="lanesAddBlockForm.controls['laneName'].invalid && (lanesAddBlockForm.controls['laneName'].dirty || lanesAddBlockForm.controls['laneName'].touched)">
+                    <div *ngIf="lanesAddBlockForm.controls['laneName'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="lanesAddBlockForm.controls['laneName'].errors.pattern">
+                      Only alphabets, numerics and spaces are allowed.
+                    </div>
+                    <div *ngIf="lanesAddBlockForm.controls['laneName'].errors.maxlength">
+                      Maximum 50 characters are allowed.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popLanename" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popLanename>
+                    <ul>
+                      <li>Lane Name is required.</li>
+                      <li>It allows only alphabets, numbers and spaces</li>
+                      <li>Special characters are not allowed</li>
+                      <li>Lane Name should be minimum of 1 and maximum of 50 characters in length</li>
+                    </ul>
+                  </ng-template>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group col-md-12 popover-field">
+                  <label class="focused">Lane Type</label>
+                  <select name="laneTypeSelected" id="laneTypeSelected" class="form-control" formControlName="laneTypeSelected">
+                        <option value="">Select</option>
+                        <option *ngFor="let laneType of laneTypes" value="{{laneType.LookUpTypeCode}}">{{laneType.LookUpTypeCodeDesc}}</option>
+                      </select>
+                  <div class="msg" *ngIf="lanesAddBlockForm.controls['laneTypeSelected'].invalid && (lanesAddBlockForm.controls['laneTypeSelected'].dirty || lanesAddBlockForm.controls['laneTypeSelected'].touched)">
+                    <div *ngIf="lanesAddBlockForm.controls['laneTypeSelected'].errors.required">
+                      Required.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popLaneType" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popLaneType>
+                    <ul>
+                      <li>Lane Type is required.</li>
+                      <li>Select Lane Type</li>
+                    </ul>
+                  </ng-template>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group col-md-12 popover-field">
+                  <label class="focused">Lane Direction</label>
+                  <select name="laneDirectionSelected" id="laneDirectionSelected" class="form-control" formControlName="laneDirectionSelected">
+                        <option value="">Select</option>
+                        <option *ngFor="let laneDirection of laneDirections" value="{{laneDirection.LookUpTypeCode|uppercase}}">{{laneDirection.LookUpTypeCodeDesc}}</option>
+                      </select>
+                  <div class="msg" *ngIf="lanesAddBlockForm.controls['laneDirectionSelected'].invalid && (lanesAddBlockForm.controls['laneDirectionSelected'].dirty || lanesAddBlockForm.controls['laneDirectionSelected'].touched)">
+                    <div *ngIf="lanesAddBlockForm.controls['laneDirectionSelected'].errors.required">
+                      Required.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popLaneDirection" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                    placement="left">?</button>
+                  <ng-template #popLaneDirection>
+                    <ul>
+                      <li>Lane Direction is required.</li>
+                      <li>Select Lane Direction</li>
+                    </ul>
+                  </ng-template>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="">
+                <div class="form-group col-md-12 popover-field">
+                  <label class="focused">Description</label>
+                  <textarea name="laneDescription" id="laneDescription" cols="" rows="3" class="form-control" formControlName="laneDescription"
+                    (keyup)="calculateLength($event)" [maxlength]="descriptionMaxLength"></textarea>
+                  <div class="msg" *ngIf="lanesAddBlockForm.controls['laneDescription'].invalid && (lanesAddBlockForm.controls['laneDescription'].dirty || lanesAddBlockForm.controls['laneDescription'].touched)">
+                    <div *ngIf="lanesAddBlockForm.controls['laneDescription'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="lanesAddBlockForm.controls['laneDescription'].errors.pattern">
+                      Only alphabets, numerics and spaces are allowed.
+                    </div>
+                    <div *ngIf="lanesAddBlockForm.controls['laneDescription'].errors.maxlength">
+                      Maximum {{descriptionLength}} characters are allowed.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popLaneDescription" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                    placement="left">?</button>
+                  <ng-template #popLaneDescription>
+                    <ul>
+                      <li>Description is required.</li>
+                      <li>It allows only alphabets, numbers and spaces</li>
+                      <li>Description should be minimum of 1 and maximum of {{descriptionMaxLength}} characters in length</li>
+                    </ul>
+                  </ng-template>
+                  </div>
+                  <small class="pull-right" style="padding-right:30px"> Left: {{descriptionLength}} Characters</small>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group col-md-12 popover-field">
+                  <label class="focused">Lane Status</label>
+                  <select name="laneStatusSelected" id="laneStatusSelected" class="form-control" formControlName="laneStatusSelected">
+                        <option value="">Select</option>
+                        <option value="Active">Active</option>
+                        <option value="InActive">InActive</option>
+                      </select>
+                  <div class="msg" *ngIf="lanesAddBlockForm.controls['laneStatusSelected'].invalid && (lanesAddBlockForm.controls['laneStatusSelected'].dirty || lanesAddBlockForm.controls['laneStatusSelected'].touched)">
+                    <div *ngIf="lanesAddBlockForm.controls['laneStatusSelected'].errors.required">
+                      Required.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popLaneStatus" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popLaneStatus>
+                    <ul>
+                      <li>Lane Status is required.</li>
+                      <li>Select Lane Status</li>
+                    </ul>
+                  </ng-template>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-9">
+                  <button type="submit" class="btn btn-primary btn-search" (click)="addLane()" [disabled]="addButtonText=='Add'? disableCreateButton: disableUpdateButton">{{addButtonText}}</button>
+                  <button type="submit" class="btn btn-primary btn-reset" (click)="resetAddBlock()">Reset</button>
+                  <button type="submit" class="btn btn-primary btn-reset" (click)='isVisibleAddLane=!isVisibleAddLane'>Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <h3>Lane Details</h3>
+        <div class="pad-10">
+          <div class="table-responsive">
+            <table class="table bordered">
+              <thead *ngIf='lanesResponseArray && lanesResponseArray.length > 0'>
+                <tr>
+                  <th>Lane Code</th>
+                  <th>Lane Name</th>
+                  <th>Lane Type</th>
+                  <th>Lane Description</th>
+                  <th>Direction</th>
+                  <th>Lane Status</th>
+                  <th>Plaza Name</th>
+                  <th>Location Name</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor='let lanesResponse of lanesResponseArray | paginate: { itemsPerPage: pageItemNumber, currentPage: pageNumber, totalItems: totalRecordCount }'>
+                  <td>{{lanesResponse.LaneCode}}</td>
+                  <td>{{lanesResponse.LaneName}}</td>
+                  <td>{{lanesResponse.LaneType}}</td>
+                  <td>{{lanesResponse.Description}}</td>
+                  <td>{{lanesResponse.Direction}}</td>
+                  <td>{{lanesResponse.LaneStatus}}</td>
+                  <td>{{lanesResponse.PlazaName}}</td>
+                  <td>{{lanesResponse.LocationName}}</td>
+                  <td><img src="assets/images/svg/edit.svg" class="icon-svg3" alt="" *ngIf="isVisibleEditLink" (click)="bindLaneDetails(lanesResponse.LaneId)"
+                      [ngClass]="{'disabletextbox': disableUpdateButton}"></td>
+                </tr>
+                <tr *ngIf='!lanesResponseArray || lanesResponseArray.length==0'>
+                  <td colspan="9">No Lane Details to display</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="page-info" *ngIf='lanesResponseArray && lanesResponseArray.length > 0'>
+              <div class="col-md-6 text-left">
+                <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+              </div>
+              <div class="col-md-6 text-right">
+                <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

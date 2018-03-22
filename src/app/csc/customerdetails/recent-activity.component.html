@@ -1,0 +1,215 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li class="active">Recent Activity</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Recent Activity</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-account-info></app-account-info>
+  <div class="row m-b-10">
+    <div class="col-md-12">
+      <p class="text-right m-b-0">
+        <span class="glyphicon glyphicon-exclamation-sign" style="color:#448ccb" aria-hidden="true"></span> Enter input in
+        any of the fields below.</p>
+    </div>
+  </div>
+  <form role="form" name="createForm" [formGroup]="createForm">
+    <div class="panel panel-default" *ngIf="showRecentActivityBlock">
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-6 form-group">
+            <label class="focused">Time Period</label>
+            <!--<div *ngIf="!invalidDate && createForm.controls['bsRangeValue'].invalid && (createForm.controls['bsRangeValue'].touched)" class="show-error">
+                <div  *ngIf="createForm.controls['bsRangeValue'].errors.required" >
+                    Required.
+                </div>
+              </div>-->
+            <!--<div  *ngIf=invalidDate   class="show-error" style="color:red; " >
+                    Invalid Date Range
+                </div>-->
+            <div class="show-error" *ngIf="invalidDate">
+              <div> Invalid Date Range</div>
+            </div>
+            <my-date-range-picker name="mydaterange" [options]="myDateRangePickerOptions" formControlName="bsRangeValue" placeholder="MM/DD/YYYY-MM/DD/YYYY"
+              (inputFieldChanged)='onDateRangeFieldChanged($event)'></my-date-range-picker>
+            <!--<input class="form-control" placeholder="Daterangepicker" bsDaterangepicker #dpr="bsDaterangepicker" name="bsRangeValue"
+                formControlName="bsRangeValue" [(ngModel)]="bsRangeValue">-->
+          </div>
+          <div class="col-md-6 form-group">
+            <label for="Activity Type" class="focused">Activity Type</label>
+            <select class="form-control" [(ngModel)]="selectedValue" id="ActivityType" name="ActivityType" formControlName="ActivityType">
+                <option selected="selected" value="ALL">ALL</option>
+                <option *ngFor="let ActivityType of getActivityTypeResponse" value="{{ActivityType.LookUpTypeCode}}">{{ActivityType.LookUpTypeCodeDesc}}</option>
+              </select>
+          </div>
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-primary btn-search" [disabled]="disableButton" (click)='onSubmit()'>Search</button>
+            <button type="submit" (click)="resetClick()" class="btn btn-primary btn-reset">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="table-bdr">
+    <h3>Manage Activities</h3>
+    <div class="pad-10">
+      <form name="manageForm" [formGroup]="manageForm">
+        <a id="aManage" type="submit" *ngIf="showRecentActivityBlock" (click)="hideRecentActivityPanel('1')">Manage Activity</a>
+        <div *ngIf="!showRecentActivityBlock">
+
+          <!--<label class="radio-inline">
+  <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"> 1
+</label>
+<label class="radio-inline">
+  <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2"> 2
+</label>
+<label class="radio-inline">
+  <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> 3
+</label>-->
+          <div class="row">
+            <div class="col-md-12 nowrap">
+              <div class="custom-control custom-radio radio-inline col-md-2">
+                <input id="radio1" class="custom-control-input" type="radio" name="activity" checked="checked" (click)="setradio(1)">
+                <label for="radio1" class="custom-control-description">  Predefined Activities </label>
+              </div>
+              <div class="custom-control custom-radio radio-inline col-md-2">
+                <input id="radio2" class="custom-control-input" type="radio" name="activity" (click)="setradio(2)">
+                <label for="radio2" class="custom-control-description"> Custom Activities </label>
+              </div>
+              <div class="custom-control custom-radio radio-inline col-md-2">
+                <input id="radio3" class="custom-control-input" type="radio" name="activity" (click)="setradio(3)">
+                <label for="radio3" class="custom-control-description"> Special Activities </label>
+              </div>
+            </div>
+            <div class="col-md-6 form-group">
+                <div class="activity-details" [ngSwitch]="activity">
+                  <div *ngSwitchCase=1>
+                    <label for="preActivity Type" class="focused">Activity Text</label>
+                    <select class="form-control" id="preActivity" [(ngModel)]="preSelectedValue" name="preActivity" formControlName="preActivity"
+                      required>
+                      <option selected="selected" value="">--select--</option>
+                      <option *ngFor="let preActivity of getPredefinedActivityResponse" value="{{preActivity.Type}}">{{preActivity.Type}} - {{preActivity.Activity}}</option>
+                    </select>
+                    <div class="msg" *ngIf="manageForm.controls['preActivity'].invalid && (manageForm.controls['preActivity'].dirty || manageForm.controls['preActivity'].touched)">
+                      <div *ngIf="manageForm.controls['preActivity'].hasError('required')">required</div>
+                    </div>
+                  </div>
+                  <div *ngSwitchCase=2>
+                    <label for="preActivity Type" class="focused">Activity Text</label>
+                    <textarea class="form-control" rows="3" formControlName="customtvalue" (keyup)="descEvent($event)" maxlength="225"> </textarea>
+                    <div class="msg" *ngIf="manageForm.controls['customtvalue'].invalid && (manageForm.controls['customtvalue'].dirty || manageForm.controls['customtvalue'].touched)">
+                      <div *ngIf="manageForm.controls['customtvalue'].hasError('required')">required</div>
+                    </div>
+                    <span class="text-count">Left: {{descLength}} characters</span>
+                  </div>
+                  <div *ngSwitchCase=3>
+                    <label for="preActivity Type" class="focused">Activity Text</label>
+                    <textarea class="form-control" rows="3" formControlName="specialvalue" (keyup)="descEvent($event)" maxlength="225"> </textarea>
+                    <div class="msg" *ngIf="manageForm.controls['specialvalue'].invalid && (manageForm.controls['specialvalue'].dirty || manageForm.controls['specialvalue'].touched)">
+                      <div *ngIf="manageForm.controls['specialvalue'].hasError('required')">required</div>
+                    </div>
+                    <span class="text-count">Left: {{descLength}} characters</span>
+
+                  </div>
+                  <div *ngSwitchDefault>
+                  </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+              <button type="submit" class="btn btn-primary btn-search" (click)='createActivities()'>Submit</button>
+              <button type="submit" class="btn btn-primary btn-reset" (click)="resetClick()">Reset</button>
+              <button type="submit" class="btn btn-primary btn-reset" (click)="hideRecentActivityPanel('0')">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  </div>
+
+  <div *ngIf="showRecentActivityBlock">
+    <div class="table-bdr">
+      <h3>Activity Search Results</h3>
+      <div class="pad-10">
+        <div class="row">
+          <div class="col-md-12 text-right form-group">
+              <div *ngIf='getCustomerActivityResponse && getCustomerActivityResponse.length'>
+                <button type="submit" class="btn btn-primary btn-xs btn-showall" (click)='showAllActivities()'>
+                  <i class="fa fa-eye fa-fw" aria-hidden="true"></i> Show All</button>
+                <button type="submit" class="btn btn-primary btn-xs btn-Reset" (click)='showAllResetClick()'>
+                  <i class="fa fa-refresh fa-fw" aria-hidden="true"></i>
+                  Reset</button>
+                <button class="btn btn-primary btn-xs btn-PDF" (click)='generateActivityPDF()'>
+                  <i class="fa fa-file-pdf-o fa-fw" aria-hidden="true"></i>
+                  View PDF</button>
+              </div>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-sm" *ngIf='getCustomerActivityResponse && getCustomerActivityResponse.length'>
+            <thead>
+              <tr>
+                <th (click)="sortDirection('ACTIVITYDATE')" class="sorting-handle">Date/Time
+                  <span *ngIf="gridArrowACTIVITYDATE">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+                <th (click)="sortDirection('CREATEDUSER')" class="sorting-handle">Created User
+                  <span *ngIf="gridArrowCREATEDUSER">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+                <th>Performed By</th>
+                <th (click)="sortDirection('ACTIVITYTYPE')" class="sorting-handle">Activity Type
+                  <span *ngIf="gridArrowACTIVITYTYPE">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+                <th (click)="sortDirection('ACTIVITYTEXT')" class="sorting-handle">Description
+                  <span *ngIf="gridArrowACTIVITYTEXT">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let custActivity of getCustomerActivityResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p , totalItems:totalRecordCount }' [ngClass]="(custActivity.Type=='SPECIALALERT')?'hightrow':''">
+                <td>{{custActivity.ActivityDate | customDateTimeFormat}} </td>
+                <td>{{custActivity.User}}</td>
+                <td>{{custActivity.PerformedBy}}</td>
+                <td>{{custActivity.Type}}</td>
+                <td>{{custActivity.Activity}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div *ngIf='!getCustomerActivityResponse || getCustomerActivityResponse.length===0'>
+          >No records to display
+        </div>
+
+        <div class="row page-info" *ngIf='getCustomerActivityResponse && getCustomerActivityResponse.length>0 && !isShowAll'>
+          <div class="col-md-6 text-left">
+            <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+</div>

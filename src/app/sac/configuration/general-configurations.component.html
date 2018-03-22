@@ -1,0 +1,150 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">SAC</a></li>
+        <li><a href="#">Configuration</a></li>
+        <li class="active">General Configuration</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>General Configuration</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <!--<div class="col-md-12">
+      <div class="col-md-6"><input type="search" class="form-control" placeholder="Search Settings"></div>
+    </div>-->
+    <div class="col-md-12 m-t-20">
+      <div class="row">
+        <div class="col-md-12">
+          <accordion class="col-2-accordian">
+            <accordion-group #group [isOpen]="row_no==0?status.isFirstOpen:false" *ngFor="let confResponse of objConfigResponse; let row_no=index"
+              class="col-md-12">
+              <div accordion-heading>
+                {{confResponse.ConfigurationType}}({{confResponse.ConfigCount}})
+              </div>
+              <div *ngIf="confResponse.ConfigurationDetails && confResponse.ConfigurationDetails.length>0">
+                <ul>
+                  <li *ngFor="let confDetails of confResponse.ConfigurationDetails;">
+                    <a (click)="getApplicationParameters(confResponse.ConfigurationType,confDetails);">{{confDetails.ParameterName}}</a>
+                  </li>
+                </ul>
+              </div>
+              <div *ngIf="!confResponse.ConfigurationDetails || confResponse.ConfigurationDetails.length==0">
+                <p>No records to display</p>
+              </div>
+            </accordion-group>
+          </accordion>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="update-conf" class="modal fade refund-request-modal" role="dialog" aria-labelledby="myModalLabel">
+    <div class="edit-modal modal-dialog modal-lg">
+      <div class="modal-content">
+        <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+          (setFlag)="setOutputFlag($event)">
+        </app-success-failure-alerts-message>
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">{{configType}}</h4>
+        </div>
+        <div class="modal-body">
+          <div class="table-bdr">
+            <h3>{{paramName}} </h3>
+            <div class="pad-10">
+              <form role="form" name="closeAccount" [formGroup]="generalConfigurations">
+                <div class="row">
+                  <div class="form-group col-md-6">
+                    <label for="exampleInputName2" id="focused">Name:</label>
+
+                    <label for="" class="">{{paramName}} </label>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="exampleInputName2" id="focused">Description:</label>
+
+                    <span for="" class="">{{description}} </span>
+                  </div>
+                </div>
+                <div class="row m-t-20">
+                  <div class="form-group col-md-6">
+                    <label id="focused">Start Effective Date:</label>
+
+                    <!--<owl-date-time [(ngModel)]="startDate"  [min]="minDate" [max]="maxDate" [dateFormat]='"MM/DD/YYYY"' [type]='"calendar"'  class="form-control" formControlName="stDate"></owl-date-time>-->
+                    <!--<input type="text" #dp="bsDatepicker" bsDatepicker class="form-control" [minDate]="minDate" [maxDate]="maxDate" name="stDate"
+                        formControlName="stDate">-->
+                    <my-date-picker name="mydate" [options]="myDatePickerOptions" formControlName="stDate" placeholder="MM/DD/YYYY" (inputFieldChanged)='onDateFieldChanged($event)'></my-date-picker>
+                    <div class="show-error" *ngIf="!invalidDate && (generalConfigurations.controls['stDate'].invalid && (generalConfigurations.controls['stDate'].dirty || generalConfigurations.controls['stDate'].touched))">
+                      <div *ngIf='generalConfigurations.controls["stDate"].errors'>
+                        Required
+                      </div>
+                    </div>
+                    <div class="show-error" *ngIf='invalidDate'>
+                      <div>
+                        Invalid Date Range
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="exampleInputName2" id="focused">{{measurementDescription}}</label>
+                    <div *ngIf="isParam">
+
+                      <input type="text" class="form-control" formControlName="paraValue">
+                      <div class="msg" *ngIf="generalConfigurations.controls['paraValue'].invalid && (generalConfigurations.controls['paraValue'].dirty || generalConfigurations.controls['paraValue'].touched)">
+                        <div *ngIf="generalConfigurations.controls['paraValue'].errors.required">
+                          Required.
+                        </div>
+                        <div *ngIf="generalConfigurations.controls['paraValue'].errors.pattern">
+                          {{patternMessage}}
+                        </div>
+                      </div>
+
+                    </div>
+                    <div *ngIf="isCountry">
+
+                      <select class="form-control" formControlName="paraValue">
+                       <option *ngFor="let country of countries" value="{{country.CountryCode}}">{{country.CountryName}}
+                      </option>
+                        </select>
+                    </div>
+                     <div *ngIf="isNotification">
+
+                      <select class="form-control" formControlName="paraValue">
+                       <option *ngFor="let notification of notifications" value="{{notification.NotificationCode}}">{{notification.NotificationName}}
+                      </option>
+                        </select>
+                    </div>
+                     <div *ngIf="isDefaultMBS">
+
+                      <select class="form-control" formControlName="paraValue">
+                       <option *ngFor="let objMBS of MBSoptions" value="{{objMBS.value}}">{{objMBS.label}}
+                      </option>
+                        </select>
+                    </div>
+
+                  </div>
+                </div>
+
+              </form>
+
+              <div class="form-group text-right">
+                <button class="btn btn-primary btn-search " type="button" [disabled]="isConfig" (click)="updateApplicationParameterKey()">Update</button>
+                <button class="btn btn-primary btn-reset" type="button" (click)="reset()">Reset</button>
+                <button class="btn btn-primary btn-reset" data-dismiss="modal">Cancel</button>
+                <div class="clear"></div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>

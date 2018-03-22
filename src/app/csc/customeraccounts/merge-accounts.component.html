@@ -1,0 +1,157 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Customer Accounts</a></li>
+        <li class="active">Search Merge Customers</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Search Merge Customers</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="col-md-12 text-right">
+      <span class="info-blue"> <img src="assets/images/svg/info-blue.svg" class="icon-svg5" alt=""> </span> <span class="name">Enter input in any  of the fields below.</span>
+    </div>
+  </div>
+  <div class="row">
+    <!--<app-search-details [Search]="2"></app-search-details>-->
+    <app-advance-search> </app-advance-search>
+    <div class="col-md-12">
+      <button type="submit" class="btn btn-primary btn-search" [disabled]="disableButton" (click)="searchCustomers()">Search</button>
+      <button type="reset" class="btn btn-primary btn-reset" (click)="searchReset()">Reset</button>
+    </div>
+  </div>
+  <!-- app components -->
+  <div class="row m-t-20">
+    <div class="col-md-12">
+      <div class="table-bdr" *ngIf="isDisplaySearchDetails">
+        <h3>Accounts Search Results</h3>
+        <div class="pad-10">
+          <div class="table-responsive">
+            <table class="table">
+              <thead *ngIf='customerResponseArray && customerResponseArray.length>0' class="nowrap">
+                <tr>
+                  <th class="nowrap"> Account # </th>
+                  <th> First Name </th>
+                  <th> Last Name </th>
+                  <th> Address </th>
+                  <th> Account Category </th>
+                  <th> Plan Type </th>
+                  <th> Toll Type </th>
+                  <th> Phone # </th>
+                  <th> Email Address </th>
+                  <th>
+                    <div class="checkbox">
+                      <input type="checkbox" (change)="checkandUncheckAllAccounts($event)" [(ngModel)]='isParentCheck' id="checkAllfields">
+                      <label for="checkAllfields"><span></span></label>
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="">
+                <tr *ngFor='let customerResponse of customerResponseArray | paginate: { itemsPerPage:pageItemNumber, currentPage: pageNumber, totalItems:totalRecordCount }'>
+                  <td>{{customerResponse.AccountId}}</td>
+                  <td>{{customerResponse.FirstName}}</td>
+                  <td>{{customerResponse.LastName}}</td>
+                  <td>{{customerResponse.FullAddress}}</td>
+                  <td>{{customerResponse.RevenueCategory}}</td>
+                  <td>{{customerResponse.PlanName}}</td>
+                  <td>{{customerResponse.TollType}}</td>
+                  <td class="nowrap">{{customerResponse.PhoneNumber}}</td>
+                  <td>{{customerResponse.EmailAddress}}</td>
+                  <td>
+                    <div class="checkbox">
+                      <input type="checkbox" id="{{customerResponse.AccountId}}" (change)="checkorUncheckCustomer(customerResponse,$event)" [checked]="customerResponse.isMergeAccountCheck">
+                      <label for="{{customerResponse.AccountId}}"><span></span></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr *ngIf='!customerResponseArray || customerResponseArray.length==0'>
+                  <td colspan="10">No customers to display</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="row page-info" *ngIf='customerResponseArray && customerResponseArray.length > 0'>
+            <div class="col-md-6 text-left">
+              <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+            </div>
+            <div class="col-md-6 text-right">
+              <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-default" *ngIf="isDisplayMergeDetails">
+        <div class="panel-heading">
+          Accounts to Merge
+        </div>
+        <div class="panel-body">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th> Account # </th>
+                  <th> First Name </th>
+                  <th> Last Name </th>
+                  <th> Address </th>
+                  <th> Account Category </th>
+                  <th> Plan Type </th>
+                  <th> Toll Type </th>
+                  <th> Phone # </th>
+                  <th> Email Address </th>
+                  <th> Delete </th>
+                  <th> Parent </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor='let mergeCustomer of mergeCustomerResponseArray'>
+                  <td>{{mergeCustomer.AccountId}}</td>
+                  <td>{{mergeCustomer.FirstName}}</td>
+                  <td>{{mergeCustomer.LastName}}</td>
+                  <td>{{mergeCustomer.FullAddress}}</td>
+                  <td>{{mergeCustomer.RevenueCategory}}</td>
+                  <td>{{mergeCustomer.PlanName}}</td>
+                  <td>{{mergeCustomer.TollType}}</td>
+                  <td>{{mergeCustomer.PhoneNumber}}</td>
+                  <td>{{mergeCustomer.EmailAddress}}</td>
+                  <td style="text-align: center;"><a (click)="deleteCustomer(mergeCustomer)"><img src="assets/images/svg/delete.svg" class="icon-svg3" style="margin-right: 0;"/></a></td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-radio">
+                      <input type="radio" id="{{mergeCustomer.AccountId}}merge" class="custom-control-input" name="isParent" id="isParent" value="isParent"
+                        (change)="selectParentCustomer(mergeCustomer.AccountId)">
+                      <label for="{{mergeCustomer.AccountId}}merge" class="custom-control-discription"></label></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="btns-group m-t-20">
+            <button type="submit" (click)="mergecustomersClick()" [disabled]="disableButton" class="btn btn-primary btn-search">Merge</button>
+            <button type="submit" (click)="cancelMergeCustomers()" class="btn btn-primary btn-reset">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>
+<app-blocked-list [blockListArray]="blockListDetails" (status)="mergeCustomersPop()"></app-blocked-list>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

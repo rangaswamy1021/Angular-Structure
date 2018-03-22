@@ -1,0 +1,90 @@
+<div class="table-bdr">
+  <h3> Trip Details</h3>
+  <div class="pad-10">
+    <div class="alert alert-danger alert-dismissible" role="alert" *ngIf="errorBlock">
+      <button type="button" class="close" data-dismiss="alert" (click)="removeVal();" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+	</button> {{errorMessage}}
+    </div>
+
+    <div *ngIf='invoiceResponse && invoiceResponse.length'>
+      <form role="form" [formGroup]="invoiceForm" name="invoiceForm">
+        <div *ngIf="isDisplay">
+          <table class="table">
+            <thead>
+              <tr>
+                <td>
+                  <div class="checkbox">
+                    <input type="checkbox" (change)='checkAllClick($event)' [checked]="isParentSelected" id="checkAll" name="checkAll" formControlName="checkAll">
+                    <label for="checkAll">
+                    <span></span>
+                      </label>
+                  </div>
+                </td>
+                <td>Trip Date </td>
+                <td>Trip # </td>
+                <td>Amount</td>
+                <td>Amount Paid</td>
+                <td>Outstanding Due</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let object of invoiceResponse| paginate: { itemsPerPage: tpageItemNumber, currentPage: tp , totalItems:ttotalRecordCount, id: 'second' }">
+                <td>
+                  <div class="checkbox">
+                    <input type="checkbox" (change)='checkboxCheckedEvent(object, $event)' [id]="object.CitationId" name="indCheckBox" [attr.disabled]="object.isDisableTrip?'':null"
+                      [checked]="object.isTripSelected" formControlName="indCheckBox">
+                    <label for="{{object.CitationId}}">
+                            <span></span>
+                          </label>
+                  </div>
+                </td>
+                <td> {{object.CreatedDate | customDateFormat }} </td>
+                <td> {{object.CitationId }} </td>
+                <td> {{object.TotalAmount | currencycustom}} </td>
+                <td> {{object.AmountPaid | currencycustom}} </td>
+                <td> {{object.OutstandingAmount | currencycustom}} </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </form>
+      <div *ngIf="!isDisplay">
+        <table class="table">
+          <thead>
+            <tr>
+              <td>Trip Date </td>
+              <td>Trip Description </td>
+              <td>Amount</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let object of invoiceResponse| paginate: { itemsPerPage: tpageItemNumber, currentPage: tp , totalItems:ttotalRecordCount, id: 'second' }">
+              <td> {{object.CreatedDate | customDateFormat }} </td>
+              <td> {{object.Stmt_Literal }} </td>
+              <td> {{object.TotalAmount | currencycustom}} </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div *ngIf='invoiceResponse && invoiceResponse.length'>
+      <div class="row page-info">
+        <div class="col-md-6 text-left">
+          <p>Display {{tstartItemNumber}} - {{tendItemNumber}} Records of {{ttotalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)" id="second"></pagination-controls>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 text-right"><a style="color:#0068b3; font-size:14px; font-weight: bold; float:right;" *ngIf="isDisplay" (click)="goToAdjustment()"><strong> Make Adjustment </strong></a></div>
+      </div>
+    </div>
+
+    <div *ngIf='!invoiceResponse|| invoiceResponse.length===0'>
+      <div>No trip details to display</div>
+    </div>
+  </div>
+</div>

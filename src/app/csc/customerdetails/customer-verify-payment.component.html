@@ -1,0 +1,135 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Payments</a></li>
+        <li class="active">Verify Payment</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Verify Payment</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <app-account-info></app-account-info>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="payment-steps-2">
+        <ul>
+          <li class="done"><span>1</span>Enter Amount</li>
+          <li class="active"><span>2</span>Verify</li>
+          <li><span>3</span>Thank You</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="table-bdr padding-20 pay-confirm m-t-20">
+    <p style="font-size: 14px">Confirm the amount, account details and click on Make Payment to do the payment</p>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-6 text-right">Total Payment Amount :</div>
+          <div class="col-md-6 field">{{objPaymentRequest.TxnAmount+objPaymentRequest.CreditCardServiceTax | currency:'USD':true:'1.2-2'}}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 text-right">Pay By :</div>
+          <div class="col-md-6 field">{{paymentmode}}</div>
+        </div>
+
+
+        <div *ngIf='objPaymentRequest.CreditCardPayment'>
+          <div class="row">
+            <div class="col-md-6 text-right">Name on Card :</div>
+            <div class="col-md-6 field">{{objPaymentRequest.CreditCardPayment.NameOnCard }}</div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 text-right">Card Type :</div>
+            <div class="col-md-6 field">{{objPaymentRequest.CreditCardPayment.CreditCardType}}</div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 text-right">Credit Card # :</div>
+            <div class="col-md-6 field">XXXX_{{objPaymentRequest.CreditCardPayment.CCSuffix4 }}</div>
+          </div>
+          <div class="row" *ngIf="objPaymentRequest.CreditCardServiceTax && objPaymentRequest.CreditCardServiceTax>0">
+            <div class="col-md-6 text-right"> Credit Card Service Tax :</div>
+            <div class="col-md-6 field">{{objPaymentRequest.CreditCardServiceTax | currency:'USD':true:'1.2-2'}}</div>
+          </div>
+        </div>
+        <div *ngIf='objPaymentRequest.BankName'>
+          <div class="row">
+            <div class="col-md-6 text-right">Bank Name :</div>
+            <div class="col-md-6 field">{{objPaymentRequest.BankName }}</div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 text-right"> Account Holder Name :</div>
+            <div class="col-md-6 field">{{objPaymentRequest.AccoutName}}</div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 text-right">Bank Account # :</div>
+            <div class="col-md-6 field">XXXX_{{objPaymentRequest.AccountNumber.toString().substring(objPaymentRequest.AccountNumber.toString().length
+              - 4)}}
+            </div>
+          </div>
+        </div>
+        <div *ngIf='objPaymentRequest.ChequeDate'>
+          <div class="row">
+            <div class="col-md-6 text-right">Check Date :</div>
+            <div class="col-md-6 field">{{objPaymentRequest.ChequeDate | customDateFormat}}</div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 text-right">Check # :</div>
+            <div class="col-md-6 field">{{objPaymentRequest.ChequeNumber}}</div>
+          </div>
+        </div>
+        <div *ngIf='objPaymentRequest.MONumber'>
+          <div class="row">
+            <div class="col-md-6 text-right">Money Order Date :</div>
+            <div class="col-md-6 field">{{objPaymentRequest.MODate | customDateFormat }}</div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 text-right">Money Order # :</div>
+            <div class="col-md-6 field"> {{objPaymentRequest.MONumber}}</div>
+          </div>
+        </div>
+
+        <div *ngIf='objPaymentRequest.PromoCode'>
+          <div class="row">
+            <div class="col-md-6 text-right">Promo Code :</div>
+            <div class="col-md-6 field">{{objPaymentRequest.PromoCode}}</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 text-right">Payment Date :</div>
+          <div class="col-md-6 field">{{paymentDate | customDateTimeFormat}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <button class="btn btn-primary btn-search" type="button" (click)="previous();">Back</button>
+      <button class="btn btn-primary btn-search" type="button" (click)="MakePayment()">Make Payment</button>
+      <button class="btn btn-primary btn-reset" type="button" (click)="cancelClick(0);">Cancel</button>
+    </div>
+  </div>
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"
+  (onOk)="userAction($event)"></app-success-failure-alerts-message>

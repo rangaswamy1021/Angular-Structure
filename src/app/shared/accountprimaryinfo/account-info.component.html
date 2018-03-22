@@ -1,0 +1,11 @@
+<div class="row">
+    <div class="col-md-12 text-right">
+        <button class="btn btn-primary btn-xs extiButton" *ngIf="hideAccountSummarybtn" (click)="goToAccountSummary()"> <i class="fa fa-file-text-o fa-fw" aria-hidden="true"></i> Account Summary </button>
+        <button class="btn btn-primary btn-xs extiButton" (click)="exitClick()"><i class="fa fa-sign-out fa-fw fa-rotate-180" aria-hidden="true"></i> Exit</button>
+    </div>
+</div>
+
+<app-account-info-header></app-account-info-header>
+<!--<div *ngIf="accountId > 0">-->
+<app-account-primary-information [longAccountId]="accountId"></app-account-primary-information>
+<!--</div>-->

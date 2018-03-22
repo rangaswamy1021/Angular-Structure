@@ -1,0 +1,355 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">Helpdesk</a>
+        </li>
+        <li class="active">View Complaints</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>View Complaints</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div *ngIf="isAfterSearch && currentSubSystem=='CSC'">
+    <app-account-info></app-account-info>
+  </div>
+  <div class="row">
+    <div class="col-md-12 text-right"><a (click)='backClick()' class="btn btn-primary btn-search">Back</a></div>
+  </div>
+  <div class="row m-b-20">
+    <div class="col-md-12">
+      <div class="btn-group" *ngIf='cmpStatusMatrix && !isAfterSearch && !isChildCmp'>
+        <button class="btn btn-primary btn-search" (click)='AssignMaster()' [disabled]="disableAssignToMasterButton" [ngStyle]="{'display': showAssignToMasterBtn ? 'block':'none'}">Assign to Master</button>
+        <button class="btn btn-primary btn-search" (click)="onholdClick()" [disabled]="disableOnHoldButton" [ngStyle]="{'display': showOnHoldBtn ? 'block':'none'}">On Hold</button>
+        <button class="btn btn-primary btn-search" (click)="reopenClick()" [disabled]="disableReOpenButton" [ngStyle]="{'display': showReopenBtn ? 'block':'none'}">Re Open</button>
+        <button class="btn btn-primary btn-search" (click)="transferClick()" [disabled]="disableTransferButton" [ngStyle]="{'display': showTransferBtn ? 'block':'none'}">Transfer</button>
+        <button class="btn btn-primary btn-search" (click)="assignClick()" [disabled]="disableAssignButton" [ngStyle]="{'display': showAssignBtn? 'block':'none'}">Assign</button>
+        <button class="btn btn-primary btn-search" (click)="reassignClick()" [disabled]="disableReAssignButton" [ngStyle]="{'display': showReAssignBtn ? 'block':'none'}">Re Assign</button>
+        <button class="btn btn-primary btn-search" (click)="resolveClick()" [disabled]="disableResolveButton" [ngStyle]="{'display': showResolveBtn ? 'block':'none'}">Resolve</button>
+        <button class="btn btn-primary btn-search" (click)="rejectClick()" [disabled]="disableRejectButton" [ngStyle]="{'display': showRejectBtn ? 'block':'none'}">Reject</button>
+        <button class="btn btn-primary btn-search" (click)="closeClick()" [disabled]="disableCloseButton" [ngStyle]="{'display': showCloseBtn ? 'block':'none'}">Close</button>
+        <button class="btn btn-primary btn-search" (click)='editComplaint(complaintInfo)' [ngStyle]="{'display': showEditBtn ? 'block':'none'}">Edit</button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf='complaintInfo'>
+    <div class="row m-b-10">
+      <div class="col-md-8">
+        <strong>Ticket#:</strong> {{complaintInfo.TicketId}}- {{complaintInfo.Status}}
+      </div>
+    </div>
+    <div *ngIf='isEditComplaint'>
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group col-md-12">
+                <label class="focused"> Type: </label>
+                <select class="form-control" [(ngModel)]='cmpEditType' name="CmpType">
+                  <option selected='selected' value="">--Select--</option>
+                  <option *ngFor='let pt of problemTypes' value="{{pt.Key}}">{{pt.Value}}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group col-md-12">
+                <label class="focused"> Source: </label>
+                <select class="form-control" [(ngModel)]='cmpEditSource' name="CmpSource">
+                  <option selected='selected' value="">--Select--</option>
+                  <option *ngFor='let p of pmSource' value="{{p.LookUpTypeCode}}">{{p.LookUpTypeCodeDesc}}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group col-md-12">
+                <label class="focused"> Severity: </label>
+                <select class="form-control" [(ngModel)]='cmpEditSeverity' name="CmpSeverity">
+                  <option selected='selected' value="">--Select--</option>
+                  <option *ngFor='let p of pmSeverity' value="{{p.LookUpTypeCode}}">{{p.LookUpTypeCodeDesc}}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group col-md-12">
+                <label class="focused">Priority:</label>
+                <select class="form-control" [(ngModel)]='cmpEditPriority' name="CmpPriority">
+                  <option selected='selected' value="">--Select--</option>
+                  <option *ngFor='let p of pmPriority' value="{{p.LookUpTypeCode}}">{{p.LookUpTypeCodeDesc}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <button class="btn btn-primary btn-search" [disabled]="disableUpdateButton" (click)='updateComplaint(complaintInfo)'>Submit </button>
+              <button class="btn btn-primary btn-reset" (click)='cancelUpdateClick()'>Cancel </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="table-bdr">
+      <h3>Customer Personal Details</h3>
+      <div class="pad-10">
+        <div class="row">
+          <div class="col-md-3">
+            <label>
+            <strong> First Name: </strong>
+            <br/> {{complaintInfo.FirstName}} </label>
+          </div>
+          <div class="col-md-3">
+            <label>
+            <strong> Last Name: </strong>
+            <br/> {{complaintInfo.LastName}} </label>
+          </div>
+          <div class="col-md-3">
+            <label>
+            <strong> Phone No.: </strong>
+            <br/> {{complaintInfo.Phone}} </label>
+          </div>
+          <div class="col-md-3">
+            <label>
+            <strong> Email Address: </strong>
+            <br/> {{complaintInfo.Email}} </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="table-bdr">
+      <h3>Complaint Details</h3>
+      <div class="pad-10">
+        <div class="row">
+          <div class="col-md-3">
+            <label>
+            <strong> Complain Type: </strong>
+            <br/> {{complaintInfo.ProblemTypeDesc}} </label>
+          </div>
+          <div class="col-md-3">
+            <label>
+            <strong> Source: </strong>
+            <br/> {{complaintInfo.ProblemSource}} </label>
+          </div>
+          <div class="col-md-3">
+            <label>
+            <strong> Severity: </strong>
+            <br/> {{complaintInfo.SeverityDesc}} </label>
+          </div>
+
+          <div class="col-md-3">
+            <label>
+            <strong> Date Occurred: </strong>
+            <br/> {{complaintInfo.DateOccurred | customDateTimeFormat}} </label>
+          </div>
+          <div class="col-md-3">
+            <label>
+            <strong> Opened Date & Time: </strong>
+            <br/> {{complaintInfo.DateReported | customDateTimeFormat}}
+          </label>
+          </div>
+          <div class="col-md-3">
+            <label>
+            <strong> Scheduled Target Date & Time: </strong>
+            <br/> {{complaintInfo.TargetDate | customDateTimeFormat}} </label>
+          </div>
+          <div class="col-md-3">
+            <label>
+            <strong> Resolved Date & Time: </strong>
+            <br/> {{complaintInfo.RootCauseDate =='0001-01-01T00:00:00' ? 'N/A' : complaintInfo.RootCauseDate | customDateTimeFormat}}
+            </label>
+          </div>
+
+          <div class="col-md-12">
+            <label>
+            <strong> Title: </strong>
+            <br/> {{complaintInfo.ProblemTitle}} </label>
+          </div>
+          <div class="col-md-12">
+            <label>
+            <strong> Description: </strong>
+            <br/> {{complaintInfo.ProblemAbstract}} </label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!--activites-->
+    <div class="table-bdr">
+      <h3>Activities
+        <a (click)='isEditActivity = true' class="pull-right"> Add Activity </a></h3>
+      <div class="pad-10">
+        <div class="row" *ngIf='isEditActivity'>
+          <div class="col-md-6 form-group popover-field">
+            <label class="focused">Enter your activities in the space provided. </label>
+            <textarea [(ngModel)]='cmpActivity' class="form-control"></textarea>
+          </div>
+          <div class="col-md-6 m-t-10">
+            <button class="btn btn-primary btn-search" [disabled]="disableUpdateButton" (click)='saveActivities()'>{{editActivityId > 0 ? 'Update':'Add'}}</button>
+            <button class="btn btn-primary btn-reset" (click)='saveActivityCancelClick()'>Cancel</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <table class="table" *ngIf='activities'>
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th> </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor='let ac of activities'>
+                  <td>{{ac.LogDesc}}</td>
+                  <td>
+                    <button *ngIf="ac.UserId == userId" class="btn btn-default btn-xs" (click)='editActivity(ac)'> Edit </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div *ngIf='!activities || activities.length==0'>
+              No records to display
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Attachments-->
+    <div class="table-bdr">
+      <h3>Attachments
+        <a class="pull-right" (click)="addAttchPnlClick()"> Add Attachments </a></h3>
+      <div class="pad-10">
+        <div class="row fileUploadBorder" *ngIf='isAddAttachment'>
+          <!--<div class="col-md-2">
+            <div class="form-group text-right">
+              
+            </div>
+          </div>-->
+          <div class="col-md-5">
+            <div class="row">
+              <div class="col-md-12 form-group popover-field">
+                <label for="Browsefile" class="focused">Browse to upload file</label>
+                <div class="file-upload-field">
+                  <input type="file" class="form-control" accept=".xls,.jpg,.jpeg,.txt,.gif,.docx,.pdf,.doc,.png,.xlsx" #cmpFile />
+                  <button type="submit" (click)="uploadFile()" class="btn-bs-file btn btn-sm btn-primary">Upload</button>
+                </div>
+              </div>
+              <div class="col-md-12" *ngIf='attachmentsList.length'>
+                <div class="table-responsive">
+                  <table class="table table-bordered">
+                    <tr>
+                      <th>File Name</th>
+                      <th>Delete</th>
+                      <th>View</th>
+                    </tr>
+                    <tr *ngFor='let f of attachmentsList'>
+                      <td> {{f.FileName}}</td>
+                      <td style="text-align: center;">
+                        <img src="assets/images/svg/delete.svg" class="icon-svg3" alt="Delete" (click)="deleteFile(f.Path)">
+                      </td>
+                      <td style="text-align: center;">
+                        <a href="{{viewPath + f.Path}}" target="_blank">View</a>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <label for="Extension">
+                You can attach {{maxFiles}} files maximum (each file cannot exceed {{fileMaxSize}} MB)
+              </label>
+            <br/>
+            <label for="Extension">Allowed extensions are
+                <strong> jpg, jpeg, txt, gif, docx, pdf, doc, png, xlsx, xls. </strong>
+              </label>
+          </div>
+          <div class="col-md-3 m-t-10 text-right">
+            <button class="btn btn-primary btn-search" [disabled]="disableUpdateButton" (click)='addAttachemnts()'> Add </button>
+            <button class="btn btn-primary btn-reset" (click)='addAttachemntsCancelClick()'> Cancel </button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table" *ngIf='attchments && attchments.length'>
+            <thead>
+              <tr>
+                <th>File Name</th>
+                <th> </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let att of attchments'>
+                <td>{{att.FileName}}</td>
+                <td>
+                  <a href="{{viewPath + att.Path}}" target="_blank">View</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div *ngIf='!attchments || attchments.length==0'>
+          No records to display
+        </div>
+
+      </div>
+    </div>
+    <!--Complaint History-->
+    <div class="table-bdr">
+      <h3>Complaint History</h3>
+      <div class="pad-10">
+        <div class="table-responsive">
+          <table class="table" *ngIf='cmpHistory && cmpHistory.length'>
+            <thead>
+              <tr>
+                <td> Problem Type </td>
+                <td> Status </td>
+                <td> Priority </td>
+                <td> Severity </td>
+                <td> Owner </td>
+                <td> Source </td>
+                <td> Target Date </td>
+                <td> Status Updated Date </td>
+                <td> Update User </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let hist of cmpHistory'>
+                <td>{{hist.ProblemTypeDesc}}</td>
+                <td>{{hist.Status}}</td>
+                <td>{{hist.PriorityDesc}}</td>
+                <td>{{hist.SeverityDesc}}</td>
+                <td>{{hist.OwnerName | DisplayNA}}</td>
+                <td>{{hist.ProblemSource}}</td>
+                <td>{{hist.TargetDate | customDateTimeFormat}}</td>
+                <td>{{hist.StatusDate | customDateTimeFormat}}</td>
+                <td>{{hist.UserName}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div *ngIf='!cmpHistory || cmpHistory.length==0'>
+          No records to display
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-pm-popup (handleMsg)="onStatusChange($event)"></app-pm-popup>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

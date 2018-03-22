@@ -1,0 +1,87 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">TVC</a></li>
+        <li><a href="#">Violator Details</a></li>
+        <li class="active">Make Payment</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Make Payment</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="col-md-12 text-right">
+      <span id="" class="accno">Account #: {{accountId}}</span>
+      <button class="btn btn-primary btn-search" (click)="backClick();">Back</button>
+    </div>
+    <div class="col-md-12">
+      <div class="payment-steps-2">
+        <ul>
+          <li class="done"><span>1</span>Enter Amount</li>
+          <li class="done"><span>2</span>Verify</li>
+          <li class="done"><span>3</span>Thank You</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-bdr padding-20 pay-confirm m-t-20">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-6 text-right">Reference:</div>
+          <div class="col-md-6"><span>{{paymentResponse.VoucherNo}}</span></div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 text-right">Pay By:</div>
+          <div class="col-md-6"><span>{{paymentmode}}</span></div>
+        </div>
+
+        <div class="row" *ngIf='paymentResponse.CCSuffix4'>
+          <div class="col-md-6 text-right">Card Type:</div>
+          <div class="col-md-6"><span>{{ccMode}}</span></div>
+        </div>
+        <div class="row" *ngIf='paymentResponse.CCSuffix4'>
+          <div class="col-md-6 text-right">Credit Card #:</div>
+          <div class="col-md-6"><span>XXXX_{{paymentResponse.CCSuffix4 }}</span></div>
+        </div>
+        <div class="row" *ngIf='paymentResponse.MoneyOrderNumber'>
+          <div class="col-md-6 text-right">Money Order #:</div>
+          <div class="col-md-6"><span>{{paymentResponse.MoneyOrderNumber}}</span></div>
+        </div>
+        <div class="row" *ngIf='paymentResponse.BankAccountNumber'>
+          <div class="col-md-6 text-right">Bank Account Number #:</div>
+          <div class="col-md-6"><span>XXXX_{{paymentResponse.BankAccountNumber}}</span></div>
+        </div>
+
+        <div class="row" *ngIf='paymentResponse.ChequeNumber'>
+          <div class="col-md-6 text-right">Check #:</div>
+          <div class="col-md-6"><span>{{paymentResponse.ChequeNumber}}</span></div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 text-right">Total Payment Amount :</div>
+          <div class="col-md-6"><span>{{paymentResponse.ToltalAmountPaid | currency:'USD':true:'1.2-2'}}</span></div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 text-right">Payment Date :</div>
+          <div class="col-md-6"><span>{{paymentResponse.PaymentDate | customDateTimeFormat }}</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <button class="btn btn-primary btn-search" [disabled]="disableReceipt" type="button" (click)="ShowReceipt();">Payment Receipt</button>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

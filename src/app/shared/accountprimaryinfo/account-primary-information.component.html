@@ -1,0 +1,232 @@
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+ <div class="panel panel-default" id="userInfo">
+    <div class="panel-body">
+      <div class="row">
+        <div class="row rowMargins">
+          <div class="col-md-1 col-md-offset-5">
+            <button class="btn btn-primary user-info-collapse" [ngClass]= '{"isAddArrow": isActiveArrow}' (click)="isActiveArrow=!isActiveArrow" type="button" data-toggle="collapse" data-target="#userInformation" aria-expanded="false"
+              aria-controls="collapseExample">
+              <span class="glyphicon glyphicon-arrow-down"> </span>  User Information
+            </button>
+          </div>
+        </div>
+        <div class="collapse" id="userInformation">
+
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">Contact Information</div>
+                <!--<div *ngFor="let phonelist of customerResponse.EmailList">
+                  <label>sdfdsf </label>
+                </div>-->
+              <div *ngIf='customerResponse'>
+
+                <table class="table">
+                  <tbody>
+                    <tr *ngIf="customerResponse.OrganizationName">
+                      <td class="text-left">Business Name:</td>
+                      <td class="text-right">{{customerResponse.OrganizationName}}</td>
+                    </tr>
+                    <tr>
+                      <td class="text-left">Name:</td>
+                      <td class="text-right"><strong>{{customerResponse.FirstName + " " + customerResponse.LastName}}</strong> </td>
+                    </tr>
+                    <tr *ngIf="customerInformationres.ParentId > 0">
+                      <td class="text-left">Parent Account #: </td>
+                      <td class="text-right">{{customerInformationres.ParentId}}</td>
+                    </tr>
+                    <tr>
+                      <td class="text-left">Address: </td>
+                      <td class="text-right">
+                        <div role="alert" data-html="true"><span [innerHTML]="customerResponse.FullAddressWithAddressFormat"></span></div>
+                      </td>
+                    </tr>
+
+                    <tr *ngFor="let phoneList of customerResponse.PhoneList;">
+                      <td class="text-left">
+                        {{phoneList.Type}}:
+                      </td>
+                      <td class="text-right">
+                        {{ phoneList.PhoneNumber }}
+                        <!--<label *ngIf="!phoneList.IsVerified">(Not Verified)</label> -->
+                      </td>
+                    </tr>
+
+                    <tr *ngFor="let emailList of customerResponse.EmailList;">
+                      <td class="text-left">{{emailList.Type == 'PrimaryEmail' ? 'Primary Email' : 'Secondary Email' }}:
+                      </td>
+                      <td class="text-right">{{ emailList.EmailAddress }}
+                        <div *ngIf="customerInformationres.AccountStatus != 'NA'"> <a *ngIf="!emailList.IsVerified" [ngClass]="disableEmailbtn?'disabletextbox':''" (click)="onSelect(emailList)">Verify Email</a> 
+                        </div>
+                      </td>
+                    </tr>
+                    <tr *ngIf="boolKYCDocument">
+                      <td class="text-left">KYC Status: </td>
+                      <td class="text-right"> {{customerResponse.KYCStatus}}</td>
+                    </tr>
+                    <tr *ngIf="customerResponse.FrequentCaller; else NoFrequent">
+                      <td class="text-left">Frequent Caller: </td>
+                      <td class="text-right">Yes</td>
+                    </tr>
+                    <ng-template #NoFrequent>
+                      <tr>
+                        <td class="text-left text-nowrap">Frequent Caller: </td>
+                        <td class="text-right">No</td>
+                      </tr>
+                    </ng-template>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">Account information</div>
+              <div>
+                <table class="table" *ngIf='balanceRes'>
+                  <tbody>
+                    <tr>
+                      <td class="text-left">Last Adjustment Amount:</td>
+                      <td class="text-right">{{balanceRes.LastAdjustmentAmount | currencycustom}}</td>
+                    </tr>
+                    <tr>
+                      <td class="text-left">Last Reversal Amount:</td>
+                      <td class="text-right">{{balanceRes.LastReversalAmount | currencycustom}}</td>
+                    </tr>
+                    <tr>
+                      <td class="text-left">Last Refund Amount: </td>
+                      <td class="text-right">{{balanceRes.LastRefundAmount | currencycustom }}</td>
+                    </tr>
+                    <tr *ngIf="customerInformationres && customerInformationres.IsTagRequired">
+                      <!--IsTagRequired-->
+                      <td class="text-left"><strong> Tag Deposit: </strong></td>
+                      <td class="text-right"><strong>{{balanceRes.TagDepositeBalance | currencycustom}} </strong></td>
+                    </tr>
+                    <tr *ngIf="customerInformationres  && (customerInformationres.AccountStatus=='RR' || customerInformationres.AccountStatus=='CORR' || customerInformationres.AccountStatus=='COCL')">
+                      <td class="text-left">Refund Balance: </td>
+                      <td class="text-right">{{balanceRes.RefundBalance | currencycustom}} </td>
+                    </tr>
+                    <!--PrePaid Amounts binding start-->
+
+                    <tr *ngIf="customerInformationres && customerInformationres.ParentPlanName=='PREPAID';else PostpaidBlock">
+                      <td *ngIf="balanceRes.TollBalance<0" class="text-left"> <strong>Balance Due: </strong> </td>
+                      <td *ngIf="balanceRes.TollBalance>=0" class="text-left"> <strong>Current Balance:  </strong></td>
+                      <td class="text-right">
+                        <strong> {{balanceRes.TollBalance | currencycustom}} </strong>
+                        <a *ngIf="balanceRes.TollBalance<=0" routerLink='../../../csc/customerdetails/customer-make-payment' >Payment</a>
+                      </td>
+                    </tr>
+                    <!--PrePaid Amounts binding END-->
+                    <!--POSTPAID Amounts binding start-->
+                    <ng-template #PostpaidBlock>
+                      <tr>
+                        <td *ngIf="balanceRes.PostpaidBalance<0" class="text-left"> <strong>Current Balance:  </strong></td>
+                        <td *ngIf="balanceRes.PostpaidBalance>=0" class="text-left"> <strong>Balance Due: </strong> </td>
+                        <td *ngIf="balanceRes.PostpaidBalance<0" class="text-right">
+                          <strong>  {{-1 * balanceRes.PostpaidBalance | currency:'USD':true:'1.2-2'}} </strong>
+                        </td>
+                        <td *ngIf="balanceRes.PostpaidBalance>=0" class="text-right">
+                          <strong> {{ balanceRes.PostpaidBalance | currencycustom}} </strong>
+                          <a *ngIf="balanceRes.PostpaidBalance>=0" routerLink='../../../csc/customerdetails/customer-make-payment'>Payment</a>
+                        </td>
+                      </tr>
+                    </ng-template>
+                    <!--POSTPAID Amounts binding END-->
+                    <tr *ngIf='balanceRes && balanceRes.ViolationBalance>0'>
+                      <td class="text-left">Violation Balance: </td>
+                      <td class="text-right">{{balanceRes.ViolationBalance | currencycustom}} </td>
+                    </tr>
+                    <tr *ngIf="customerInformationres && (customerInformationres.AccountStatus==='CO' 
+                        ||customerInformationres.AccountStatus==='COPD' || customerInformationres.AccountStatus==='COCL'
+                        || customerInformationres.AccountStatus==='COWO')">
+                      <td class="text-left">Collection Balance: </td>
+                      <td class="text-right">{{balanceRes.CollectionBalance | currencycustom}} </td>
+                    </tr>
+                    <tr *ngIf='rewardbalanceRes'>
+                      <td class="text-left">Total Reward Points:</td>
+                      <td class="text-right">
+                        {{rewardbalanceRes.RewardPoint}}
+                        <a *ngIf="customerInformationres && customerInformationres.RevenueCategory !== 'NonRevenue' && rewardbalanceRes.RewardPoint>0" routerLink='../../../csc/customerdetails/redeem-rewards'>Redeem</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="text-left">Redeem Value:</td>
+                      <td class="text-right" *ngIf='rewardbalanceRes && rewardbalanceRes.RewardPoint>0;else zeroreedemblock'>
+                        {{rewardbalanceRes.RewardBalance | currencycustom}}
+                      </td>
+                      <ng-template #zeroreedemblock>
+                        <td class="text-right">{{0 | currency:'USD':true:'1.2-2'}} </td>
+                      </ng-template>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading"> Payment Details</div>
+              <div>
+                <table *ngIf='paymentdetailsRes' class="table">
+                  <tbody>
+                    <tr>
+                      <td class="text-left">Last Payment Method:</td>
+                      <td class="text-right">{{paymentdetailsRes.PaymentMode}} </td>
+                    </tr>
+                    <tr>
+                      <td class="text-left">Last Payment Amount:</td>
+                      <td class="text-right">{{paymentdetailsRes.ToltalAmountPaid | currencycustom}}</td>
+                    </tr>
+                    <tr>
+                      <td class="text-left">Card Type: </td>
+                      <td class="text-right"> {{ paymentdetailsRes.CardType }}</td>
+                    </tr>
+                    <tr>
+                      <td class="text-left">Card Expiration Date:</td>
+                      <td class="text-right"> {{paymentdetailsRes.ExpDate }} </td>
+                    </tr>
+                    <tr>
+                      <td class="text-left">Credit Card #: </td>
+                      <td class="text-right"> {{paymentdetailsRes.PrefixSuffix }}</td>
+                    </tr>
+                    <tr *ngIf="customerInformationres && customerInformationres.ParentPlanName=='PREPAID' && customerInformationres.RevenueCategory !== 'NonRevenue'">
+                      <td class="text-left">Rebill Type:</td>
+                      <td class="text-right"> {{paymentdetailsRes.RebillType }}</td>
+                    </tr>
+                    <tr *ngIf="customerInformationres && customerInformationres.ParentPlanName=='PREPAID' && customerInformationres.RevenueCategory !== 'NonRevenue'">
+                      <td class="text-left">Rebill Amount:</td>
+                      <td class="text-right"> {{paymentdetailsRes.RebillAmount | currencycustom }}</td>
+                    </tr>
+                    <tr *ngIf="customerInformationres && customerInformationres.ParentPlanName=='PREPAID' && customerInformationres.RevenueCategory !== 'NonRevenue'">
+                      <td class="text-left">Threshold Amount:</td>
+                      <td class="text-right"> {{paymentdetailsRes.ThresholdAmount | currencycustom }}</td>
+                    </tr>
+                    <tr *ngIf="customerInformationres && customerInformationres.ParentPlanName=='PREPAID' && customerInformationres.RevenueCategory !== 'NonRevenue'">
+                      <td class="text-left">Low Balance Amount:</td>
+                      <td class="text-right"> {{paymentdetailsRes.LowBalanceAmount | currencycustom }}</td>
+                    </tr>
+                    <tr *ngIf="customerInformationres && customerInformationres.ParentPlanName=='PREPAID' && customerInformationres.RevenueCategory !== 'NonRevenue'">
+                      <td class="text-left">Rebill Hold:</td>
+                      <td class="text-right" *ngIf='paymentdetailsRes.IsManualHold; else NoText'> Yes </td>
+                      <ng-template #NoText>
+                        <td class="text-right"> No </td>
+                      </ng-template>
+                    </tr>
+                    <tr *ngIf="customerInformationres && customerInformationres.ParentPlanName=='POSTPAID' && customerInformationres.RevenueCategory !== 'NonRevenue'">
+                      <td class="text-left">Auto Debit:</td>
+                      <td class="text-right"> {{paymentdetailsRes.RebillType }}</td>
+                    </tr>
+                    <tr *ngIf="customerInformationres && customerInformationres.ParentPlanName=='POSTPAID' && customerInformationres.RevenueCategory !== 'NonRevenue'">
+                      <td class="text-left">Cap Amount:</td>
+                      <td class="text-right"> {{paymentdetailsRes.CapAmount | currencycustom }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

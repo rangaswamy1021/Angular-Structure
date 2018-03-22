@@ -1,0 +1,253 @@
+<div class="row">
+  <div class="col-md-12">
+    <button class="btn btn-default btn-search pull-right" (click)="GeneratePdf();">PRINT</button>
+    <div class="clear"> </div>
+  </div>
+</div>
+
+
+<div #generate *ngIf="iRefundProcess?.length > 0">
+  <div *ngFor='let rep of iRefundProcess' style="color:black; background-color:#fff;">
+
+    <table width="100%">
+      <tr>
+        <td class="col-xs-12 text-center">
+          <h3 style="font-weight: bold; color: black;"> {{rep.RefundType}} </h3>
+        </td>
+      </tr>
+    </table>
+
+    <table width="100%">
+      <tr>
+        <td class="col-xs-4 text-left" width="50%">
+          <strong> Refund Request #: </strong> {{rep.RRID}}
+          <br/>
+          <strong> Print Date: </strong> {{rep.PrintDate}} </td>
+        <td class="col-xs-4 text-right" width="50%"> 
+          <strong> Refund Payment Method: </strong> {{rep.ModeofPayment}}
+          <br/>
+          <strong> Account Status: </strong> {{rep.RRAcountStatus}} </td> 
+      </tr>
+    </table>
+
+    <table width="100%">
+      <tr>
+        <td class="col-xs-4" width="33.33%" style="vertical-align: top;">
+          <h4> CONTACT INFORMATION </h4>
+          <table>
+            <tr>
+              <td style="padding-bottom:5px;"> Account#:</td>
+              <td class="text-right"> {{rep.AccountID}} </td>
+            </tr>
+            <tr>
+              <td style="padding-bottom:5px;"> Name:</td>
+              <td class="text-right"> {{rep.CustomerProfile.FirstName}} </td>
+            </tr>
+            <tr>
+              <td style="padding-bottom:5px;"> Address:</td>
+              <td class="text-right">
+                <div [innerHTML]="rep.CustomerProfile.FullAddressWithAddressFormat"></div>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-bottom:5px;"> {{rep.CustomerProfile.PhoneText}} </td>
+              <td class="text-right"> {{rep.CustomerProfile.Mobile}} </td>
+            </tr>
+            <tr>
+              <td style="padding-bottom:5px;"> {{rep.CustomerProfile.EmailText}} </td>
+              <td class="text-right"> {{rep.CustomerProfile.Email}} </td>
+            </tr>
+          </table>
+        </td>
+        <td class="col-xs-4" width="33.33%" style="vertical-align: top;">
+          <h4> ACCOUNT INFORMATION </h4>
+          <table>
+            <tr>
+              <td style="padding-bottom:5px;"> Last Adjustment Amount:</td>
+              <td class="text-right"> {{rep.Balances.RPLastAdjustmentAmount}} </td>
+            </tr>
+            <tr>
+              <td style="padding-bottom:5px;"> Last Reversal Amount:</td>
+              <td class="text-right"> {{rep.Balances.RPLastReversalAmount}} </td>
+            </tr>
+            <tr>
+              <td style="padding-bottom:5px;"> Last Refund Amount: </td>
+              <td class="text-right"> {{rep.Balances.RPLastRefundAmount}} </td>
+            </tr>
+            <tr>
+              <td style="padding-bottom:5px;"> Manual Hold: </td>
+              <td class="text-right"> {{rep.Balances.RPIsManualHold}} </td>
+            </tr>
+            <tr>
+              <td style="padding-bottom:5px;"> Tag Deposit: </td>
+              <td class="text-right"> {{rep.Balances.RPTagDepositeBalance}} </td>
+            </tr>
+            <tr>
+              <td style="padding-bottom:5px;">Current Balance:</td>
+              <td class="text-right"> {{rep.Balances.RPTollBalance}} </td>
+            </tr>
+            <tr [hidden]="!rep.Balances.IsRPPayByPlate">
+              <td style="padding-bottom:5px;">Pay By Plate:</td>
+              <td class="text-right"> {{rep.Balances.RPPayByPlate}} </td>
+            </tr>
+          </table>
+        </td>
+        <td class="col-xs-4" width="33.33%" style="vertical-align: top;">
+          <h4> PAYMENT DETAILS </h4>
+          <table>
+            <tr>
+              <td style="padding-bottom:5px;"> Last Payment Method: </td>
+              <td class="text-right"> {{rep.PaymentResponse.RPLastPaymentMethod}} </td>
+            </tr>
+            <tr>
+              <td style="padding-bottom:5px;"> Last Payment Amount: </td>
+              <td class="text-right"> {{rep.PaymentResponse.RPLastPaymentAmount}} </td>
+            </tr>
+            <tr>
+              <td style="padding-bottom:5px;"> Card Type: </td>
+              <td class="text-right"> {{rep.PaymentResponse.RPCardType}} </td>
+            </tr>
+            <tr>
+              <td style="padding-bottom:5px;"> Card Expiration Date: </td>
+              <td class="text-right"> {{rep.PaymentResponse.RPCardExpirationDate}} </td>
+            </tr>
+            <tr>
+              <td style="padding-bottom:5px;">Credit Card #:</td>
+              <td class="text-right"> {{rep.PaymentResponse.RPCreditCardNo}} </td>
+            </tr>
+            <tr>
+              <td style="padding-bottom:5px;"> Rebill Type: </td>
+              <td class="text-right"> {{rep.PaymentResponse.RPRebillType}} </td>
+            </tr>
+            <tr>
+              <td style="padding-bottom:5px;"> Rebill Amount: </td>
+              <td class="text-right"> {{rep.PaymentResponse.RPRebillAmount}} </td>
+            </tr>
+            <tr>
+              <td style="padding-bottom:5px;"> Threshold Amount: </td>
+              <td class="text-right"> {{rep.PaymentResponse.RPThresholdAmount}} </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    <table>
+      <tr>
+        <td width="100%" style="padding:10px;">
+          <h4> Recent Activities </h4>
+          <div *ngIf="rep.ILActivities?.length > 0">
+            <table style="padding:10px; border:1px solid black;">
+              <tr style="border-bottom: 1px solid black;">
+                <td style="font-weight: bold; border-right:1px solid black;  padding:5px"> Date/Time </td>
+                <td style="font-weight: bold; border-right:1px solid black;  padding:5px"> User </td>
+                <td style="font-weight: bold; border-right:1px solid black;  padding:5px"> Type </td>
+                <td style="font-weight: bold; border-right:1px solid black;  padding:5px"> Activity </td>
+              </tr>
+              <tr style="border-bottom: 1px solid black;" *ngFor='let iact of rep.ILActivities'>
+                <td style="font-weight: bold; border-right:1px solid black;  padding:5px"> {{iact.ActivityDate | customDateTimeFormat}} </td>
+                <td style="font-weight: bold; border-right:1px solid black;  padding:5px"> {{iact.User}} </td>
+                <td style="font-weight: bold; border-right:1px solid black;  padding:5px"> {{iact.Type}} </td>
+                <td style="font-weight: bold; border-right:1px solid black;  padding:5px"> {{iact.Activity}} </td>
+              </tr>
+            </table>
+          </div>
+          <div *ngIf="rep.ILActivities?.length == 0">
+            <p>No records to display</p>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <table>
+      <tr>
+        <td width="100%" style="padding:10px;">
+          <h4> Recent Payment History </h4>
+          <div *ngIf="rep.SearchPayment?.length > 0">
+            <table style="padding:10px; border:1px solid black;">
+              <tr style="border-bottom: 1px solid black;">
+                <td style="font-weight: bold; border-right:1px solid black;  padding:5px"> Date/Time </td>
+                <td style="font-weight: bold; border-right:1px solid black;  padding:5px"> Type </td>
+                <td style="font-weight: bold; border-right:1px solid black;  padding:5px"> Description </td>
+                <td style="font-weight: bold; border-right:1px solid black;  padding:5px"> Reference # </td>
+                <td style="font-weight: bold; border-right:1px solid black;  padding:5px"> Amount </td>
+              </tr>
+              <tr *ngFor='let searchpay of rep.SearchPayment'>
+                <td style="font-weight: bold; border-right:1px solid black;  padding:5px"> {{searchpay.Date | customDateTimeFormat}} </td>
+                <td style="font-weight: bold; border-right:1px solid black;  padding:5px"> {{searchpay.RPPaymentMode}} </td>
+                <td style="font-weight: bold; border-right:1px solid black;  padding:5px"> {{searchpay.Description}} </td>
+                <td style="font-weight: bold; border-right:1px solid black;  padding:5px"> {{searchpay.VoucherNo}} </td>
+                <td style="font-weight: bold; border-right:1px solid black;  padding:5px"> {{searchpay.RPTxnAmount}}</td>
+              </tr>
+            </table>
+          </div>
+          <div *ngIf="rep.SearchPayment?.length == 0">
+            <p>No records to display</p>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+
+    <br/>
+    <br/>
+
+    <table style="padding:10px">
+      <tr>
+        <td>
+          <div class="col-md-12">
+            <strong> {{rep.RRType}}: </strong> {{rep.RPAmount}}
+            <br/>
+            <br/>
+            <br/>
+            <br/> </div>
+        </td>
+      </tr>
+    </table>
+
+    <table width="100%">
+      <tr>
+        <td>
+          <div class="col-xs-6">
+            <p> Submitted by:_______________________ </p>
+          </div>
+        </td>
+        <td>
+          <div class="col-xs-6">
+            <p> Date:_______________________ </p>
+          </div>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+        </td>
+      </tr>
+    </table>
+
+    <table width="100%">
+      <tr>
+        <td>
+          <div class="col-xs-6">
+            <p> Approved by:_______________________ </p>
+          </div>
+        </td>
+        <td>
+          <div class="col-xs-6">
+            <p> Date:_______________________ </p>
+          </div>
+        </td>
+      </tr>
+    </table>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+
+  </div>
+</div>

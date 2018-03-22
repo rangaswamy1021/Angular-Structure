@@ -1,0 +1,60 @@
+<form role="form" name="uploadVehicleForm" [formGroup]="uploadVehicleForm" novalidate>
+  <div class="table-bdr">
+    <h3>Upload Vehicles</h3>
+    <div class="pad-10">
+      
+      <div class="row fileUploadBorder">
+
+        <div class="col-md-3">
+          <div class="status-content">
+        <h4>{{uploadStatus}}</h4> 
+        </div>
+          <div class="form-group text-right">
+            <label for="Browsefile">Browse to upload file</label>
+          </div>
+          <div class="form-group text-right">
+            <!-- <label>Plate Number is required</label> -->
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label for="file">Attache file</label>
+          <label class="btn-bs-file btn btn-sm btn-primary">
+            Browse
+            <input type="file" accept=".xls" id="fileUpload" (change)="fileUpload()" name="fileUpload" formControlName="fileUpload" type="file"
+              #selectedFileEl />
+
+            <i *ngIf="uploadVehicleForm.controls['fileUpload'].hasError('required')">Required</i>
+          </label>
+          <button type="button" [popover]="popupload" triggers="mouseenter:mouseleave" class="pop-over" data-toggle="tooltip" data-placement="top"
+            data-container="body" popoverTitle="Help">?</button>
+          <ng-template #popupload>
+            <ul>
+              <li> Provide valid template file.</li>
+              <li> Vehicle Class, Vehicle Number,</li>
+              <li> Vehicle Country and Vehicle State are mandatory </li>
+            </ul>
+          </ng-template>     
+          <button type="submit"  (click)="uploadClick()" [disabled]="isUploadDisabled" class="btn btn-primary btn-search">Upload</button>     
+        </div>
+        <div class="col-md-4">
+            <label for="Extension"> Max file size must not be more than
+              <strong> 1MB </strong>
+            </label>
+            <br/>
+            <label for="Extension">Allowed extension is
+              <strong> .xls </strong>
+            </label>
+        </div>
+        
+        <div class="col-md-12">
+          <label for="">
+            <a  (click)="download()" >
+              <strong>
+                <span style="width:10px; height: 10px;">
+                  <img class="icon" (click)="download()" src="assets/images/svg/download.svg" alt="download" /> </span> Click Here</strong>
+            </a> to download the template </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

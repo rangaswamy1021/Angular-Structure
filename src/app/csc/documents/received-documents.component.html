@@ -1,0 +1,226 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">{{subSystem}} </a>
+        </li>
+        <li>
+          <a href="#">Documents</a>
+        </li>
+        <li class="active">Received Documents</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Received Documents</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)">
+</app-success-failure-alerts-message>
+<div class="content">
+  <div *ngIf="boolCSCVisible">
+    <app-account-info></app-account-info>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <h3>Document Details</h3>
+        <div class="pad-10">
+          <div class="*form-horizontal m-t-10">
+            <form role="form" name="receivedDocuments" [formGroup]="receivedDocuments">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="form-group col-md-12 popover-field">
+                      <label for="" class="focused">Document Type*</label>
+                      <select class="form-control" formControlName="documentType">
+                        <option selected="selected" value="">--Select--</option>
+                        <option *ngFor="let docType of dropDownDataResults" value="{{docType.LookUpTypeCode}}">
+                          {{docType.LookUpTypeCodeDesc}}
+                        </option>
+                      </select>
+                      <div class="msg" *ngIf="receivedDocuments.controls['documentType'].invalid && (receivedDocuments.controls['documentType'].dirty || receivedDocuments.controls['documentType'].touched)">
+                        <div *ngIf="receivedDocuments.controls['documentType'].errors.required">
+                          Document Type Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popDType" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                        tabindex="-1" placement="left">?</button>
+                      <ng-template #popDType>
+                        <ul>
+                          <li>Document Type is Required.</li>
+                          <li>Select Document Type. </li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="form-group popover-field col-sm-12">
+                      <label for="">Description*</label>
+                      <input type="text" class="form-control" placeholder="Description*" maxlength="150" formControlName="description" id="description">
+                      <div class="msg" *ngIf="receivedDocuments.controls['description'].invalid && (receivedDocuments.controls['description'].dirty || receivedDocuments.controls['description'].touched)">
+                        <div *ngIf="receivedDocuments.controls['description'].errors.required">
+                          Description required.
+                        </div>
+                        <div *ngIf="receivedDocuments.controls['description'].errors.maxlength">
+                          Max length reached.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popDescription" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                      <ng-template #popDescription>
+                        <ul>
+                          <li>Description is required.</li>
+                          <li>Intial space is not allowed.</li>
+                          <li>It allows maximum of 150 charecters length.</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="form-group col-md-12 popover-field">
+                      <div class="uplaod-file">
+                        <label class="focused" for="">Attach File*</label>
+                        <input name="file" type="file" accept=".jpg, .jpeg, .gif, .png, .bmp, .dds, .dng, .psd, .pspimage, .thm, .tif, .doc, .pdf"
+                          id="fileAttachment" class="form-control" #fileAttachment formControlName="fileAttachment" style="float: left;     max-width: calc(100% - 90px);"
+                        />
+                        <div class="msg" *ngIf="receivedDocuments.controls['fileAttachment'].invalid && receivedDocuments.controls['fileAttachment'].dirty">
+                          <div *ngIf="receivedDocuments.controls['fileAttachment'].errors.required">
+                            Required.
+                          </div>
+                        </div>
+                        <!--<i *ngIf="receivedDocuments.controls['fileAttachment'].hasError('required')">Required</i>-->
+                        <button type="button" class="pop-over" [popover]="popFTypes" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                        <ng-template #popFTypes>
+                          <ul>
+                            <li>Document is required.</li>
+                            <li>Attach files of type jpg, jpeg, txt, gif, docx, pdf, doc, png, xslx, xls only.</li>
+                            <li>Document size should be less than or equal to 1Mb</li>
+                          </ul>
+                        </ng-template>
+                        <div style="float: right">
+                        <div *ngIf="!isFileUploaded">
+                          <button type="submit" (click)="uploadClickFile()" class="btn btn-sm btn-primary">Upload</button>
+                        </div>
+                        <div *ngIf="isFileUploaded">
+                          <a href="{{fileFullPath}}" target="_blank">View</a>
+                          <a (click)="deleteFile(fileFullPath)">
+                            <span class="glyphicon glyphicon-remove"></span>
+                          </a>
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <button class="btn btn-primary btn-search" [disabled]="isCreate" (click)="getCreateInboundDocument()" type="button">Submit</button>
+                    <button class="btn btn-primary btn-reset" type="button" (click)="reset()">Reset</button>
+                  </div>
+                </div>
+              </div>
+              <!--<div class="form-group">
+              <div class="col-sm-5 col-md-offset-3">
+                <button class="btn btn-primary btn-search" [disabled]="isUploaded" (click)="getCreateInboundDocument()" type="button">Submit</button>
+                <button class="btn btn-primary btn-reset" type="button" (click)="reset()">Reset</button>
+              </div>
+            </div>-->
+            </form>
+          </div>
+        </div>
+      </div>
+      <form role="form" name="searchesDocuments" [formGroup]="searchesDocuments">
+        <div class="table-bdr">
+          <h3>Search</h3>
+          <div class="pad-10">
+            <div class="row m-t-20">
+              <div class="col-md-4">
+                <div class="row">
+                  <div class="form-group col-sm-12">
+                    <label for="exampleInputEmail1">Keyword</label>
+                    <input type="text" class="form-control" id="keyword" placeholder="keyword" formControlName="keyword">
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="row">
+                  <div class="form-group col-sm-12">
+                    <label for="exampleInputEmail1">Description</label>
+                    <input type="text" class="form-control" id="description" placeholder="description" formControlName="description">
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="btns-group">
+                  <button class="btn btn-primary btn-search" type="button" [disabled]="isSearch" (click)="searchDocuments()">Search</button>
+                  <button class="btn btn-primary btn-reset" type="button" (click)="searchReset()">Reset</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="table-bdr">
+        <h3>Received Documents</h3>
+        <div class="table-default table-responsive">
+          <div *ngIf='searchResponse && searchResponse.length;else NodetailsBlock'>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th (click)="sortDirection('DOCUMENTTYPE')" class="sorting-handle">Document Type
+                    <span *ngIf="gridArrowDOCUMENTTYPE">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+                  </th>
+                  <th (click)="sortDirection('GENERATEDDATE')" class="sorting-handle">Generated Date
+                    <span *ngIf="gridArrowGENERATEDDATE">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+                  </th>
+                  <th>Description</th>
+                  <th>Keywords</th>
+                  <th>View</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor='let object of searchResponse| paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:dataLength}'>
+                  <td>{{object.DocumentTypeName}}</td>
+                  <td>{{object.GeneratedDate| customDateTimeFormat}}</td>
+                  <td>{{object.Description}}</td>
+                  <td>{{object.SearchKeyword}}</td>
+                  <td>
+                    <a (click)="viewFile(object.DocumentPath)">
+                      <img src="assets/images/svg/view.svg" alt="" class="icon-svg3">
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="page-info" *ngIf="searchResponse && dataLength>pageItemNumber">
+              <div class="col-md-6 text-left">
+                <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+              </div>
+              <div class="col-md-6 text-right">
+                <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-template #NodetailsBlock>
+        <div class="">No details to display</div>
+      </ng-template>
+    </div>
+  </div>
+</div>

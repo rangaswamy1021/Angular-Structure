@@ -1,0 +1,20 @@
+export interface ITransactionActivityRequest {
+  AccountId:number,
+  VehicleNumber?:string,
+  TagId?:string,
+  TripId?:string,
+  Entry_TripDateTime?:any,
+  Exit_TripDateTime?:any,
+  PageNumber?:number,
+  PageSize?:number,
+  TollTransactionTypeCode?:string,
+  SortDir?:number,
+  SortColumn?:string,
+  UserId:number,
+  User?:string,
+  LoginId:number,
+  IsSearchEventFired:boolean,
+  ActivitySource:string,
+  IsPageLoad?:boolean,
+  TripStatusCode?:string
+}

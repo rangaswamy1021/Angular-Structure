@@ -1,0 +1,137 @@
+<div class="row">
+  <div class="col-md-12">
+    <form role="form" name="createForm" [formGroup]="createForm">
+      <div class="*form-horizontal">
+        <div class="row">
+          <div class="form-group col-md-12 popover-field">
+            <label for="inputPassword3">Account Holder Name</label>
+            <input type="text" class="form-control" pattern="^[a-zA-Z ]*" maxlength="50" id="" placeholder="Account Holder Name" formControlName="accountHolderName"
+              name="accountHolderName" style="text-transform:uppercase;">
+            <div class="msg" *ngIf="createForm.controls['accountHolderName'].invalid && (createForm.controls['accountHolderName'].dirty || createForm.controls['accountHolderName'].touched)">
+              <div *ngIf="createForm.controls['accountHolderName'].errors.required">
+                Required.
+              </div>
+              <div *ngIf="createForm.controls['accountHolderName'].errors.pattern">
+                Only alphabets and spaces are allowed !
+              </div>
+            </div>
+            <button data-container="body" type="button" class="pop-over" [popover]="popAHN" popoverTitle="Help" triggers="mouseenter:mouseleave"
+              placement="left">?</button>
+            <ng-template #popAHN>
+              <ul>
+                <li>Account Holder Name is required</li>
+                <li>Only alphabets and spaces are allowed</li>
+                <li>It should contain minimum 1 and maximum 50 characters</li>
+              </ul>
+            </ng-template>
+            <!--<button type="button" tabindex="-1" class="tool-tip" data-toggle="tooltip" data-placement="right" title="{{tootltipAccountHolderName}}">?</button>-->
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-md-12 popover-field">
+            <label for="inputPassword3">Bank Name</label>
+            <input type="text" class="form-control" pattern="^[a-zA-Z ]*" maxlength="50" id="" placeholder="Bank Name" formControlName="bankName"
+              name="bankName" style="text-transform:uppercase;">
+            <div class="msg" *ngIf="createForm.controls['bankName'].invalid && (createForm.controls['bankName'].dirty || createForm.controls['bankName'].touched)">
+              <div *ngIf="createForm.controls['bankName'].errors.required">
+                Required.
+              </div>
+              <div *ngIf="createForm.controls['bankName'].errors.pattern">
+                Only alphabets and spaces are allowed !
+              </div>
+            </div>
+            <button type="button" data-container="body" class="pop-over" [popover]="popBN" popoverTitle="Help" triggers="mouseenter:mouseleave"
+              placement="left">?</button>
+            <ng-template #popBN>
+              <ul>
+                <li>Bank Name is required</li>
+                <li>Bank Name allows only alphabets and spaces</li>
+                <li>It should contain minimum 1 and maximum 50 characters</li>
+              </ul>
+            </ng-template>
+            <!--<button type="button"  tabindex="-1" class="tool-tip" data-toggle="tooltip" data-placement="right" title="{{tootltipBankName}}">?</button>-->
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-md-12 popover-field">
+            <label for="inputPassword3">Bank Account #</label>
+            <input type="text" class="form-control" pattern="[0-9]*" maxlength="20" id="" placeholder="Bank Account #" formControlName="accountNo"
+              name="accountNo">
+            <div class="msg" *ngIf="createForm.controls['accountNo'].invalid && (createForm.controls['accountNo'].dirty || createForm.controls['accountNo'].touched)">
+              <div *ngIf="createForm.controls['accountNo'].errors.required">
+                Required.
+              </div>
+              <div *ngIf="createForm.controls['accountNo'].errors.minlength&&!createForm.controls['accountNo'].errors.pattern">
+                Enter at least 9 numbers.
+              </div>
+              <div *ngIf="createForm.controls['accountNo'].errors.pattern">
+                Only numbers allowed.
+              </div>
+            </div>
+            <button type="button" data-container="body" class="pop-over" [popover]="popBA" popoverTitle="Help" triggers="mouseenter:mouseleave"
+              placement="left">?</button>
+            <ng-template #popBA>
+              <ul>
+                <li>Bank Account # is required</li>
+                <li>Bank Account # allows only numbers </li>
+                <li>It should contain minimum 9 and maximum 20 numbers</li>
+              </ul>
+            </ng-template>
+            <!--<button type="button"  tabindex="-1" class="tool-tip" data-toggle="tooltip" data-placement="right" title="{{tootltipAccountNo}}">?</button>-->
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-12 popover-field">
+            <label for="inputPassword3">Routing #</label>
+            <input type="text" class="form-control" pattern="[0-9]*" maxlength="12" id="" placeholder="Routing #" formControlName="routingValue"
+              name="routingValue">
+            <div class="msg" *ngIf="createForm.controls['routingValue'].invalid && (createForm.controls['routingValue'].dirty || createForm.controls['routingValue'].touched)">
+              <div *ngIf="createForm.controls['routingValue'].errors.required">
+                Required.
+              </div>
+              <div *ngIf="createForm.controls['routingValue'].errors.minlength&&!createForm.controls['routingValue'].errors.pattern">
+                Enter at least 9 numbers.
+              </div>
+              <div *ngIf="createForm.controls['routingValue'].errors.pattern">
+                Only numbers allowed.
+              </div>
+            </div>
+            <button type="button" data-container="body" class="pop-over" [popover]="popRou" popoverTitle="Help" triggers="mouseenter:mouseleave"
+              placement="left">?</button>
+            <ng-template #popRou>
+              <ul>
+                <li>Routing # is required</li>
+                <li>Routing # allows only numbers</li>
+                <li>It should contain minimum 9 and maximum 12 numbers</li>
+              </ul>
+            </ng-template>
+            <!--<button type="button"  tabindex="-1" class="tool-tip" data-toggle="tooltip" data-placement="right" title="{{tootltipRoutingValue}}">?</button>-->
+          </div>
+        </div>
+        <div class="row" [hidden]="!isSaveCheckBox">
+          <div class="col-md-12">
+            <div class="checkbox-inline checkbox">
+              <input type="checkbox" formControlName="SaveBank" id="SaveBank" name="SaveBank" name="save" value="save" *ngIf="isSaveCheckBox">
+              <label for="SaveBank">
+          <span *ngIf="isSaveCheckBox"></span>Save Bank Details
+        </label>
+            </div>
+          </div>
+        </div>
+
+        <!--<input type="checkbox" formControlName="SaveBank" name="SaveBank" name="save" value="save" *ngIf="isSaveCheckBox">
+        <span *ngIf="isSaveCheckBox"> Save Bank Details</span>-->
+      </div>
+    </form>
+    <button class="btn btn-primary btn-search" (click)="saveBankDetails();" *ngIf="saveVisible" [disabled]="!createForm.valid">Save</button>
+  </div>
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>

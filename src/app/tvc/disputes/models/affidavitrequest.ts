@@ -1,0 +1,34 @@
+export interface IAffidavitRequest {
+    ViolatorId: number;
+    NonLiabilityReasonCode: string;
+    Comments: string;
+    DocumentPath: string;
+    CreatedUser: string;
+    Citation_Stage: string;
+    Citation_Status: string;
+    Citation_Type: string;
+    UserName: string;
+    CitatioIdCSV: string;
+    BeforeCitationIds: string;
+    AfterCitationIds: string;
+    TransferredViolatorId: number;
+    ICNId: number;
+    UserId: number;
+    LoginId: number;
+    ActivitySource: string;
+    TxnDate: Date;
+    FromCustomerId: number;
+    ToCustomerId: number;
+    StartEffectiveDate: string;
+    EndEffectiveDate: string;
+    VehicleNumber: string;
+    AffidavitId:number;
+    DisputeStatus:string;
+    ProcessedDate:Date;
+    successMessage: string;
+    errorMessage: string;
+    InvoiceIdCSV: string;
+    isStartTimeAdded:boolean;
+    isEndTimeAdded:boolean;
+    LinkSourceName: string;
+}

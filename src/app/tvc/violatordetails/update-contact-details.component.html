@@ -1,0 +1,568 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">TVC</a>
+        </li>
+        <li>
+          <a href="#">Violatordetails</a>
+        </li>
+        <li class="active">Address Information</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Update Address</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class=" col-md-12 text-right m-b-20">
+      <span id="" class="accno">Account #:{{accountId}}</span>
+      <button class="btn btn-primary btn-reset" (click)="exit()" type="submit">Exit</button>
+      <button class="btn btn-primary btn-search " (click)="goToAccountSummary()" type="submit">Back</button>
+    </div>
+  </div>
+  <!-- <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message> -->
+  <form role="form" name="updateAddresssForm" [formGroup]="updateAddresssForm" novalidate>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-bdr">
+          <h3>Address Information</h3>
+          <div class="pad-20">
+            <div class="row">
+              <div class="form-group popover-field col-md-6">
+                <label for="addressType" class="focused">Address Type</label>
+                <select class="form-control" placeholder="Address Type" id="addressType" name="addressType" (change)="getAddressTypeDetails($event.target.value)"
+                  formControlName="addressType">
+                    <option *ngFor="let address of addTypes" value="{{address.Key}}">{{address.Value}}</option>
+                     </select>
+                <button type="button" class="pop-over" [popover]="popAddType" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popAddType>
+                  Select Address Type
+                </ng-template>
+              </div>
+
+
+
+              <div class="form-group  popover-field col-md-6">
+                <label for="addressline1">Address Line1</label>
+                <input type="Text" class="form-control" id="addressline1" placeholder="Address Line1" formControlName="addressLine1">
+                <div class="msg" *ngIf="updateAddresssForm.controls['addressLine1'].invalid && (updateAddresssForm.controls['addressLine1'].dirty)">
+                  <div *ngIf="updateAddresssForm.controls['addressLine1'].errors.required">
+                    Required.
+                  </div>
+                  <div *ngIf="updateAddresssForm.controls['addressLine1'].errors.pattern">
+                    Special characters
+                    <> are not allowed.
+                  </div>
+                  <div *ngIf="updateAddresssForm.controls['addressLine1'].errors.maxlength">
+                    Maximum 50 characters are allowed.
+                  </div>
+                </div>
+                <button type="button" class="pop-over" [popover]="popAddline1" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popAddline1>
+                  <ul>
+                    <li>Address Line 1 is required</li>
+                    <li>It allows alphanumerics, spaces and all special characters except(
+                      <>).</li>
+                    <li>It should be minimum 1 character and maximum 50 characters long</li>
+                  </ul>
+                </ng-template>
+              </div>
+
+
+              <div class="form-group  popover-field col-md-6">
+                <label for="addressline2">Address Line2</label>
+                <input type="Text" class="form-control" id="addressline2" placeholder="Address Line2" formControlName="addressLine2">
+                <div class="msg" *ngIf="updateAddresssForm.controls['addressLine2'].invalid && (updateAddresssForm.controls['addressLine2'].dirty)">
+                  <div *ngIf="updateAddresssForm.controls['addressLine2'].errors.pattern">
+                    Special characters
+                    <> are not allowed.
+                  </div>
+                  <div *ngIf="updateAddresssForm.controls['addressLine2'].errors.maxlength">
+                    Maximum 50 characters are allowed.
+                  </div>
+                </div>
+                <button type="button" class="pop-over" [popover]="popAddline2" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popAddline2>
+                  <ul>
+                    <li>Address Line 2 allows alphanumerics, spaces and all special characters except(
+                      <>) .</li>
+                    <li>It should be minimum 1 character and maximum 50 characters long.</li>
+                  </ul>
+                </ng-template>
+              </div>
+
+
+              <div class="form-group  popover-field col-md-6">
+                <label for="addressline3">Address Line3</label>
+                <input type="Text" class="form-control" id="addressline3" placeholder="Address Line3" formControlName="addressLine3">
+                <div class="msg" *ngIf="updateAddresssForm.controls['addressLine3'].invalid && (updateAddresssForm.controls['addressLine3'].dirty)">
+                  <div *ngIf="updateAddresssForm.controls['addressLine3'].errors.pattern">
+                    Special characters
+                    <> are not allowed.
+                  </div>
+                  <div *ngIf="updateAddresssForm.controls['addressLine3'].errors.maxlength">
+                    Maximum 50 characters are allowed.
+                  </div>
+                </div>
+                <button type="button" class="pop-over" [popover]="popAddline3" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popAddline3>
+                  <ul>
+                    <li>Address Line 3 allows alphanumerics, spaces and all special characters except(
+                      <>) .</li>
+                    <li>It should be minimum 1 character and maximum 50 characters long.</li>
+                  </ul>
+                </ng-template>
+              </div>
+
+
+
+              <div class="form-group  popover-field col-md-6">
+                <label for="city">City</label>
+                <input type="Text" class="form-control" id="city" placeholder="City" formControlName="city">
+                <div class="msg" *ngIf="updateAddresssForm.controls['city'].invalid && (updateAddresssForm.controls['city'].dirty)">
+                  <div *ngIf="updateAddresssForm.controls['city'].errors.required">
+                    Required.
+                  </div>
+                  <div *ngIf="updateAddresssForm.controls['city'].errors.pattern">
+                    Only alphanumerics and space are allowed.
+                  </div>
+                  <div *ngIf="updateAddresssForm.controls['city'].errors.maxlength">
+                    Maximum 50 characters are allowed.
+                  </div>
+                </div>
+                <button type="button" class="pop-over" [popover]="popcity" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popcity>
+                  <ul>
+                    <li>City is required.</li>
+                    <li>It allows alphanumerics and spaces.</li>
+                    <li>Special Characters are not allowed.</li>
+                    <li>It should be minimum 1 character and maximum 50 characters long</li>
+                  </ul>
+                </ng-template>
+              </div>
+
+
+              <div class="col-md-6">
+                <div class="form-group col-md-6 popover-field">
+                  <label for="Zip1">Zip</label>
+                  <input type="Text" class="form-control" id="Zip1" placeholder="Zip1" formControlName="zip1">
+                  <div class="msg" *ngIf="updateAddresssForm.controls['zip1'].invalid && (updateAddresssForm.controls['zip1'].dirty)">
+                    <div *ngIf="updateAddresssForm.controls['zip1'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="updateAddresssForm.controls['zip1'].errors.pattern">
+                      Only numerics are allowed.
+                    </div>
+                    <div *ngIf="updateAddresssForm.controls['zip1'].errors.minlength && !updateAddresssForm.controls['zip1'].errors.pattern">
+                      Minimum {{zipMinlength}} characters are required.
+                    </div>
+                    <div *ngIf="updateAddresssForm.controls['zip1'].errors.maxlength && !updateAddresssForm.controls['zip1'].errors.pattern">
+                      Maximum {{zipMaxlength}} characters are allowed.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popzip" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popzip>
+                    <ul>
+                      <li>Zip 1 is required</li>
+                      <li>It allows only numbers.</li>
+                    </ul>
+                  </ng-template>
+                </div>
+                <div class="col-md-6 form-group popover-field">
+                  <input type="Text" class="form-control" id="Zip2" placeholder="Zip2" formControlName="zip2">
+                  <div class="msg" *ngIf="updateAddresssForm.controls['zip2'].invalid && (updateAddresssForm.controls['zip2'].dirty )">
+                    <div *ngIf="updateAddresssForm.controls['zip2'].errors.pattern">
+                      Only numerics are allowed.
+                    </div>
+                    <div *ngIf="updateAddresssForm.controls['zip2'].errors.maxlength && !updateAddresssForm.controls['zip2'].errors.pattern">
+                      Maximum 4 characters are allowed.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popzip1" data-container="body" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                    placement="left">?</button>
+                  <ng-template #popzip1>
+                    <ul>
+                      <li>Zip 2 allows only numbers.</li>
+                    </ul>
+                  </ng-template>
+                </div>
+              </div>
+
+              <div class="form-group col-md-6 popover-field">
+                <label for="State" class="focused">State</label>
+                <select class="form-control" placeholder="State" id="State" name="pltState" formControlName="state">
+                    <option selected="selected" value="">--Select--</option>
+                    <option *ngFor="let state of states" value="{{state.StateCode}}">{{state.StateName}}</option>
+                    </select>
+                <div class="msg" *ngIf="updateAddresssForm.controls['state'].invalid && (updateAddresssForm.controls['state'].dirty)">
+                  <div *ngIf="updateAddresssForm.controls['state'].errors.required">
+                    Required.
+                  </div>
+                </div>
+                <button type="button" class="pop-over" [popover]="popstate" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popstate>
+                  <ul>
+                    <li>State is required.</li>
+                    <li>Select State</li>
+                  </ul>
+                </ng-template>
+              </div>
+
+
+              <div class="form-group col-md-6 popover-field">
+                <label for="country" class="focused">Country</label>
+                <select class="form-control" placeholder="Country" id="country" name="country" (change)="getCountryBystate($event.target.value)"
+                  formControlName="country">
+                    <option selected="selected" value="">--Select--</option>
+                    <option *ngFor="let country of countries" value="{{country.CountryCode}}">{{country.CountryName}}</option>
+                    </select>
+                <div class="msg" *ngIf="updateAddresssForm.controls['country'].invalid && (updateAddresssForm.controls['country'].dirty )">
+                  <div *ngIf="updateAddresssForm.controls['country'].errors.required">
+                    Required.
+                  </div>
+                </div>
+                <button type="button" class="pop-over" [popover]="popcountry" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popcountry>
+                  <ul>
+                    <li>Country is required.</li>
+                    <li> Select Country.</li>
+                  </ul>
+                </ng-template>
+              </div>
+              <div class="form-group col-md-6">
+                <div class="checkbox checkbox-inline">
+                  <input formControlName="isPrimary" type="checkbox" id="primaryAdd">
+                  <label for="primaryAdd"> <span></span>Use As Primary Address </label>
+                </div>
+              </div>
+              <div class="col-md-6 m-t-20">
+                <button type="submit" [disabled]="(isUpdateAllowed&&submitButtonTitle=='Update')||(isAddAllowed&&submitButtonTitle=='Add')||isDmvAddress"
+                  (click)="addUpdateClick()" class="btn btn-primary btn-search">{{submitButtonTitle}}</button>
+                <button (click)="resetAddress()" class="btn btn-default btn-reset m-l-0">Reset</button>
+                <button (click)="viewAddressHistory()" [disabled]="isHistoryAllowed" class="btn btn-primary btn-search">View Histroy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="row">
+    <div class="col-md-12">
+      <form role="form" name="updateContactForm" [formGroup]="updateContactForm" novalidate>
+        <div class="table-bdr">
+          <h3>Contact Information</h3>
+          <div class="pad-20">
+            <div class="col-md-6">
+              <div class="form-group col-sm-8 popover-field">
+                <label for="DayPhone">Day Phone #
+                     <a href="javascript:;" (click)="deletePhoneConfirm(iPhoneResponseDayPhone.PhoneId)" *ngIf="!iPhoneResponseDayPhone.IsCommunication">
+                    Delete</a>
+                  </label>
+                <input type="text" class="form-control" id="DayPhone" placeholder="* Day Phone Number" name="DayPhone" formControlName="DayPhone"
+                  (keydown)="formatPhone($event)" (change)="validateDayPhoneAllZeros()" maxlength="14">
+                <div class="msg" *ngIf="updateContactForm.controls['DayPhone'].invalid && (updateContactForm.controls['DayPhone'].dirty || updateContactForm.controls['DayPhone'].touched)">
+                  <div *ngIf="updateContactForm.controls['DayPhone'].errors.required">
+                    Required.
+                  </div>
+                  <div *ngIf="updateContactForm.controls['DayPhone'].errors.pattern">
+                    Invalid phone number.
+                  </div>
+                  <div *ngIf="updateContactForm.controls['DayPhone'].errors.maxlength">
+                    Maximum 14 characters are allowed.
+                  </div>
+                </div>
+                <button type="button" class="pop-over" [popover]="popDphone" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popDphone>
+                  <ul>
+                    <li>Any One Phone # is required</li>
+                    <li>Day Phone allows only numbers</li>
+                  </ul>
+                </ng-template>
+                <div *ngIf="isInvalidDayPhone">Invalid phone number</div>
+              </div>
+              <div class="col-md-4 m-t-20 custom-control custom-radio" [ngClass]="isDeleteAllowed?'disabletextbox':''">
+                <input type="radio" name="preferredPhone" id="preferredPhone1" value="DayPhone" formControlName="preferredPhone" (change)="changePhoneValidation($event.target.value)"
+                  class="custom-control-input">
+                <label for="preferredPhone1" class="custom-control-description">Is Preferred?</label>
+
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group col-sm-8 popover-field">
+                <label for="">Evening Phone #
+                   <a href="javascript:;" (click)="deletePhoneConfirm(iPhoneResponseEveningPhone.PhoneId)" *ngIf="!iPhoneResponseEveningPhone.IsCommunication">
+                    Delete</a></label>
+                <input type="text" class="form-control" id="EveningPhone" placeholder="Evening Phone Number" formControlName="EveningPhone"
+                  (keydown)="formatPhone($event)" (change)="validateEveningPhoneAllZeros()" maxlength="14">
+                <div class="msg" *ngIf="updateContactForm.controls['EveningPhone'].invalid && (updateContactForm.controls['EveningPhone'].dirty || updateContactForm.controls['EveningPhone'].touched)">
+                  <div *ngIf="updateContactForm.controls['EveningPhone'].errors.required">
+                    Required.
+                  </div>
+                  <div *ngIf="updateContactForm.controls['EveningPhone'].errors.pattern">
+                    Invalid phone number.
+                  </div>
+                  <div *ngIf="updateContactForm.controls['EveningPhone'].errors.maxlength">
+                    Maximum 14 characters are allowed.
+                  </div>
+                </div>
+                <button type="button" class="pop-over" [popover]="popEphone" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popEphone>
+                  <ul>
+                    <li>Any One Phone # is required</li>
+                    <li>Evening Phone allows only numbers</li>
+                  </ul>
+                </ng-template>
+                <div *ngIf="isInvalidEveningPhone">Invalid phone number</div>
+              </div>
+              <div class="col-md-4 m-t-20 custom-control custom-radio">
+                <input type="radio" name="preferredPhone" id="preferredPhone2" value="EveningPhone" formControlName="preferredPhone" (change)="changePhoneValidation($event.target.value)">
+                <label for="preferredPhone2" [ngClass]="isDeleteAllowed?'disabletextbox':''">
+                    <span></span> Is Preferred?
+                   </label>
+
+              </div>
+            </div>
+
+            <div class="col-md-6 ">
+              <div class="form-group col-sm-8 popover-field">
+                <label for="MobileNo">Mobile Phone #
+                   <a href="javascript:;" (click)="deletePhoneConfirm(iPhoneResponseMobilePhone.PhoneId)" *ngIf="!iPhoneResponseMobilePhone.IsCommunication">
+                    Delete</a></label>
+                <input type="text" class="form-control" id="MobileNo" placeholder="* Mobile Phone Number" formControlName="MobileNo" (change)="validateMobilePhoneAllZeros()"
+                  (keydown)="formatPhone($event)" maxlength="14">
+                <div class="msg" *ngIf="updateContactForm.controls['MobileNo'].invalid && (updateContactForm.controls['MobileNo'].dirty || updateContactForm.controls['MobileNo'].touched)">
+                  <div *ngIf="updateContactForm.controls['MobileNo'].errors.required">
+                    Required.
+                  </div>
+                  <div *ngIf="updateContactForm.controls['MobileNo'].errors.pattern">
+                    Invalid phone number.
+                  </div>
+                  <div *ngIf="updateContactForm.controls['MobileNo'].errors.maxlength">
+                    Maximum 14 characters are allowed.
+                  </div>
+                </div>
+                <button type="button" class="pop-over" [popover]="popMphone" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popMphone>
+                  <ul>
+                    <li>Any One Phone # is required</li>
+                    <li>Mobile Phone allows only numbers</li>
+                  </ul>
+                </ng-template>
+                <div *ngIf="isInvalidMobilePhone">Invalid phone number</div>
+              </div>
+              <div class="col-md-4 m-t-20 custom-control custom-radio">
+                <input type="radio" name="preferredPhone" id="preferredPhone3" value="MobileNo" formControlName="preferredPhone" (change)="changePhoneValidation($event.target.value)">
+                <label for="preferredPhone3" [ngClass]="isDeleteAllowed?'disabletextbox':''">
+                    <span></span> Is Preferred?
+                  </label>
+              </div>
+            </div>
+
+            <div class="col-md-6 ">
+              <div class="form-group col-sm-5 popover-field">
+                <label for="WorkPhone">Work Phone #</label>
+                <input type="text" class="form-control" id="WorkPhone" placeholder="Work Phone Number" formControlName="WorkPhone" (keydown)="formatPhone($event)"
+                  (change)="validateWorkPhoneAllZeros()" maxlength="14">
+                <div class="msg" *ngIf="updateContactForm.controls['WorkPhone'].invalid && (updateContactForm.controls['WorkPhone'].dirty || updateContactForm.controls['WorkPhone'].touched)">
+                  <div *ngIf="updateContactForm.controls['WorkPhone'].errors.required">
+                    Required.
+                  </div>
+                  <div *ngIf="updateContactForm.controls['WorkPhone'].errors.pattern">
+                    Invalid phone number.
+                  </div>
+                  <div *ngIf="updateContactForm.controls['WorkPhone'].errors.maxlength">
+                    Maximum 14 characters are allowed.
+                  </div>
+                </div>
+                <button type="button" data-container="body" class="pop-over" [popover]="popwphone" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                  placement="left">?</button>
+                <ng-template #popwphone>
+                  <ul>
+                    <li>Any One Phone # is required.</li>
+                    <li>Work Phone allows only numbers.</li>
+                  </ul>
+                </ng-template>
+                <div *ngIf="isInvalidWorkPhone">Invalid phone number</div>
+              </div>
+              <div class="form-group col-md-3 popover-field">
+                <label for="ext">Ext #</label>
+                <input type="text" class="form-control" id="ext" placeholder="Ext" formControlName="ext" maxlength="5" (change)="changeExtension()">
+                <div class="msg" *ngIf="updateContactForm.controls['ext'].invalid && (updateContactForm.controls['ext'].dirty || updateContactForm.controls['ext'].touched)">
+                  <div *ngIf="updateContactForm.controls['ext'].errors.pattern">
+                    Only numerics are allowed.
+                  </div>
+                  <div *ngIf="updateContactForm.controls['ext'].errors.maxlength">
+                    Maximum 5 characters are allowed.
+                  </div>
+                </div>
+                <button type="button" data-container="body" class="pop-over" [popover]="popwphone" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                  placement="left">?</button>
+                <ng-template #popwphone>
+                  <ul>
+                    <li>Extension # allows only numbers</li>
+                  </ul>
+                </ng-template>
+              </div>
+              <div class="col-md-4 m-t-20 custom-control custom-radio">
+                <input type="radio" name="preferredPhone" id="preferredPhone4" value="WorkPhone" formControlName="preferredPhone" (change)="changePhoneValidation($event.target.value)">
+                <label for="preferredPhone4" [ngClass]="isDeleteAllowed?'disabletextbox':''">
+                    <span></span> Is Preferred?
+                  </label>
+                <a href="javascript:;" (click)="deletePhoneConfirm(iPhoneResponseWorkPhone.PhoneId)" *ngIf="!iPhoneResponseWorkPhone.IsCommunication">
+                    Delete</a>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group col-sm-8 popover-field">
+                <label for="Fax">Fax #
+                     <a href="javascript:;" (click)="deletePhoneConfirm(iPhoneResponseFax.PhoneId)" *ngIf="!iPhoneResponseFax.IsCommunication">
+                    Delete</a>
+                  </label>
+                <input type="text" class="form-control" id="Fax" placeholder="Fax" formControlName="Fax" (keydown)="formatPhone($event)"
+                  (change)="validateFaxAllZeros()" maxlength="14">
+                <div class="msg" *ngIf="updateContactForm.controls['Fax'].invalid && (updateContactForm.controls['Fax'].dirty || updateContactForm.controls['Fax'].touched)">
+                  <div *ngIf="updateContactForm.controls['Fax'].errors.required">
+                    Required.
+                  </div>
+                  <div *ngIf="updateContactForm.controls['Fax'].errors.pattern">
+                    Invalid phone number.
+                  </div>
+                  <div *ngIf="updateContactForm.controls['Fax'].errors.maxlength">
+                    Maximum 14 characters are allowed.
+                  </div>
+                </div>
+                <button type="button" class="pop-over" [popover]="popfax" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #popfax>
+                  <ul>
+                    <li>Fax allows only numbers</li>
+                  </ul>
+                </ng-template>
+                <div *ngIf="isInvalidFax">Invalid phone number</div>
+                <label class="radio-inline" [ngClass]="isDeleteAllowed?'disabletextbox':''">                 
+                </label>
+              </div>
+            </div>
+
+            <div class="col-md-6 m-t-20">
+              <button type="submit" (click)="addUpdateContactClick()" [disabled]="(isUpdateAllowed&&contactButtonTitle=='Update')||(isAddAllowed&&contactButtonTitle=='Add')"
+                class="btn btn-primary btn-search">{{contactButtonTitle}}</button>
+              <button (click)="resetContactInfo()" class="btn btn-default btn-reset m-l-0">Reset</button>
+              <button (click)="viewContactHistoryClick()" [disabled]="isHistoryAllowed" class="btn btn-primary btn-search">View Histroy</button>
+            </div>
+            <div class="clear">
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Address History -->
+  <div class="table-responce" *ngIf="isAddressHistoryClicked">
+    <div class="panel panel-default m-t-20">
+      <div class="panel-heading" *ngIf="addressResponse&&addressResponse.length">Address History </div>
+      <div class="panel-body table-bdr" *ngIf="addressResponse&&addressResponse.length">
+        <table class="table " *ngIf="addressResponse&&addressResponse.length">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Address</th>
+              <th>Is Prefefred</th>
+              <th>Updated By</th>
+              <th>Created Date</th>
+              <th>Updated Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let addressResp of addressResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount }">
+              <td>{{addressResp.Type}}</td>
+              <td>
+                <div role="alert" data-html="true">
+                  <span [innerHTML]="addressResp.FullAddressHistory"></span>
+                </div>
+              </td>
+              <td *ngIf="addressResp.IsPreferred">Yes</td>
+              <td *ngIf="!addressResp.IsPreferred">No</td>
+              <td>{{addressResp.UpdatedUser}}</td>
+              <td>{{addressResp.CreatedDate|customDateTimeFormat}}</td>
+              <td>{{addressResp.UpdatedDate|customDateTimeFormat}}</td>
+              <td>{{addressResp.HistoryAction}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="row page-info" *ngIf='addressResponse && addressResponse.length'>
+          <div class="col-md-6 text-left">
+            <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Address History -->
+  <!-- Contact History -->
+  <div class="table-responce" *ngIf="!isAddressHistoryClicked">
+    <div class="panel panel-default m-t-20" *ngIf="iPhoneResponseGridView && iPhoneResponseGridView.length">
+      <div class="panel-heading" *ngIf="iPhoneResponseGridView && iPhoneResponseGridView.length">Contact History </div>
+      <div class="panel-body bordered">
+        <table class="table table-bordered table-sm" *ngIf="iPhoneResponseGridView && iPhoneResponseGridView.length">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Phone #</th>
+              <th>Preference</th>
+              <th>Created By</th>
+              <th>Created Date/Time</th>
+              <th>Updated User</th>
+              <th> Updated Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let iPhoneRes of iPhoneResponseGridView | paginate: { itemsPerPage: pageContactItemNumber, currentPage: pContact, totalItems:totalContactRecordCount }">
+              <td>{{iPhoneRes.Type}}</td>
+              <td>{{iPhoneRes.PhoneNumber}}</td>
+              <td *ngIf="iPhoneRes.IsCommunication">Yes</td>
+              <td *ngIf="!iPhoneRes.IsCommunication">No</td>
+              <td>{{iPhoneRes.CreatedUser}}</td>
+              <td>{{iPhoneRes.CreatedDate|customDateTimeFormat}}</td>
+              <td>{{iPhoneRes.UpdatedUser}}</td>
+              <td>{{iPhoneRes.UpdatedDate|customDateTimeFormat}}</td>
+              <td>{{iPhoneRes.HistoryAction}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="row page-info" *ngIf='iPhoneResponseGridView && iPhoneResponseGridView.length'>
+          <div class="col-md-6 text-left">
+            <p>Display {{starContacttItemNumber}} - {{endContactItemNumber}} Records of {{totalContactRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls (pageChange)="pageContactChanged($event)"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact History -->
+</div>
+
+<app-success-failure-alerts-message (setFlag)="setOutputFlag($event)" [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle'
+  [msgDesc]='msgDesc' (onOk)="deletePhone($event)"></app-success-failure-alerts-message>
+
+<app-blocked-list [blockListArray]="blockListDetails" (status)="createUpdateAddressPopup()"></app-blocked-list>

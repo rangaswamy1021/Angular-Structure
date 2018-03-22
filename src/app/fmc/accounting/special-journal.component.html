@@ -1,0 +1,156 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">FMC</a></li>
+        <li><a href="#">Accounting</a></li>
+        <li class="active">Special Journal</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Special Journal</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      Special Journal
+    </div>
+    <div class="panel-body bordered">
+      <form role="form" name="searchSpecialJournalForm" [formGroup]="searchSpecialJournalForm" novalidate (ngSubmit)="specialJournalSearchOnClick()">
+        <div class="row">
+          <!--<div class="col-md-6">-->
+          <div class="col-md-6 form-group">
+            <label for="journalType" class="focused">Journal Type</label>
+            <select class="form-control" id="journalType" name="journalTypeSelected" formControlName="journalTypeSelected" (change)='onJournalTypeSelected()'>
+               <option selected="selected"  [ngValue]="0">--Select--</option>
+               <option *ngFor='let journalType of objjournaltyperesponse' value="{{journalType.SpecialJournalId}}" >{{journalType.Description}}</option>
+            </select>
+          </div>
+          <!--</div>-->
+          <!--<div class="col-md-6">-->
+          <div class="col-md-6 form-group">
+            <label for="accountNo" class="focused">G/L Account #</label>
+            <select class="form-control" id="accountNo" formControlName="glAccountSelected" name="glAccountSelected">
+                 <option selected="selected" [ngValue]="0">--Select--</option>
+                 <option *ngFor='let glAccount of objglaccountresponse' value="{{glAccount.ChartOfAccountId}}">{{glAccount.GLAccount}}</option>
+                </select>
+          </div>
+          <!--</div>-->
+
+          <!--<div class="col-md-6">-->
+          <div class="col-md-6 form-group">
+            <label for="CustomerId">Customer #</label>
+            <input type="text" class="form-control" placeholder="Customer" id="CustomerId" formControlName="customer">
+            <div class="msg" *ngIf="searchSpecialJournalForm.controls['customer'].invalid && (searchSpecialJournalForm.controls['customer'].dirty || searchSpecialJournalForm.controls['customer'].touched)">
+              <div *ngIf="searchSpecialJournalForm.controls['customer'].errors.pattern">
+                Required
+              </div>
+            </div>
+          </div>
+          <!--</div>-->
+          <!--<div class="col-md-6">-->
+          <div class="col-md-6 form-group">
+            <label for="timePeriod" class="focused">Time Period</label>
+            <my-date-range-picker (inputFieldChanged)='onDateRangeFieldChanged($event)' placeholder="MM/DD/YYYY - MM/DD/YYYY" id="timePeriod"
+              name="dateRange" [options]="myDateRangePickerOptions" formControlName="dateRange"></my-date-range-picker>
+            <div class="show-error" *ngIf="!invalidDate && searchSpecialJournalForm.controls['dateRange'].invalid && (searchSpecialJournalForm.controls['dateRange'].dirty || searchSpecialJournalForm.controls['dateRange'].touched)">
+              <div *ngIf="searchSpecialJournalForm.controls['dateRange'].errors.required">
+                Required
+              </div>
+            </div>
+            <div class="show-error" *ngIf="invalidDate">
+              <div>Invalid Date Range</div>
+            </div>
+            <!--<input class="form-control" autocomplete="off" placeholder="Daterangepicker" bsDaterangepicker #dpr="bsDaterangepicker" name="dateRange"
+                formControlName="dateRange" [(ngModel)]="timePeriodValue">-->
+          </div>
+          <!--</div>-->
+        </div>
+
+        <div class="row">
+          <div class="col-md-4 col-md-offset-2 pull-right">
+            <div class="form-horizontal m-b-10">
+              <button type="submit" class="btn btn-primary btn-search" [disabled]="disableSearchButton">Search</button>
+              <button class="btn btn-default btn-reset" type="button" (click)="reset()">Reset</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">Special Journal Entries </div>
+    <div class="panel-body bordered">
+      <table class="table table-bordered table-sm" *ngIf='objspecialjournalresponse && objspecialjournalresponse.length'>
+        <thead>
+          <tr>
+              <th (click)="sortDirection('CustomerId')" class="sorting-handle"> Customer #
+                  <span *ngIf="gridArrowCustomerId">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+              </th>
+              <th (click)="sortDirection('Txntype')" class="sorting-handle"> Txn Type 
+                  <span *ngIf="gridArrowTxntype">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+              </th>
+            <th>G/L Acc #</th>
+            <th (click)="sortDirection('GL_TXNID')" class="sorting-handle"> G/L Txn #
+                <span *ngIf="gridArrowGL_TXNID">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+            </th>
+            <th>Link #</th>
+            <th>Date</th>
+            <th>Debit</th>
+            <th>Credit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let specialjournal of objspecialjournalresponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount };">
+            <td>{{specialjournal.CustomerId}}</td>
+            <td>{{specialjournal.TxnType}}</td>
+            <td>{{specialjournal.ChartOfAccountId}}</td>
+            <td>{{specialjournal.GLTransactionId}}</td>
+            <td>{{specialjournal.LinkId}}</td>
+            <td>{{specialjournal.PostedDate| customDateFormat}}</td>
+            <td>
+              <p class="pull-right">{{specialjournal.DebitAmount | currencycustom}}</p>
+            </td>
+            <td>
+              <p class="pull-right">{{specialjournal.CreditAmount| currencycustom}}</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf='!objspecialjournalresponse || objspecialjournalresponse.length==0'>
+        No Special Journal entries to display
+      </div>
+    </div>
+    <div *ngIf="totalRecordCount>=11">
+      <div class="row page-info" *ngIf="(this.objspecialjournalresponse && this.objspecialjournalresponse.length > 0)">
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>

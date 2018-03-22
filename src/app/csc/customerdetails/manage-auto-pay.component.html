@@ -1,0 +1,217 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Payments</a></li>
+        <li class="active">Manage Auto Pay</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Auto Pay </h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"
+  (onOk)="userAction($event)"></app-success-failure-alerts-message>
+
+<div class="content" *ngIf="!isNonRevenueCustomer">
+  <app-account-info></app-account-info>
+  <div class="table-bdr">
+    <h3>Manage Auto Pay</h3>
+    <div class="pad-10">
+      <form role="form" [formGroup]="manageAutoPayFrom" name="manageAutoPayFrom">
+        <div class="row">
+          <div class="col-md-12">
+            <div *ngFor="let entry of radioButtonsList;let idx = index" class="custom-control custom-radio radio-inline">
+              <input formControlName="rdoRebillType" id="{{ entry.LookUpTypeCodeDesc }}" name="rdoRebillType" type="radio" (change)="rebillTypeChnage(entry.LookUpTypeCode)"
+                [(ngModel)]="customerAutoRebillType" class="custom-control-input" [value]="entry.LookUpTypeCode">
+              <label for="{{ entry.LookUpTypeCodeDesc }}" class="custom-control-description">{{ entry.LookUpTypeCodeDesc }}
+                </label>
+            </div>
+          </div>
+        </div>
+         <div class="row">
+        <div *ngIf="accountType && accountType == 'PREPAID'">
+          <div class="col-md-6 form-group">
+            <label> Threshold Amount ($)  </label>
+            <input type="text" class="form-control" MaxLength="12" placeholder="Threshold Amount ($)" id="thresholdAmount" name="thresholdAmount"
+              formControlName="thresholdAmount" [(ngModel)]="customerThresholdAmount">
+            <div class="msg" *ngIf="manageAutoPayFrom.controls['thresholdAmount'].invalid && (manageAutoPayFrom.controls['thresholdAmount'].dirty || manageAutoPayFrom.controls['thresholdAmount'].touched)">
+              <div *ngIf="manageAutoPayFrom.controls['thresholdAmount'].errors.required">
+                Required
+              </div>
+              <div *ngIf="manageAutoPayFrom.controls['thresholdAmount'].errors.pattern">
+                Invalid amount
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 form-group">
+            <label> Auto Replenishment Amount ($) </label>
+            <input type="text" class="form-control" MaxLength="12" placeholder="Auto Replenishment Amount ($)" id="rebillAmount" name="rebillAmount"
+              formControlName="rebillAmount" [(ngModel)]="customerAutoReplenishmentAmount">
+            <div class="msg" *ngIf="manageAutoPayFrom.controls['rebillAmount'].invalid && (manageAutoPayFrom.controls['rebillAmount'].dirty || manageAutoPayFrom.controls['rebillAmount'].touched)">
+              <div *ngIf="manageAutoPayFrom.controls['rebillAmount'].errors.required">
+                Required
+              </div>
+              <div *ngIf="manageAutoPayFrom.controls['rebillAmount'].errors.pattern">
+                Invalid amount
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 form-group">
+            <label> Low Balance Amount ($)  </label>
+            <input type="text" class="form-control" MaxLength="12" placeholder="Low Balance Amount ($)" id="lowBalanceAmount" name="lowBalanceAmount"
+              formControlName="lowBalanceAmount">
+            <div class="msg" *ngIf="manageAutoPayFrom.controls['lowBalanceAmount'].invalid && (manageAutoPayFrom.controls['lowBalanceAmount'].dirty || manageAutoPayFrom.controls['lowBalanceAmount'].touched)">
+              <div *ngIf="manageAutoPayFrom.controls['lowBalanceAmount'].errors.required">
+                Required
+              </div>
+              <div *ngIf="manageAutoPayFrom.controls['lowBalanceAmount'].errors.pattern">
+                Invalid amount
+              </div>
+            </div>
+          </div>
+        </div>
+         <div *ngIf="accountType && accountType != 'PREPAID'">
+        <div class="col-md-6 form-group">
+          <label> CAP Amount ($)  </label>
+          <input type="text" class="form-control" MaxLength="12" placeholder="CAP Amount ($)" id="capAmount" name="thresholdAmount"
+            formControlName="capAmount">
+          <div class="msg" *ngIf="manageAutoPayFrom.controls['capAmount'].invalid && (manageAutoPayFrom.controls['capAmount'].dirty || manageAutoPayFrom.controls['capAmount'].touched)">
+            <div *ngIf="manageAutoPayFrom.controls['capAmount'].errors.required">
+              Required
+            </div>
+            <div *ngIf="manageAutoPayFrom.controls['capAmount'].errors.pattern">
+              Invalid amount
+            </div>
+          </div>
+        </div>
+         </div>
+        <div class="col-md-12 ">
+          <button type="submit" class="btn btn-primary btn-search" [disabled]="disableUpdateButton" (click)="alertClick()">Update</button>
+          <button type="reset" class="btn btn-default btn-reset" (click)="resetForm()">Reset</button>
+        </div>
+         </div>
+      </form>
+    </div>
+  </div>
+
+  <!--<div id="confirm-dialog" class="modal fade refund-request-modal" role="dialog">
+    <div class="modal-dialog" role="document" style="width: 400px;">
+      <div class="modal-content">
+        <div class="modal-body" style="padding: 15px;">
+          <p *ngIf="customerAutoRebillType && customerAutoRebillType == 'Cash'">
+            By disabling Auto Pay, you will need to pay with Cash or Check to keep the Account in good standing
+          </p>
+          <p *ngIf="customerAutoRebillType && customerAutoRebillType != 'Cash'">
+            Are you sure you want to change the Replenishment details? </p>
+
+          <button class="btn btn-primary btn-search" (click)='updateRebillTypeAmounts()'>OK</button>
+          <button class="btn btn-primary btn-search" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>-->
+
+
+  <div class="table-bdr">
+    <h3>Auto Rebill Hold</h3>
+    <div class="pad-10">
+      <div class="row">
+        <form role="form" [formGroup]="manageAutoPayFromfordate" name="manageAutoPayFromfordate" (ngSubmit)="updateAutorebillManualHold()">
+          <div class="col-md-6 form-group">
+            <label id="focused">End effective date</label>
+            <my-date-picker [options]="myDatePickerOptions" formControlName="holdEndDateDate" placeholder="DD/MM/YYYY" MaxLength="10"
+              id="rdoRebillType" name="rdoRebillType" (inputFieldChanged)='onDateRangeFieldChanged($event)' [(ngModel)]="customerRebillHoldEndEffectiveDate"></my-date-picker>
+            <div *ngIf="!invalidDate && manageAutoPayFromfordate.controls['holdEndDateDate'].invalid && (manageAutoPayFromfordate.controls['holdEndDateDate'].dirty || manageAutoPayFromfordate.controls['holdEndDateDate'].touched)"
+              class="msg">
+              <div *ngIf="manageAutoPayFromfordate.controls['holdEndDateDate'].errors.required">
+                Required.
+              </div>
+            </div>
+            <div class="msg" *ngIf="invalidDate">
+              <div> Invalid Date Range</div>
+            </div>
+            <!--<input type="text" placeholder=" " MaxLength="10" [minDate]="minDate" [maxDate]="maxDate " #dp="bsDatepicker" bsDatepicker
+                [(bsValue)]="bsValue" class="form-control" [(ngModel)]="customerRebillHoldEndEffectiveDate" formControlName="holdEndDateDate"
+                id="rdoRebillType" name="rdoRebillType">-->
+          </div>
+          <div class="col-md-12 ">
+            <button type="submit" [disabled]="disableHoldButton" class="btn btn-primary btn-search">Rebill Hold</button>
+            <button type="reset" class="btn btn-default btn-reset" (click)="resetFormforhold()">Reset</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-bdr">
+    <h3>Monthly Usage</h3>
+    <div class="pad-10">
+      <div class="row">
+        <div class="col-md-4">
+          <table class="table">
+            <tbody>
+              <tr>
+                <td> {{labelMonthOne}} </td>
+                <td *ngIf="labelMonthTwoUsage ;else NABlock" class="text-right"> {{labelMonthOneUsage | currency:'USD':true:'1.2-2'}} </td>
+              </tr>
+              <tr>
+                <td> {{labelMonthTwo}} </td>
+                <td *ngIf="labelMonthTwoUsage ;else NABlock" class="text-right"> {{labelMonthTwoUsage | currency:'USD':true:'1.2-2'}} </td>
+
+              </tr>
+              <tr>
+                <td>{{labelMonthThree}} </td>
+                <td *ngIf="labelMonthThreeUsage ;else NABlock" class="text-right"> {{labelMonthThreeUsage| currency:'USD':true:'1.2-2'}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <ng-template #NABlock>
+            <td class="text-right"> N/A </td>
+          </ng-template>
+        </div>
+        <div class="col-md-4">
+          <table class="table">
+            <tbody>
+              <tr>
+                <td> Monthly Average </td>
+                <td *ngIf="monthlyAvgAmount ;else NABlock" class="text-right"> {{monthlyAvgAmount | currency:'USD':true:'1.2-2'}} </td>
+              </tr>
+              <tr>
+                <td> Daily Average </td>
+                <td *ngIf="dailyAvgAmount ;else NABlock" class="text-right"> {{dailyAvgAmount | currency:'USD':true:'1.2-2'}} </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-md-4">
+          <table class="table">
+            <tbody>
+              <tr>
+                <td> Previous Monthly Average </td>
+                <td *ngIf="prevMonthlyAvg ;else NABlock " class="text-right"> {{prevMonthlyAvg | currency:'USD':true:'1.2-2'}} </td>
+              </tr>
+              <tr>
+                <td> Previous Daily Average </td>
+                <td *ngIf="prevDailyAvg ;else NABlock " class="text-right">{{prevDailyAvg | currency:'USD':true:'1.2-2'}} </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content" *ngIf="isNonRevenueCustomer">
+  <app-account-info></app-account-info>
+  <div class="alert alert-info" role="alert">
+    You are not allowed to do this operation
+  </div>
+</div>

@@ -1,0 +1,204 @@
+<div class="page-title-header">
+  <div class="row">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Documents</a></li>
+        <li class="active">Documents Violator Search</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Documents Violator Search</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <p class="text-right m-b-10">
+        <span class="glyphicon glyphicon-exclamation-sign exclamation-color" aria-hidden="true"></span> Enter input in any
+        of the fields below.</p>
+    </div>
+  </div>
+  <div class="alert alert-warning alert-dismissible" role="alert" *ngIf="errorBlock">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <strong>{{errorHeading}}</strong> {{errorMessage}}
+  </div>
+  <div class="row">
+    <form [formGroup]="violatorSearchForm" name="violatorSearchForm" role="form" (ngSubmit)="onSubmit()" novalidate>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="form-group col-md-12">
+            <label for="Invoice No.">Invoice #</label>
+            <input type="text" pattern="^[A-Za-z0-9]+$" id="InvoiceNo" name="InvoiceNo" formControlName="InvoiceNo" class="form-control"
+              placeholder="Invoice #">
+            <div class="msg" *ngIf="violatorSearchForm.controls['InvoiceNo'].invalid && (violatorSearchForm.controls['InvoiceNo'].dirty || violatorSearchForm.controls['InvoiceNo'].touched)">
+              <div *ngIf="violatorSearchForm.controls['InvoiceNo'].errors.pattern">
+                Only alphanumerics allowed.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="form-group col-md-12">
+            <label for="Invoice Ref No.">Invoice Ref #</label>
+            <input type="text" pattern="^[A-Za-z0-9]+$" id="InvoiceRefNo" name="InvoiceRefNo" formControlName="InvoiceRefNo" class="form-control"
+              placeholder="Invoice Ref #">
+            <div class="msg" *ngIf="violatorSearchForm.controls['InvoiceRefNo'].invalid && (violatorSearchForm.controls['InvoiceRefNo'].dirty || violatorSearchForm.controls['InvoiceRefNo'].touched)">
+              <div *ngIf="violatorSearchForm.controls['InvoiceRefNo'].errors.pattern">
+                Only alphanumerics allowed.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="form-group col-md-12">
+            <label for="Trip No.">Trip #</label>
+            <input type="text" pattern="[0-9]*" id="TripNo" name="TripNo" formControlName="TripNo" class="form-control" placeholder="Trip #">
+            <div class="msg" *ngIf="violatorSearchForm.controls['TripNo'].invalid && (violatorSearchForm.controls['TripNo'].dirty || violatorSearchForm.controls['TripNo'].touched)">
+              <div *ngIf="violatorSearchForm.controls['TripNo'].errors.pattern">
+                Only numbers allowed.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="form-group col-md-12">
+            <label for="Account No.">Account #</label>
+            <input type="text" pattern="[0-9]*" id="AccountNo" name="AccountNo" formControlName="AccountNo" class="form-control" placeholder="Account #">
+            <div class="msg" *ngIf="violatorSearchForm.controls['AccountNo'].invalid && (violatorSearchForm.controls['AccountNo'].dirty || violatorSearchForm.controls['AccountNo'].touched)">
+              <div *ngIf="violatorSearchForm.controls['AccountNo'].errors.pattern">
+                Only numbers allowed.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="form-group col-md-12">
+            <label for="First Name">First Name</label>
+            <input type="text" pattern="^[\sa-zA-Z]+$" id="Fname" name="Fname" formControlName="Fname" class="form-control" placeholder="First Name">
+            <div class="msg" *ngIf="violatorSearchForm.controls['Fname'].invalid && (violatorSearchForm.controls['Fname'].dirty || violatorSearchForm.controls['Fname'].touched)">
+              <div *ngIf="violatorSearchForm.controls['Fname'].errors.pattern">
+                Only alphabets and spaces are allowed !
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="form-group col-md-12">
+            <label for="Last Name">Last Name</label>
+            <input type="text" pattern="^[-\sa-zA-Z]+$" id="Lastname" name="Lastname" formControlName="Lastname" class="form-control"
+              placeholder="Last Name">
+            <div class="msg" *ngIf="violatorSearchForm.controls['Lastname'].invalid && (violatorSearchForm.controls['Lastname'].dirty || violatorSearchForm.controls['Lastname'].touched)">
+              <div *ngIf="violatorSearchForm.controls['Lastname'].errors.pattern">
+                It allows only alphabets, spaces and (-) !
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="form-group col-md-12">
+            <label for="Platno">Plate #</label>
+            <input type="text" pattern="^[A-Za-z0-9]+$" id="PlateNo" name="PlateNo" formControlName="PlateNo" class="form-control" placeholder="Plate #">
+            <div class="msg" *ngIf="violatorSearchForm.controls['PlateNo'].invalid && (violatorSearchForm.controls['PlateNo'].dirty || violatorSearchForm.controls['PlateNo'].touched)">
+              <div *ngIf="violatorSearchForm.controls['PlateNo'].errors.pattern">
+                Only alphanumerics allowed.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="form-group col-md-12">
+            <label for="Address">Physical Address</label>
+            <input type="text" id="Address" name="Address" formControlName="Address" class="form-control" placeholder="Physical Address">
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <button type="submit" class="btn btn-primary btn-search">Search</button>
+        <button type="reset" class="btn btn-default btn-reset" (click)="resetSearch()">Reset</button>
+        <button type="submit" class="btn btn-default btn-reset" (click)=BackToLinkPage()>Back</button>
+      </div>
+    </form>
+  </div>
+  <div class="row m-t-20" *ngIf='violatorSearchResponse && violatorSearchResponse.length'>
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <h3>Account Search Results</h3>
+        <div class="pad-10">
+          <div class="table-responsive">
+          <table class="table">
+            <thead class="nowrap">
+              <tr>
+                <th>Account #</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Address</th>
+                <th>Outstanding Count</th>
+                <th>Balance Due</th>
+                <th>Select</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let res of violatorSearchResponse| paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount };">
+                <td> {{res.ViolatorID}} </td>
+                <td> {{res.ViolatorFirstName}} </td>
+                <td> {{res.ViolatorSecondName}} </td>
+                <td> {{res.FullAddress}} </td>
+                <td> {{res.InvoicesCount}} </td>
+                <td> {{res.TotalOutstandingAmount | currency:'USD':true:'1.2-2'}} </td>
+                <td><a (click)="ViewButton(res)">select</a> </td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="row page-info" *ngIf="violatorSearchResponse[0].ReCount>10">
+            <div class="col-md-6 text-left">
+              <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+            </div>
+            <div class="col-md-6 text-right">
+              <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row m-t-20" *ngIf='!(violatorSearchResponse && violatorSearchResponse.length)'>
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <h3> Account Search Results</h3>
+        <div class="status-content pad-10">
+          <p>No records to display</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="text-center">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  </div>

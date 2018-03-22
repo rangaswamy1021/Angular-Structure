@@ -1,0 +1,378 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+          <li><a href="#">SAC</a></li>
+          <li><a href="#">Manage Plans</a></li>
+          <li class="active">Update Plan</li>
+        </ol>      
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Update Plan</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <!--form started-->
+  <!--plans grid started-->
+  <form role="form" name="updateForm" [formGroup]="updateForm">
+    <div class="panel panel-default">
+      <div class="panel-heading" role="tab" id="headingOne">
+        <h4 class="panel-title">
+          <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Plan Details</a>
+        </h4>
+      </div>
+      <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+        <div class="panel-body bordered">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-sm-12 popover-field" #accountType>
+                  <label class="focused">Account Type</label>
+                  <select class="form-control" id="accountType" name="accountType" formControlName="accountType" [(ngModel)]="getPlanResponses.ParentPlanName"
+                    disabled="disabled">
+                    <option value="">--Select--</option>
+                    <option value="PREPAID">PrePaid</option>
+                    <option value="POSTPAID">PostPaid</option>
+                 </select>
+                  <div class="msg" *ngIf="updateForm.controls['accountType'].invalid && (updateForm.controls['accountType'].dirty || updateForm.controls['accountType'].touched)">
+                    Toll Type is required
+                  </div>
+                  <button type="button" class="pop-over" popover="Account Type is required, Select Account Type" triggers="mouseenter:mouseleave"
+                    placement="left">?</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-sm-12 popover-field">
+                  <label for="planName">Plan Name</label>
+                  <input type="text" class="form-control" placeholder="Plan Name" id="planName" name="planName" formControlName="planName"
+                    maxlength="50" [(ngModel)]="getPlanResponses.Name">
+                  <div class="msg" *ngIf="updateForm.controls['planName'].invalid && (updateForm.controls['planName'].dirty || updateForm.controls['planName'].touched)">
+                    <div *ngIf="updateForm.controls['planName'].errors.required">
+                      Plan Name is Required.
+                    </div>
+                    <div *ngIf="updateForm.controls['planName'].errors.pattern">
+                      Only alphanumerics, (-) and spaces are allowed and Initial space(s) not allowed.
+                    </div>
+                    <div *ngIf="updateForm.controls['planName'].errors.maxlength">
+                      Maximum 50 characters are allowed.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popPN" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popPN>
+                    <ul>
+                      <li>Plan Name is reqired </li>
+                      <li>It allows only alphanumerics, spaces and hypen(-)</li>
+                      <li>Special characters are not allowed</li>
+                      <li>It should be minimum 1 character and maximum 50 characters long</li>
+                    </ul>
+                  </ng-template>
+                </div>
+                <!--<button type="button" class="tool-tip col-sm-1 width" data-toggle="tooltip" data-placement="right" title="Plan Name is reqired, It allows only alphanumerics, spaces and hypen(-), special characters are not allowed, It should be minimum 1 character and maximum 50 characters long ">?</button>-->
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-sm-12 popover-field" #planCodes>
+                  <label for="planCode">Plan Code</label>
+                  <input type="text" class="form-control" placeholder="Plan Code" id="planCode" name="planCode" formControlName="planCode"
+                    disabled="disabled" [(ngModel)]="getPlanResponses.Code">
+                  <div class="msg" *ngIf="updateForm.controls['planCode'].invalid && (updateForm.controls['planCode'].dirty || updateForm.controls['planCode'].touched)">
+                    <div *ngIf="updateForm.controls['planCode'].errors.required">
+                      Plan Name is Required.
+                    </div>
+                    <div *ngIf="updateForm.controls['planCode'].errors.pattern">
+                      Only alphanumerics, (-) and spaces are allowed and Initial space(s) not allowed.
+                    </div>
+                    <div *ngIf="updateForm.controls['planCode'].errors.maxlength">
+                      Maximum 50 characters are allowed.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popPC" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popPC>
+                    <ul>
+                      <li>Plan Name is reqired </li>
+                      <li>It allows only alphanumerics, spaces and hypen(-)</li>
+                      <li>Special characters are not allowed</li>
+                      <li>It should be minimum 1 character and maximum 50 characters long</li>
+                    </ul>
+                  </ng-template>
+                </div>
+                <!--<button type="button" class="tool-tip col-sm-1 width" data-toggle="tooltip" data-placement="right" title="Plan Code is reqired, It allows only alphanumerics, special characters and spaces are not allowed, It should be minimum 1 character and maximum 50 characters long">?</button>-->
+              </div>
+            </div>
+            <div class="col-md-6" #stmtCycles>
+              <div class="row">
+                <div class="form-group col-sm-12 popover-field" *ngIf='boolCycle && planBased'>
+                  <label class="focused">{{stmtCylce}}</label>
+                  <select class="form-control" id="stmtCycle" name="stmtCycle" formControlName="stmtCycle" [(ngModel)]="getPlanResponses.StatementCycle">
+                     <option value="">--Select--</option>
+                     <option *ngFor='let stmtCycles of statementTypes'value="{{stmtCycles.CycleType}}">{{stmtCycles.CycleDescription}}</option>
+                    </select>
+                  <div class="msg" *ngIf="updateForm.controls['stmtCycle'].invalid && (updateForm.controls['stmtCycle'].dirty || updateForm.controls['stmtCycle'].touched)">
+                    <div *ngIf="updateForm.controls['stmtCycle'].errors.required">
+                      Statement Cycle is required
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popSC" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popSC>
+                    <ul>
+                      <li>Statement Cycle is required</li>
+                      <li>Select Statement Cycle</li>
+                    </ul>
+                  </ng-template>
+                </div>
+                <div class="form-group col-sm-12 popover-field" *ngIf='!boolCycle'>
+                  <label class="focused">{{invCycle}}</label>
+                  <select class="form-control" id="invoiceCycle" name="invoiceCycle" formControlName="invoiceCycle" [(ngModel)]="getPlanResponses.InvoiceCycle">
+                     <option value="">--Select--</option>
+                     <option *ngFor='let invCycle of invoiceTypes'value="{{invCycle.CycleType}}">{{invCycle.CycleDescription}}</option>
+                  </select>
+                  <!--<div class="msg" *ngIf="updateForm.controls['stmtCycle'].invalid && (updateForm.controls['stmtCycle'].dirty || updateForm.controls['stmtCycle'].touched)">
+                    <div *ngIf="updateForm.controls['stmtCycle'].errors.required">
+                      Invoice Cycle is required
+                    </div>
+                  </div>-->
+                  <button type="button" class="pop-over" [popover]="popIC" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popIC>
+                    <ul>
+                      <li>Invoice Cycle is required</li>
+                      <li>Select Invoice Cycle</li>
+                    </ul>
+                  </ng-template>
+                </div>
+                <!--<button type="button" class="tool-tip col-sm-1 width" data-toggle="tooltip" data-placement="right" title="Invoice Cycle is required, Select Invoice Cycle">?</button>-->
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-sm-12 popover-field" #startDt>
+                  <label for="startDate" class="focused">Start Date</label>
+                  <my-date-picker [options]="myDatePickerOptions" required formControlName="startDate" name="startDate" id="startDate" placeholder="MM/DD/YYYY"
+                    disabled="disabled"></my-date-picker>
+                  <!--<input type="text" [minDate]="minDate" #dp="bsDatepicker" bsDatepicker [(bsValue)]="bsValue" class="form-control" id="startDate"
+                    name="startDate" formControlName="startDate" [(ngModel)]="getPlanResponses.StartEffDate" disabled="disabled">-->
+                  <div class="msg" *ngIf="updateForm.controls['startDate'].invalid && (updateForm.controls['startDate'].dirty || updateForm.controls['startDate'].touched)">
+                    <div *ngIf="updateForm.controls['startDate'].errors.required">
+                      Start Date is required
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popSD" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popSD>
+                    <ul>
+                      <li>Start Effective Date is required</li>
+                      <li>Select Start Effective Date</li>
+                    </ul>
+                  </ng-template>
+                </div>
+                <!--<button type="button" class="tool-tip col-sm-1 width" data-toggle="tooltip" data-placement="right" title="Start Effective Date is required, Select Start Effective Date">?</button>-->
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-sm-12 popover-field">
+                  <label for="endDate" class="focused">End Date</label>
+                  <my-date-picker [options]="myDatePickerOptions" formControlName="endDate" name="endDate" id="endDate" (inputFieldChanged)="onDateRangeFieldPlan($event)"
+                    placeholder="MM/DD/YYYY" required readonly="readonly"></my-date-picker>
+                  <div class="show-error"  *ngIf="invalidPlan">
+                    <div>Invalid Date.</div>
+                  </div>
+                  <!--<input type="text" [minDate]="minDate" #dp="bsDatepicker" bsDatepicker [(bsValue)]="bsValue1" class="form-control disbale-to-write"
+                    id="endDate" name="endDate" formControlName="endDate" [(ngModel)]="getPlanResponses.EndEffDate" readonly="readonly">-->
+                  <div class="show-error" *ngIf="!invalidPlan &&(updateForm.controls['endDate'].invalid && (updateForm.controls['endDate'].dirty || updateForm.controls['endDate'].touched))">
+                    <div *ngIf="updateForm.controls['endDate'].errors.required">
+                      End Date is required
+                    </div>
+                  </div>
+
+                  <button type="button" class="pop-over" [popover]="popED" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popED>
+                    <ul>
+                      <li>End Effective Date is required</li>
+                      <li>Select End Effective Date</li>
+                    </ul>
+                  </ng-template>
+                </div>
+                <!--<button type="button" class="tool-tip col-sm-1 width" data-toggle="tooltip" data-placement="right" title="End Effective Date is required, Select End Effective Date">?</button>-->
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-sm-12 popover-field" style="min-height:50px;margin-bottom:0">
+                  <label for="planDesc" class="focused">Plan Description</label>
+                  <textarea class="form-control" id="planDesc" name="planDesc" formControlName="planDesc" [(ngModel)]="getPlanResponses.Desc"
+                    maxlength="255" (keyup)="descEvent($event)"></textarea>
+                  <div class="msg" *ngIf="updateForm.controls['planDesc'].invalid && (updateForm.controls['planDesc'].dirty || updateForm.controls['planDesc'].touched)">
+                    <div *ngIf="updateForm.controls['planDesc'].errors.required">
+                      Plan Description is Required.
+                    </div>
+                    <div *ngIf="updateForm.controls['planDesc'].errors.maxlength">
+                      Maximum 255 characters are allowed.
+                    </div>
+                    <div *ngIf="updateForm.controls['planDesc'].errors.pattern">
+                      Initial space(s) not allowed.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popPD" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popPD>
+                    <ul>
+                      <li>Plan Description is reqired</li>
+                      <li>It allows only alphanumerics, spaces and all special characters</li>
+                      <li> It should be minimum 1 character and maximum 255 characters long</li>
+                    </ul>
+                  </ng-template>
+                </div>
+                  <small class="pull-right" style="padding-right:30px">Left: {{descLength}} characters </small>
+                <!--<button type="button" class="tool-tip col-sm-1 width" data-toggle="tooltip" data-placement="right" title="Plan Description is reqired, It allows only alphanumerics, spaces and all special characters, It should be minimum 1 character and maximum 255 characters long">?</button>-->
+              </div>
+            </div>
+          </div>
+           <div class="col-md-6">
+            <div class="row">
+              <div class="checkbox">
+               <input type="checkbox" class="ch-lg" id='tag' formControlName="chkTagRequired" [(ngModel)]="getPlanResponses.IsTagRequired">
+               <label for='tag'><span></span> IsTagRequired</label>
+              </div>
+           </div>
+          </div>
+          <!--<div class="row">
+            <div class="col-md-6">
+              <div class=" meta">
+                <div class=" pull-left">
+                  <input type="checkbox" class="ch-lg" id='tag' formControlName="chkTagRequired" [(ngModel)]="getPlanResponses.IsTagRequired">
+                </div>
+                <div class="p-l-8 pull-left">
+                  <label for='tag'>IsTagRequired</label>
+                </div>
+              </div>
+            </div>
+          </div>-->
+        
+     
+      <div class="col-md-12 btn-sec2 text-right m-t-20">
+        <button type="submit" (click)="updatePlan(getPlanResponses)" [disabled]="disableButton" class="btn btn-primary btn-search"><i class="fa fa-pencil fa-fw fa-lg" aria-hidden="true"></i>Update</button>
+        <button type="submit" (click)="resetclick()" class="btn btn-default btn-reset"><i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i> Reset</button>
+        <button type="submit" (click)="cancleClick()" class="btn btn-default btn-reset"><i class="fa fa-times fa-lg fa-fw" aria-hidden="true"></i> Cancel</button>
+      </div>
+      </div>
+       </div>
+      <div class="clear"></div>
+    </div>
+  </form>
+  <!--plans grid ended-->
+
+  <!--fees grid started-->
+  <div class="p-b-11 p-t-2" style="background:#fff;">
+    <a (click)="addFees()" [ngClass]="disableButton?'disabletextbox':''"><i class="fa fa-plus-square-o fa-lg fa-fw" aria-hidden="true"></i>Add Fees</a>
+    <div class="panel panel-default m-t-10">
+      <div class="panel-heading"> Available Fee Types </div>
+      <div class="panel-body bordered">
+        <div class="">
+          <table class="table bordered" *ngIf='getFeeResponse && getFeeResponse.length'>
+            <thead>
+              <tr>
+                <th>Fee Name</th>
+                <th>Fee Code</th>
+                <th>Fee Factor</th>
+                <th>Amount</th>
+                <th>Start Effective Date</th>
+                <th>End Effective Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let fee of getFeeResponse; let row_no=index'>
+                <td>{{fee.FeeName}}</td>
+                <td>{{fee.FeeCode}}</td>
+                <td>{{fee.FeeFactor==0?'$':'%'}}</td>
+                <td>{{fee.Amount| currency:'USD':true:'1.2-2'}}</td>
+                <td>{{fee.DtStartEffDate | date: 'MM/dd/yyyy'}}</td>
+                <td>
+                  <my-date-picker [options]="myDatePickerOptionsFee" name="endDate" id="endDate" [(ngModel)]="fee.DtEndEffDate" (inputFieldChanged)="updateFeeEndEffectiveDate(row_no,fee,$event)"
+                    placeholder="MM/DD/YYYY" required></my-date-picker>
+                  <!--<input type='text' class="form-control" [minDate]="minDate" #dp="bsDatepicker" bsDatepicker [(bsValue)]="fee.FeeCoderow_no"
+                    (ngModelChange)="updateFeeEndEffectiveDate(row_no,fee,$event)" [(ngModel)]="fee.DtEndEffDate">-->
+                </td>
+                <td style="display: none;">{{fee.FeeTypeId}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row m-t-20" *ngIf='getFeeResponse && getFeeResponse.length'>
+          <div class="col-md-12 text-right">
+            <button type="submit" (click)="onFeeUpdate()" [disabled]="disableButton" class="btn btn-primary btn-search"><i class="fa fa-pencil fa-fw fa-lg" aria-hidden="true"></i>Update</button>
+            <button type="submit" (click)="feeresetClick()" class="btn btn-default btn-reset"><i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>Reset</button>
+            <button type="submit" (click)="cancleClick()" class="btn btn-default btn-reset"><i class="fa fa-times fa-lg fa-fw" aria-hidden="true"></i>Cancel</button>
+          </div>
+        </div>
+        <div class="clear"></div>
+      </div>
+    </div>
+  </div>
+  <!--fees grid ended-->
+
+  <!--discounts grid started-->
+  <div class="p-b-11 p-t-2" style="background:#fff;">
+    <a (click)="addDiscounts()" [ngClass]="disableButton?'disabletextbox':''" *ngIf="boolDiscButton"><i class="fa fa-plus-square-o fa-lg fa-fw" aria-hidden="true"></i>Add Discounts</a>
+    <div class="panel panel-default m-t-10">
+      <div class="panel-heading"> Available Discounts </div>
+      <div class="panel-body bordered">
+        <table class="table table-bordered table-sm" *ngIf='getDiscountResponse && getDiscountResponse.length'>
+          <thead>
+            <tr>
+              <th>Discount Name</th>
+              <th>Discount Code</th>
+              <th>Discount Description</th>
+              <th>Access Level</th>
+              <th>Factor</th>
+              <th>Discount Value </th>
+              <th>Start Effective Date</th>
+              <th>End Effective Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let discount of getDiscountResponse; let row_no=index'>
+              <td>{{discount.DiscountName}}</td>
+              <td>{{discount.DiscountCode}}</td>
+              <td>{{discount.Description}}</td>
+              <td>{{discount.AccessLevel}}</td>
+              <td>{{discount.Factor==0?'$':'%'}}</td>
+              <td>{{discount.DiscountValue | currency:'USD':true:'1.2-2'}}</td>
+              <td>
+                {{discount.StartEffectiveDate | date: 'MM/dd/yyyy'}}
+              </td>
+              <td>
+                <my-date-picker [options]="myDatePickerOptionsFee" name="endDate" id="endDate" [(ngModel)]="discount.EndEffectiveDate" (inputFieldChanged)="updateDiscountEndEffectiveDate(row_no,discount,$event)"
+                  placeholder="MM/DD/YYYY" required></my-date-picker>
+                <!--<input type='text' class="form-control" [minDate]="minDate" #dp="bsDatepicker" bsDatepicker [(bsValue)]="discount.DiscountCoderow_no"
+                  (ngModelChange)="updateDiscountEndEffectiveDate(row_no,discount,$event)" [(ngModel)]="discount.EndEffectiveDate">-->
+              </td>
+              <td style="display: none;">{{discount.DiscountId}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="col-md-12 btn-sec text-right" *ngIf='getDiscountResponse && getDiscountResponse.length'>
+          <button type="submit" (click)="onDiscountUpdate()" [disabled]="disableButton" class="btn btn-primary btn-search"><i class="fa fa-pencil fa-fw fa-lg" aria-hidden="true"></i>Update</button>
+          <button type="submit" (click)="discresetClick()" class="btn btn-default btn-reset"><i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>Reset</button>
+          <a href='javascript:;' type="submit" (click)="cancleClick()" class="btn btn-default btn-reset"><i class="fa fa-times fa-lg fa-fw" aria-hidden="true"></i>Cancel</a>
+        </div>
+        <div class="clear"></div>
+      </div>
+    </div>
+  </div>
+  <!--discounts grid ended-->
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

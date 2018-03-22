@@ -1,0 +1,43 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Customer Service</a></li>
+        <li class="active">Contact Information</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Contact Information</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+    <app-account-info></app-account-info>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="accordion-mgc">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+          <div class="panel panel-default">
+          <app-full-address [AddressblockListStatus]="AddressblockListStatus" (AddressblockListArray)="showAddressPopup($event);"></app-full-address>
+          </div>
+         <div class="panel panel-default">
+          <app-phone [PhoneblockListStatus]="PhoneblockListStatus" (PhoneblockListArray)="showPhonePopup($event);"></app-phone>
+          </div>
+           <div class="panel panel-default">
+          <app-email [EmailblockListStatus]="EmailblockListStatus" (EmailblockListArray)="showEmailPopup($event);"></app-email>
+          </div>
+          <div class="panel panel-default">
+          <app-accountholderdetails [AccountblockListStatus]="AccountHolderblockListStatus" (AccountblockListArray)="showAccountHolderPopup($event);"></app-accountholderdetails>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-blocked-list [blockListArray]="blockListAddressDetails" (status)="sendBlockListStatus()"></app-blocked-list>

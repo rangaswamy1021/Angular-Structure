@@ -1,0 +1,218 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">SAC</a></li>
+        <li>User Management</li>
+        <li class="active">Manage Roles</li>
+      </ol>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Roles</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <!--Role Name Search-->
+  <div class="panel panel-default">
+
+    <form role="form" name="searchForm" [formGroup]="searchForm" novalidate>
+
+
+      <div class="panel-body bordered">
+        <div class="col-md-6">
+          <div class="form-group col-md-12">
+
+            <label for="searchRole"> Role Name </label>
+            <input type="text" class="form-control" formControlName="searchRole" name="searchRole" placeholder="Role Name" maxlength="50">
+            <div class="msg" *ngIf="searchForm.controls['searchRole'].invalid && (searchForm.controls['searchRole'].dirty || searchForm.controls['searchRole'].touched)">
+              <div *ngIf="searchForm.controls['searchRole'].errors.required">
+                Required.
+              </div>
+              <div *ngIf="searchForm.controls['searchRole'].errors.pattern">
+                It allows only alphabets.
+              </div>
+              <div *ngIf="searchForm.controls['searchRole'].errors.minlength">
+                Minimum 1 characters are required.
+              </div>
+              <div *ngIf="searchForm.controls['searchRole'].errors.maxlength">
+                Maximum 50 characters are allowed.
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="col-md-6 m-t-17">
+          <button [disabled]='disabledSearch' class="btn btn-primary btn-search" (click)='searchRole()'>Search </button>
+          <button class="btn btn-primary btn-reset" (click)='searchReset()'>Reset </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+
+  <!--Add New Role button-->
+  <div class="row" [hidden]='addRole'>
+    <div class="col-md-12">
+      <div class="form-group">
+        <a [ngClass]="{'disabletextbox': disabledCreate}" (click)="addNewRole()"><img src="assets/images/svg/add-file2.svg" class="icon-svg3" alt="">Add New Role</a>
+      </div>
+    </div>
+  </div>
+
+  <!--Add New Role Edit -->
+  <form role="form" name="addForm" [formGroup]="addForm" novalidate>
+    <div class="panel panel-default" [hidden]='!addRole'>
+      <div class="panel-heading">
+        <span *ngIf="!isUpdate">Add Roles</span>
+        <span *ngIf="isUpdate">Update Roles</span>
+      </div>
+      <div class="panel-body bordered">
+        <div class="row">
+          <div class="col-md-6 col-md-offset-3">
+            <div class="form-group popover-field col-md-12">
+              <label for="roleName"> Role Name &nbsp; 
+                 <span style="color:red;font-size:12px;" *ngIf="roleNameExists">Role Name already exists</span>
+              </label>
+              <input type="text" class="form-control" formControlName="roleName" name="roleName" placeholder="Role Name" maxlength="50"
+                (change)="isRoleNameExists()">
+              <div class="msg" *ngIf="addForm.controls['roleName'].invalid && (addForm.controls['roleName'].dirty || addForm.controls['roleName'].touched)">
+                <div *ngIf="addForm.controls['roleName'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="addForm.controls['roleName'].errors.pattern">
+                  It allows only alphabets.
+                </div>
+                <div *ngIf="addForm.controls['roleName'].errors.minlength">
+                  Minimum 1 characters are required.
+                </div>
+                <div *ngIf="addForm.controls['roleName'].errors.maxlength">
+                  Maximum 50 characters are allowed.
+                </div>
+              </div>
+              
+              <button type="button" class="pop-over" data-container="body" [popover]="popRole" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                placement="left" tabindex="-1">?</button>
+              <ng-template #popRole>
+                <ul>
+                  <li>Role Name is required</li>
+                  <li>It allows only alphabets </li>
+                  <li>Special characters and spaces are not allowed </li>
+                  <li>It should be minimum 1 and maximum 50 characters </li>
+                </ul>
+              </ng-template>
+            </div>
+           
+        <div class="col-md-12">
+          <div class="row">
+            <div class="form-group popover-field col-md-12" style="min-height:50px;margin-bottom:0">
+              <label class="focused"> Role Description   </label>
+              <textarea class="form-control" rows="2" class="form-control" formControlName="roleDesc" name="roleDesc" maxlength="255" (keyup)="descEvent($event)"></textarea>
+              <div class="msg" *ngIf="addForm.controls['roleDesc'].invalid && (addForm.controls['roleDesc'].dirty || addForm.controls['roleDesc'].touched)">
+                <div *ngIf="addForm.controls['roleDesc'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="addForm.controls['roleDesc'].errors.minlength">
+                  Minimum 1 characters are required.
+                </div>
+                <div *ngIf="addForm.controls['roleDesc'].errors.maxlength">
+                  Maximum 150 characters are allowed.
+                </div>
+              </div>
+              <button type="button" class="pop-over" [popover]="popDesc" data-container="body" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                placement="left" tabindex="-1">?</button>
+              <ng-template #popDesc>
+                <ul>
+                  <li>Role Description required</li>
+                  <li>It should be minimum 1 and maximum 150 characters</li>
+                </ul>
+              </ng-template>
+            </div>
+            <small class="pull-right" style="padding-right:30px">Left: {{commentTextLength}} characters  </small>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="row">
+            <div class="form-group col-md-12">
+              <div class="checkbox">
+                <input type="checkbox" id="isActive" formControlName="active" name="active" [(ngModel)]='isActive' id="isActive">
+                <label for="isActive">  <span></span>  Is Active             </label>
+              </div>
+            </div>
+          </div>
+        </div>
+          <div class="col-md-12">
+            <div class="form-group">
+              <button [disabled]='disabledCreate' class="btn btn-primary btn-search" (click)="submitRoles()" *ngIf="!isUpdate"> Add </button>
+              <button [disabled]='disabledUpdate' class="btn btn-primary btn-search" (click)="updateRoles()" *ngIf="isUpdate"> Update </button>
+              <button class="btn btn-primary btn-reset" (click)="resetClick()" *ngIf="!isUpdate"> Reset </button>
+              <button class="btn btn-primary btn-reset" (click)="cancelClick()"> Cancel </button>
+            </div>
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <!--Role Details-->
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      Role Details
+    </div>
+    <div class="panel-body bordered" *ngIf='searchResponse && searchResponse.length;else NodetailsBlock'>
+      <div class="table-responsive">
+        <table class="table bordered">
+          <thead>
+            <tr>
+              <th *ngIf='roleIdVisible'> Role Id </th>
+              <th (click)="sortDirection('RoleName')" class="sorting-handle"> Role Name 
+                <span *ngIf="gridArrowRoleName">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('ROLEDESCRIPTION')" class="sorting-handle"> Role Description 
+                  <span *ngIf="gridArrowROLEDESCRIPTION">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+              </th>
+              <th (click)="sortDirection('ISACTIVE')" class="sorting-handle"> Status 
+                  <span *ngIf="gridArrowISACTIVE" >
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+              </th>
+              <th width='60px'> Edit </th>
+              <th width='80px'> Deactivate</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let objResponse of searchResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: currentPage, totalItems: totalRecordCount }">
+              <td *ngIf='roleIdVisible'> {{objResponse.RoleId}} </td>
+              <td> {{objResponse.RoleName}} </td>
+              <td> {{objResponse.RoleDescription}} </td>
+              <td> {{objResponse.IsActive?active:inActive}} </td>
+              <td style="text-align: center"> <img [ngClass]="{'disabletextbox': disabledUpdate}" src="assets/images/svg/edit.svg" class="icon-svg3" alt=""
+                  (click)="editClick(objResponse)" title="Edit"></td>
+              <td style="text-align: center"> <img [ngClass]="{'disabletextbox': disabledDelete}" src="assets/images/svg/block.svg" class="icon-svg3" alt=""
+                  (click)="deactivatePopup(objResponse)" title='Deactivate' *ngIf='objResponse.IsActive'></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="row page-info" *ngIf='searchResponse && searchResponse.length>0'>
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+    <ng-template #NodetailsBlock>
+      <div>No records to display</div>
+    </ng-template>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event, 1000)"
+  (onOk)="userAction($event)"></app-success-failure-alerts-message>

@@ -1,0 +1,95 @@
+  <form role="form" name="createForm" [formGroup]="createForm">
+    <div class="row">
+      <div class="form-group col-md-12 popover-field">
+        <label for="inputPassword3">Check #</label>
+        <input type="text" class="form-control" pattern="[0-9]*" maxlength="15" id="" formControlName="checkNumber" placeholder="Check #">
+        <div class="msg" *ngIf="createForm.controls['checkNumber'].invalid && (createForm.controls['checkNumber'].dirty || createForm.controls['checkNumber'].touched)">
+          <div *ngIf="createForm.controls['checkNumber'].errors.required">
+            Required.
+          </div>
+          <div *ngIf="createForm.controls['checkNumber'].errors.minlength && !createForm.controls['checkNumber'].errors.pattern">
+            Enter at least 4 numbers.
+          </div>
+          <div *ngIf="createForm.controls['checkNumber'].errors.pattern">
+            Only numbers allowed.
+          </div>
+        </div>
+        <button type="button" data-container="body" class="pop-over" [popover]="popCN" popoverTitle="Help" triggers="mouseenter:mouseleave"
+          placement="left">?</button>
+        <ng-template #popCN>
+          <ul>
+            <li>Check # is required </li>
+            <li>It allows only numbers</li>
+            <li>It should be minimum 4 and maximum 15 numbers</li>
+          </ul>
+        </ng-template>
+        <!--<button type="button" tabindex="-1" class="tool-tip" data-toggle="tooltip" data-placement="right" title="{{tooltipNumber}}">?</button>-->
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-md-12 popover-field">
+        <label for="inputPassword3">Routing #</label>
+        <input type="text" class="form-control" pattern="[0-9]*" maxlength="15" formControlName="checkRouting" id="" placeholder="Routing #">
+        <div class="msg" *ngIf="createForm.controls['checkRouting'].invalid && (createForm.controls['checkRouting'].dirty || createForm.controls['checkRouting'].touched)">
+          <div *ngIf="createForm.controls['checkRouting'].errors.required">
+            Required.
+          </div>
+          <div *ngIf="createForm.controls['checkRouting'].errors.minlength && !createForm.controls['checkRouting'].errors.pattern">
+            Enter at least 9 numbers.
+          </div>
+          <div *ngIf="createForm.controls['checkRouting'].errors.pattern">
+            Only numbers allowed.
+          </div>
+        </div>
+        <button type="button" data-container="body" class="pop-over" [popover]="popRou" popoverTitle="Help" triggers="mouseenter:mouseleave"
+          placement="left">?</button>
+        <ng-template #popRou>
+          <ul>
+            <li>Routing # is required </li>
+            <li>It allows only numbers</li>
+            <li>It should be minimum 9 and maximum 15 numbers</li>
+          </ul>
+        </ng-template>
+        <!--<button type="button" class="tool-tip" data-toggle="tooltip" data-placement="right" title="{{tooltipRouting}}">?</button>-->
+      </div>
+    </div>
+    <div class="row">      
+      <div class="form-group col-md-12 popover-field">
+        <label for="inputPassword3" id="focused">Check Date</label>
+        <my-date-picker name="checkDate" placeholder="MM/DD/YYYY" (inputFieldChanged)='onDateFieldChanged($event)' [options]="myDateRangePickerOptions"
+          formControlName="checkDate"></my-date-picker>
+        <!--<input type="text" placeholder="Check Date" [minDate]="minDate" [maxDate]="maxDate" #dp="bsDatepicker" bsDatepicker [(bsValue)]="bsValue"
+          formControlName="checkDate" class="form-control" placement='top'>-->
+        <!--<div class="show-error" *ngIf=" !invalidDate && createForm.controls['checkDate'].invalid && (createForm.controls['checkDate'].dirty || createForm.controls['checkDate'].touched)">
+          <div *ngIf="createForm.controls['checkDate'].errors.resquired">
+           Required
+          </div>          
+        </div>
+        <div class="show-error" *ngIf="invalidDate">
+          <div>
+            Invalid Date Range
+          </div>
+        </div>-->
+        <div class="msg" *ngIf="!invalidDate && createForm.controls['checkDate'].invalid && (createForm.controls['checkDate'].dirty || createForm.controls['checkDate'].touched)">
+          <div *ngIf="createForm.controls['checkDate'].errors.required">
+            Required.
+          </div>
+        </div>
+        <div class="show-error" *ngIf="invalidDate">
+          <div>
+            Invalid Date Range
+          </div>
+        </div>
+        <button type="button" data-container="body" class="pop-over" [popover]="popCD" popoverTitle="Help" triggers="mouseenter:mouseleave"
+          placement="left">?</button>
+        <ng-template #popCD>
+          <ul>
+            <li>
+              Check Date is required
+            </li>
+          </ul>
+        </ng-template>
+        <!--<button type="button" tabindex="-1" class="tool-tip" data-toggle="tooltip" data-placement="right" title="{{tooltipDate}}">?</button>-->
+      </div>
+    </div>
+  </form>

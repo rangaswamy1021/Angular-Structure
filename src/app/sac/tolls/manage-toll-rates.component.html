@@ -1,0 +1,390 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">SAC</a>
+        </li>
+        <li>
+          <a href="#">Manage Tolls</a>
+        </li>
+        <li class="active">Manage Toll Rates</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Toll Rates</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="alert alert-danger alert-dismissible" role="alert" *ngIf="faileureMessge && faileureMessge.length">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (clcik)="faileureMessge=false">
+    <span aria-hidden="true">&times;</span>
+  </button> {{faileureMessge}} 
+</div>
+<div class="alert alert-success alert-dismissible" role="alert" *ngIf="successMessage && successMessage.length">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (clcik)="successMessage=false">
+    <span aria-hidden="true">&times;</span>
+  </button> {{successMessage}}
+</div> -->
+
+<div class="content">
+  <div class="row m-t-20">
+    <div class="col-md-12">
+      <span style="cursor: pointer;" *ngIf='!addNewRate' (click)='showRates("add","")'>
+        <img src="assets/images/svg/add-file2.svg" class="icon-svg3" alt=""> Add New Rates
+      </span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12" *ngIf='addNewRate'>
+      <div class="table-bdr">
+        <h3>{{tollRateTitle}} </h3>
+        <div class="pad-20">
+          <form [formGroup]="addRatesForm">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="*form-horizontal">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="">                        
+                        <div class="col-sm-12 popover-field popover-2field form-group">
+                          <label for="tollRateName">Rate Name</label>                        
+                            <input type="text" class="form-control" formControlName="tollRateName" id="tollRateName" placeholder="" [readonly]="fieldDisabled">
+                            <div class="msg" *ngIf="addRatesForm.controls['tollRateName'].invalid && (addRatesForm.controls['tollRateName'].dirty || addRatesForm.controls['tollRateName'].touched)">
+                              <div *ngIf="addRatesForm.controls['tollRateName'].errors.required">
+                                Required.
+
+                              </div>
+                              <div *ngIf="addRatesForm.controls['tollRateName'].errors.pattern">
+                                Special characters
+                                <> are not allowed.
+                              </div>
+                              <div *ngIf="addRatesForm.controls['tollRateName'].errors.maxlength">
+                                Maximum 50 characters are allowed.
+                              </div>
+                            </div>                          
+                          <button type="button" class="pop-over" [popover]="popRname" popoverTitle="Help" triggers="mouseenter:mouseleave" placement='left'>?</button>
+                          <ng-template #popRname>
+                            <ul>
+                              <li>Toll Rate Name is required</li>
+                              <li>Initial spaces not allowed </li>
+                              <li>It allows only alphanumerics and spaces</li>
+                              <li>Special characters are not allowed</li>
+                              <li>It allows maximum of 50 characters length</li>
+                            </ul>
+                          </ng-template>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class=" ">                        
+                        <div class="col-sm-12 popover-field popover-2field form-group">                          
+                            <label for="" class="focused">Lane Type</label>
+                            <select class="form-control" formControlName="laneType" [ngClass]="{'del-disabled': isDisabled }">
+                              <option value="" selected disabled>--Select--</option>
+                              <option *ngFor="let laneType of laneTypes" value='{{laneType.LookUpTypeCode}}'>{{laneType.LookUpTypeCodeDesc}}</option>
+                            </select>
+                            <div class="msg" *ngIf="addRatesForm.controls['laneType'].invalid && (addRatesForm.controls['laneType'].dirty || addRatesForm.controls['laneType'].touched)">
+                              <div *ngIf="addRatesForm.controls['laneType'].errors.required">
+                                Required.
+                              </div>
+                            </div>                         
+                          <button type="button" class="pop-over" [popover]="popLType" popoverTitle="Help" triggers="mouseenter:mouseleave" placement='left'>?</button>
+                          <ng-template #popLType>
+                            <ul>
+                              <li>Lane Type is required</li>
+                              <li>Select any Lane Type </li>
+                            </ul>
+                          </ng-template>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="">
+                        
+                        <div class="col-sm-12 popover-field popover-2field form-group">                       
+                            <label for="" class="focused">Transaction Method</label>
+                            <select class="form-control" formControlName="txnMethod" [ngClass]="{'del-disabled': isDisabled }">
+                              <option value='TAG' [ngValue]="'TAG'" [selected]="'TAG'">TAG</option>
+                              <option value='PLATE'>PLATE</option>
+                            </select>
+                            <div class="msg" *ngIf="addRatesForm.controls['txnMethod'].invalid && (addRatesForm.controls['txnMethod'].dirty || addRatesForm.controls['txnMethod'].touched)">
+                              <div *ngIf="addRatesForm.controls['txnMethod'].errors.required">
+                                Required.
+                              </div>
+                            </div>
+                        
+                          <button type="button" class="pop-over" [popover]="popLTMethod" popoverTitle="Help" triggers="mouseenter:mouseleave" placement='left'>?</button>
+                          <ng-template #popLTMethod>
+                              <ul>
+                                  <li>Transaction Method is required</li>
+                                  <li>Select any Transaction Method </li>
+                                </ul>
+                          </ng-template>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12 m-t-20">
+                <div class="*form-horizontal">
+                  <!--<div class="form-group">
+                    <label for="" class="focused">Class Type</label>
+                    <label for="" class="col-sm-4 control-label" style="text-align: left;">Amount</label>
+                  </div>-->
+                  <div class="col-md-6" *ngFor='let item of vehicleClasses'>                    
+                    <div class="col-sm-12 popover-field form-group">
+                      <label [for]="item.Code" >{{item.Name}}</label>
+                      <input type="text" class="form-control" [id]="item.Code" placeholder="" formControlName="class{{item.Code}}" [readonly]="fieldDisabled">
+                      <div class="msg" [hidden]="!addRatesForm.controls['class'+item.Code].invalid || (!addRatesForm.controls['class'+item.Code].dirty && !addRatesForm.controls['class'+item.Code].touched)">
+                        <div [hidden]="addRatesForm.controls['class'+item.Code].errors&&!addRatesForm.controls['class'+item.Code].errors.required">
+                          Required.
+                        </div>
+                        <div [hidden]="addRatesForm.controls['class'+item.Code].errors&&!addRatesForm.controls['class'+item.Code].errors.pattern">
+                          Only numerics are allowed.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="pop" popoverTitle="Help" triggers="mouseenter:mouseleave" placement='left'>?</button>
+                      <ng-template #pop>
+                        <ul>
+                          <li>Class {{item.Code}} amount is required</li>
+                          <li>Amount should be in Currency Format </li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <!--<div class="col-md-6">                    
+                    <div class="col-sm-12 popover-field form-group">
+                      <label for="Twowheeler(2H)">Two wheeler (2H)</label>
+                      <input type="text" class="form-control" id="Twowheeler(2H)" placeholder="" formControlName="class2H" [readonly]="fieldDisabled">
+                      <div class="msg" *ngIf="addRatesForm.controls['class2H'].invalid && (addRatesForm.controls['class2H'].dirty || addRatesForm.controls['class2H'].touched)">
+                        <div *ngIf="addRatesForm.controls['class2H'].errors.required">
+                          Required.
+                        </div>
+                        <div *ngIf="addRatesForm.controls['class2H'].errors.pattern">
+                          Only numerics are allowed.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popTWH" popoverTitle="Help" triggers="mouseenter:mouseleave" placement='left'>?</button>
+                      <ng-template #popTWH>
+                        <ul>
+                          <li>Class 2H amount is required</li>
+                          <li>Amount should be in Currency Format </li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <div class="col-md-6">                   
+                    <div class="col-sm-12 popover-field form-group">
+                       <label for="Three-WheelerPassenger(3L)" >Three - Wheeler Passenger (3L)</label>
+                      <input type="text" class="form-control" id="Three-WheelerPassenger(3L)" placeholder="" formControlName="class3L" [readonly]="fieldDisabled">
+                      <div class="msg" *ngIf="addRatesForm.controls['class3L'].invalid && (addRatesForm.controls['class3L'].dirty || addRatesForm.controls['class3L'].touched)">
+                        <div *ngIf="addRatesForm.controls['class3L'].errors.required">
+                          Required.
+                        </div>
+                        <div *ngIf="addRatesForm.controls['class3L'].errors.pattern">
+                          Only numerics are allowed.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popTWP" popoverTitle="Help" triggers="mouseenter:mouseleave" placement='left'>?</button>
+                      <ng-template #popTWP>
+                        <ul>
+                          <li>Class 3L amount is required</li>
+                          <li>Amount should be in Currency Format </li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <div class="col-md-6">                    
+                    <div class="col-sm-12 popover-field form-group">
+                      <label for="Three-wheelerFreight(3H)" >Three - wheeler Freight (3H)</label>
+                      <input type="text" class="form-control" id=" Three-wheelerFreight(3H)" placeholder="" formControlName="class3H" [readonly]="fieldDisabled">
+                      <div class="msg" *ngIf="addRatesForm.controls['class3H'].invalid && (addRatesForm.controls['class3H'].dirty || addRatesForm.controls['class3H'].touched)">
+                        <div *ngIf="addRatesForm.controls['class3H'].errors.required">
+                          Required.
+                        </div>
+                        <div *ngIf="addRatesForm.controls['class3H'].errors.pattern">
+                          Only numerics are allowed.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popTWF" popoverTitle="Help" triggers="mouseenter:mouseleave" placement='left'>?</button>
+                      <ng-template #popTWF>
+                        <ul>
+                          <li>Class 3H amount is required</li>
+                          <li>Amount should be in Currency Format </li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    
+                    <div class="col-sm-12 popover-field form-group">
+                      <label for="Car/Jeep/Van(4H)Car/Jeep/Van(4H)" >Car / Jeep / Van (4H)</label>
+                      <input type="text" class="form-control" id="Car/Jeep/Van(4H)Car/Jeep/Van(4H)" placeholder="" formControlName="class4H" [readonly]="fieldDisabled">
+                      <div class="msg" *ngIf="addRatesForm.controls['class4H'].invalid && (addRatesForm.controls['class4H'].dirty || addRatesForm.controls['class4H'].touched)">
+                        <div *ngIf="addRatesForm.controls['class4H'].errors.required">
+                          Required.
+                        </div>
+                        <div *ngIf="addRatesForm.controls['class4H'].errors.pattern">
+                          Only numerics are allowed.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popCJV" popoverTitle="Help" triggers="mouseenter:mouseleave" placement='left'>?</button>
+                      <ng-template #popCJV>
+                        <ul>
+                          <li>Class 4h amount is required</li>
+                          <li>Amount should be in Currency Format </li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    
+                    <div class="col-sm-12 popover-field form-group">
+                      <label for="LightCommercialvehicle2-axle(5H)">Light Commercial vehicle 2-axle (5H)</label>
+                      <input type="text" class="form-control" id="LightCommercialvehicle2-axle(5H)" placeholder="" formControlName="class5H" [readonly]="fieldDisabled">
+                      <div class="msg" *ngIf="addRatesForm.controls['class5H'].invalid && (addRatesForm.controls['class5H'].dirty || addRatesForm.controls['class5H'].touched)">
+                        <div *ngIf="addRatesForm.controls['class5H'].errors.required">
+                          Required.
+                        </div>
+                        <div *ngIf="addRatesForm.controls['class5H'].errors.pattern">
+                          Only numerics are allowed.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popCVA" popoverTitle="Help" triggers="mouseenter:mouseleave" placement='left'>?</button>
+                      <ng-template #popCVA>
+                        <ul>
+                          <li>Class 5H amount is required</li>
+                          <li>Amount should be in Currency Format </li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    
+                    <div class="col-sm-12 popover-field form-group">
+                      <label for="LightCommercialvehicle3-axle(6H)">Light Commercial vehicle 3-axle (6H)</label>
+                      <input type="text" class="form-control" id="LightCommercialvehicle3-axle(6H)" placeholder="" formControlName="class6H" [readonly]="fieldDisabled">
+                      <div class="msg" *ngIf="addRatesForm.controls['class6H'].invalid && (addRatesForm.controls['class6H'].dirty || addRatesForm.controls['class6H'].touched)">
+                        <div *ngIf="addRatesForm.controls['class6H'].errors.required">
+                          Required.
+                        </div>
+                        <div *ngIf="addRatesForm.controls['class6H'].errors.pattern">
+                          Only numerics are allowed.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popCVAH" popoverTitle="Help" triggers="mouseenter:mouseleave" placement='left'>?</button>
+                      <ng-template #popCVAH>
+                        <ul>
+                          <li>Class 6H amount is required</li>
+                          <li>Amount should be in Currency Format </li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    
+                    <div class="col-sm-12 popover-field form-group">
+                      <label for="Bus2-axle(7H)" >Bus 2-axle (7H)</label>
+                      <input type="text" class="form-control" id=" Bus2-axle(7H)" placeholder="" formControlName="class7H" [readonly]="fieldDisabled">
+                      <div class="msg" *ngIf="addRatesForm.controls['class7H'].invalid && (addRatesForm.controls['class7H'].dirty || addRatesForm.controls['class7H'].touched)">
+                        <div *ngIf="addRatesForm.controls['class7H'].errors.required">
+                          Required.
+                        </div>
+                        <div *ngIf="addRatesForm.controls['class7H'].errors.pattern">
+                          Only numerics are allowed.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popBA" popoverTitle="Help" triggers="mouseenter:mouseleave" placement='left'>?</button>
+                      <ng-template #popBA>
+                        <ul>
+                          <li>Class 7H amount is required</li>
+                          <li>Amount should be in Currency Format </li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>-->
+                  <div class="form-group">
+                    <div class="col-sm-12 text-right">
+                      <button class="btn btn-primary btn-search text-capitalize" [disabled]="addDisableButton" (click)="addNewRates(buttonType)"
+                        type="submit">{{buttonType}}</button>
+                      <button *ngIf="!resetHide" class="btn btn-primary btn-reset" type="button"(click)="resetTollRate();">Reset</button>
+                      <button class="btn btn-primary btn-reset" type="reset" (click)='cancelRates()'>Cancel</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        </div>
+      </div>
+    <!--</div>
+  </div>-->
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <h3>Rate Details</h3>
+        <div class="pad-10">
+          <!-- {{ tollRates | json }} -->
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th (click)="sortDirection('TOLLRATENAME')" class="sorting-handle">Rate Name
+                    <span *ngIf="gridArrowTOLLRATENAME">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+                  </th>
+                  <th (click)="sortDirection('LANETYPE')" class="sorting-handle">Lane Type
+                    <span *ngIf=gridArrowLANETYPE>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+                  </th>
+                  <th (click)="sortDirection('TXNMETHOD')" class="sorting-handle">Transaction Method
+                    <span *ngIf=gridArrowTXNMETHOD>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+                  </th>
+                  <th *ngFor='let rate of vehicleClasses'>{{rate.Code}}</th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor='let tollRate of tollRates | paginate: { itemsPerPage: pageItemNumber, currentPage: p}'>
+                  <!-- <td>{{tollRate.TollHdrId}}</td> -->
+                  <td>{{tollRate.TollRateName}}</td>
+                  <td>{{tollRate.LaneType}}</td>
+                  <td>{{tollRate.TxnMethod}}</td>
+                  <td *ngFor='let item of tollRate.DicVehicleClass'>{{item.ThresholdAmount}}</td>
+                  <td style='text-align: center'>
+                    <img src="assets/images/svg/edit.svg" class="icon-svg3" alt="" style="margin-right: 0" (click)='showRates("update",tollRate)'>
+                  </td>
+                  <td style='text-align: center'>
+                    <img src="assets/images/svg/delete.svg" class="icon-svg3" alt="" style="margin-right: 0" (click)='showRates("delete",tollRate)'>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class=" page-info">
+              <div class="col-md-6 text-left">
+                <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+              </div>
+              <div class="col-md-6 text-right">
+                <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)" (onOk)="userAction($event)"></app-success-failure-alerts-message>

@@ -1,0 +1,81 @@
+
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">IMC</a></li>
+        <li class="active">Reports</li>
+        <li class="active">Convert Facility Code And Tag Id To HexTag Id</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Convert Facility Code And Tag Id To HexTag Id Report</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="content">
+ <form role="form" name="convertToHexatagForm" [formGroup]="convertToHexatagForm">
+  <div class="panel panel-default">
+    
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="col-md-12 form-group">
+            <label> Facility Code</label>
+            <input type="text" id="facilityCode" name="facilityCode" formControlName="facilityCode" class="form-control"
+             placeholder="Facility Code" (keypress)="_keyPress($event)" maxlength="6" >
+              <div class="msg" *ngIf="convertToHexatagForm.controls['facilityCode'].invalid && (convertToHexatagForm.controls['facilityCode'].dirty || convertToHexatagForm.controls['facilityCode'].touched)">
+                  <div *ngIf="convertToHexatagForm.controls['facilityCode'].errors.required">
+                    Required.
+                  </div>
+                </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="col-md-12 form-group">
+            <label> Tag #</label>
+            <input type="text" id="tag" name="tag" formControlName="tag" class="form-control" 
+            placeholder="Tag #" (keypress)="_keyPress($event)" maxlength="4">
+             <div class="msg" *ngIf="convertToHexatagForm.controls['tag'].invalid && (convertToHexatagForm.controls['tag'].dirty || convertToHexatagForm.controls['tag'].touched)">
+                  <div *ngIf="convertToHexatagForm.controls['tag'].errors.required">
+                    Required.
+                  </div>
+                </div>
+          </div>
+        </div>
+     
+        <div class="col-md-12">
+          <button type="submit" class="btn btn-primary btn-search" (click)="convertToHexaTag()" [disabled]="searchDisableButton">Convert</button>
+          <button type="reset" (click)="resetclick()" class="btn btn-default btn-reset">Reset</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+   
+  <div class="panel panel-default">
+    
+    <div class="panel-body"> 
+      <div *ngIf="iInventoryResponse"> <pre><strong> HexTag #: </strong>{{iInventoryResponse.HexTagId}}</pre></div>
+      <div>
+        <pre>
+          Steps for formula:
+               1. Facility Code x 1024
+               2. Convert value from step 1 to hexadecimal
+               3. Convert Tag ID to hexadecimal
+               4. Add hexadecimal values of step 2 and step 3.
+        </pre>
+      </div>
+      
+    </div>
+  </div>
+  </form>
+   <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+  </div>

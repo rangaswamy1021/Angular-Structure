@@ -1,0 +1,298 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">SAC</a>
+        </li>
+        <li>
+          <a href="#">Agency Setup</a>
+        </li>
+        <li class="active">Manage Agency </li>
+      </ol>
+    </div>
+  </div>
+  <!--<div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Agency</h1>
+      </div>
+    </div>
+  </div>-->
+</div>
+
+<div class="content">
+
+  <!--Bank Details-->
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)">
+  </app-success-failure-alerts-message>
+  <div class="table-bdr">
+    <h3>    Bank Details    </h3>
+
+    <div class="panel-body">
+      <form role="form" name="agencyInfo" [formGroup]="agencyInfo">
+        <div class="col-md-6 form-group popover-field">
+            <label> Account # *</label>
+              <input type="text" class="form-control" pattern="[0-9]*" minlength="9" maxlength="50" formControlName="accountNo" placeholder="Account #">
+              <div class="msg" *ngIf="agencyInfo.controls['accountNo'].invalid && (agencyInfo.controls['accountNo'].dirty || agencyInfo.controls['accountNo'].touched)">
+                <div *ngIf="agencyInfo.controls['accountNo'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="agencyInfo.controls['accountNo'].errors.pattern">
+                  Only numbers allowed.
+                </div>
+              </div>
+                <button type="button" class="pop-over" data-container="body" [popover]="popDPN1" popoverTitle="Help" triggers="mouseenter:mouseleave">?</button>
+                <ng-template #popDPN1>
+                  <ul>
+                    <li>Account # is required.</li>
+                    <li>Account # allows only numbers</li>
+                    <li>It should contain minimum 9 maximum 50 charecters.</li>
+                  </ul>
+                </ng-template>
+        </div>
+
+        
+          <div class="form-group col-md-6 popover-field">
+            <label class="focused"> Account Type* </label>
+              <select class="form-control" formControlName="accountType"> 
+                <option selected value="">--Select--</option>
+              <option *ngFor="let acc of accountType" value="{{acc.LookUpTypeCode}}" >
+                              {{acc.LookUpTypeCodeDesc}} 
+                      </option>
+            </select>
+              <div class="msg" *ngIf="agencyInfo.controls['accountType'].invalid && (agencyInfo.controls['accountType'].dirty || agencyInfo.controls['accountType'].touched)">
+                <div *ngIf="agencyInfo.controls['accountType'].errors.required">
+                  Required.
+                </div>
+              </div>
+                <button type="button" class="pop-over" data-container="body" [popover]="popDPN2" popoverTitle="Help" triggers="mouseenter:mouseleave">?</button>
+                <ng-template #popDPN2>
+                  <ul>
+                    <li>Account Type is required.</li>
+                    <li>Select your account type.</li>
+                  </ul>
+                </ng-template>
+        </div>
+
+          <div class="col-md-6 form-group popover-field">
+            <label> Account Name* </label>
+              <input type="text" class="form-control" pattern="[a-zA-Z ]*" minlength="1" maxlength="50" formControlName="accountName" placeholder="Account Name">
+              <div class="msg" *ngIf="agencyInfo.controls['accountName'].invalid && (agencyInfo.controls['accountName'].dirty || agencyInfo.controls['accountName'].touched)">
+                <div *ngIf="agencyInfo.controls['accountName'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="agencyInfo.controls['accountName'].errors.pattern">
+                  Account Name allows only alphabets and spaces.
+                </div>
+              </div>
+                <button type="button" class="pop-over" data-container="body" [popover]="popDPN3" popoverTitle="Help" triggers="mouseenter:mouseleave">?</button>
+                <ng-template #popDPN3>
+                  <ul>
+                    <li>Account Name is required.</li>
+                    <li>Account Name allows only alphabets and spaces</li>
+                    <li>It should contain minimum 1 maximum 50 charecters.</li>
+                  </ul>
+                </ng-template>
+        </div>
+
+          <div class="col-md-6 form-group popover-field">
+            <label> Bank Name* </label>
+              <input type="text" class="form-control" pattern="[a-zA-Z ]*" minlength="1" maxlength="20" formControlName="bankName" placeholder="Bank Name">
+              <div class="msg" *ngIf="agencyInfo.controls['bankName'].invalid && (agencyInfo.controls['bankName'].dirty || agencyInfo.controls['bankName'].touched)">
+                <div *ngIf="agencyInfo.controls['bankName'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="agencyInfo.controls['bankName'].errors.pattern">
+                  Bank Name allows only alphabets and spaces.
+                </div>
+              </div>
+                <button type="button" class="pop-over" data-container="body" [popover]="popDPN4" popoverTitle="Help" triggers="mouseenter:mouseleave">?</button>
+                <ng-template #popDPN4>
+                  <ul>
+                    <li>Bank Name is required.</li>
+                    <li>Bank Name allows only alphabets and spaces</li>
+                    <li>It should contain minimum 1 maximum 20 charecters.</li>
+                  </ul>
+                </ng-template>
+        </div>
+
+          <div class="col-md-6 form-group popover-field">
+            <label> IFSC Code* </label>
+              <input type="text" class="form-control" pattern="[a-zA-Z0-9]*" minlength="9" maxlength="20" formControlName="ifscCode" placeholder="IFSC Code">
+              <div class="msg" *ngIf="agencyInfo.controls['ifscCode'].invalid && (agencyInfo.controls['ifscCode'].dirty || agencyInfo.controls['ifscCode'].touched)">
+                <div *ngIf="agencyInfo.controls['ifscCode'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="agencyInfo.controls['ifscCode'].errors.pattern">
+                  IFSC Code allows only alphabets and Numerics.
+                </div>
+              </div>
+                <button type="button" class="pop-over" data-container="body" [popover]="popDPN5" popoverTitle="Help" triggers="mouseenter:mouseleave">?</button>
+                <ng-template #popDPN5>
+                  <ul>
+                    <li>IFSC Code is required.</li>
+                    <li>IFSC Code allows only alphabets and Numerics</li>
+                    <li>It should contain minimum 9 maximum 20 charecters.</li>
+                  </ul>
+                </ng-template>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!--agency details preview-->
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <button class="btn btn-default btn-search" [disabled]="isUpdate" *ngIf="update" (click)="updateDetails()"> 
+              Update 
+        </button>
+        <button class="btn btn-default btn-search" [disabled]="isCreate" *ngIf="add" (click)="saveDetails()"> 
+              Add
+        </button>
+        <button class="btn btn-default btn-reset" [disabled]="ispreview" (click)="previewDetails()"> 
+              Preview
+        </button>
+        <button class="btn btn-default btn-search" (click)="back()"> 
+              Back
+        </button>
+        <button class="btn btn-default btn-reset" (click)="resetDetails()"> 
+              Reset
+        </button>
+        <button class="btn btn-default btn-reset" (click)="cancel()"> 
+              Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="previewAgency">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Agency Details
+      </div>
+      <div class="panel-body">
+        <div class="col-md-3">
+          <label>
+            <strong> Agency Name: </strong>
+            <br/> {{agencyName}} </label>
+        </div>
+        <div class="col-md-3">
+          <label>
+            <strong> Agency Code: </strong>
+            <br/> {{agencyCode}} </label>
+        </div>
+        <div class="col-md-3">
+          <label>
+            <strong> Is Active: </strong>
+            <br/> {{isActive}} </label>
+        </div>
+      </div>
+    </div>
+
+    <!--Bank Details -->
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Bank Details
+      </div>
+      <div class="panel-body">
+        <div class="col-md-3">
+          <label>           
+            <strong> Account # </strong>
+            <br/> {{accountNum}} </label>
+        </div>
+        <div class="col-md-3">
+          <label>
+            <strong> Account Type: </strong>
+            <br/> {{accType}} </label>
+        </div>
+        <div class="col-md-3">
+          <label>
+            <strong> Account Name: </strong>
+            <br/> {{accountName}} </label>
+        </div>
+        <div class="col-md-3">
+          <label>
+            <strong> Bank Name: </strong>
+            <br/> {{bankName}} </label>
+        </div>
+        <div class="col-md-3">
+          <label>
+            <strong> IFSC Code: </strong>
+            <br/> {{ifscCode}} </label>
+        </div>
+      </div>
+    </div>
+    <!-- Personal Information-->
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Personal Information
+      </div>
+      <div class="panel-body">
+
+        <div class="col-md-3">
+          <label>        
+            <strong> Title: </strong>
+            <br/> {{title}} </label>
+        </div>
+        <div class="col-md-3">
+          <label>
+            <strong> Suffix: </strong>
+            <br/> {{suffix}} </label>
+        </div>
+        <div class="col-md-3">
+          <label>
+            <strong> Name: </strong>
+            <br/> {{name}} </label>
+        </div>
+        <div class="col-md-3">
+          <label>
+            <strong> Username:</strong>
+            <br/> {{userName}} </label>
+        </div>
+        <div class="col-md-3">
+          <label>
+            <strong> Gender: </strong>
+            <br/> {{gender}} </label>
+        </div>
+      </div>
+    </div>
+
+    <!--Contact Information-->
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Contact Information
+      </div>
+      <div class="panel-body">
+
+        <div class="col-md-3">
+          <label>          
+            <strong> Email: </strong>
+            <br/>   {{email}} </label>
+        </div>
+        <div class="col-md-3">
+          <label>
+            <strong> Address: </strong>
+            <br/> {{address}} </label>
+        </div>
+        <div class="col-md-3">
+          <label>
+            <strong> Mobile # : </strong>
+            <br/> {{mobile}} </label>
+        </div>
+        <div class="col-md-3">
+          <label>
+            <strong> Phone # :</strong>
+            <br/> {{phone}} </label>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>

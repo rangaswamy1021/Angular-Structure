@@ -1,0 +1,311 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">FMC</a></li>
+        <li><a href="#">Configurations</a></li>
+        <li class="active"> Business Processes</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1> Business Processes</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title"> Business Processes</h4>
+    </div>
+    <div class="panel-body bordered">
+      <div class="row">
+        <form role="form" name="businessProcessesForm" [formGroup]="businessProcessesForm" novalidate>
+          <div class="col-md-6">
+            <div class="form-group popover-field col-md-12">
+              <label for="businessProcessesCode">Business Process Code</label>
+              <input type="text" class="form-control" placeholder="BusinessProcessCode" id="businessProcessesCode" name="businessProcessesCode"
+                formControlName="businessProcessesCode" required>
+              <div class="msg" *ngIf="businessProcessesForm.controls['businessProcessesCode'].invalid && (businessProcessesForm.controls['businessProcessesCode'].dirty || businessProcessesForm.controls['businessProcessesCode'].touched)">
+                <div *ngIf="businessProcessesForm.controls['businessProcessesCode'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="businessProcessesForm.controls['businessProcessesCode'].errors.pattern">
+                  allows only alphabets
+                </div>
+              </div>
+              <ng-template #popContent2>
+                <ul>
+                  <li>Business Process Code is required</li>
+                  <li>It allows alphabets only <br></li>
+                  <li>It should be minimum 1<br> characters and maximum 150 <br> characters long<br></li>
+                </ul>
+              </ng-template>
+              <button type="button" class="pop-over" [popover]="popContent2" data-container="body" popoverTitle="Help" placement="left"
+                triggers="mouseenter:mouseleave">
+                      <i class="fa fa-question" aria-hidden="true"></i>
+                </button>
+            </div>
+          </div>
+          <div class="panel-body col-md-12 m-l-20">
+            <button type="button" class="btn btn-primary btn-search" (click)="searchBusinessProcessClick()" [disabled]="searchButton">Search</button>
+            <button type="button" class="btn btn-primary btn-reset" (click)="resetBusinessProcesses()">Reset</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="row m-l-10 m-t-10" *ngIf='!enterbusinessProcessesForm'>
+      <button class="btn btn-primary btn-search" (click)='addNewBusinessCode()' [disabled]="createButton"><i class="fa fa-plus-circle fa-lg" aria-hidden="true"></i> <span>Add Business Process Code</span>        
+          </button>
+    </div>
+  </div>
+  <div class="panel panel-default" [hidden]="!enterbusinessProcessesForm">
+    <div class="table-bdr">
+      <div class="panel-heading">
+        <h4 class="panel-title">Add New Business Process</h4>
+      </div>
+      <div class="panel-body">
+        <form role="form" name="addBusinessProcessesForm" [formGroup]="addBusinessProcessesForm" novalidate>
+          <div class="col-md-6">
+            <div class="form-group popover-field col-md-12">
+              <label for="Code">Code</label>
+              <input type="text" class="form-control" placeholder="Code" id="code" name="code" formControlName="code">
+
+              <div class="msg" *ngIf="addBusinessProcessesForm.controls['code'].invalid && (addBusinessProcessesForm.controls['code'].dirty || addBusinessProcessesForm.controls['code'].touched)">
+                <div *ngIf="addBusinessProcessesForm.controls['code'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="addBusinessProcessesForm.controls['code'].errors.pattern">
+                  allows only alphabets
+                </div>
+                <div *ngIf="addBusinessProcessesForm.controls['code'].errors.maxlength">
+                  Maximum 150 characters are allowed.
+                </div>
+              </div>
+              <ng-template #popContent2>
+                <ul>
+                  <li>Code is required</li>
+                  <li>It allows alphabets only
+                    <br></li>
+                  <li>It should be minimum 1 characters and maximum 150 <br> characters long<br></li>
+                </ul>
+              </ng-template>
+              <button type="button" class="pop-over" [popover]="popContent2" data-container="body" popoverTitle="Help" placement="left"
+                triggers="mouseenter:mouseleave">
+                      <i class="fa fa-question" aria-hidden="true"></i>
+                </button>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group popover-field col-md-12">
+              <label>Description</label>
+              <textarea class="form-control" #description placeholder="Description" id="description" name="description" formControlName="description"
+                maxlength="500" cols="30" rows="3"></textarea>
+              <div class="msg" *ngIf="addBusinessProcessesForm.controls['description'].invalid && (addBusinessProcessesForm.controls['description'].dirty || addBusinessProcessesForm.controls['description'].touched)">
+                <div *ngIf="addBusinessProcessesForm.controls['description'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="addBusinessProcessesForm.controls['description'].errors.maxlength">
+                  Maximum 200 characters are allowed.
+                </div>
+              </div>
+              <ng-template #popContent3>
+                <ul>
+                  <li>Description is required</li>
+                  <li>It should be minimum 1<br> characters and maximum 200 <br> characters long<br>
+                    <br></li>
+                </ul>
+              </ng-template>
+              <button type="button" class="pop-over" [popover]="popContent3" data-container="body" popoverTitle="Help" placement="left"
+                triggers="mouseenter:mouseleave">
+                      <i class="fa fa-question" aria-hidden="true"></i>
+                </button>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row m-l-10">
+              <label class="col-md-3 m-t-10"> Status </label>
+              <div class="col-md-9 m-t-10">
+                <div *ngFor="let status of statuses" class="custom-control custom-radio radio-inline">
+                  <input formControlName="rdostatus" type="radio" [(ngModel)]="defaultStatus" class="custom-control-input" [value]="status.Value"
+                    [id]="status.id">
+                  <!--<span class="custom-control-indicator"> </span>-->
+                  <label [for]="status.id" class="custom-control-description">{{status.Value}}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row m-l-20">
+              <div class="checkbox">
+                <input type="checkbox" id="automatic" name="automatic" [(ngModel)]="isAvailable" formControlName="automatic">
+                <label for="automatic"><span></span> Automatic</label>
+              </div>
+            </div>
+          </div>
+          <div class="row m-t-20">
+            <form [formGroup]="addBusinessProcessesForm">
+              <div class="col-md-12">
+                <div class="table-bdr">
+                  <h3>Add more Associations</h3>
+                  <div class="pad-10">
+                    <div class="row" [hidden]='!addMoreAssociationsButton'>
+                      <div class="col-md-12 form-group">
+                        <button class="btn btn-primary btn-search pull-right" (click)='addMoreAssociations()'><i class="fa fa-plus-circle fa-lg" aria-hidden="true"></i> <span>Add more Associations</span>        
+                </button>
+                      </div>
+                      <div class="clear">
+                      </div>
+                    </div>
+                    <div class="row" [hidden]='!addMoreAssociationsForm'>
+                      <div class="col-md-4">
+                        <div class="form-group  col-md-12">
+                          <label class="focused"> TxnType</label>
+                          <ng-select [allowClear]="true" [items]="itemsT" (selected)="bpTxnTypeSelected($event)" placeholder="--Select--" id="txnDropDown"
+                            name="txnDropDown" formControlName="txnDropDown" required>
+                          </ng-select>
+                          <div class="msg" *ngIf="addBusinessProcessesForm.controls['txnDropDown'].invalid && (addBusinessProcessesForm.controls['txnDropDown'].dirty || addBusinessProcessesForm.controls['txnDropDown'].touched)">
+                            <div *ngIf="addBusinessProcessesForm.controls['txnDropDown'].errors.required">
+                              Required.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group  col-md-12">
+                          <label for="txnCode"> TxnCode</label>
+                          <input type="text" class="form-control" formControlName="txnCode" placeholder="" id="txnCode" name="txnCode">
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group col-md-12">
+                          <label for="lineItemCode"> Line Item Code</label>
+                          <input type="text" class="form-control" formControlName="lineItemCode" placeholder="" id="lineItemCode" name="lineItemCode">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group  col-md-12">
+                          <label class="focused"> Chart of Accounts</label>
+                          <select class="form-control" id="chatOfAccountDropDown" name="chatOfAccountDropDown" formControlName="chatOfAccountDropDown"
+                            [(ngModel)]="selectedChartOfAccount" (change)="chartOfAccSelect($event.target)">
+                      <option selected="selected" value="">--Select--</option>
+                      <option *ngFor='let dropDownValuesResult of itemsTxnChartType' value="{{dropDownValuesResult.id}}">{{dropDownValuesResult.text}}</option>
+                  </select>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div class="col-md-12  text-right">
+                            <button class="btn btn-primary btn-search" type="submit" (click)="addTxnTypes()">Add</button>
+                            <button class="btn btn-primary btn-reset" type="button" (click)="cancelAddLineItems()">Cancel</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="table-bdr" style="margin-top:20px;" [hidden]="!showLineItem">
+                      <h3>Add Associations Details</h3>
+                      <div class="pad-10">
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th>TxnType</th>
+                              <th>TxnCode</th>
+                              <th>Line Item Code</th>
+                              <th>Chart of Accounts</th>
+                              <th>Delete</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let contact of selectedTxnTypeDetails;let index = i" style="margin-bottom: 10px;">
+                              <td>{{contact.txnTypeValue}}</td>
+                              <td>{{contact.txnCodeValue}}</td>
+                              <td>{{contact.lineCodeValue}}</td>
+                              <td>{{contact.bpChartOfAcc}}</td>
+                              <td><img src="assets/images/svg/delete-blue.svg" class="icon-svg3" alt="" (click)="removeTxnType(contact)"></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="row m-t-20">
+                <div class="col-md-12 text-right">
+                  <button class="btn btn-primary btn-search" type="button" (click)="createBusinessProcess()" *ngIf="showAdd" [disabled]="createButton">Submit</button>
+                  <button type="button" class="btn btn-primary btn-search" (click)="updateBusinessProcesses()" *ngIf="showUpdate" [disabled]="updateButton">Update</button>
+                  <button class="btn btn-primary btn-reset" type="button" (click)="cancel()">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="table-bdr">
+      <div class="panel-heading">Business Process Codes </div>
+      <div class="panel-body bordered" class="container-fluid invoiceDetails">
+        <div class="pad-20">
+          <div class="table-responsive" *ngIf='manageBusinessprocessesResponse && manageBusinessprocessesResponse.length'>
+            <table class="table bordered">
+              <thead class="nowrap">
+                <tr>
+                  <th class="col-md-3">Code</th>
+                  <th>Description</th>
+                  <th class="col-md-1 text-center">Status</th>
+                  <th>Transaction Type Association</th>
+                  <th>Edit</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of manageBusinessprocessesResponse | paginate: { itemsPerPage:pageItemNumber, currentPage: p, totalItems:totalRecordCount}">
+                  <td>{{data.BusinessProcessCode}}</td>
+                  <td>{{data.BusinessProcessDesc}}</td>
+                  <td>{{data.Status}}</td>
+                  <!--<td class="col-md-1 text-center"><i *ngIf="data.Status === 'Active' || data.Status === 'ACTIVE'" class="fa fa-toggle-on" aria-hidden="true"></i>
+                    <i *ngIf="data.Status === 'InActive'|| data.Status === 'Inactive'" class="fa fa-toggle-off" aria-hidden="true"></i></td>-->
+                  <td>{{data.TxnTypeAssociations}}</td>
+                  <td><i class="fa fa-pencil fa-lg" aria-hidden="true" style="cursor:pointer" (click)="editBusinessProcess(data)"
+                      [ngClass]="{'disabletextbox': updateButton}"></i></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div *ngIf="showPage">
+            <div class="row page-info" *ngIf="manageBusinessprocessesResponse && manageBusinessprocessesResponse.length >0">
+              <div class="col-md-6 text-left">
+                <p>
+                  Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}
+                </p>
+              </div>
+              <div class="col-md-6 text-right">
+                <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+              </div>
+            </div>
+
+          </div>
+          <div [hidden]="manageBusinessprocessesResponse && manageBusinessprocessesResponse.length != 0"> No Business Process Codes to display</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>

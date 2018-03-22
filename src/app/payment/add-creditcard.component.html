@@ -1,0 +1,90 @@
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)" (onOk)="okDeleteCreditCard($event)"></app-success-failure-alerts-message>
+<div class="row" *ngIf="!enterCreditCardDetails">
+  <div class="col-md-12">
+    <button class="btn btn-primary btn-search" style="margin-top:10px" (click)="addNewCreditCard()" [disabled]="disableCreateButton"><i class="fa fa-plus-circle fa-lg" aria-hidden="true"></i> <span>Add New Credit Card</span></button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-8" [hidden]="!enterCreditCardDetails">
+    <div class="payment-details payment-contents panel panel-default">
+      <div class="panel-heading">
+        <span>{{status}} Credit Card Details</span>
+      </div>
+      <div class="panel-body bordered">
+        <app-credit-card-information [Customerid]="customerId" [IsSaveCheckBox]="false" (saveClicked)='addCreditCardClicked($event)'
+          [IsDeletebutton]="isDeletebutton" [IsAddButton]="isAddButton"></app-credit-card-information>
+        <div class="row">
+          <div class="col-md-12">
+            <!--<div class="form-group">-->
+            <form [formGroup]="setPrimaryCardForm">
+              <div class="checkbox-inline checkbox pull-left">
+                <input type="checkbox" formControlName="isPrimaryCard" id="save" [(ngModel)]="isPrimaryCreditCard" name="save" value="save"
+                  tabindex="9">
+                <label for="save">
+                      <span></span> Use as Primary Card
+                      </label>
+              </div>
+            </form>
+            <!--</div>-->
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <button type="button" class="btn btn-primary btn-search" *ngIf="addCardDetails" [disabled]="disableCreateButton" (click)="addCreditCardDetails()"
+              tabindex="10">Add</button>
+            <button type="button" class="btn btn-primary btn-search" *ngIf="updateCardDetails" [disabled]="disableUpdateButton" (click)="updateCreditCardDetails()">Update</button>
+            <button type="button" class="btn btn-primary btn-search" *ngIf="deleteCardDetails" [disabled]="disableDeleteButton" (click)="deleteCreditCard()">Delete</button>
+            <button type="reset" class="btn btn-primary btn-reset" *ngIf="resetCardDetails" (click)="resetCreditCardInformation()" tabindex="11">Reset</button>
+            <button type="button" class="btn btn-primary btn-reset" tabindex="12" (click)="cancelCreditCardInformation()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-12 m-t-20">
+    <div class="table-bdr" *ngIf="creditCardInfo.length >= 1">
+      <h3>Credit Card Details</h3>
+      <div class="pad-10">
+        <table class="table">
+          <thead>
+            <tr>
+              <td>Card Number</td>
+              <td>Card Type</td>
+              <td>Exp Date</td>
+              <td>Primary Card</td>
+              <td>Edit</td>
+              <td>Delete</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let creditCard of creditCardInfo">
+              <td>{{creditCard.cardNum}}</td>
+              <td>{{creditCard.cardType}}</td>
+              <td>{{creditCard.cardExpDate}}</td>
+              <!--<td>{{creditCard.primaryCard}}</td>-->
+              <td> {{(creditCard.primaryCard)?'True':'False'}}</td>
+              <td>
+                <i [ngClass]="{'disabletextbox': disableUpdateButton}" class="fa fa-pencil fa-lg" aria-hidden="true" style="cursor:pointer"
+                  (click)="editCreditCardDetails(creditCard)"></i>
+              </td>
+              <td>
+                <i [ngClass]="{'disabletextbox': disableDeleteButton}" class="fa fa-trash fa-lg" aria-hidden="true" style="cursor:pointer"
+                  (click)="deleteCreditCardDetails(creditCard)"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="table-bdr" *ngIf="creditCardInfo.length <= 0">
+      <h3>Credit Card Details</h3>
+      <div class="pad-10">
+        There are no credit cards for this Account # {{customerId}}
+      </div>
+    </div>
+  </div>
+</div>
+<!--<div class="row m-t-20">
+  </div>-->

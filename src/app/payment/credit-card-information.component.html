@@ -1,0 +1,209 @@
+<form role="form" name="createForm" [formGroup]="createForm">
+  <div class="row">
+    <div class="form-group col-sm-12 popover-field">
+      <label for="inputPassword3">Name on Card</label>
+      <input type="text" class="form-control" pattern="^[a-zA-Z ]*" maxlength="25" id="" placeholder="Name on Card" formControlName="Name"
+        name="Name" tabindex="1" style="text-transform:uppercase;">
+      <div class="msg" *ngIf="createForm.controls['Name'].invalid && (createForm.controls['Name'].dirty || createForm.controls['Name'].touched)">
+        <div *ngIf="createForm.controls['Name'].errors.required">
+          Required.
+        </div>
+        <div *ngIf="createForm.controls['Name'].errors.pattern">
+          Only alphabets and spaces are allowed !
+        </div>
+      </div>
+      <button type="button" data-container="body" class="pop-over" [popover]="popNonC" popoverTitle="Help" triggers="mouseenter:mouseleave"
+        placement="left">?</button>
+      <ng-template #popNonC>
+        <ul>
+          <li>Name On Card is required</li>
+          <li>It allows only alphabets and spaces </li>
+          <li>It should contain minimum 1 and maximum 25 characters</li>
+        </ul>
+      </ng-template>
+      <!--<button type="button" class="tool-tip" data-toggle="tooltip" data-placement="top" title="{{tootltipName}}">?</button>-->
+    </div>
+    <div class="form-group col-sm-12 popover-field">
+      <label for="inputEmail3" class="focused">Credit Card Type</label>
+      <select class="form-control" formControlName="CardType" name="CardType" tabindex="2">
+         <option selected='selected' value="">--Select--</option>
+          <option *ngFor="let type of cardType" value="{{type.Key}}">{{type.Value}}</option>
+        </select>
+      <div class="msg" *ngIf="createForm.controls['CardType'].invalid && (createForm.controls['CardType'].dirty || createForm.controls['CardType'].touched)">
+        <div *ngIf="createForm.controls['CardType'].errors.required">
+          Required.
+        </div>
+      </div>
+      <button type="button" data-container="body" class="pop-over" [popover]="popCCT" popoverTitle="Help" triggers="mouseenter:mouseleave"
+        placement="left">?</button>
+      <ng-template #popCCT>
+        <ul>
+          <li>Credit Card Type is required</li>
+          <li>Select Credit Card Type</li>
+        </ul>
+      </ng-template>
+      <!--<button type="button" tabindex="-1" class="tool-tip" data-toggle="tooltip" data-placement="top" title="{{tooltipCardType}}">?</button>-->
+    </div>
+    <div class="col-sm-12 card-number" formGroupName="CCNumbers">
+      <div style="display: inline-block; vertical-align: top; width: calc(100% - 30px);">
+        <label for="inputEmail3" class="label-color">Credit Card #</label>
+        <div class="row card-number-fields">
+          <div class="form-group popover-field col-sm-12">
+            <input type="text" pattern="[0-9]*" class="form-control" id="txt-1" placeholder="" formControlName="CCNumber1" name="CCNumber1"
+              #inputField minlength="4" maxlength="4" tabindex="3" (keyup)="moveToNextTab($event, 'txt-2','txt-1')">
+            <div class="msg" *ngIf="createForm.get('CCNumbers.CCNumber1').invalid && (createForm.get('CCNumbers.CCNumber1').dirty || createForm.get('CCNumbers.CCNumber1').touched)">
+              <div *ngIf="createForm.get('CCNumbers.CCNumber1').errors.required">
+                Required.
+              </div>
+              <div *ngIf="createForm.get('CCNumbers.CCNumber1').errors.pattern">
+                Only numbers allowed.
+              </div>
+            </div>
+          </div>
+          <div class="form-group popover-field col-sm-12">
+            <input type="text" pattern="[0-9]*" class="form-control" id="txt-2" placeholder="" formControlName="CCNumber2" name="CCNumber2"
+              #inputField minlength="4" maxlength="4" tabindex="4" (keyup)="moveToNextTab($event, 'txt-3','txt-1')">
+            <div class="msg" *ngIf="createForm.get('CCNumbers.CCNumber2').invalid && (createForm.get('CCNumbers.CCNumber2').dirty || createForm.get('CCNumbers.CCNumber2').touched)">
+              <div *ngIf="createForm.get('CCNumbers.CCNumber2').errors.required">
+                Required.
+              </div>
+              <div *ngIf="createForm.get('CCNumbers.CCNumber2').errors.pattern">
+                Only numbers allowed.
+              </div>
+            </div>
+          </div>
+          <div class="form-group popover-field col-sm-12">
+            <input type="text" pattern="[0-9]*" class="form-control" id="txt-3" placeholder="" formControlName="CCNumber3" name="CCNumber3"
+              #inputField minlength="4" maxlength="4" tabindex="5" (keyup)="moveToNextTab($event, 'txt-4','txt-2')">
+            <div class="msg" *ngIf="createForm.get('CCNumbers.CCNumber3').invalid && (createForm.get('CCNumbers.CCNumber3').dirty || createForm.get('CCNumbers.CCNumber3').touched)">
+              <div *ngIf="createForm.get('CCNumbers.CCNumber3').errors.required">
+                Required.
+              </div>
+              <div *ngIf="createForm.get('CCNumbers.CCNumber3').errors.pattern">
+                Only numbers allowed.
+              </div>
+            </div>
+          </div>
+          <div class="form-group popover-field col-sm-12">
+            <input type="text" pattern="[0-9]*" class="form-control" id="txt-4" placeholder="" formControlName="CCNumber4" name="CCNumber4"
+              #inputField maxlength="4" tabindex="6" (keyup)="moveToNextTab($event, 'txt-4','txt-3')">
+            <div class="msg" *ngIf="createForm.get('CCNumbers.CCNumber4').invalid && (createForm.get('CCNumbers.CCNumber4').dirty || createForm.get('CCNumbers.CCNumber4').touched)">
+              <div *ngIf="createForm.get('CCNumbers.CCNumber4').errors.required">
+                Required.
+              </div>
+              <div *ngIf="createForm.get('CCNumbers.CCNumber4').errors.pattern">
+                Only numbers allowed.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button type="button" data-container="body" class="pop-over" [popover]="popCCN" popoverTitle="Help" triggers="mouseenter:mouseleave"
+        placement="left">?</button>
+      <ng-template #popCCN>
+        <ul>
+          <li>Credit Card # is required</li>
+          <li>It allows only numbers</li>
+          <li>It should contain minimum 13 and maximum 16 numbers</li>
+        </ul>
+      </ng-template>
+      <!--<button type="button" tabindex="-1" class="tool-tip" data-toggle="tooltip" data-placement="top" title="{{tootltipCNumber}}">?</button>-->
+      <!--<div class="msg" *ngIf="createForm.controls['CCNumbers'].invalid && (createForm.controls['CCNumbers'].dirty || createForm.controls['CCNumbers'].touched)">
+          <div *ngIf="createForm.controls['CCNumbers'].errors.required">
+            Required.
+          </div>
+        </div>-->
+    </div>
+    <div class="form-group col-sm-12">
+      <label for="inputPassword3" class="focused">Expiry Date</label>
+      <div class="row">
+        <div class="col-xs-6 popover-field">
+          <select class="form-control" id="expiry-month" formControlName="Month" name="Month" tabindex="7">
+              <option selected="selected" value="">--MONTH--</option>
+              <option *ngFor="let month of months" value={{month}}>{{month}}</option>
+            </select>
+          <div class="msg" *ngIf="createForm.controls['Month'].invalid && (createForm.controls['Month'].dirty || createForm.controls['Month'].touched)">
+            <div *ngIf="createForm.controls['Month'].errors.required">
+              Required.
+            </div>
+          </div>
+          <button type="button" data-container="body" class="pop-over" [popover]="popED" popoverTitle="Help" triggers="mouseenter:mouseleave"
+            placement="left">?</button>
+          <ng-template #popED>
+            <ul>
+              <li>Card Expiration Month is required</li>
+              <li>Card Expiration Month should not be less than current month of the current year</li>
+            </ul>
+          </ng-template>
+          <!--<button type="button" tabindex="-1" class="tool-tip" data-toggle="tooltip" data-placement="top" title="{{tootipMonth}}">?</button>-->
+        </div>
+        <div class="col-xs-6 popover-field">
+          <select class="form-control" formControlName="Year" name="Year" tabindex="8">
+              <option selected="selected" value="">--YEAR--</option>
+              <option *ngFor="let year of years" value={{year}}>{{year}}</option>
+              </select>
+          <div class="msg" *ngIf="createForm.controls['Year'].invalid && (createForm.controls['Year'].dirty || createForm.controls['Year'].touched)">
+            <div *ngIf="createForm.controls['Year'].errors.required">
+              Required.
+            </div>
+          </div>
+          <button type="button" data-container="body" class="pop-over" [popover]="popYear" popoverTitle="Help" triggers="mouseenter:mouseleave"
+            placement="left">?</button>
+          <ng-template #popYear>
+            <ul>
+              <li>Card Expiration Year is required</li>
+              <li>Select Year</li>
+            </ul>
+          </ng-template>
+          <!--<button type="button" tabindex="-1" class="tool-tip" data-toggle="tooltip" data-placement="top" title="{{tootipYear}}">?</button>-->
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12" *ngIf="isSaveCheckBox">
+      <div class="checkbox-inline checkbox">
+        <input type="checkbox" formControlName="SaveCreditCard" name="SaveCreditCard" name="save" value="save" *ngIf="isSaveCheckBox"
+          id="SaveCreditCard">
+        <label for="SaveCreditCard">
+        <span></span> Save Card Details
+      </label>
+      </div>
+    </div>
+  </div>
+</form>
+<div class="row" *ngIf="isAddressVisible">
+  <div class="col-md-12 m-t-20">
+    <div class="table-bdr">
+      <h3>Address Details</h3>
+      <div class="pad-20">
+        <div class="row">
+          <div class="col-md-12" *ngIf="!isDeletebutton">
+            <div class="custom-control custom-radio radio-inline">
+              <input type="radio" [checked]="!isAddressEnable" class="custom-control-input" name="addressRadioOptions" id="addressRadioOptions1"
+                value="exist" (change)="addressChange($event.target.value)">
+              <label for="addressRadioOptions1" class="custom-control-description">Use Existing Address</label>
+            </div>
+            <div class="custom-control custom-radio radio-inline">
+              <input type="radio" [checked]="isAddressEnable" name="addressRadioOptions" id="addressRadioOptions2" value="new" (change)="addressChange($event.target.value)">
+              <label for="addressRadioOptions2" class="custom-control-description">Add New Address</label>
+            </div>
+          </div>
+        </div>
+        <div class="m-t-10" *ngIf="!isAddressEnable && customerId > 0">
+          <app-add-address [customerID]="customerId" [isEnable]="true" [addressValue]="addressValue"></app-add-address>
+        </div>
+        <div class="m-t-10" *ngIf="isAddressEnable">
+          <app-add-address [addressObject]="addressResponse" [customerID]="0" [isEnable]="false" [addressValue]="addressValue"></app-add-address>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="btn btn-primary btn-search" (click)="saveCreditCardDetails();" *ngIf="saveVisible" [disabled]="!createForm.valid || (addressComponent.addAddressForm.status=='DISABLED'?false:(addressComponent.addAddressForm.valid==true?false:true))">Save</button>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>

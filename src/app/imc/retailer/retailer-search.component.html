@@ -1,0 +1,175 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">IMC</a></li>
+        <li class="active">Retailer</li>
+        <li class="active">Manage Retailer</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Retailer</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="table-bdr">
+
+    <h3>Manage Retailer</h3>
+    <div class="pad-10">
+      <!--Search Form -->
+      <form role="form" name="retailerSearchForm" [formGroup]="retailerSearchForm">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="col-md-12 form-group">
+              <label>First Name</label>
+              <input type="text" class="form-control" placeholder="First Name" formControlName="firstName" maxlength="50">
+              <div class="msg" *ngIf="retailerSearchForm.controls['firstName'].invalid && (retailerSearchForm.controls['firstName'].dirty || retailerSearchForm.controls['firstName'].touched)">
+                <div *ngIf="retailerSearchForm.controls['firstName'].errors.required">
+                  At least one field required.
+                </div>
+                <div *ngIf="retailerSearchForm.controls['firstName'].errors.pattern">
+                  Only alphabets are allowed and Initial space(s) not allowed !.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="col-md-12 form-group">
+              <label> Last Name</label>
+              <input type="text" class="form-control" placeholder="Last Name" formControlName="lastName" maxlength="50">
+              <div class="msg" *ngIf="retailerSearchForm.controls['lastName'].invalid && (retailerSearchForm.controls['lastName'].dirty || retailerSearchForm.controls['lastName'].touched)">
+                <div *ngIf="retailerSearchForm.controls['lastName'].errors.pattern">
+                  Only alphabets are allowed and Initial space(s) not allowed !.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group col-md-12">
+              <label class="focused">Status</label>
+              <select class="form-control" formControlName="status">
+                 <option value=""> --select--</option>
+              <option *ngFor="let retailer of getLookupsResponse" value={{retailer.Key}} >{{retailer.Value}}</option>
+               </select>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-primary btn-search" (click)="searchRetailerClick()" [disabled]="disableSearchbtn">Search</button>
+            <button type="reset" (click)="resetClick()" class="btn btn-default btn-reset">Reset</button>
+          </div>
+        </div>
+      </form>
+      <!--Search Form Ends..-->
+
+    </div>
+  </div>
+
+  <!--Add New Retailer  -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <button class="btn btn-primary btn-search" [disabled]="disableAddNewRetailerbtn" (click)="addNewRetailer()"><i class="fa fa-plus-square-o fa-lg fa-fw" aria-hidden="true"></i> Add New Retailer </button>
+      </div>
+    </div>
+  </div>
+  <!--  Add New Retailer button End...-->
+  <!--Search Grid Start-->
+
+  <div class="table-bdr">
+    <h3>Retailer Search Results</h3>
+    <div class="pad-10">
+
+      <table class="table" *ngIf='retailerResponse && retailerResponse.length  ;else noRecorBlock'>
+        <thead>
+          <tr>
+            <th> Retailer # </th>
+            <th> First Name </th>
+            <th> Last Name </th>
+            <th> Primary Phone # </th>
+            <th> Email Address </th>
+            <th> Status </th>
+            <th> </th>
+            <th> </th>
+            <th> </th>
+            <th> </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor='let retailer of retailerResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount }'>
+            <td>
+              <span *ngIf="!disableUserOrderrbtn"> 
+                <a *ngIf="retailer.IsPOS" (click)="retailerDetails(retailer.CustomerId)" title="Click here to view the Retailer Orders">{{retailer.CustomerId}}</a>
+                </span>
+              <span *ngIf="disableUserOrderrbtn" class="link-disabled" title="you don't have permission to access">
+                 <span *ngIf="retailer.IsPOS">{{retailer.CustomerId}}</span>
+              </span>
+              <span *ngIf="!retailer.IsPOS">{{retailer.CustomerId}}</span>
+
+            </td>
+            <td>{{retailer.FirstName}}</td>
+            <td>{{retailer.LastName}}</td>
+            <td>{{retailer.PhoneNumber ==""?"N/A": retailer.PhoneNumber}}</td>
+            <td>{{retailer.EmailAddress =="" ? "N/A": retailer.EmailAddress }}</td>
+            <td> {{getStatus(retailer.AccountStatus)}}</td>
+            <td> <a *ngIf='(getStatus(retailer.AccountStatus)!="INACTIVE");else OtherEditContant' title="Edit"><i class="fa fa-pencil-square-o fa-lg fa-fw" aria-hidden="true"></i></a>
+              <ng-template #OtherEditContant>
+                <a></a>
+              </ng-template>
+            </td>
+            <td *ngIf='(getStatus(retailer.AccountStatus)!="NEW ACCOUNT")'>
+              <span *ngIf="disableDeleteRetailerbtn" class="link-disabled" title="you don't have permission to access">Delete</span>
+              <span *ngIf="!disableDeleteRetailerbtn"><a *ngIf='(getStatus(retailer.AccountStatus)=="ACTIVE");else OtherContant' 
+                name="{{retailer.CustomerId}}" (click)="retailerDelete(retailer.CustomerId,getStatus(retailer.AccountStatus))"
+                title="Deactivate">Delete</a></span>
+              <ng-template #OtherContant>
+                <span *ngIf="disableDeleteRetailerbtn" title="you don't have permission to access">Activate</span>
+                <a *ngIf="!disableDeleteRetailerbtn" name="{{retailer.CustomerId}}" (click)="retailerDelete(retailer.CustomerId,getStatus(retailer.AccountStatus))"
+                  title="Activate">Activate</a>
+              </ng-template>
+            </td>
+            <td *ngIf='(getStatus(retailer.AccountStatus)=="NEW ACCOUNT")'><a></a></td>
+            <td>
+              <i *ngIf="disableUserRetailerbtn" class="fa fa-user fa-lg link-disabled" title="you don't have permission to access"></i>
+              <span *ngIf="!disableUserRetailerbtn"><a *ngIf='(getStatus(retailer.AccountStatus)=="ACTIVE");else elseUserBlock' (click)="userClick(retailer.CustomerId)"
+                title="Users"><i class="fa fa-user fa-lg"></i></a></span>
+              <ng-template #elseUserBlock>
+                <a></a>
+              </ng-template>
+            </td>
+            <td><a *ngIf='(getStatus(retailer.AccountStatus)=="ACTIVE");else elseBlock' (click)="retailerResetPassword(retailer.CustomerId)"
+                title="Reset Password">Reset Password</a>
+              <ng-template #elseBlock>
+                <a></a>
+              </ng-template>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="row page-info" *ngIf='retailerResponse && retailerResponse.length >0 '>
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!--Search Grid End-->
+
+
+  <ng-template #noRecorBlock>
+    <div class="status-content">
+      <div class="pad-10">No details to display</div>
+    </div>
+  </ng-template>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)" (onOk)="btnYesClick($event)"></app-success-failure-alerts-message>

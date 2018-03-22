@@ -1,0 +1,74 @@
+<div class="page-title-header">
+    <div class="row no-gutters">
+        <div class="col-md-12">
+            <ol class="breadcrumb">
+                <li><a href="#">FMC</a></li>
+                <li><a href="#">General Journal</a></li>
+                <li class="active">Manual General Journal Entry approval</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="page-header">
+                <h1>Manual General Journal Entry Approval</h1>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-md-offset-2 pull-right">
+            <div class="form-horizontal m-b-10">
+                <button style="float:right;" (click)="back()" class="btn btn-primary btn-search"> Back </button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default m-t-20">
+                <div class="panel-heading">Manual GL Transactions </div>
+                <div class="panel-body bordered">
+                    <div *ngIf='getManualGlTxnsresponse && getManualGlTxnsresponse.length>0'>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Manual Journal #</th>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th>Approve</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor='let approve of getManualGlTxnsresponse  | paginate: { itemsPerPage:pageItemNumber, currentPage: p, totalItems:totalRecordCount}'>
+                                    <td> {{approve.ManualGLTxnId}}</td>
+                                    <td> {{approve.PostingDate | customDateFormat}} </td>
+                                    <td> {{approve.ManualGLTxnDesc}} </td>
+                                    <td>{{approve.TxnAmount | currencycustom}}</td>
+                                    <td><i class="fa fa-thumbs-up" aria-hidden="true" style="cursor: pointer" data-toggle="modal"
+                                            data-target="#alertModal" (click)="approvePopup(approve)" [ngClass]="{'disabletextbox': disableApproveButton}"></i>                                        </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div *ngIf='getManualGlTxnsresponse.length==0'>No records to display</div>
+                </div>
+                <div *ngIf="totalRecordCount >= 11">
+                    <div class="row page-info" *ngIf='getManualGlTxnsresponse && getManualGlTxnsresponse.length > 0'>
+                        <div class="col-md-6 text-left">
+                            <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event, 1000)"
+    (onOk)="btnYesClickEvent($event)"></app-success-failure-alerts-message>

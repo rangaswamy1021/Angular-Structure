@@ -1,0 +1,29 @@
+export interface ITollScheduleResponse {
+    TollScheduleHdrId: number;
+    TollScheduleHdrDesc: string;
+    TollScheduleDtlId: number;
+    TollRateId: number;
+    ScheduleType: string;
+    StartEffectiveDate: string;
+    EndEffectiveDate: string;
+    Interval: number;
+    FromTime: number;
+    ToTime: number;
+    IsActive: Boolean;
+    RecordCount: number;
+    EntryLaneID: number;
+    EntryLaneType: string;
+    EntryLaneName: string;
+    EntryLaneDirection: string;
+    EntryPlazaID: number;
+    EntryPlazaCode: string;
+    EntryPlazaName: string;
+    ExitPlazaID: string;
+    ExitPlazaCode: string;
+    ExitPlazaName: string;
+    HolidayDate: string;
+    HolidayDesc: string;
+    Holiday: string;
+    TransactionType: string;
+    TxnMethod: string;
+}

@@ -1,0 +1,96 @@
+<div class="page-title-header">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Update Tag Configurations</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<form role="form" name="updateConf" [formGroup]="updateConf">
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+  <div class="panel-body bordered">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group  col-md-12">
+          <label class="">Protocol #</label>
+          <input type="text" class="form-control" formControlName="protocol" name="protocol">
+        </div>
+      </div>
+      <div class="col-md-6">
+      <div class="form-group col-md-12">
+        <label class="">Mounting #</label>
+        <input type="text" class="form-control" formControlName="mounting" name="mounting">
+      </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group  col-md-12">
+          <label for="tagfee" class="">Tag Fee</label>
+          <input type="text" class="form-control" formControlName="tagfee" name="tagfee">
+          <div class="msg" *ngIf="updateConf.controls['tagfee'].invalid && (updateConf.controls['tagfee'].dirty || updateConf.controls['tagfee'].touched)">
+            <div *ngIf="updateConf.controls['tagfee'].errors.required">
+              Please enter valid tag fee
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group  col-md-12">
+          <label id="focused">Tag Fee Start Effective Date</label>
+          <!--<input type="text" placeholder=" " MaxLength="10" [minDate]="minDate" [maxDate]="maxDate " #dp="bsDatepicker" bsDatepicker
+            class="form-control" formControlName="tagfeestartdate">-->
+          <my-date-picker name="mydate" [options]="myDatePickerOptions" formControlName="tagfeestartdate" placeholder="MM/DD/YYYY"
+            (inputFieldChanged)='onFeeDateFieldChanged($event)'></my-date-picker>
+          <div class="show-error" *ngIf="invalidDate">
+           Invalid Date Range
+          </div>
+          <div class="show-error" *ngIf="!invalidDate && updateConf.controls['tagfeestartdate'].invalid && (updateConf.controls['tagfeestartdate'].dirty || updateConf.controls['tagfeestartdate'].touched)">
+            <div *ngIf="updateConf.controls['tagfeestartdate'].errors.required">
+              Enter Valid Tag Fee Start Effective Date
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group  col-md-12">
+          <label class="">Tag Deposit</label>
+          <input type="text" class="form-control" formControlName="tagdeposit" name="tagdeposit">
+          <div class="msg" *ngIf="updateConf.controls['tagdeposit'].invalid && (updateConf.controls['tagdeposit'].dirty || updateConf.controls['tagdeposit'].touched)">
+            <div *ngIf="updateConf.controls['tagdeposit'].errors.required">
+              Please enter valid tag deposit
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group  col-md-12">
+          <label id="focused">Tag Deposit Start Effective Date</label>
+          <!--<input type="text" placeholder=" " MaxLength="10" [minDate]="minDate" [maxDate]="maxDate " #dp="bsDatepicker" bsDatepicker
+            class="form-control" formControlName="tagdepositstartdate">-->
+          <div class="show-error" *ngIf="!invalidDepositDate && updateConf.controls['tagdepositstartdate'].invalid && (updateConf.controls['tagdepositstartdate'].dirty || updateConf.controls['tagdepositstartdate'].touched)">
+            <div *ngIf="updateConf.controls['tagdepositstartdate'].errors.required">
+              Enter Valid Tag Deposit Start Effective Date
+            </div>
+          </div>
+          <my-date-picker name="mydate" [options]="myDatePickerOptions" formControlName="tagdepositstartdate" placeholder="MM/DD/YYYY"
+            (inputFieldChanged)='onDepositDateFieldChanged($event)'></my-date-picker>
+          <div class="show-error"  *ngIf="invalidDepositDate">
+           <div> Invalid Date Range</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 text-right col-md-offset-6">
+      <div class="form-group">
+        <button class="btn btn-default btn-search" [disabled]="disableUButton" (click)='UpdateTag()'>Update</button>
+        <a href='javascript:;' class="btn btn-default btn-reset" (click)="closeDiv()">Cancel</a>
+      </div>
+    </div>
+
+  </div>
+</form>

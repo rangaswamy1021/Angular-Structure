@@ -1,0 +1,260 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">SAC</a></li>
+        <li><a href="#">Configurations</a></li>
+        <li class="active">Bulk Emails</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Bulk Emails</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <h3>Add Bulk Emails</h3>
+        <div class="pad-10">
+
+          <div class="row">
+
+            <form role="form" name="bulkEmailform" [formGroup]="bulkEmailform" novalidate>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group  col-md-12 popover-field">
+                    <label for="accountStatus" class="focused">Account Status</label>
+                    <select class="form-control" id="accountStatus" name="accountStatus" formControlName="accountStatus">
+                       <option value="" selected="selected">--Select--</option>
+                       <option value="0">ALL</option>
+                       <option *ngFor="let accountStatus of responseAccountStatus" value="{{accountStatus.AccountStausId}}">{{accountStatus.CustomerStatus}}</option>
+                    </select>
+                    <button type="button" class="pop-over" [popover]="popAStatus" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                    <ng-template #popAStatus>
+                      <ul>
+                        <li>Select the Account Status</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group  col-md-12 popover-field">
+                    <label for="accountType" class="focused">Account Type</label>
+                    <select class="form-control" id="accountType" name="accountType" formControlName="accountType">
+                      <option value="" selected="selected">--Select--</option>
+                      <option *ngFor="let customerPlan of responseCustomerPlans" value="{{customerPlan.PlanId}}">{{customerPlan.PlanName}}</option>
+                    </select>
+                    <button type="button" class="pop-over" [popover]="popAType" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                    <ng-template #popAType>
+                      <ul>
+                        <li>Select the Account type</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group  col-md-12 popover-field">
+                    <label for="ReplenishmentType" class="focused">Replenishment Type</label>
+                    <select class="form-control" id="ReplenishmentType" name="ReplenishmentType" formControlName="ReplenishmentType">
+                      <option value="" selected="selected">--Select--</option>
+                      <option *ngFor="let replanishmentTypes of responseReplanishmentTypes" value="{{replanishmentTypes.LookUpTypeCodeId}}">{{replanishmentTypes.LookUpTypeCode}}</option>
+                    </select>
+                    <button type="button" class="pop-over" [popover]="popRType" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                    <ng-template #popRType>
+                      <ul>
+                        <li>Select Replenishment Type</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group  col-md-12 popover-field">
+                    <label for="zipCode" class="">Zip Code</label>
+                    <input type="text" id="zipCode" class="form-control" pattern="[0-9]*" maxlength="10" placeholder="Zip Code" id="zipCode"
+                      name="zipCode" formControlName="zipCode">
+                    <div class="msg" *ngIf="bulkEmailform.controls['zipCode'].invalid && (bulkEmailform.controls['zipCode'].dirty || bulkEmailform.controls['zipCode'].touched)">
+                      <div *ngIf="bulkEmailform.controls['zipCode'].errors.pattern">
+                        Only numbers allowed.
+                      </div>
+                    </div>
+                    <button type="button" class="pop-over" [popover]="popZCode" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                    <ng-template #popZCode>
+                      <ul>
+                        <li>It allows only numbers.</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group  col-md-12 popover-field">
+                    <label for="emailAdd" class="">Email Address</label>
+                    <input type="email" maxlength="100" pattern="^[A-Za-z0-9]([_\.\-\+]?[a-zA-Z0-9])*@([A-Za-z0-9]+)([\.\-]?[a-zA-Z0-9])*\.([A-Za-z]{2,6})$"
+                      class="form-control" placeholder="Email Address" id="emailAdd" name="emailAdd" formControlName="emailAdd">
+                    <div class="msg" *ngIf="bulkEmailform.controls['emailAdd'].invalid && (bulkEmailform.controls['emailAdd'].dirty || bulkEmailform.controls['emailAdd'].touched)">
+                      <div *ngIf="bulkEmailform.controls['emailAdd'].errors.pattern">
+                        Invalid format.
+                      </div>
+                    </div>
+                    <button type="button" class="pop-over" [popover]="popEAddress" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                    <ng-template #popEAddress>
+                      <ul>
+                        <li>Email address allows alphanumerics with special characters (@, _, ., -, +)</li>
+                        <li> Spaces are not allowed.</li>
+                        <li>It should be minimum 6 characters and maximum 100 characters long.</li>
+                        <li>It should follow the format yourname@domain.com</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group  col-md-12 popover-field">
+                    <label for="mydate" id="focused">Scheduled Date</label>
+                    <my-date-picker name="mydate" id="mydate" [options]="myDatePickerOptions" required formControlName="scheduledDate" name="scheduledDate"
+                      (inputFieldChanged)='onDateRangeFieldChanged($event)' placeholder="MM/DD/YYYY"></my-date-picker>
+                    <!--<input type="text" required placeholder="Scheduled Date" #dp="bsDatepicker" bsDatepicker class="form-control" id="scheduledDate"
+                        [minDate]="minDate" name="scheduledDate" formControlName="scheduledDate">-->
+                    <div class="show-error" *ngIf="!invalidDate&&(bulkEmailform.controls['scheduledDate'].invalid && (bulkEmailform.controls['scheduledDate'].dirty || bulkEmailform.controls['scheduledDate'].touched))">
+                      <div *ngIf="bulkEmailform.controls['scheduledDate'].hasError('required')">Scheduled Date is Required</div>
+                    </div>
+                    <div class="show-error" *ngIf="invalidDate">
+                      <div> Invalid Date.</div>
+                    </div>
+                    <button type="button" class="pop-over" [popover]="popSDate" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                    <ng-template #popSDate>
+                      <ul>
+                        <li>Scheduled Date is required</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group  col-md-12 popover-field">
+                    <label for="subject" class="">Subject</label>
+                    <input type="email" required class="form-control" minlength="1" maxlength="512" placeholder="" id="subject" name="subject"
+                      formControlName="subject">
+                    <div class="msg" *ngIf="bulkEmailform.controls['subject'].invalid && (bulkEmailform.controls['subject'].dirty || bulkEmailform.controls['subject'].touched)">
+                      <div *ngIf="bulkEmailform.controls['subject'].hasError('required')">Subject is Required</div>
+                    </div>
+                    <button type="button" class="pop-over" [popover]="popSubject" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                    <ng-template #popSubject>
+                      <ul>
+                        <li>Subject is required</li>
+                        <li>It should be minimum 1 character and maximum 512 characters long</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group  col-md-12 ">
+                    <div class="checkbox">
+
+                      <input type="checkbox" id="isforSubscribedCustomer" name="isforSubscribedCustomer" formControlName="isforSubscribedCustomer">
+                      <label for="isforSubscribedCustomer">  <span></span>only for subscribed customers</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group col-md-12  popover-field">
+                    <label for="message">Message</label>
+
+                    <textarea name="" required id="" cols="" rows="3" class="form-control" id="message" name="message" formControlName="message"></textarea>
+                    <div class="msg" *ngIf="bulkEmailform.controls['message'].invalid && (bulkEmailform.controls['message'].dirty || bulkEmailform.controls['message'].touched)">
+                      <div *ngIf="bulkEmailform.controls['message'].hasError('required')">Message is required</div>
+                    </div>
+                    <button type="button" class="pop-over" [popover]="popMessage" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                    <ng-template #popMessage>
+                      <ul>
+                        <li>Message is required</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+
+                <div class="col-md-6 text-right">
+                  <div class="form-group col-md-12 popover-field">
+                    <button class="btn btn-primary btn-search" [disabled]="disableButton" (click)="insertBulkEmail()" type="submit">Submit</button>
+                    <button class="btn btn-primary btn-reset" (click)="resetFrom()" type="reset">Reset</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <h3>Bulk Emails</h3>
+        <div class="pad-10" *ngIf="bulkEmailResponse && bulkEmailResponse.length; else NoDetailsBlock">
+          <div class="table-responsive">
+            <table class="table table-bdr">
+              <thead>
+                <tr>
+                  <th>Account Status</th>
+                  <th>Account Type</th>
+                  <th>Replenishment Type</th>
+                  <th>Zip Code</th>
+                  <th>Email Address</th>
+                  <th>Scheduled Date</th>
+                  <th>Email Subject</th>
+                  <th>Email Body</th>
+                  <th>Is Subscribed</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let res of bulkEmailResponse| paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount };">
+                  <td>{{res.AccountStausCode}}</td>
+                  <td>{{res.AccountTypeCode}}</td>
+                  <td>{{res.ReplanishtypeCode}}</td>
+                  <td>{{res.ZipCode}}</td>
+                  <td>{{res.Email}}</td>
+                  <td>{{res.ScheduledDate | customDateFormat }}</td>
+                  <td>{{res.Subject}}</td>
+                  <td>{{res.EmailBody}}</td>
+                  <td>{{res.IsforSubscribedCustomer ==true ?'Yes':'No'}}</td>
+                  <td class="nowrap">{{res.Status}}</td>
+                  <td class="nowrap">
+                    <div *ngIf='res.isDeactivate'><a (click)='deactivate(res)' [ngClass]="disableUpdateButton?'disabletextbox':''">Deactivate</a></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="row page-info">
+            <div class="col-md-6 text-left">
+              <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+            </div>
+            <div class="col-md-6 text-right">
+              <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #NoDetailsBlock>
+  <div class="alert alert-info" role="alert">No details to display</div>
+</ng-template>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)" (onOk)="deactivateEmail($event)"></app-success-failure-alerts-message>

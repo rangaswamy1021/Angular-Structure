@@ -1,0 +1,303 @@
+<div class="page-title-header wow fadeInDown">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">COURT</a>
+        </li>
+        <li class="active">Court Selection</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Court Selection</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+    <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+  <form role="form" name="courtSelectionForm" [formGroup]="courtSelectionForm">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Court Selection
+      </div>
+
+      <div class="panel-body bordered">
+        <div class="col-md-6 form-group">
+              <label for="Account No.">Account #</label>
+              <input type="text" pattern="[0-9]*" id="AccountId" name="AccountId" formControlName="AccountId" class="form-control" placeholder="Account #">
+              <div class="msg" *ngIf="courtSelectionForm.controls['AccountId'].invalid && (courtSelectionForm.controls['AccountId'].dirty || courtSelectionForm.controls['AccountId'].touched)">
+                <div *ngIf="courtSelectionForm.controls['AccountId'].errors.pattern">
+                  Only numbers allowed.
+                </div>
+              </div>
+        </div>
+        <div class="col-md-6 form-group">
+            <label class="focused">Select Group</label>
+            <select formControlName="group" name="group" class="form-control">
+                <option selected="selected" value="">--SELECT--</option>
+                <option *ngFor="let groupStatus of groupStatuses" value="{{groupStatus.Value}}"> {{groupStatus.Value}}</option>
+              </select>
+        </div>
+        <div class="col-md-12">
+          <button class="btn btn-default btn-search" (click)="bindCourtSelectionCustomers(1,true,true)">
+            Search
+          </button>
+          <button class="btn btn-default btn-reset" (click)="resetclick()">
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      Court Selection Customers
+    </div>
+    <div class="panel-body bordered">
+    <div class="table-responsive" *ngIf='collectionResObject && collectionResObject.length > 0 ;else NodetailsBlock'>
+      <table class="table">
+        <thead class="nowrap">
+          <tr>
+            <th> Account# </th>
+            <th> Name </th>
+            <th> No.of Notices </th>
+            <th> Total Trips </th>
+            <th> Outstanding Toll Amount </th>
+            <th> Outstanding Fee Amount </th>
+            <th> Outstanding Total Amount </th>
+            <th> Group </th>
+            <th>  </th>
+            <th>  </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr [ngClass]="(object.CustomerId == longAccountId)?'selectedDocketBG':''" *ngFor="let object of collectionResObject | paginate: { itemsPerPage: pageItemNumber, currentPage: p,totalItems:totalRecordCount,id:'first' }">
+            <td> {{object.CustomerId}} </td>
+            <td class="nowrap"> {{object.FullName}} </td>
+            <td> {{object.NumberofNotices}} </td>
+            <td> {{object.TotalTrips}} </td>
+            <td> {{object.OutstandingTollAmount | currencycustom}} </td>
+            <td> {{object.OutstandingFeeAmount | currencycustom}} </td>
+            <td> {{object.OutstandingTotalAmount | currencycustom}} </td>
+            <td class="nowrap"> {{object.GroupNo}} </td>
+            <td class="nowrap">
+              <div *ngIf="object.CourtCustId == 0">
+                <a (click)="createEvidencePacket(object)">
+                  <i class="fa fa-pencil-square-o" aria-hidden="true"> </i>
+                  Create Evidence
+                </a>
+              </div>
+              <div *ngIf="object.CourtCustId > 0">
+                <a (click)="editEvidencePacket(object)">
+                  <i class="fa fa-pencil-square-o" aria-hidden="true"> </i>
+                  Update Evidence
+                </a>
+              </div>
+            </td>
+            <td>
+              <a (click)="viewResponseHistory(object,1)">
+                <i class="fa fa-file-text-o" aria-hidden="true"> </i>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row page-info" *ngIf='collectionResObject && collectionResObject.length > 0 &&  totalRecordCount > 10'>
+      <div class="col-md-6 text-left">
+        <p class="p-l-8">Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+      </div>
+      <div class="col-md-6 text-right">
+        <pagination-controls (pageChange)="pageChanged($event)" id="first"></pagination-controls>
+      </div>
+    </div>
+
+    <ng-template #NodetailsBlock>
+      <div>No details to display</div>
+    </ng-template>
+  </div>
+  </div>
+  <div class="panel panel-default" *ngIf="displayDocumentsBlock">
+    <div class="panel-heading">
+      Evidence details for the account #: {{longAccountId}}
+    </div>
+    <div class="panel-body" >
+      <div class="col-md-6" *ngIf="isLinksAvailable">
+        <p>
+          <span>
+            <i class="fa fa-check" aria-hidden="true"></i>
+          </span>
+          <a href="{{viewPath + summarycomplaintPath}}" target="_blank" > Summary of Complaint </a>
+          <span *ngIf="!bfrEvidenceCmptSmry || aftEvidenceCmptSmry" (click)="DeleteDocumentType(summaryComplaintID,'ComplaintSummary', summarycomplaintPath);">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </span>
+          <span *ngIf="bfrEvidenceCmptSmry || !aftEvidenceCmptSmry" (click)="updateDocuments('ComplaintSummary');">
+            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+          </span>
+        </p>
+        <p>
+          <span>
+            <i class="fa fa-check" aria-hidden="true"></i>
+          </span>  <a href="{{viewPath + affidavitPath}}" target="_blank"> Affidavit </a>
+         </p>
+        <p>
+          <span>
+            <i class="fa fa-check" aria-hidden="true"></i>
+          </span> <a (click)="VieworUploadDocument('OwnershipProof')"> Proof of Ownership </a> 
+          <span *ngIf="ownershipPath && ownershipPath.length>0 && (!bfrEvidenceOwneshp || afrEvidenceOwneshp)" (click)="DeleteDocumentType(OwnershipID,'OwnershipProof', ownershipPath, ownershipFileName);">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </span>
+          <span *ngIf="isEvidenceAvailable && (bfrEvidenceOwneshp || !afrEvidenceOwneshp)" (click)="updateDocuments('OwnershipProof');">
+            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+          </span>
+        </p>
+        <p>
+          <span>
+              <i class="fa fa-check" aria-hidden="true"></i>
+            </span>  <a href="{{viewPath + accountSummaryPath}}" target="_blank"> Account Summary </a>
+        </p>
+      <div *ngIf="isOtherDocuments">
+        <p>
+          <span>
+            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+          </span> <a (click)="VieworUploadDocument('OtherDocument')"> Other Documents </a>
+        </p>
+      </div>
+        <div *ngIf="otherDocumentsList">
+          <table>
+            <tr>
+              <th></th>
+            </tr>
+            <tr *ngFor="let object of otherDocumentsList">
+              <td>
+                <a href="{{viewPath + object.Path}}" target="_blank">{{object.FileName}}</a>
+                <span (click)="DeleteDocumentType(object.AttachmentId,'OtherDocument',object.Path, object.FileName)">
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </span>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+        <div *ngIf="isEvidenceAvailable && !updateEvidenceFlag">
+            <p>
+                <span>
+                  <i class="fa fa-check" aria-hidden="true"></i>
+                </span>
+                <a href="{{viewPath + evidencePacketPath}}" target="_blank" > Evidence Packet </a>
+
+                <a (click)="updateEvidencePacket()">
+                  <i class="fa fa-pencil-square-o" aria-hidden="true"> </i>
+                  Update Evidence
+                </a>
+
+                
+
+                <!-- <span (click)="DeleteDocumentType(summaryComplaintID,'ComplaintSummary', summarycomplaintPath);">
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </span> -->
+              </p>
+        </div>
+      
+      <div *ngIf="boolShowUploadBlock">
+        <form role="form" name="fileUploadForm" [formGroup]="fileUploadForm"> 
+      <div class="col-md-6">
+        <p> Upload {{documentDescription}} Document </p>
+        <div class="form-group">
+          <div> Document Type </div>
+          <div style="display:none;"> {{documentName}} </div>
+          <div> {{documentDescription}} </div>
+        </div>
+        <div class="form-group popover-field">
+          <label> Attach File </label>
+          
+              <input type="file" class="form-control" accept=".pdf" #cmpFile formControlName="cmpFile"
+              style="width:calc(100% - 90px); display: inline-block; ">
+            <!-- <input type="file" class="form-control"> -->
+            <button type="button" class="pop-over" [popover]="popDB" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+            placement="left">?</button>
+          <ng-template #popDB>
+            <ul>
+              <li> Document is required</li>
+              <li> It should be less than or equal to 1MB</li>
+              <li> It should accept PDF file only</li>
+            </ul>
+          </ng-template>
+         
+        </div>
+        <!-- <button class="btn btn-default btn-xs" (click)="uploadDocument(documentName)"> Upload </button> -->
+        <button class="btn btn-default btn-xs" (click)="uploadFile()"> Upload </button>
+        <div class="row">
+            <div class="col-md-12">
+              <div *ngIf='attachmentsList.length' class="m-t-10">
+                <div *ngFor='let f of attachmentsList'>
+                  {{f.FileName}}
+                  <img src="assets/images/svg/delete.svg" class="icon-svg3" alt="Delete" (click)="deleteFile(f.Path)">
+                  <a href="{{viewPath + f.Path}}" target="_blank">View</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        <div class="col-md-12">
+          <div class="form-group">
+            <button class="btn btn-default btn-search" (click)="submitFile();"> Submit </button>
+            <button class="btn btn-default btn-reset" (click)="cancelUploadFile()" > Cancel </button>
+          </div>
+        </div>
+      </div>
+    </form>
+    </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <button class="btn btn-default btn-search" *ngIf="CreateEvidencePacketbtn" (click)="MergeDocuments()" > Create Evidence Packet</button>
+      <button class="btn btn-default btn-search" *ngIf="MoveCourtbtn" (click)="moveToCustomer()"> Send to Court</button>
+      <button class="btn btn-default btn-search" *ngIf="btnDocketCancelbtn" (click)="docketCancel()"> Cancel </button>
+      <button class="btn btn-default btn-search" *ngIf="updateEvidencePacketbtn" (click)="UpdateEvidenceDocuments()"> Update Evidence Packet</button>
+    </div>
+  </div>
+  <!-- Customer Response History-->
+  <div class="panel panel-default" *ngIf="customerResponseTable">
+    <div class="panel-heading">
+      Customer Response History
+    </div>
+    <div class="panel-body bordered">
+    <div class="table-responsive" *ngIf='custoermResObject && custoermResObject.length > 0 ;else Nodata'>
+      <table class="table">
+        <thead>
+          <tr>
+            <th> Account# </th>
+            <th> Customer Response </th>
+            <th> Last Contact Date </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let object of custoermResObject | paginate: { itemsPerPage: RespageItemNumber, currentPage: q,totalItems:RestotalRecordCount,id:'second' }">
+            <td> {{object.CustomerId}} </td>
+            <td> {{object.Response}} </td>
+            <td> {{object.ContactDate | customDateTimeFormat}} </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row page-info" *ngIf='custoermResObject && custoermResObject.length > 0 && RestotalRecordCount > 10'>
+        <div class="col-md-6 text-left"> 
+        <p class="p-l-8">Display {{ResstartItemNumber}} - {{ResendItemNumber}} Records of {{RestotalRecordCount}}</p>
+      </div>
+      <div class="col-md-6 text-right">
+        <pagination-controls (pageChange)="resPageChanged($event)" id="second"></pagination-controls>
+      </div>
+    </div>
+    <ng-template #Nodata>
+        <div>No details to display</div>
+      </ng-template>
+    </div>
+  </div>

@@ -1,0 +1,152 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">IMC</a>
+        </li>
+        <li class="active">Reports</li>
+        <li class="active">Tag History</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Tag History Report</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<!--For History Report-->
+<div class="content">
+  <form name="tagHistoryForm" [formGroup]="tagHistoryForm">
+    <div class="panel panel-default">
+      <!-- <div class="panel-heading">
+        Tag History Report
+      </div> -->
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="col-md-12 form-group">
+              <label> Serial #</label>
+              <input type="text" id="serialNumber" name="serialNumber" tabindex="1" formControlName="serialNumber" class="form-control"
+                placeholder="Serial #">
+              <div class="msg" *ngIf="tagHistoryForm.controls['serialNumber'].invalid && (tagHistoryForm.controls['serialNumber'].dirty || tagHistoryForm.controls['serialNumber'].touched)">
+                <div *ngIf="tagHistoryForm.controls['serialNumber'].errors.pattern">
+                  Only numbers allowed
+                </div>
+                <div *ngIf="tagHistoryForm.controls['serialNumber'].errors.required">
+                  At least 1 field is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="col-md-12 form-group">
+              <label> HexTag #</label>
+              <input type="text" (keypress)="onlyHexaKey($event)" id="hextagNumber" name="hextagNumber" tabindex="2" formControlName="hextagNumber"
+                class="form-control" placeholder="HexTag #" maxlength="50">
+              <div class="msg col-md-3" *ngIf="tagHistoryForm.controls['hextagNumber'].invalid && (tagHistoryForm.controls['hextagNumber'].dirty || tagHistoryForm.controls['hextagNumber'].touched)">
+              </div>
+            </div>
+          </div>
+         
+          </div>
+          <div class="col-md-4 m-t-10">
+            <button class="btn btn-primary btn-search" (click)="tagHistorySearch()" [disabled]="btnSearchHistory">Generate Report</button>
+            <button class="btn btn-default btn-reset" type="reset" (click)="tagHistoryReset()">Reset</button>
+          </div>
+        </div>
+    
+    </div>
+  </form>
+  <!--For Grid-->
+  <div *ngIf="searchResultGrid">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        History Details
+      </div>
+      <div class="panel-body">
+        <table class="table" *ngIf="tagHistoryResponse && tagHistoryResponse.length">
+          <thead>
+            <tr>
+              <th (click)="sortDirection('SERIALNO')" class="sorting-handle">Serial #
+                <span *ngIf="gridArrowSERIALNO">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('HEXTAGID')" class="sorting-handle">Hex Tag #
+                <span *ngIf="gridArrowHEXTAGID">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('LOCATIONNAME')" class="sorting-handle">Location
+                  <span *ngIf="gridArrowLOCATIONNAME">
+                    <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                  </span>
+                </th>
+              <th (click)="sortDirection('ITEMSTATUS')" class="sorting-handle"> Item Status
+                <span *ngIf="gridArrowITEMSTATUS">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+            
+              <th (click)="sortDirection('NAME')" class="sorting-handle">Customer Name
+                <span *ngIf="gridArrowNAME">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('STATUSSTARTDATE')" class="sorting-handle">Start Date
+                <span *ngIf="gridArrowSTATUSSTARTDATE">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('STATUSENDDATE')" class="sorting-handle">End Date
+                <span *ngIf="gridArrowSTATUSENDDATE">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let tagHistory of tagHistoryResponse| paginate: { itemsPerPage: pageItemNumber, currentPage: currentPage, totalItems:totalRecordCount }">
+              <td>{{tagHistory.SerialNumber}}</td>
+              <td>{{tagHistory.HexTagNumber}}</td>
+              <td> {{tagHistory.Location==""?"N/A":tagHistory.Location}} </td>
+              <td>{{tagHistory.TagStatus}}</td>
+              <td>{{tagHistory.CustomerName=="" ? "N/A":tagHistory.CustomerName}}</td>
+              <td>{{tagHistory.StartDate|customDateFormat}}</td>
+              <td>{{tagHistory.EndDate|customDateFormat}}</td>
+
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf='tagHistoryResponse && tagHistoryResponse.length==0'>
+          <div class="status-content">
+            <div class="alert alert-success alert-dismissible " role="alert">
+              <span>
+                <span class="glyphicon glyphicon-exclamation-sign">&nbsp;</span>No history to display</span>
+            </div>
+          </div>
+        </div>
+        <div class="row page-info" *ngIf="tagHistoryResponse && tagHistoryResponse.length">
+          <div class="col-md-6 text-left">
+            <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+        <div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+          <div class="modal-dialog modal-sm" role="document">
+            <div class="text-center">
+              <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,203 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li class="active">Create Account</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Transaction Activity</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+  <div class="panel panel-default">
+    <app-account-info></app-account-info>
+    <div class="row">
+      <form role="form" name="transactionActivitySearchForm" [formGroup]="transactionActivitySearchForm" novalidate (ngSubmit)="submitTransActivity()">
+        <div class="form-group col-md-6">
+          <label for="Serial No.">Serial #</label>
+          <input type="text" class="form-control" placeholder="Serial #" id="serialNum" name="serialNum" formControlName="serialNum"
+            maxlength="50">
+          <div class="msg" *ngIf="transactionActivitySearchForm.controls['serialNum'].invalid && (transactionActivitySearchForm.controls['serialNum'].dirty || transactionActivitySearchForm.controls['serialNum'].touched)">
+            <div *ngIf="transactionActivitySearchForm.controls['serialNum'].errors.pattern">
+              Only Numbers allowed.
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="plateNo">Plate #</label>
+          <input type="text" class="form-control" placeholder="Plate #" id="platNum" name="platNum" formControlName="platNum" maxlength="10">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="transType" class="focused">Transaction Type</label>
+          <select class="form-control" placeholder="transType" id="transType" name="transType" formControlName="transactionType" [(ngModel)]="txnType">
+                <option selected="selected" value=''>--Select--</option>
+                <option *ngFor="let tollType of tollTypes" value="{{tollType.Key}}">{{tollType.Value}}</option>
+              </select>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="timePeriod" class="focused">Time Period</label>
+          <div *ngIf="!invalidDate && transactionActivitySearchForm.controls['timePeriod'].invalid && (transactionActivitySearchForm.controls['timePeriod'].touched)"
+            class="show-error">
+            <div *ngIf="transactionActivitySearchForm.controls['timePeriod'].errors.required">
+              Required.
+            </div>
+          </div>
+          <div class="show-error" *ngIf="invalidDate">
+            <div> Invalid Date Range</div>
+          </div>
+          <!--<input class="form-control" placeholder="Daterangepicker" bsDaterangepicker #dpr="bsDaterangepicker" name="timePeriod" formControlName="timePeriod"
+                [(ngModel)]="timePeriodValue" autocomplete="off">-->
+          <my-date-range-picker name="timeperiod" [options]="myDateRangePickerOptions" formControlName="timePeriod" placeholder="MM/DD/YYYY-MM/DD/YYYY"
+            autocomplete="off" (inputFieldChanged)='onDateRangeFieldChanged($event)'></my-date-range-picker>
+          <!--<div *ngIf=invalidDate class="msg" style="color:red; ">
+                Invalid Date Range
+              </div>-->
+        </div>
+        <div class="col-md-12">
+          <button type="submit" class="btn btn-primary btn-search" [disabled]="disableSearchButton">Search</button>
+          <button type="button" class="btn btn-default btn-reset" (click)="resetTransActivity()">Reset</button>
+        </div>
+      </form>
+    </div>
+    <div class="row">
+      <div class="col-md-12 m-t-20 m-b-10"> Search by:
+        <form role="form" name="searchByTransForm" [formGroup]="searchByTransForm" novalidate>
+          <ul>
+            <li *ngFor="let transType of transTypes;  let idx = index" class="transaction custom-control custom-radio radio-inline">
+              <input type="radio" id="{{transType.value}}" class="custom-control-input" name="searchByRadio" [checked]="idx === 0" (change)="onSelectionTransTypeChange(transType, idx)"
+                value={{transType.value}} formControlName="searchByRadio">
+              <label for="{{transType.value}}" class="custom-control-discription">{{transType.value}}</label>
+            </li>
+          </ul>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="table-bdr">
+    <h3>Transactions Details</h3>
+    <div class="pad-10">
+      <table class="table" *ngIf="tranActResp.length >= 1">
+        <thead>
+          <tr>
+            <th>
+              <div class="checkbox">
+                <input type="checkbox" id="asd" [(ngModel)]="selectedAll" (change)="selectAllTransActivity();">
+                <label for="asd"><span></span></label>
+              </div>
+            </th>
+            <th (click)="sortDirection('CUSTTRIPID')" class="sorting-handle">Trip #
+              <span *ngIf="gridArrowCUSTTRIPID">
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+            </th>
+            <th (click)="sortDirection('LOCATIONNAME')" class="col-xs-2 sorting-handle">Location
+              <span *ngIf="gridArrowLOCATIONNAME">
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+            </th>
+            <th (click)="sortDirection('TAGREFID')" class="sorting-handle">Serial #
+              <span *ngIf="gridArrowTAGREFID">
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+            </th>
+            <th (click)="sortDirection('VehicleNumber')" class="sorting-handle">Plate #
+              <span *ngIf="gridArrowVehicleNumber">
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+            </th>
+            <th>Transaction
+              <br/> Type</th>
+            <th (click)="sortDirection('ENTRYTRIPDATETIME')" class="sorting-handle"> Trip Date/Time
+              <span *ngIf="gridArrowENTRYTRIPDATETIME">
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+            </th>
+            <th (click)="sortDirection('TOLLAMOUNT')" class="text-right sorting-handle">Toll
+              <br/> Amount
+              <span *ngIf="gridArrowTOLLAMOUNT">
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+            </th>
+            <th (click)="sortDirection('OutStandingAmount')" class="text-right sorting-handle">Outstanding
+              <br/> Amount
+              <span *ngIf="gridArrowOutStandingAmount">
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+            </th>
+            <th (click)="sortDirection('TransactionAmount')" class="text-right sorting-handle">Tax Amount
+              <span *ngIf="gridArrowTransactionAmount">
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+            </th>
+            <th class="text-center">View
+              <br/> Trip(s)</th>
+            <th class="text-center">View
+              <br/> Complaint(s)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let trans of tranActResp | paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount }">
+            <td>
+              <div class="checkbox">
+                <input type="checkbox" id="{{trans.TripId}}" [(ngModel)]="trans.selected" (change)="checkIfAllTransSelected(trans);">
+                <label for="{{trans.TripId}}"><span></span></label>
+              </div>
+            </td>
+            <td>{{trans.TripId}}</td>
+            <td class="col-xs-2">{{trans.LocationName}}</td>
+            <td>{{trans.TagId}}</td>
+            <td>{{trans.VehicleNumber}}</td>
+            <td>{{trans.TollTransactionTypeCode}}</td>
+            <td>{{trans.Entry_TripDateTime | customDateTimeFormat }}</td>
+            <td class="text-right">{{trans.TollAmount | currencycustom}}</td>
+            <td class="text-right">{{trans.OutStandingAmount | currencycustom}}</td>
+            <td class="text-right">{{trans.TransactionAmount | currencycustom}}</td>
+            <td class="text-center">
+              <i class="fa fa-eye" aria-hidden="true" (click)="viewTransactions(trans)" style="cursor:pointer; color:#286090"></i>
+            </td>
+            <td class="text-center">
+              <i *ngIf="trans.ProblemId > 0 && trans.ProblemStatus.toUpperCase() !='CLOSED'" class="fa fa-exclamation-triangle" aria-hidden="true"
+                (click)="viewComplaints(trans)" style="cursor:pointer;color:#a94442"></i>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="row page-info" *ngIf="totalRecordCount > 10 && tranActResp.length >= 1">
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+      <p *ngIf="tranActResp.length == 0" class="alert alert-info">
+        <i class="fa fa-exclamation-circle" aria-hidden="true"></i> There are no records for this Account # {{accountId}}</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <button class="btn btn-primary btn-search" [disabled]="tranActResp.length == 0" (click)="createComplaints()">Create Complaints</button>
+      <button class="btn btn-primary btn-search" [disabled]="tranActResp.length == 0" (click)="transferTransactions()">Transfer Transactions</button>
+      <button class="btn btn-primary btn-search" [disabled]="disputesBtn" (click)="disputeTransactions()">Dispute Transactions</button>
+    </div>
+  </div>
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>

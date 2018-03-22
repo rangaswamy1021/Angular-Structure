@@ -1,0 +1,357 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li class="active">Account Summary</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="page-header">
+        <h1>Account Summary</h1>
+      </div>
+    </div>
+    <div class="col-md-4 text-center">
+      <div *ngIf="customerInformationres && customerInformationres.RevenueCategory=='NonRevenue'">
+        <span class="red">*** Non Revenue ***</span>
+      </div>
+    </div>
+    <div class="col-md-4 text-right">
+      <button *ngIf="customerInformationres && customerInformationres.AccountStatus== 'NA'" [disabled]="disableContinueButton"
+        (click)="continueButtonClick()" class="btn btn-primary btn-search">
+        Continue Application Process
+      </button>
+      <button *ngIf="customerContextResponse && customerContextResponse.IsSplitCustomer" [disabled]="disableSplitButton" (click)="splitCustomerClick()"
+        class="btn btn-primary btn-search">
+        Split Customer
+      </button>
+      <!--<button (click)="exitClick()" class="btn btn-primary btn-search">
+        Exit
+      </button>-->
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <div *ngIf="customerInformationres && customerInformationres.AccountStatus==='CL'">
+    <div class="alert alert-danger">
+      The account status is Closed. Do not perform any activities on this account.
+    </div>
+  </div>
+
+  <app-account-info></app-account-info>
+  <!--<div *ngIf="longAccountId > 0">
+    <app-account-primary-information [longAccountId]="longAccountId"></app-account-primary-information>
+  </div>-->
+  <!--Activity History start -->
+  <div class="table-bdr">
+    <h3>Activity History</h3>
+    <div class="pad-10">
+      <div *ngIf='activityRes && activityRes.length;else NodetailsBlock'>
+        <div class="table-responsive">
+          <table class="table">
+            <thead class="nowrap">
+              <tr>
+                <th>Date/Time</th>
+                <th>Created User</th>
+                <th>Performed By </th>
+                <th>Activity Type</th>
+                <th width="40%">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let object of activityRes" [ngClass]="(object.Type=='SPECIALALERT')?'hightrow':''">
+                <td> {{object.ActivityDate | customDateTimeFormat }} </td>
+                <td> {{object.User}} </td>
+                <td> {{object.PerformedBy}} </td>
+                <td> {{object.Type}} </td>
+                <td> {{object.Activity}} </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row">
+          <div class="col-md-12 text-right"><a routerLink='../../../csc/customerdetails/recent-activity'> More </a></div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Registered Vehicles start -->
+  <div class="table-bdr">
+    <h3>Registered Vehicles</h3>
+    <div class="pad-10">
+      <div *ngIf='vehicleRes && vehicleRes.length;else NodetailsBlock'>
+        <div class="table-responsive">
+          <table class="table TableClass">
+            <thead class="nowrap">
+              <tr>
+                <th>Plate #</th>
+                <th>Serial #</th>
+                <th>Class </th>
+                <th>State</th>
+                <th>Description</th>
+                <th>Color</th>
+                <!-- <th>Country</th> -->
+                <th>Start Date/Time</th>
+                <th>End Date/Time</th>
+                <th>Is Non Revenue</th>
+              </tr>
+            </thead>
+            <tr *ngFor="let object of vehicleRes">
+              <td> {{object.VehicleNumber}} </td>
+              <td> {{object.TagSerialNumber | DisplayNA}} </td>
+              <td> {{object.VehicleClass}} </td>
+              <td> {{object.State}} </td>
+              <td> {{object.VehicleDescription}} </td>
+              <td> {{object.Color}} </td>
+              <!-- <td> {{object.Country}} </td> -->
+              <td> {{object.StartEffectiveDate | customDateTimeFormat}} </td>
+              <td> {{object.EndEffectiveDate | customDateTimeFormat}} </td>
+             <td> {{(object.IsExempted)?'Yes':'No'}}</td>
+            </tr>
+          </table>
+        </div>
+        <div class="row">
+          <div class="col-md-12 text-right" *ngIf="vehicleRes[0].RecordCount >=5">
+            <a routerLink='../../../csc/vehicles/get-vehicles'> More </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Registered Vehicles end -->
+  <!--Registered Tags start -->
+  <div class="table-bdr" *ngIf="customerInformationres && this.allowTags">
+    <h3>Tags</h3>
+    <div class="pad-10">
+      <div *ngIf='tagRes && tagRes.length;else NodetailsBlock'>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Serial #</th>
+                <!--<th>Plate #</th>-->
+                <th>Tag Type </th>
+                <th>Alias Name</th>
+                <th>Start Date/Time</th>
+                <th>End Date/Time</th>
+                <th>Status</th>
+                <th>Is Non Revenue</th>
+              </tr>
+            </thead>
+            <tr *ngFor="let object of tagRes">
+              <td> {{object.SerialNumber}} </td>
+              <!--<td> {{object.VehicleNumber| DisplayNA}} </td>-->
+              <td> {{object.TagType}} </td>
+              <td> {{object.TagAlias}} </td>
+              <td> {{object.StartEffectiveDate | customDateTimeFormat}} </td>
+              <td> {{object.EndEffectiveDate | customDateTimeFormat}} </td>
+              <td> {{object.TagStatus}} </td>
+              <td>{{object.IsNonRevenue?'Yes':'No'}}</td>
+            </tr>
+          </table>
+        </div>
+        <div class="row">
+          <div class="col-md-12 text-right" *ngIf="tagRes[0].RecCount >= 5">
+            <a routerLink='../../../csc/customerdetails/manage-tags'> More </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Registered tags end -->
+  <!--Registered toll txns start -->
+  <app-get-toll-transactions></app-get-toll-transactions>
+  <!--Registered toll txns end -->
+
+  <!--Registered Parking Transactions start -->
+  <app-get-parking-transactions></app-get-parking-transactions>
+  <!--Registered Parking Transactions end -->
+
+  <!--Registered Ferry Transactions start -->
+  <app-get-ferry-transactions></app-get-ferry-transactions>
+  <!--Registered Ferry Transactions end -->
+
+  <!--Registered Transit Transactions start -->
+  <app-get-transit-transactions></app-get-transit-transactions>
+  <!--Registered Transit Transactions send -->
+
+  <!--Registered Violation Transactions start -->
+  <app-get-violation-transactions></app-get-violation-transactions>
+  <!--Registered Violation Transactions end -->
+  <!--   Replenish Activities start -->
+  <div class="table-bdr">
+    <h3>Replenish Activities</h3>
+    <div class="pad-10">
+      <div *ngIf='recentPaymentRes && recentPaymentRes.length;else NodetailsBlock'>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Replenish Date</th>
+                <th>Credit Card #</th>
+                <th>Status</th>
+                <th>Txn Amount</th>
+              </tr>
+            </thead>
+            <tr *ngFor="let object of recentPaymentRes">
+              <td> {{object.TransactionDate | customDateTimeFormat}} </td>
+              <td> {{object.CardNumber}} </td>
+              <td> {{object.StatusCode}} </td>
+              <td> {{object.RebillAmount | currency:'USD':true:'1.2-2'}} </td>
+              <td> {{object.TollAmount | currency:'USD':true:'1.2-2'}} </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--   Replenish Activities end -->
+  <!--  Complaints start -->
+  <div class="table-bdr">
+    <h3>Complaints</h3>
+    <div class="pad-10">
+      <div *ngIf='complaintsRes && complaintsRes.length;else NodetailsBlock'>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Ticket #</th>
+                <th>Created Date/Time</th>
+                <th>Status</th>
+                <th>Due Date/Time</th>
+                <th>Title</th>
+              </tr>
+            </thead>
+            <tr *ngFor="let object of complaintsRes">
+              <td> {{object.TicketId}} </td>
+              <td> {{object.DateReported | customDateTimeFormat}} </td>
+              <td> {{object.Status}} </td>
+              <td> {{object.ExpectedResolveDate}} </td>
+              <td> {{object.ProblemTitle}} </td>
+            </tr>
+          </table>
+        </div>
+        <div class="row">
+          <div class="col-md-12 text-right" *ngIf='complaintsRes.length >=5'>
+            <a routerLink='../../../csc/helpdesk/track-complaint'> More </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  Complaints end -->
+  <!--  Additional Account Contacts start -->
+  <div class="table-bdr">
+    <h3>Additional Account Contacts</h3>
+    <div class="pad-10">
+      <div *ngIf='profileResponse && profileResponse.length;else NodetailsBlock'>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Account #</th>
+                <th>Name</th>
+                <th>Address</th>
+              </tr>
+            </thead>
+            <tr *ngFor="let object of profileResponse">
+              <td> {{object.AccountId}} </td>
+              <td> {{object.FirstName}} {{object.LastName}} </td>
+              <td> {{object.FullAddress}} </td>
+            </tr>
+          </table>
+        </div>
+        <div class="row">
+          <div class="col-md-12 text-right" *ngIf='profileResponse[0].RecordCount>=5'>
+            <a routerLink='../../../csc/customerservice/additional-contacts'> More </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  Additional Account Contacts end -->
+  <!--  Correspondence Details start -->
+  <div class="table-bdr">
+    <h3>Correspondence Details</h3>
+    <div class="pad-10">
+      <div *ngIf='documentsResponse && documentsResponse.length;else NodetailsBlock'>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Document Type</th>
+                <th>Description</th>
+                <th>Generated Date/Time</th>
+                <th>Received Date/Time</th>
+              </tr>
+            </thead>
+            <tr *ngFor="let object of documentsResponse">
+              <td> {{object.DocumentType}} </td>
+              <td> {{object.DocumentTypeName}} </td>
+              <td> {{object.GeneratedDate | customDateTimeFormat}} </td>
+              <td> {{object.CommunicationDate | customDateTimeFormat}} </td>
+            </tr>
+          </table>
+        </div>
+        <div class="row">
+          <div class="col-md-12 text-right" *ngIf='documentsResponse[0].RecordCount>=5'>
+            <a routerLink='../../../csc/documents/sent-documents'> More </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  Correspondence Details end -->
+  <!--  Discounts start -->
+  <div class="table-bdr">
+    <h3>Discounts</h3>
+    <div class="pad-10">
+      <div *ngIf='discountResponse && discountResponse.length;else NodetailsBlock'>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Discount Code</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Start Date/Time</th>
+                <th>End Date/Time</th>
+              </tr>
+            </thead>
+            <tr *ngFor="let object of discountResponse">
+              <td> {{object.DiscountCode }} </td>
+              <td> {{object.DiscountName}} </td>
+              <td> {{object.Description}} </td>
+              <td> {{object.DiscountType}} </td>
+              <td> {{object.StartEffectiveDate | customDateTimeFormat}} </td>
+              <td> {{object.EndEffectiveDate | customDateTimeFormat}} </td>
+            </tr>
+          </table>
+        </div>
+        <div class="row">
+          <div class="col-md-12 text-right" *ngIf='discountResponse[0].ReCount>=5'>
+            <a routerLink='../../../csc/customerservice/manage-discounts'> More </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Discounts end -->
+  <ng-template #NodetailsBlock>
+    <div >No details to display</div>
+  </ng-template>
+</div>
+<div>
+  <button *ngIf="customerContextResponse && customerContextResponse.IsSplitCustomer" (click)="splitCustomerClick()" style="float:right; margin-right: 10px;"
+    class="btn btn-primary btn-search">
+    Split Customer
+  </button>
+</div>

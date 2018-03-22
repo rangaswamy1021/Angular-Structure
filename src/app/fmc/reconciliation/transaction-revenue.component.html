@@ -1,0 +1,101 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">FMC</a></li>
+        <li><a href="#">Reconciliation</a></li>
+        <li class="active">Transaction Revenue Reconciliation</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Transaction Revenue Reconciliation</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="table-bdr">
+    <form role="form" name="transactionRevenueForm" [formGroup]="transactionRevenueForm">
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-6 form-group">
+            <label class="focused">Transaction Category </label>
+            <select class="form-control" (change)="tollTransType($event)" id="TransactionCategory" formControlName="TransactionCategory"
+              name="TransactionCategory">
+               <option selected="selected" value="">ALL</option>
+                    <option *ngFor="let tollType of tollTypes" value="{{tollType.Key}}">{{tollType.Value}}</option>
+                </select>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="timePeriod" class="focused">Date</label>
+            <!--<input class="form-control disbale-to-write" formControlName="timePeriod" placeholder="Select Date Range" bsDaterangepicker
+                #dpr="bsDaterangepicker" name="timePeriod" [(ngModel)]="timePeriod">-->
+            <my-date-range-picker (inputFieldChanged)='onDateRangeFieldChanged($event)' name="timePeriod" [options]="myDateRangePickerOptions"
+              formControlName="timePeriod" placeholder="MM/DD/YYYY - MM/DD/YYYY"></my-date-range-picker>
+            <div class="show-error" *ngIf="!invalidDate && transactionRevenueForm.controls['timePeriod'].invalid && (transactionRevenueForm.controls['timePeriod'].dirty || transactionRevenueForm.controls['timePeriod'].touched)">
+              <div *ngIf="transactionRevenueForm.controls['timePeriod'].errors.required">
+                Required.
+              </div>
+            </div>
+            <div class="show-error" *ngIf="invalidDate">
+              <div>
+                Invalid Date Range
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <button type="button" class="btn btn-primary btn-search" [disabled]="disableSubmit" (click)="searchClick()">Submit</button>
+            <button type="button" class="btn btn-default btn-reset" (click)="resetbtn()">Reset</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="table-bdr" *ngIf="tablehide">
+    <h3>Transaction Revenue Reconciliation - {{tollNameDisplay}}</h3>
+    <div class="panel-body">
+      <div>
+        <table class="table bordered">
+          <thead>
+            <tr>
+              <th>Customer Type</th>
+              <th>Category</th>
+              <th>Application Count</th>
+              <th>Application Amount</th>
+              <th>Finance Count </th>
+              <th>Finance Amount</th>
+              <th>Variance Count</th>
+              <th>Variance Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor=" let transactionrevenue of transactionrevenueres">
+              <td>{{transactionrevenue.Source}}</td>
+              <td>{{transactionrevenue.ReportCategory}}</td>
+              <td>{{transactionrevenue.ApplicationCount }}</td>
+              <td>{{transactionrevenue.ApplicationAmount | currencycustom}}</td>
+              <td>{{transactionrevenue.FinanceCount }}</td>
+              <td>{{transactionrevenue.FinanceAmount | currencycustom}}</td>
+              <td>{{transactionrevenue.VarianceCount }}</td>
+              <td>{{transactionrevenue.VarianceAmount | currencycustom}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="transactionLength == 0">
+          <div>No Records to display</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+export interface IVEPPassResponse {
+    DriverName: string,
+    DrivingLicenceNo: string,
+    VehicleNo: string,
+    VehicleClass: string,
+    VehicleClassDesc: string,
+    VehicleState: string,
+    VehicleCountry: string,
+    Location: string,
+    PlazaCode: string,
+    PlazaName: string,
+    PassType: string,
+    PassTypeDesc: string,
+    PurchasedDate: Date,
+    StartEffectiveDate: Date,
+    EndEffectiveDate: Date,
+    Amount: number,
+    VEPTarrifId: number,
+    CreatedUser: string,
+    PassEndEffectiveDate: string,
+    CalEndEffectiveDate: string
+}

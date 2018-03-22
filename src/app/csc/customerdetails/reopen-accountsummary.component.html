@@ -1,0 +1,323 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li class="active">Account Summary</li>
+      </ol>
+    </div>
+  </div>
+<div class="row">
+    <div class="col-md-4">
+      <div class="page-header">
+        <h1>Account Summary</h1>
+      </div>
+    </div>
+    <div class="col-md-4 text-center">
+      <div *ngIf="customerInformationres && customerInformationres.RevenueCategory=='NonRevenue'">
+        <span class="red">*** Non Revenue ***</span>
+      </div>
+    </div>    
+  </div>
+</div>
+
+<div class="content">
+  <!--<div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <button  class="btn btn-primary btn-search pull-right">
+        Back
+        </button>
+        <div class="clear">       </div>
+      </div>
+    </div>
+  </div>
+  -->
+
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+  <div>
+    <app-account-info-header></app-account-info-header>
+  </div>
+
+
+  <div class="panel panel-default" id="userInfo">
+    <div class="panel-body">
+      <div class="row">
+        <div class="row rowMargins">
+          <div class="col-md-1 col-md-offset-5">
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#userInformation" aria-expanded="false"
+              aria-controls="collapseExample">
+              <span class="glyphicon glyphicon-arrow-down"> </span>  User Information
+            </button>
+          </div>
+        </div>
+        <div class="collapse in" id="userInformation">
+
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">Contact Information</div>
+              <div *ngIf='contactInfoResponse'>
+                <table class="table">
+                  <tbody>
+                    <tr *ngIf="contactInfoResponse.OrganizationName">
+                      <td class="text-left">Business Name:</td>
+                      <td class="text-right">{{contactInfoResponse.OrganizationName}}</td>
+                    </tr>
+                    <tr>
+                      <td class="text-left">Name:</td>
+                      <td class="text-right">{{contactInfoResponse.FirstName + " " + contactInfoResponse.LastName}} </td>
+                    </tr>
+                    <tr *ngIf="contactInfoResponse.ParentId">
+                      <td class="text-left">Parent Account #: </td>
+                      <td class="text-right">{{contactInfoResponse.ParentId}}</td>
+                    </tr>
+                    <tr>
+                      <td class="text-left">Address: </td>
+                      <td class="text-right">
+                        <div role="alert" data-html="true"><span [innerHTML]="contactInfoResponse.FullAddressWithAddressFormat"></span></div>
+                      </td>
+                    </tr>
+
+                    <ng-template [ngIf]="contactInfoResponse.PhoneList && contactInfoResponse.PhoneList.length>0">
+                      <tr *ngFor="let phone of contactInfoResponse.PhoneList;">
+                        <ng-template [ngIf]="phone && phone.Type && phone.PhoneNumber">
+                          <td class="text-left">
+                            {{phone.Type}}:
+                          </td>
+                          <td class="text-right">{{ phone.PhoneNumber }}</td>
+                        </ng-template>
+                      </tr>
+                    </ng-template>
+
+                    <ng-template [ngIf]="contactInfoResponse.EmailList && contactInfoResponse.EmailList.length>0">
+                      <tr *ngFor="let email of contactInfoResponse.EmailList;">
+                        <ng-template [ngIf]="email && email.Type && email.EmailAddress">
+                          <td class="text-left">{{email.Type}}
+                          </td>
+                          <td class="text-right">{{ email.EmailAddress }}
+                          </td>
+                        </ng-template>
+                      </tr>
+                    </ng-template>
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">Account information</div>
+              <div>
+                <table class="table" *ngIf='accountInfoResponse'>
+                  <tbody>
+                    <tr>
+                      <td class="text-left">Last Adjustment Amount:</td>
+                      <td class="text-right">{{accountInfoResponse.LastAdjustmentAmount | currency:'USD':true:'1.2-2'}}</td>
+                    </tr>
+                    <tr>
+                      <td class="text-left">Last Reversal Amount:</td>
+                      <td class="text-right">{{accountInfoResponse.LastReversalAmount | currency:'USD':true:'1.2-2'}}</td>
+                    </tr>
+                    <tr>
+                      <td class="text-left">Last Refund Amount: </td>
+                      <td class="text-right">{{accountInfoResponse.LastRefundAmount | currency:'USD':true:'1.2-2'}}</td>
+                    </tr>
+                    <tr *ngIf="rebillType">
+                      <td class="text-left">Rebill Hold: </td>
+                      <td class="text-right">{{manualHold}}</td>
+                    </tr>
+                    <tr *ngIf="customerInformationres && customerInformationres.IsTagRequired">
+                      <!--IsTagRequired-->
+                      <td class="text-left">Tag Deposit: </td>
+                      <td class="text-right">{{accountInfoResponse.TagDepositeBalance | currency:'USD':true:'1.2-2'}}</td>
+                    </tr>
+                    <!--<tr *ngIf="customerInformationres  && (customerInformationres.AccountStatus=='RR' || customerInformationres.AccountStatus=='CORR' || customerInformationres.AccountStatus=='COCL')">
+                      <td class="text-left">Refund Balance: </td>
+                      <td class="text-right">{{accountInfoResponse.RefundBalance | currency:'USD':true:'1.2-2'}} </td>
+                    </tr>-->
+                    <!--PrePaid Amounts binding start-->
+
+                    <tr *ngIf="customerInformationres && customerInformationres.ParentPlanName=='PREPAID';else PostpaidBlock">
+                      <td *ngIf="accountInfoResponse.TollBalance<0" class="text-left">Balance Due: </td>
+                      <td *ngIf="accountInfoResponse.TollBalance>=0" class="text-left">Current Balance: </td>
+                      <td class="text-right">
+                        {{accountInfoResponse.TollBalance | currency:'USD':true:'1.2-2'}}
+                      </td>
+                    </tr>
+                    <!--<ng-template #PostpaidBlock>
+                      <tr>
+                        <td *ngIf="accountInfoResponse.PostpaidBalance<0" class="text-left"> Current Balance: </td>
+                        <td *ngIf="accountInfoResponse.PostpaidBalance>=0" class="text-left"> Balance Due: </td>
+                        <td *ngIf="accountInfoResponse.PostpaidBalance<0" class="text-right">
+                          {{-1 * accountInfoResponse.PostpaidBalance | currency:'USD':true:'1.2-2'}}
+                          <a *ngIf="-1* accountInfoResponse.PostpaidBalance<=0">Payment</a>
+                        </td>
+                        <td *ngIf="accountInfoResponse.PostpaidBalance>=0" class="text-right">
+                          {{ accountInfoResponse.PostpaidBalance | currency:'USD':true:'1.2-2'}}
+                        </td>
+
+                      </tr>
+                    </ng-template>-->
+                    <!--POSTPAID Amounts binding END-->
+                    <tr *ngIf='accountInfoResponse && accountInfoResponse.CollectionBalance>0'>
+                      <td class="text-left">Collection Balance: </td>
+                      <td class="text-right">{{accountInfoResponse.CollectionBalance | currency:'USD':true:'1.2-2'}} </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading"> Payment Details</div>
+              <div>
+
+                <table *ngIf='paymentDetailsResponse' class="table">
+                  <tbody>
+                    <tr>
+                      <td class="text-left">Last Payment Method:</td>
+                      <td class="text-right">{{paymentDetailsResponse.PaymentMode}} </td>
+                    </tr>
+                    <tr>
+                      <td class="text-left">Last Payment Amount:</td>
+                      <td class="text-right">{{paymentDetailsResponse.ToltalAmountPaid | currency:'USD':true:'1.2-2'}}</td>
+                    </tr>
+                    <tr>
+                      <td class="text-left">Card Type: </td>
+                      <td class="text-right"> {{ paymentDetailsResponse.CardType }}</td>
+                    </tr>
+                    <tr>
+                      <td class="text-left">Card Expiration Date:</td>
+                      <td class="text-right"> {{paymentDetailsResponse.ExpDate }} </td>
+                    </tr>
+                    <tr>
+                      <td class="text-left">Credit Card #: </td>
+                      <td class="text-right"> {{paymentDetailsResponse.PrefixSuffix }}</td>
+                    </tr>
+                    <tr *ngIf="customerInformationres && customerInformationres.ParentPlanName=='PREPAID' && customerInformationres.RevenueCategory !== 'NonRevenue'">
+                      <td class="text-left">Rebill Type:</td>
+                      <td class="text-right"> {{paymentDetailsResponse.RebillType }}</td>
+                    </tr>
+                    <tr *ngIf="customerInformationres && customerInformationres.ParentPlanName=='PREPAID' && customerInformationres.RevenueCategory !== 'NonRevenue'">
+                      <td class="text-left">Rebill Amount:</td>
+                      <td class="text-right"> {{paymentDetailsResponse.RebillAmount | currency:'USD':true:'1.2-2' }}</td>
+                    </tr>
+                    <tr *ngIf="customerInformationres && customerInformationres.ParentPlanName=='PREPAID' && customerInformationres.RevenueCategory !== 'NonRevenue'">
+                      <td class="text-left">Threshold Amount:</td>
+                      <td class="text-right"> {{paymentDetailsResponse.ThresholdAmount | currency:'USD':true:'1.2-2' }}</td>
+                    </tr>
+                    <!--<tr *ngIf="customerInformationres && customerInformationres.ParentPlanName=='PREPAID' && customerInformationres.RevenueCategory !== 'NonRevenue'">
+                      <td class="text-left">Rebill Hold:</td>
+                      <td class="text-right" *ngIf='paymentDetailsResponse.IsManualHold; else NoText'> Yes </td>
+                      <ng-template #NoText>
+                        <td class="text-right"> No </td>
+                      </ng-template>
+                    </tr>-->
+                    <!--<tr *ngIf="customerInformationres && customerInformationres.ParentPlanName=='POSTPAID' && customerInformationres.RevenueCategory !== 'NonRevenue'">
+                      <td class="text-left">Auto Debit:</td>
+                      <td class="text-right"> {{paymentDetailsResponse.RebillType }}</td>
+                    </tr>
+                    <tr *ngIf="customerInformationres && customerInformationres.ParentPlanName=='POSTPAID' && customerInformationres.RevenueCategory !== 'NonRevenue'">
+                      <td class="text-left">Cap Amount:</td>
+                      <td class="text-right"> {{paymentDetailsResponse.RebillAmount | currency:'USD':true:'1.2-2' }}</td>
+                    </tr>-->
+                  </tbody>
+                </table>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!--Registered Vehicles start -->
+  <div class="table-bdr">
+    <h3>Registered Vehicles</h3>
+    <div class="pad-10">
+      <div *ngIf='vehiclesResponse && vehiclesResponse.length;else NodetailsBlock'>
+        <table class="table">
+          <tr>
+            <th>Plate #</th>
+            <th>Serial #</th>
+            <th>Class </th>
+            <th>State</th>
+            <th>Description</th>
+            <th>Color</th>
+            <th>Country</th>
+            <th>Start Date/Time</th>
+            <th>End Date/Time</th>
+          </tr>
+          <tr *ngFor="let object of vehiclesResponse">
+            <td> {{object.VehicleNumber}} </td>
+            <td> {{object.TagSerialNumber | DisplayNA}} </td>
+            <td> {{object.VehicleClass}} </td>
+            <td> {{object.State}} </td>
+            <td> {{object.VehicleDescription}} </td>
+            <td> {{object.Color}} </td>
+            <td> {{object.Country}} </td>
+            <td> {{object.StartEffectiveDate | customDateTimeFormat }} </td>
+            <td> {{object.EndEffectiveDate | customDateTimeFormat}} </td>
+          </tr>
+        </table>
+        <!--<div *ngIf="vehiclesResponse[0].RecordCount >=5" style="float:right"><a> More </a></div>-->
+      </div>
+    </div>
+  </div>
+  <!--Registered Vehicles end -->
+
+  <!--Registered Tags start -->
+  <div class="table-bdr">
+    <h3>Tags</h3>
+    <div class="pad-10">
+      <div *ngIf='tagsResponse && tagsResponse.length;else NodetailsBlock'>
+        <table class="table">
+          <tr>
+            <th>Serial #</th>
+            <th>Plate #</th>
+            <th>Tag Type </th>
+            <th>Alias Name</th>
+            <th>Start Date/Time</th>
+            <th>End Date/Time</th>
+            <th>Status</th>
+          </tr>
+          <tr *ngFor="let object of tagsResponse">
+            <td> {{object.SerialNumber}} </td>
+            <td> {{object.VehicleNumber| DisplayNA}} </td>
+            <td> {{object.TagType}} </td>
+            <td> {{object.TagAlias}} </td>
+            <td> {{object.StartEffectiveDate | customDateTimeFormat}} </td>
+            <td> {{object.EndEffectiveDate | customDateTimeFormat}} </td>
+            <td> {{object.TagStatus}} </td>
+          </tr>
+        </table>
+        <!--<div *ngIf="tagsResponse[0].RecCount >= 5" style="float:right"><a href=""> More </a></div>-->
+      </div>
+    </div>
+  </div>
+  <!--Registered tags end -->
+
+  <ng-template #NodetailsBlock>
+    <div class="alert alert-info" role="alert">No details to display</div>
+  </ng-template>
+  <div class="row">
+    <div class="col-md-12 text-right">
+      <div class="form-group">
+        <button (click)="proceedButtonClick()" [disabled]='isDisable' class="btn btn-primary btn-search">
+Proceed
+</button>
+<button (click)="backButtonClick()" class="btn btn-primary btn-search">
+Back
+</button>
+      </div>
+    </div>
+  </div>
+
+</div>

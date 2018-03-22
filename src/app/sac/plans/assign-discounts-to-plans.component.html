@@ -1,0 +1,149 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">SAC</a></li>
+        <li><a href="#">Manage Plans</a></li>
+        <li class="active">Assign discount to  Plan</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Assign discount to  Plan</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row" *ngIf='boolDiscBtn'>
+    <div class="col-md-12">
+      <div class="payment-steps">
+        <div class="row">
+          <div class="col-md-12">
+            <ul>
+              <li><span class="glyphicon glyphicon-ok" style="color:#639a23"></span>Create Plan</li>
+              <li><span class="glyphicon glyphicon-ok" style="color:#639a23"></span>Add Fees</li>
+              <li class="active"><span>3</span>Add Discounts</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default m-t-20">
+    <div class="panel-heading" role="tab" id="headingOne">
+      <h4 class="panel-title">
+        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Plan Details</a>
+      </h4>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+      <div class="panel-body bordered">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="row">
+              <div class="form-group col-sm-11">
+                <!--<input type="text" [minDate]="minDate" #dp="bsDatepicker" bsDatepicker [(bsValue)]="bsValue1" class="form-control" id="startDate"
+                  name="startDate" disabled="disabled" [(ngModel)]="getPlanResponses.StartEffDate">-->
+                <my-date-picker name="startDate" placeholder="Start Effective Date" disabled="disabled" [(ngModel)]="startDateModel" [options]="myDatePickerOptions"></my-date-picker>
+
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row">
+              <div class="form-group col-sm-11">
+                <!--<input type="text" [minDate]="minDate" #dp="bsDatepicker" bsDatepicker [(bsValue)]="bsValue" class="form-control" id="endDate"
+                  name="endDate" disabled="disabled" [(ngModel)]="getPlanResponses.EndEffDate">-->
+                <my-date-picker placeholder="End Effective Date" disabled="disabled" disabled="disabled" [(ngModel)]="endDateModel" [options]="myDatePickerOptions"></my-date-picker>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="clear"></div>
+  </div>
+
+  <form role="form">
+    <div class="panel panel-default">
+      <div class="panel-heading">Available Discounts</div>
+      <div class="panel-body bordered">
+        <div >
+          <table class="table bordered">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Discount Name</th>
+                <th>Discount Code</th>
+                <th>Discount Description</th>
+                <th>Access Level</th>
+                <th>Factor</th>
+                <th>Discount Value</th>
+                <th>Start Effective Date</th>
+                <th>End Effective Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let discount of getDiscountResponse; let row_no=index'>
+                <td>
+                  <div class="checkbox">
+
+<input type="checkbox" (change)="selectedFee(row_no,discount)" id="chkBox[{{row_no}}]" [(ngModel)]="discount.IsSelected"
+name="chkBox[{{row_no}}]">
+<label for="chkBox[{{row_no}}]"><span></span></label></div>
+                </td>
+                <td style="display:none;">{{discount.DiscountId}}</td>
+                <td style="display:none;">{{discount.StartEffectiveDate}}</td>
+                <td style="display:none;">{{discount.EndEffectiveDate}}</td>
+                <td>
+                  <a data-toggle="tooltip" data-placement="right" title="{{discount.StartEffectiveDate | date: 'MM/dd/yyyy'}} to {{discount.EndEffectiveDate | date: 'MM/dd/yyyy'}}">
+              {{discount.DiscountName}}</a>
+                </td>
+                <td>{{discount.DiscountCode}}</td>
+                <td>{{discount.Description}}</td>
+                <td>{{discount.AccessLevel}}</td>
+                <td class="text-center">{{discount.Factor==0?'$':'%'}}</td>
+                <td>{{discount.DiscountValue| currency:'USD':true:'1.2-2'}}</td>
+                <td>
+
+                  <!--<input type='text' class="form-control" [minDate]="minDate" #dp="bsDatepicker" bsDatepicker [(bsValue)]="discount.DisNamerow_no"
+                    [disabled]="!(discount.IsSelected)" (bsValueChange)="updateStartEffectiveDate(row_no,discount,discount.DisNamerow_no)"></td>-->
+                  <my-date-picker [disabled]="!(discount.IsSelected)" disabled="disabled" (inputFieldChanged)="updateStartEffectiveDate(row_no,discount,$event)"
+                    name="startdate[{{row_no}}]" [options]="myDatePickerOptionsGridStart" [(ngModel)]="discount.DisNamerow_no"></my-date-picker>
+                  <!--<div id="div[{{row_no}}]" *ngIf="row_no == selectedRow">
+                    <div style="color:red;" class="msg" *ngIf="startinvalidDate">
+                      Invalid Date Range
+                    </div>
+                  </div>-->
+
+                  <td>
+                    <my-date-picker [disabled]="!(discount.IsSelected)" disabled="disabled" (inputFieldChanged)="updateEndEffectiveDate(row_no,discount,$event)"
+                      name="enddate[{{row_no}}]" [options]="myDatePickerOptionsGridEnd" [(ngModel)]="discount.DisCoderow_no"></my-date-picker>
+                    <!--<div id="div[{{row_no}}]" *ngIf="row_no == selectedRow">
+                      <div style="color:red;" class="msg" *ngIf="endinvalidDate">
+                        Invalid Date Range
+                      </div>
+                    </div>-->
+                    <!--<input type='text' class="form-control" [minDate]="maxDate" #dp="bsDatepicker" bsDatepicker [(bsValue)]="discount.DisCoderow_no"
+                      [disabled]="!(discount.IsSelected)" (bsValueChange)="updateEndEffectiveDate(row_no,discount,discount.DisCoderow_no)"></td>-->
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-md-12 btn-sec text-right">
+          <a href='javascript:;' type="submit" (click)="prevoiusPlans()" *ngIf='boolDiscBtn' class="btn btn-primary btn-reset btn-sm"><i class="fa fa-arrow-circle-left fa-fw fa-lg" aria-hidden="true"></i>Previous</a>
+          <button type="submit" (click)="addDiscounts()" [disabled]="disableButton" class="btn btn-primary btn-search btn-sm"><i class="fa fa-plus-square-o fa-lg fa-fw" aria-hidden="true"></i>Add</button>
+          <button type="submit" (click)="resetClick()" class="btn btn-primary btn-reset btn-sm "><i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>Reset</button>
+          <a href='javascript:;' type="submit" (click)="cancelClick() " class="btn btn-primary btn-reset btn-sm "><i class="fa fa-times fa-lg fa-fw" aria-hidden="true"></i>Cancel</a>
+        </div>
+        <div class="clear"></div>
+      </div>
+    </div>
+  </form>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

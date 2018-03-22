@@ -1,0 +1,143 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">TVC</a></li>
+        <li class="active">Payment History</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Payment History</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="panel">
+    <div class="panel-body" style="border:0px;">
+      <div class="row">
+        <div class="col-md-12">
+          <p class="text-right m-b-0"> <span class="glyphicon glyphicon-exclamation-sign" style="color:#448ccb" aria-hidden="true"></span> Enter input
+            in any of the fields below.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <form role="form" name="paymentHistoryForm" [formGroup]="paymentHistoryForm">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div class=" status-message success" *ngIf="successBlock">
+          <div class="status-img">
+            <img src='assets/images/svg/success-check.svg'>
+          </div>
+          <div class="status-content">
+            <h3>{{successHeading}}</h3>
+            <p>{{successMessage}}</p>
+          </div>
+          <div class="clear"></div>
+        </div>
+
+        <div class=" status-message" *ngIf="errorBlock">
+          <div class="status-img">
+            <img src='assets/images/svg/warning.svg'>
+          </div>
+          <div class="status-content">
+            <h3>{{errorHeading}}</h3>
+            <p> {{errorMessage}} </p>
+          </div>
+          <div class="clear"></div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="Activity Type">Activity</label>
+              <select class="form-control" name="ActivityType" id="ActivityType" name="ActivityType" formControlName="ActivityType" [(ngModel)]='activityType'>
+              <!--<option selected value="0">--ALL--</option>-->
+             <option *ngFor="let Activity of activityTypes" value="{{Activity.Key}}">{{Activity.Value}}</option>
+        </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="Date Range">Date</label>
+              <!--<label style="color:red; " *ngIf="clerkCloseOutForm.controls['timePeriod'].invalid && (clerkCloseOutForm.controls['timePeriod'].touched)">
+                    Date Range is required
+            </label>-->
+              <!--<input class="form-control" placeholder="Daterangepicker" bsDaterangepicker #dpr="bsDaterangepicker" name="bsRangeValue"
+                formControlName="bsRangeValue" [(ngModel)]="bsRangeValue">-->
+              <my-date-range-picker name="mydaterange" (inputFieldChanged)='onDateRangeFieldChanged($event)' [options]="myDateRangePickerOptions" placeholder="MM/DD/YYYY-MM/DD/YYYY" formControlName="bsRangeValue"></my-date-range-picker>
+              <div class="show-error" *ngIf="!invalidDate && paymentHistoryForm.controls['bsRangeValue'].invalid && (paymentHistoryForm.controls['bsRangeValue'].dirty || paymentHistoryForm.controls['bsRangeValue'].touched)">
+                <div *ngIf="paymentHistoryForm.controls['bsRangeValue'].errors.pattern">
+                  Date Range is required
+                </div>
+              </div>
+              <div class="show-error" *ngIf="invalidDate">
+                <div>
+                  Invalid Date Range
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-primary btn-search" (click)='paymentHistorySearch()'>Search</button>
+            <button type="submit" (click)='resetclick()' class="btn btn-default btn-reset btn-sm">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="container p-b-11 p-t-2" style="background:#fff;" *ngIf='!paymentHistoryResponse || paymentHistoryResponse.length>0'>
+    <div class="panel panel-default">
+      <div class="panel-heading"> Activity Search Results </div>
+      <div class="panel-body">
+        <table class="table table-bordered table-sm" *ngIf='paymentHistoryResponse && paymentHistoryResponse.length'>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Payment Type</th>
+              <th>Transaction Type</th>
+              <th>Reference #</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let History of paymentHistoryResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p }'>
+              <td>{{History.Date}} </td>
+              <td>{{History.ParentPaymentMode}}</td>
+              <td>{{History.PaymentMode}}</td>
+              <td>{{History.VoucherNo}}</td>
+              <td>{{History.TxnAmount}}</td>
+              <td>{{History.PaymentStatus}}</td>
+              <td>
+                <div *ngIf='History.isReversed'><a (click)='processReversal(History)'>Process</a></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="row page-info">
+          <div class="col-md-6 text-left">
+            <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container p-b-11 p-t-2" style="background:#fff;" *ngIf='!paymentHistoryResponse || paymentHistoryResponse.length==0'>
+    <div class="panel panel-default">
+      <div class="panel-heading"> Activity Search Results </div>
+      <div class="panel-body">
+        <div class="status-content">
+          <p>No records to display</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

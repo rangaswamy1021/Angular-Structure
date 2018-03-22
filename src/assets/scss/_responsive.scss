@@ -1,0 +1,181 @@
+@media only screen and (max-width: 1024px) {
+    .noti-setting .notifications {
+        margin: 0;
+        margin-right: 5px;
+    }
+    .accordion-mgc {
+        padding: 20px 0 0 0;
+    }
+    .status-message {
+        width: auto;
+        left: 2%;
+        right: 2%;
+        h3 {
+            font-size: 14px;
+        }
+    }
+}
+
+@media (min-width: 768px) {
+    .navbar-nav>li>a {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .navbar-nav {
+        width: 100%;
+    }
+    .col-2-accordian {
+        column-count: 2;
+    }
+}
+
+@media only screen and (max-width: 991px) {
+    // .nav > li.tp-dropdown > a {
+    //     padding: 10px 12px;
+    // }
+}
+
+@media only screen and (max-width: 767px) {
+    .navbar-brand{ opacity: 1 !important; margin: 1px 0 !important;}
+    .masonary {
+        -webkit-column-count: 1 !important;
+        column-count: 1 !important;
+    }
+    .form-control {
+        margin-bottom: 2px;
+    }
+    .content {
+        min-height: inherit;
+    }
+    .payment-steps-2 li {
+        width: 33%;
+        padding-right: 0;
+        text-align: center;
+    }
+    .form-inline {
+        select.form-control {
+            display: inline-block;
+            width: calc(100% - 30px);
+        }
+    }
+    .login-panel {
+        width: 100%;
+    }
+    .checkbox {
+        display: initial !important;
+    }
+    .affix-logo {
+        padding: 10px !important;
+    }
+    .navbar-toggle {
+        margin-right: 0;
+        border-radius: 0;
+    }
+    .mobile-change {
+        position: absolute;
+        top: 0;
+        right: 15px;
+        min-width: 50%;
+    }
+    .navbar-header {
+        width: auto !important;
+        display: initial !important;
+    } // .navbar-default .navbar-toggle{ border: 0 none; background-color: #0279bb; margin-top: -46px; padding: 8px 10px;}
+    .navbar-default .navbar-toggle .icon-bar {
+        background-color: #FFF;
+    }
+    .nav.navbar-nav img {
+        display: none;
+    }
+    .navbar-default .navbar-nav>li>a {
+        text-align: left;
+    }
+    .tp-dropdown-menu:before,
+    .tp-dropdown-menu:after {
+        display: none;
+    }
+    .tp-dropdown-menu>li>ul>li>a {
+        color: #FFF;
+        padding: 0;
+    }
+    .navbar-nav .open .dropdown-menu .dropdown-header,
+    .navbar-nav .open .dropdown-menu>li>a {
+        padding: 0;
+    }
+    .navbar-default .navbar-nav>.open>a {
+        background-color: transparent !important;
+        color: #FFF !important;
+        /*font-size: 18px;*/
+    }
+    .tp-dropdown {
+        width: auto;
+    }
+    .navbar-default .navbar-nav>li>a:focus,
+    .navbar-default .navbar-nav>li>a:hover {
+        color: #FFF;
+    }
+    .verify-details {
+        .title,
+        .field {
+            line-height: 22px;
+        }
+        .title {
+            text-align: left;
+        }
+        .field {
+            margin-bottom: 15px;
+        }
+    }
+    .btn.btn-primary,
+    .btn-default {
+        /*margin-bottom: 10px;*/
+        margin-left: 0;
+    }
+    .csc-search-radio .radio-inline {
+        width: 50%;
+        margin-bottom: 5px;
+    }
+    .tp-dropdown span {
+        display: inline-block !important;
+    }
+    .navbar-collapse {
+        height: calc(100vh - 110px);
+    }
+    .affix .navbar-collapse.collapse {
+        padding-left: 0 !important;
+    }
+}
+
+@media (max-width:680px) {
+    .xs-thead {
+        padding: 10px !important;
+        thead tr {
+            position: relative !important;
+        }
+    }
+}
+
+@media only screen and (max-width: 460px) {
+    .profile-pic {
+        float: left;
+        /*margin: 0 0 5px 0;*/
+    }
+    .masonary .item li a {
+        color: #FFF;
+    }
+    .navbar-nav {
+        margin: 0 -15px;
+    }
+    .payment-details label {
+        display: block;
+    } // .pop-over{ display: none;}
+    // .popover-field input, .popover-field select, .popover-field owl-date-time {
+    //     width: 100%;
+    // }
+    .popover-field+div .radio-inline {
+        margin-top: -30px;
+    } // .table-bdr .form-group{
+    //     margin-right: -15px;
+    //     margin-left: -15px;
+    // }
+}

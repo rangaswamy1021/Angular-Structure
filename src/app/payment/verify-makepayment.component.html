@@ -1,0 +1,440 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li>
+          <a href="#">Customer Accounts</a>
+        </li>
+        <li class="active">Payment</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Payment</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="col-md-12 border-bottom">
+      <div class="payment-steps">
+        <div class="row">
+          <div class="col-md-12">
+            <ul>
+              <li class="done"><span>1</span>Account Information</li>
+              <li class="done"><span>2</span>Plan Selection</li>
+              <li class="done"><span>3</span>Vehicle Information</li>
+              <li class="done"><span>4</span>Preferences</li>
+              <li class="active"><span>5</span>Payment</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="payment-steps-2">
+        <ul>
+          <li class="done"><span>1</span>Payment Mode</li>
+          <li class="active"><span>2</span>Verify &amp; Submit</li>
+          <li><span>3</span>Payment Receipt</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="row m-t-20">
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <h3>Amount Summary Details</h3>
+        <div class="pad-20">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="ship-address" *ngIf='customerInfo && customerInfo.length && customerInfo[0].ShipmentAddressLine1'>
+                <label for="" class="head">Shipping Address
+                  </label> {{customerInfo[0].ShipmentAddressLine1==''?'N/A':customerInfo[0].ShipmentAddressLine1}},
+                {{customerInfo[0].ShipmentAddressLine2==''?'N/A':customerInfo[0].ShipmentAddressLine2}}, {{customerInfo[0].ShipmentAddressLine3==''?'N/A':customerInfo[0].ShipmentAddressLine3}}
+                <br> {{customerInfo[0].ShipmentCity==''?'N/A':customerInfo[0].ShipmentCity}}, {{customerInfo[0].ShipmentState==''?'N/A':customerInfo[0].ShipmentState}},{{customerInfo[0].ShipmentZip1==''?'N/A':customerInfo[0].ShipmentZip1}},
+                {{customerInfo[0].ShipmentZip2==''?'N/A':customerInfo[0].ShipmentZip2}}, {{customerInfo[0].ShipmentCountry==''?'N/A':customerInfo[0].ShipmentCountry}}
+              </div>
+            </div>
+            <div class="col-md-6 text-right">
+              <div class="bordered bg-grey pad-20 pay-details pull-right" *ngIf='makePaymentRequest'>
+                <label for="" class="head">Payment Details</label>
+                <ul *ngIf='makePaymentRequest.CreditCardPayment'>
+                  <li><span>Name on Card:</span><span>{{makePaymentRequest.CreditCardPayment.NameOnCard }}</span></li>
+                  <li><span>Card Type:</span><span>{{makePaymentRequest.CreditCardPayment.CreditCardType}}</span></li>
+                  <li><span>Credit Card #:</span><span>XXXX_{{makePaymentRequest.CreditCardPayment.CreditCardNumber.substring(makePaymentRequest.CreditCardPayment.CreditCardNumber.length - 4) }}</span></li>
+                </ul>
+                <ul *ngIf='makePaymentRequest.BankName'>
+                  <li><span>Bank Name:</span><span>{{makePaymentRequest.BankName }}</span></li>
+                  <li><span> Account Holder Name:</span><span>{{makePaymentRequest.AccoutName}}</span></li>
+                  <li><span>Bank Account #:</span><span>XXXX_{{makePaymentRequest.AccountNumber.toString().substring(makePaymentRequest.AccountNumber.toString().length - 4)}}</span></li>
+                </ul>
+                <ul *ngIf='makePaymentRequest.ChequeDate'>
+                  <li><span>Check Date:</span><span>{{makePaymentRequest.ChequeDate | customDateFormat}}</span></li>
+                  <li><span>Check #</span><span>{{makePaymentRequest.ChequeNumber}}</span></li>
+                </ul>
+                <ul *ngIf='makePaymentRequest.MONumber'>
+                  <li><span>Money Order Date:</span><span>{{makePaymentRequest.MODate | customDateFormat }}</span></li>
+                  <li><span>Money Order #:</span><span> {{makePaymentRequest.MONumber}}</span></li>
+                </ul>
+                <ul>
+                  <li><span>Pay By:</span><span> {{paymentmode}}</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="m-t-20">
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+              <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingOne">
+                  <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Personal Information</a>
+                  </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                  <div class="panel-body">
+                    <div class="row" *ngIf='customerProfileResponse && customerSecurityResponse && customerResponse'>
+                      <div class="col-md-12">
+                        <div class="details-info">
+                          <div class="lable-row">
+                            <div class="lable title">Customer Type </div>
+                            <div class="lable field">{{customerResponse.UserType}}</div>
+                          </div>
+                          <div class="lable-row" *ngIf="customerResponse.UserType=='Business'">
+                            <div class="lable title"> Business Name </div>
+                            <div class="lable field">{{businessOrganization}}</div>
+                          </div>
+                          <div class="lable-row">
+                            <div class="lable title">Title </div>
+                            <div class="lable field">{{customerProfileResponse.Title ==''?'N/A':customerProfileResponse.Title}}</div>
+                          </div>
+                          <div class="lable-row">
+                            <div class="lable title">Date Of Birth </div>
+                            <div class="lable field">{{customerProfileResponse.DOB =='0001-01-01T00:00:00'?'N/A':customerProfileResponse.DOB | customDateFormat}}
+                            </div>
+                          </div>
+                          <div class="lable-row">
+                            <div class="lable title">Account Category </div>
+                            <div class="lable field">{{customerResponse.RevenueCategory}}</div>
+                          </div>
+                          <div class="lable-row">
+                            <div class="lable title">Suffix </div>
+                            <div class="lable field">{{customerProfileResponse.Suffix ==''?'N/A':customerProfileResponse.Suffix}}</div>
+                          </div>
+                          <div class="lable-row">
+                            <div class="lable title">Name </div>
+                            <div class="lable field">{{customerProfileResponse.FirstName}} {{customerProfileResponse.LastName}}</div>
+                          </div>
+                          <div class="lable-row">
+                            <div class="lable title">Username </div>
+                            <div class="lable field">{{customerSecurityResponse.UserName}}</div>
+                          </div>
+                          <div class="lable-row">
+                            <div class="lable title">Gender </div>
+                            <div class="lable field">{{customerProfileResponse.Gender ==''?'N/A':customerProfileResponse.Gender}}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingTwo">
+                  <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false"
+                      aria-controls="collapseTwo">Contact Information</a>
+                  </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                  <div class="panel-body">
+                    <div class="row" *ngIf='emailResponse && customerProfileResponse && addressResponse && phoneResponse'>
+                      <div class="col-md-12">
+                        <div class="details-info">
+                          <div class="lable-row">
+                            <div class="lable title">Primary Email </div>
+                            <div class="lable field">{{emailResponse.EmailAddress == '' ? 'N/A' : emailResponse.EmailAddress}}</div>
+                          </div>
+                          <div class="lable-row">
+                            <div class="lable title">Secondary Email </div>
+                            <div class="lable field">{{emailResponse.SecondaryAddress == '' ? 'N/A' : emailResponse.SecondaryAddress}}</div>
+                          </div>
+                          <div class="lable-row">
+                            <div class="lable title">Subscribe to Newsletters </div>
+                            <div class="lable field">{{customerProfileResponse.IsSubscribeNewsLetter == true ? 'Yes' : 'No'}}</div>
+                          </div>
+                          <div class="lable-row">
+                            <div class="lable title">Email Preference </div>
+                            <div class="lable field">{{emailResponse.EmailPreference == '' ? 'N/A' : emailResponse.EmailPreference}}</div>
+                          </div>
+                          <div class="lable-row">
+                            <div class="lable title">Address </div>
+                            <div class="lable field">{{addressResponse.FullAddress}}</div>
+                          </div>
+                          <div class="lable-row">
+                            <div class="lable title">Day Phone </div>
+                            <div class="lable field">{{phoneResponse.DayPhone ==''?'N/A':phoneResponse.DayPhone}}</div>
+                          </div>
+                          <div class="lable-row">
+                            <div class="lable title">Evening Phone </div>
+                            <div class="lable field">{{phoneResponse.EveningPhone == ''?'N/A':phoneResponse.EveningPhone}}</div>
+                          </div>
+                          <div class="lable-row">
+                            <div class="lable title">Mobile </div>
+                            <div class="lable field">{{phoneResponse.MobilePhone ==''?'N/A':phoneResponse.MobilePhone}}</div>
+                          </div>
+                          <div class="lable-row">
+                            <div class="lable title">Fax </div>
+                            <div class="lable field">{{phoneResponse.Fax ==''?'N/A':phoneResponse.Fax}}</div>
+                          </div>
+                          <div class="lable-row">
+                            <div class="lable title">Work Phone </div>
+                            <div class="lable field">{{phoneResponse.WorkPhone ==''?'N/A':phoneResponse.WorkPhone}}</div>
+                          </div>
+                          <div class="lable-row">
+                            <div class="lable title">Phone Preference </div>
+                            <div class="lable field">{{phoneResponse.PhonePreference ==''?'N/A':phoneResponse.PhonePreference}}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingThree">
+                  <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false"
+                      aria-controls="collapseThree">Preferences</a>
+                  </h4>
+                </div>
+                <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                  <div class="panel-body">
+                    <div class="row" *ngIf='customerAttributeResponse && plansResponse'>
+                      <div class="col-md-12">
+                        <div class="details-info">
+                          <div class="lable-row">
+                            <div class="lable title">Account Type</div>
+                            <div class="lable field">{{plansResponse[0].ParentPlanName}}</div>
+                          </div>
+                          <div class="lable-row" *ngIf='customerAttributeResponse.ReferralCustomerId>0'>
+                            <div class="lable title">Friendship Reward Account# </div>
+                            <div class="lable field">{{customerAttributeResponse.ReferralCustomerId}}</div>
+                          </div>
+                          <div class="lable-row">
+                            <div class="lable title">How did you hear abount us </div>
+                            <div class="lable field">{{customerAttributeResponse.SourceOfChannel}}</div>
+                          </div>
+                          <div *ngIf="plansResponse[0].ParentPlanName=='Post Paid'">
+                            <div class="lable-row">
+                              <div class="lable title">Invoice Delivery Option </div>
+                              <div class="lable field">{{invoiceIntervalCycle}}</div>
+                            </div>
+                            <div class="lable-row">
+                              <div class="lable title">Invoice Day </div>
+                              <div class="lable field">{{customerAttributeResponse.InvoiceDay}}</div>
+                            </div>
+                            <div class="lable-row">
+                              <div class="lable title">Invoice Amount </div>
+                              <div class="lable field">{{customerAttributeResponse.InvoiceAmount | currency:'USD':true:'1.2-2'}}</div>
+                            </div>
+                            <div class="lable-row">
+                              <div class="lable title">Invoice Delivery Option </div>
+                              <div class="lable field">{{customerAttributeResponse.StatementDelivery}}</div>
+                            </div>
+                          </div>
+                          <div class="lable-row">
+                            <div class="lable title">Language Preference </div>
+                            <div class="lable field">{{customerAttributeResponse.LanguagePreference}}</div>
+                          </div>
+                          <div *ngIf="plansResponse[0].ParentPlanName=='Pre Paid'">
+                            <div class="lable-row">
+                              <div class="lable title">Statement Cycle </div>
+                              <div class="lable field">{{customerAttributeResponse.StatementCycle}}</div>
+                            </div>
+                            <div class="lable-row">
+                              <div class="lable title">Statement Delivery Option </div>
+                              <div class="lable field">{{customerAttributeResponse.StatementDelivery}}</div>
+                            </div>
+                            <div class="lable-row">
+                              <div class="lable title">Auto Replenishment Amount </div>
+                              <div class="lable field">{{customerAttributeResponse.CalculatedReBillAmount | currency:'USD':true:'1.2-2'}}</div>
+                            </div>
+                            <div class="lable-row">
+                              <div class="lable title">Min. Threshold Amount</div>
+                              <div class="lable field">{{customerAttributeResponse.ThresholdAmount | currency:'USD':true:'1.2-2'}}</div>
+                            </div>
+                          </div>
+                          <div class="lable-row">
+                            <div class="lable title">Tag Delivery Method </div>
+                            <div class="lable field">{{customerAttributeResponse.TranponderPurchasemethod}}</div>
+                          </div>
+                          <div class="lable-row">
+                            <div class="lable title">Auto Debit Method </div>
+                            <div class="lable field">{{customerAttributeResponse.AutoReplenishmentType}}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="table-bdr m-t-20">
+                <h3>Plan Details</h3>
+                <div class="table-default table-responsive">
+                  <table class="table" *ngIf='plansResponse'>
+                    <thead>
+                      <tr>
+                        <th>Plan Name</th>
+                        <th>Fee ($)</th>
+                        <th>Discount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor='let plans of plansResponse'>
+                        <td>{{plans.Name}}</td>
+                        <td>{{plans.FeeDesc}}</td>
+                        <td>{{plans.DiscountDesc}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="table-bdr">
+                <h3>Tag Details</h3>
+                <div class="table-default table-responsive">
+                  <table class="table" *ngIf='customerInfo && customerInfo.length'>
+                    <thead>
+                      <tr>
+                        <th>Protocol</th>
+                        <th>Mounting</th>
+                        <th>No. of Tags</th>
+                        <th>Per Tag Fee ($)</th>
+                        <th>Per Tag Deposit ($)</th>
+                        <th>Amount ($)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor='let customerInfo of customerInfo'>
+                        <td>{{customerInfo.Protocol}}</td>
+                        <td>{{customerInfo.Mounting}}</td>
+                        <td>{{customerInfo.TagCount}}</td>
+                        <td>{{customerInfo.TagFee * customerInfo.TagCount | currency:'USD':true:'1.2-2'}}</td>
+                        <td>{{customerInfo.TagDeposit * customerInfo.TagCount | currency:'USD':true:'1.2-2'}}</td>
+                        <td>{{( customerInfo.TagFee + customerInfo.TagDeposit ) * customerInfo.TagCount | currency:'USD':true:'1.2-2'}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="table-bdr">
+                <h3>Added Vehicles</h3>
+                <div class="table-default table-responsive">
+                  <table class="table" *ngIf='vehicleResponse && vehicleResponse.length'>
+                    <thead>
+                      <tr>
+                        <th>Plate#</th>
+                        <th>Class</th>
+                        <th>State</th>
+                        <th>Description</th>
+                        <th>Color</th>
+                        <th>Country</th>
+                        <th>Start Date/Time</th>
+                        <th>End Date/Time</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor='let vehicle of vehicleResponse'>
+                        <td>{{vehicle.VehicleNumber}}</td>
+                        <td>{{vehicle.VehicleClassDesc}}</td>
+                        <td>{{vehicle.StateName}}</td>
+                        <td>{{vehicle.VehicleDescription}}</td>
+                        <td>{{vehicle.Color}}</td>
+                        <td>{{vehicle.CountryName}}</td>
+                        <td>{{vehicle.StartEffectiveDate | customDateTimeFormat}}</td>
+                        <td>{{vehicle.EndEffectiveDate | customDateTimeFormat}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6" *ngIf='isServiceTax || isCCServiceTax'>
+                  <div class="Info" *ngIf='isServiceTax || isCCServiceTax'>
+                    <h4>Information</h4>
+                    <ul>
+                      <li *ngIf='isServiceTax'>- Service Tax {{serviceTax}}% applied on Tag Fee.</li>
+                      <li *ngIf='isCCServiceTax'>- Service Tax {{ccServiceTax}}% applied on Credit Card Payment.</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="col-md-4 col-md-offset-2">
+                  <table class="table" *ngIf='customerInfo && customerInfo.length && makePaymentRequest'>
+                    <tbody>
+                      <tr>
+                        <td>Total Tag Fees &amp; Deposit</td>
+                        <td class="text-right">{{customerInfo[0].TotalTagDeposit + customerInfo[0].TotalTagFee | currency:'USD':true:'1.2-2'}}</td>
+                      </tr>
+                      <tr>
+                        <td>Toll Balance</td>
+                        <td class="text-right">{{customerInfo[0].TollFee | currency:'USD':true:'1.2-2'}}</td>
+                      </tr>
+                      <tr *ngFor="let fees of feesOfPlan">
+                        <td>{{fees.Key}}</td>
+                        <td class="text-right">{{fees.Value | currency:'USD':true:'1.2-2'}}</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Sub Total</strong></td>
+                        <td class="text-right"><strong>{{customerInfo[0].TotalFee+customerInfo[0].TollFee+customerInfo[0].TotalTagDeposit + customerInfo[0].TotalTagFee
+                          | currency:'USD':true:'1.2-2'}}</strong></td>
+                      </tr>
+                      <tr>
+                        <td>Shipping Charge</td>
+                        <td class="text-right">{{customerInfo[0].TotalShippingCharge | currency:'USD':true:'1.2-2'}}</td>
+                      </tr>
+                      <tr>
+                        <td>Service Tax</td>
+                        <td class="text-right">{{customerInfo[0].TotalServiceTax | currency:'USD':true:'1.2-2'}}</td>
+                      </tr>
+                      <tr *ngIf="makePaymentRequest.CreditCardServiceTax>0">
+                        <td>Credit Card Service Tax</td>
+                        <td class="text-right">{{makePaymentRequest.CreditCardServiceTax | currency:'USD':true:'1.2-2'}}</td>
+                      </tr>
+                      <tr>
+                        <td>Total Amount</td>
+                        <td class="text-right"><strong>{{customerInfo[0].TotalFee+ customerInfo[0].TotalTagDeposit + customerInfo[0].TotalTagFee +customerInfo[0].TollFee
+                          + customerInfo[0].SubTotal + customerInfo[0].TotalShippingCharge + customerInfo[0].TotalServiceTax
+                          + makePaymentRequest.CreditCardServiceTax | currency:'USD':true:'1.2-2'}}</strong></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-search" type="button" (click)="previous();">Payment Mode</button>
+    <button class="btn btn-primary btn-search" type="button" (click)="MakePayment()">Submit</button>
+    <button class="btn btn-primary btn-reset" type="button" (click)="onCancel(0)">Cancel</button>
+  </div>
+  <div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="text-center">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"
+    (onOk)="userAction($event)"></app-success-failure-alerts-message>

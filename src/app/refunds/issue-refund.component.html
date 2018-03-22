@@ -1,0 +1,178 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">{{menuHeading}}</a>
+        </li>
+        <li class="active">
+          {{menuSubSystem}}
+        </li>
+        <li class="active">Issue Refund</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Issue Refund</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <form role="form" name="issueRefundForm" [formGroup]="issueRefundForm" novalidate>
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label> RRID </label>
+        <input [(ngModel)]="rrId" id="rrId" name="rrId" formControlName="rrId" type="text" class="form-control" placeholder="RRID">
+        <div class="msg" *ngIf="issueRefundForm.controls['rrId'].invalid && (issueRefundForm.controls['rrId'].dirty || issueRefundForm.controls['rrId'].touched)">
+          <div *ngIf="issueRefundForm.controls['rrId'].errors.required">
+            Required.
+          </div>
+          <div *ngIf="issueRefundForm.controls['rrId'].errors.pattern">
+            RRID is invalid.
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <button class="btn btn-default btn-search" [disabled]="disableButton" (click)='SearchClick()'>Search </button>
+        <button class="btn btn-default btn-reset" (click)='ResetClick()'>Reset </button>
+      </div>
+    </div>
+  </form>
+  <div *ngIf='afterSearch'>
+    <div class="table-bdr m-t-20" *ngIf='refundResponse && refundResponse.length'>
+      <h3>Refund Search</h3>
+      <div class="pad-10">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>RRID</th>
+                <th>Account #</th>
+                <th>Mode Of Payment</th>
+                <th class="text-right">Amount ($)</th>
+                <th style="padding-left: 20px">Request Type</th>
+                <th>Status</th>
+                <th>Requested Date/Time</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor=' let rep of refundResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p }; let i=index '>
+                <td>{{rep.RRID}}</td>
+                <td>{{rep.AccountID}}</td>
+                <td>{{rep.ModeofPayment}}</td>
+                <td class="text-right">{{rep.Amount| currency:'USD':true:'1.2-2'}}</td>
+                <td style="padding-left: 20px">{{rep.RefundType}}</td>
+                <td>{{rep.RefundRequestState}}</td>
+                <td>{{rep.RefundRequestedDate|customDateTimeFormat}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div *ngIf='!refundResponse && refundResponse.length>0'>
+      <h3> Refund Search</h3>
+      <div class="pad-10">
+        <p>No records to display</p>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <form role="form" name="creditCardsFrom" [formGroup]="creditCardsFrom" novalidate>
+        <div class="row" *ngIf="isCreditCardModesVisible">
+          <div class="form-group col-md-4">
+            <select class="form-control" required name="CustomerCards" id="creditCards" name="creditCards" formControlName="creditCards"
+              [(ngModel)]="selectedCCID">
+            <option selected="selected" value="">--Select--</option>
+            <option *ngFor="let type of creditCardRequest" value="{{type.CCID}}">{{type.TypeSuffix}}</option>
+          </select>
+            <div class="msg" *ngIf="creditCardsFrom.controls['creditCards'].invalid && (creditCardsFrom.controls['creditCards'].dirty || creditCardsFrom.controls['creditCards'].touched)">
+              <div *ngIf="creditCardsFrom.controls['creditCards'].hasError('required')"> Required</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <a (click)=addnewCreditCard() class="m-t-10" style="display: inline-block">For new Credit card</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8">
+      <div class="payment-details">
+        <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body" *ngIf="isCreditCardPayment">
+            <app-credit-card-information [Customerid]="customerid" [CreditcardObjet]="creditCardRequest" [IsSaveCheckBox]="false"></app-credit-card-information>
+          </div>
+        </div>
+        <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body" *ngIf="isCheque">
+            <app-cheque [chequeNumber]=" "></app-cheque>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 text-right" *ngIf='isDisplay'>
+      <button class="btn btn-default btn-search" [disabled]="disableProcessButton" (click)='refundQueueSave()'>Submit </button>
+      <button class="btn btn-default btn-reset" [disabled]="disableCancelButton" (click)="submitCancelRefund()">Cancel RRID </button>
+      <button class="btn btn-default btn-search" (click)="Back()">Back</button>
+    </div>
+  </div>
+</div>
+<!--<div id="refund-conf" class="modal fade refund-issue-modal" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class=" status-message">
+          <div class="status-img">
+            <img src='assets/images/svg/warning.svg'>
+          </div>
+          <div class="status-content">
+            <h3> {{popupHeading}} </h3>
+            <p> {{popupMessage}} </p>
+            <button class="btn btn-primary btn-search " type="button" (click)="submitCheckRefund()">OK</button>
+            <button class="btn btn-primary btn-search" data-toggle="modal" data-target="#refund-conf">CANCEL</button>
+          </div>
+          <div class="clear"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>-->
+<!--<div id="refund-cancel" class="modal fade refund-issue-modal" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class=" status-message">
+          <div class="status-img">
+            <img src='assets/images/svg/warning.svg'>
+          </div>
+          <div class="status-content">
+            <h3> {{popupHeading}} </h3>
+            <p> {{popupMessage}} </p>
+            <button class="btn btn-primary btn-search " type="button" (click)="submitCancelRefundQueue()">OK</button>
+            <button class="btn btn-primary btn-search" data-toggle="modal" data-target="#refund-cancel">CANCEL</button>
+          </div>
+          <div class="clear"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>-->
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">-->
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (onOk)="userAction($event)"
+  (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

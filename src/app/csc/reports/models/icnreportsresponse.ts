@@ -1,0 +1,32 @@
+export interface ICNReportResponse {
+    ChequeNumber: string;
+    CardExpiryDate: string;
+    CardNumber: string;
+    CardType: string;
+    TransactionId: number;
+    TransactionAmount: number;
+    PaymentMode: string;
+    VocherNumber: string;
+    ReCount:number;
+    ICNId: number;
+    UserId: number;
+    CustomerId: number;
+    CustomerName: string;
+    TransactionDate: Date;
+    RecCount: number;
+    CashAmount: number;
+    ChequeAmount: number;
+    MOAmount: number;
+    CreditAmount: number;
+    PromoAmount: number;
+    TagAssignedCount: number;
+    TagReturnedCount: number;
+    ICNStatus: string;
+    TransactionType: string;
+    BankName: string;
+    GCNUMBER: string;
+    PromoId: number;
+    SystemTxnCount:string;
+    LocationCode: string;
+    LocationName: string;
+    }

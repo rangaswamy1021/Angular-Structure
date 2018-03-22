@@ -1,0 +1,147 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">SAC</a></li>
+        <li><a href="#">Manage Plans</a></li>
+        <li class="active">Assigning Fees to Plan</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Assigning Fees to Plan</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row" *ngIf='boolFeeBtn'>
+    <div class="col-md-12">
+      <div class="payment-steps">
+        <div class="row">
+          <div class="col-md-12">
+            <ul>
+              <li><span class="glyphicon glyphicon-ok" style="color:#639a23"></span>Create Plan</li>
+              <li class="active"><span>2</span>Add Fees</li>
+              <li><span>3</span>Add Discounts</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default m-t-20">
+    <div class="panel-heading" role="tab" id="headingOne">
+      <h4 class="panel-title">
+        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Plan Details</a>
+      </h4>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+      <div class="panel-body bordered">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="row">
+              <div class="form-group col-sm-11">
+                <!--<input type="text" class="form-control" placeholder="Start Effective Date" disabled="disabled" [minDate]="minDate" #dp="bsDatepicker"
+                  bsDatepicker [(bsValue)]="bsValue2" [(ngModel)]="getPlanResponses.StartEffDate">
+              -->
+                <my-date-picker name="startDate" placeholder="Start Effective Date" disabled="disabled" [(ngModel)]="startDateModel" [options]="myDatePickerOptions"></my-date-picker>
+
+
+
+              </div>
+              <!--<button type="button" class="tool-tip col-sm-1" data-toggle="tooltip" data-placement="right" title="Tooltip Message">?</button>-->
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row">
+              <div class="form-group col-sm-11">
+                <!--<input type="text" class="form-control" placeholder="End Effective Date" disabled="disabled" [minDate]="minDate" #dp="bsDatepicker"
+                  bsDatepicker [(bsValue)]="bsValue3" [(ngModel)]="getPlanResponses.EndEffDate">-->
+                <my-date-picker placeholder="End Effective Date" disabled="disabled" disabled="disabled" [(ngModel)]="endDateModel" [options]="myDatePickerOptions"></my-date-picker>
+              </div>
+              <!--<button type="button" class="tool-tip col-sm-1" data-toggle="tooltip" data-placement="right" title="Tooltip Message">?</button>-->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="clear"></div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">Available Fee Types</div>
+    <div class="panel-body bordered" *ngIf="feeTypesResponse && feeTypesResponse.length>0">
+      <div class="">
+        <table class="table bordered">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Fee Name</th>
+              <th>Fee Code</th>
+              <th>Fee Factor</th>
+              <th>Amount</th>
+              <th>Start Effective Date</th>
+              <th>End Effective Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let feeType of feeTypesResponse; let row_no=index">
+             <td>
+                          <div class="checkbox"><input type="checkbox" (change)="selectedFee(row_no,feeType)" [(ngModel)]="feeType.IsSelected" name="chkBox[{{row_no}}]"
+id="chkBox[{{row_no}}]" />
+<label for="chkBox[{{row_no}}]"><span></span>
+</label></div>
+              </td>
+              <td>
+
+                <a data-toggle="tooltip" data-placement="right" title="{{feeType.StartDate | date: 'MM/dd/yyyy'}} to {{feeType.EndDate | date: 'MM/dd/yyyy'}}">
+               {{feeType.FeeName}} </a>
+              </td>
+              <td>{{feeType.FeeCode}}</td>
+              <td class="text-center">{{feeType.FeeFactor==0?'$':'%'}}</td>
+              <td>{{feeType.Amount | currency:'USD':true:'1.2-2'}}</td>
+              <td style="display:none;">{{feeType.StartDate}}</td>
+              <td style="display:none;">{{feeType.EndDate}}</td>
+              <td>
+                <!--<input type='text' class="form-control" [minDate]="minDate" #dp="bsDatepicker" bsDatepicker [(bsValue)]="feeType.FeeNamerow_no"
+                  [disabled]="!(feeType.IsSelected)" (bsValueChange)="updateStartEffectiveDate(row_no,feeType,feeType.FeeNamerow_no)">-->
+                <my-date-picker [disabled]="!(feeType.IsSelected)" disabled="disabled" (inputFieldChanged)="updateStartEffectiveDate(row_no,feeType,$event)"
+                  [options]="myDatePickerOptionsGridStart" [(ngModel)]="feeType.FeeNamerow_no"></my-date-picker>
+                <!--<div id="div[{{row_no}}]" *ngIf="row_no == selectedRow">
+                  <div style="color:red;" class="msg" *ngIf="startinvalidDate">
+                    Invalid Date Range
+                  </div>
+                </div>-->
+              </td>
+              <td>
+                <!--<input type='text' class="form-control" [minDate]="maxDate" #dp="bsDatepicker" bsDatepicker [(bsValue)]="feeType.FeeCoderow_no"
+                  [disabled]="!(feeType.IsSelected)" (bsValueChange)="updateEndEffectiveDate(row_no,feeType,feeType.FeeCoderow_no)"> -->
+                <my-date-picker [disabled]="!(feeType.IsSelected)" disabled="disabled" (inputFieldChanged)="updateEndEffectiveDate(row_no,feeType,$event)"
+                  [options]="myDatePickerOptionsGridEnd" [(ngModel)]="feeType.FeeCoderow_no"></my-date-picker>
+                <!--<div id="div[{{row_no}}]" *ngIf="row_no == selectedRow">
+                  <div style="color:red;" class="msg" *ngIf="endinvalidDate">
+                    Invalid Date Range
+                  </div>
+                </div>-->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md-12 btn-sec text-right">
+        <button type="submit" (click)="prevoiusPlans()" *ngIf='boolFeeBtn' class="btn btn-primary btn-reset btn-sm"><i class="fa fa-arrow-circle-left fa-fw fa-lg" aria-hidden="true"></i>Previous</button>
+        <button type="submit" (click)="addFees()" *ngIf='boolFeeBtn' [disabled]="disableButton" class="btn btn-primary btn-search btn-sm"><i class="fa fa-arrow-circle-right fa-fw fa-lg" aria-hidden="true"></i>Next</button>
+        <button type="submit" (click)="addFees()" *ngIf='!boolFeeBtn' [disabled]="disableButton" class="btn btn-primary btn-search btn-sm"><i class="fa fa-plus-square-o fa-lg fa-fw" aria-hidden="true"></i>Add</button>
+        <button type="submit" (click)="resetClick()" *ngIf='!boolFeeBtn' class="btn btn-primary btn-reset btn-sm"><i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>Reset</button>
+        <button type="submit" (click)="cancelClick()" class="btn btn-primary btn-reset btn-sm"><i class="fa fa-times fa-lg fa-fw" aria-hidden="true"></i>Cancel</button>
+      </div>
+      <div class="clear"></div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

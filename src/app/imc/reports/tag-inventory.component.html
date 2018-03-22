@@ -1,0 +1,135 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">IMC</a></li>
+        <li class="active"> Reports </li>
+        <li class="active">Tag Inventory</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1> Tag Inventory Summary </h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="content">
+  <div class="panel panel-default">
+    <!--<div class="panel-heading">
+      Tag Inventory Summary
+    </div>-->
+    <div class="panel-body">
+      <!--Search Form -->
+      <form role="form" name="tagInventoryForm" [formGroup]="tagInventoryForm">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="col-md-12 form-group">
+              <label class="focused"> Location </label>
+              <select class="form-control" name="location" formControlName="location">
+                <option selected="selected"  value="">All</option>
+                 <option *ngFor='let dropdown of dropdownResponse' [value]="dropdown.LocationId" >{{dropdown.LocationName}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="col-md-7 m-t-10">
+              <button class="btn btn-primary btn-search" (click)="generateReport()" tabindex="5" title="Search" [disabled]="disableSearchbtn">Generate Report</button>
+              <button class="btn btn-default btn-reset" (click)="resetForm()" tabindex="6" title="Reset">Reset</button>
+            </div>
+          </div>
+        </div>
+      </form>
+      <!--Search Form Ends..-->
+    </div>
+  </div>
+
+
+  <!--*ngIf='tagInventoryGrid'-->
+  <div class="table-bdr">
+    <h3>Report Details</h3>
+    <div class="pad-10">
+      <div class="panel-body table-responsive" [hidden]="!tagSummaryResponse || !tagSummaryResponse.length">
+        <table class="table" id="lastrowBold">
+          <thead class="nowrap">
+            <tr>
+              <th>Location</th>
+              <th>Assigned</th>
+              <th>DestroyedDisposal</th>
+              <th>DestroyedObsolete</th>
+              <th>Expired</th>
+              <th>InventoryNew</th>
+              <th>InventoryRecycled</th>
+              <th>InventoryRetailer</th>
+              <th>Lost</th>
+              <th>Missing</th>
+              <th>Replaced</th>
+              <th>Returned</th>
+              <th>ReturnedDamaged</th>
+              <th>ReturnedDefective</th>
+              <th>ReturnedGood</th>
+              <th>Shipped</th>
+              <th>ShippedDamaged</th>
+              <th>ShippedDefective</th>
+              <th>Stolen</th>
+              <th>TagInactive</th>
+              <th>VendorReturn</th>
+            </tr>
+          </thead>
+          <tr *ngFor="let tagInventory of tagSummaryResponse">
+            <td class="nowrap">{{tagInventory.Location==""?"N/A":tagInventory.Location}}</td>
+            <td> {{tagInventory.InventoryAssignedCount}} </td>
+            <td> {{tagInventory.InventoryDestroyedObsoleteCount}} </td>
+            <td> {{tagInventory.InventoryDestroyedDisposalCount}} </td>
+            <td> {{tagInventory.InventoryExpiredCount}} </td>
+            <td> {{tagInventory.InventoryInventoryNewCount}} </td>
+            <td> {{tagInventory.InventoryInventoryRecycledCount}} </td>
+            <td> {{tagInventory.InventoryInventoryRetailerCount}} </td>
+            <td> {{tagInventory.InventoryLostCount}} </td>
+            <td> {{tagInventory.InventoryMissingCount}} </td>
+            <td> {{tagInventory.InventoryReplacedCount}} </td>
+            <td> {{tagInventory.InventoryReturnedCount}} </td>
+            <td> {{tagInventory.InventoryReturnedDamagedCount}} </td>
+            <td> {{tagInventory.InventoryReturnedDefectiveCount}} </td>
+            <td> {{tagInventory.InventoryReturnedGoodCount}} </td>
+            <td> {{tagInventory.InventoryShippedCount}} </td>
+            <td> {{tagInventory.InventoryShippedDamagedCount}} </td>
+            <td> {{tagInventory.InventoryShippedDefectiveCount}} </td>
+            <td> {{tagInventory.InventoryStolenCount}} </td>
+            <td> {{tagInventory.InventoryTagInactiveCount}} </td>
+            <td> {{tagInventory.InventoryVendorReturnCount}} </td>
+
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div *ngIf='tagSummaryResponse && tagSummaryResponse.length==0 && afterSearch'>
+      <div class="panel-heading"> Report Details</div>
+      <div class="panel-body">
+        <div class="status-content">
+          <p class="alert alert-success">
+            <i class="fa fa-info-circle fa-lg" aria-hidden="true"></i> No Details to display
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

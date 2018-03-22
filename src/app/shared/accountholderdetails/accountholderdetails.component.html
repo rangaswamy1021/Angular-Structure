@@ -1,0 +1,336 @@
+<div id="acchEdit" class="edit-modal modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="form-title">Edit Account Holder Detais</h3>
+      </div>
+      <div class="modal-body">
+        <form role="form" [formGroup]="createAccountForm" novalidate>
+          <div class="row add-address">
+            <!-- <div class="alert alert-danger" *ngIf="updateErrorMessage">
+                <a class="close" (click)='updateErrorMessage=""'>&times;</a>
+                {{updateErrorMessage}}
+              </div> -->
+            <div class="form-group col-md-4 popover-field popover-2field" *ngIf="profileResponse && profileResponse.OrganisationName">
+              <label for="">* Business Name</label>
+              <input type="text" class="form-control" id="" placeholder="* Business Name" maxlength="50" formControlName="businessName">
+              <div class="msg" *ngIf="createAccountForm.controls['businessName'].invalid && (createAccountForm.controls['businessName'].dirty || createAccountForm.controls['businessName'].touched)">
+                <div *ngIf="createAccountForm.controls['businessName'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="createAccountForm.controls['businessName'].errors.pattern">
+                  Only alphanumerics are allowed.
+                </div>
+                <div *ngIf="createAccountForm.controls['businessName'].errors.minlength">
+                  Minimum 3 characters are required.
+                </div>
+                <div *ngIf="createAccountForm.controls['businessName'].errors.maxlength">
+                  Maximum 50 characters are allowed.
+                </div>
+              </div><button type="button" class="pop-over" data-container="body" [popover]="poppBName" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                tabindex="-1">?</button>
+              <ng-template #poppBName>
+                <ul>
+                  <li>Business Name is required.</li>
+                  <li>It allows alphanumerics, spaces and all special characters except(
+                    <>).</li>
+                  <li>It should be minimum 3 characters and maximum 50 characters long.</li>
+                </ul>
+              </ng-template>
+            </div>
+            <div class="form-group col-md-4 popover-field popover-2field">
+              <label for="" class="focused">Title</label>
+              <select class="form-control" formControlName="titleSelected">
+                    <option selected="selected" value="">--Select--</option>
+                    <option *ngFor="let title of titles" value="{{title.Key}}"> {{title.Value}}</option>
+                  </select>
+              <button type="button" placement="left" class="pop-over" data-container="body" [popover]="poppTitle" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                tabindex="-1">?</button>
+              <ng-template #poppTitle>
+                <ul>
+                  <li>Select Title</li>
+                </ul>
+              </ng-template>
+            </div>
+            <!--<div class="form-group col-md-4 popover-field popover-2field" *ngIf='isSuffixOther'>
+              <input type="text" class="form-control" id="" placeholder="other" [disabled]='!isSuffixOther' formControlName="suffixOther"
+                maxlength="5">
+              <div class="msg" *ngIf="createAccountForm.controls['suffixOther'].invalid && (createAccountForm.controls['suffixOther'].dirty || createAccountForm.controls['suffixOther'].touched)">
+                <div *ngIf="createAccountForm.controls['suffixOther'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="createAccountForm.controls['suffixOther'].errors.pattern">
+                  Only alphabets are allowed.
+                </div>
+                <div *ngIf="createAccountForm.controls['suffixOther'].errors.maxlength">
+                  Maximum 5 characters are allowed.
+                </div>
+              </div>
+              <button type="button" placement="left" class="pop-over" data-container="body" [popover]="poppSOther" popoverTitle="Help"
+                triggers="mouseenter:mouseleave" tabindex="-1">?</button>
+              <ng-template #poppSOther>
+                <ul>
+                  <li> Other suffix is required </li>
+                  <li> It allows only alphabets</li>
+                  <li> It allows minimum of 1 and maximum of 5 characters length</li>
+                </ul>
+              </ng-template>
+            </div>-->
+            <div class="form-group col-md-4 popover-field popover-2field">
+              <label for="" class="focused">Suffix</label>
+              <select class="form-control" formControlName="suffixSelected" (change)="selectSuffix()">
+                    <option selected="selected" value="">--Select--</option>
+                    <option *ngFor="let suffix of suffixes" value="{{suffix.Key}}"> {{suffix.Value}}</option>
+                  </select>
+              <button type="button" placement="left" class="pop-over" data-container="body" [popover]="poppSKey" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                tabindex="-1">?</button>
+              <ng-template #poppSKey>
+                <ul>
+                  <li>Select Suffix</li>
+                </ul>
+              </ng-template>
+            </div>
+            <div class="form-group col-md-4 popover-field popover-2field" [hidden]='!isSuffixOther'>
+              <label for="">Other Suffix</label>
+              <input type="text" class="form-control" id="" placeholder="other" [disabled]='!isSuffixOther' formControlName="suffixOther"
+                maxlength="5">
+              <div class="msg" *ngIf="createAccountForm.controls['suffixOther'].invalid && (createAccountForm.controls['suffixOther'].dirty || createAccountForm.controls['suffixOther'].touched)">
+                <div *ngIf="createAccountForm.controls['suffixOther'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="createAccountForm.controls['suffixOther'].errors.pattern">
+                  Only alphabets are allowed.
+                </div>
+                <div *ngIf="createAccountForm.controls['suffixOther'].errors.maxlength">
+                  Maximum 5 characters are allowed.
+                </div>
+              </div>
+              <button type="button" placement="left" class="pop-over" data-container="body" [popover]="poppSOther" popoverTitle="Help"
+                triggers="mouseenter:mouseleave" tabindex="-1">?</button>
+              <ng-template #poppSOther>
+                <ul>
+                  <li> Other suffix is required </li>
+                  <li> It allows only alphabets</li>
+                  <li> It allows minimum of 1 and maximum of 5 characters length</li>
+                </ul>
+              </ng-template>
+            </div>
+            <div class="form-group col-md-4 popover-field popover-2field">
+              <label for="">First Name</label>
+              <input type="text" class="form-control" id="" placeholder="* First Name" formControlName="firstName" maxlength="50">
+              <div class="msg" *ngIf="createAccountForm.controls['firstName'].invalid && (createAccountForm.controls['firstName'].dirty || createAccountForm.controls['firstName'].touched)">
+                <div *ngIf="createAccountForm.controls['firstName'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="createAccountForm.controls['firstName'].errors.pattern">
+                  Only Alphabets and space are allowed.
+                </div>
+                <div *ngIf="createAccountForm.controls['firstName'].errors.minlength">
+                  Minimum 2 characters are required.
+                </div>
+                <div *ngIf="createAccountForm.controls['firstName'].errors.maxlength">
+                  Maximum 50 characters are allowed.
+                </div>
+              </div>
+              <button type="button" placement="left" class="pop-over" data-container="body" [popover]="poppFName" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                tabindex="-1">?</button>
+              <ng-template #poppFName>
+                <ul>
+                  <li>First Name is required</li>
+                  <li>It allows only alphabets and spaces</li>
+                  <li>It should be minimum 2 characters
+                    <br>and maximum 50 characters long.</li>
+                </ul>
+              </ng-template>
+            </div>
+            <div class="form-group col-md-4 popover-field">
+              <label for="">Middle Name</label>
+              <input type="text" class="form-control" id="" placeholder="Middle Name" formControlName="middleName" maxlength="2">
+              <div class="msg" *ngIf="createAccountForm.controls['middleName'].invalid && (createAccountForm.controls['middleName'].dirty || createAccountForm.controls['middleName'].touched)">
+                <div *ngIf="createAccountForm.controls['middleName'].errors.pattern">
+                  Only Alphabets are allowed.
+                </div>
+                <div *ngIf="createAccountForm.controls['middleName'].errors.maxlength">
+                  Maximum 2 characters are allowed.
+                </div>
+              </div>
+              <button type="button" placement="left" class="pop-over" data-container="body" [popover]="poppMName" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                tabindex="-1">?</button>
+              <ng-template #poppMName>
+                <ul>
+                  <li>It allows only alphabets</li>
+                  <li>Special Characters and spaces
+                    <br>are not allowed. It is maximum
+                    <br>2 characters long</li>
+                </ul>
+              </ng-template>
+            </div>
+            <div class="form-group col-md-4 popover-field">
+              <label for="">Last Name</label>
+              <input type="text" class="form-control" id="" placeholder="* Last Name" formControlName="lastName" maxlength="50">
+              <div class="msg" *ngIf="createAccountForm.controls['lastName'].invalid && (createAccountForm.controls['lastName'].dirty || createAccountForm.controls['lastName'].touched)">
+                <div *ngIf="createAccountForm.controls['lastName'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="createAccountForm.controls['lastName'].errors.pattern">
+                  Only Alphabets, space and (-) are allowed.
+                </div>
+                <div *ngIf="createAccountForm.controls['lastName'].errors.minlength">
+                  Minimum 2 characters are required.
+                </div>
+                <div *ngIf="createAccountForm.controls['lastName'].errors.maxlength">
+                  Maximum 50 characters are allowed.
+                </div>
+              </div>
+              <button type="button" placement="left" class="pop-over" data-container="body" [popover]="popplname" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                tabindex="-1">?</button>
+              <ng-template #popplname>
+                <ul>
+                  <li>Last Name is required</li>
+                  <li>It allows only alphabets, spaces and (-).</li>
+                  <li>It should be minimum 2 characters
+                    <br>and maximum 50 characters long</li>
+                </ul>
+              </ng-template>
+            </div>
+            <div class="form-group col-md-4 popover-field">
+              <label for="" class="focused">Gender</label>
+              <select class="form-control" formControlName="genderSelected">
+                    <option selected="selected" value="">--Select--</option>
+                    <option *ngFor="let gender of genderTypes" value="{{gender.Key}}"> {{gender.Value}}</option>
+                  </select>
+              <button type="button" placement="left" class="pop-over" data-container="body" [popover]="popGender" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                tabindex="-1">?</button>
+              <ng-template #popGender>
+                <ul>
+                  <li> Select Gender.</li>
+                </ul>
+              </ng-template>
+            </div>
+            <div class="col-md-12 m-t-10">
+              <button type="submit" class="btn btn-primary btn-search" (click)=changeProfile(true) [disabled]='disableButton'>Update</button>
+              <button type="submit" class="btn btn-default btn-reset" (click)=ResetProfile()>Reset</button>
+              <button type="button" class="btn btn-default btn-reset" data-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="panel-heading" role="tab" id="headingThree">
+  <h4 class="panel-title pull-left">
+    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false"
+      aria-controls="collapseFour">Account Holder Name</a>
+  </h4>
+  <div class="edit-history-link pull-right">
+    <a href="javascript:;" (click)="editDetails(profileResponse)">Edit</a>
+    <a href="javascript:;" [ngClass]="disableHistoryButton?'disabletextbox':''" (click)='showProfileHistory()'>View History</a>
+  </div>
+  <div class="clear"></div>
+</div>
+<div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+  <div class="panel-body">
+    <!-- <div class="alert alert-success" *ngIf="successMessage">
+        <a class="close" (click)='successMessage=""'>&times;</a>
+      {{successMessage}}
+    </div>
+    <div class="alert alert-danger" *ngIf="errorMessage">
+        <a class="close" (click)='errorMessage=""'>&times;</a>
+      {{errorMessage}}
+    </div>
+    <h3></h3> -->
+    <div class="row contact-item">
+
+      <div class="clear"></div>
+      <div *ngIf="organizationName" class="col-md-4">
+        <h3>Business Name:</h3>
+        <h4>{{organizationName}}</h4>
+      </div>
+      <div class="col-md-4">
+        <h3>Title</h3>
+        <h4 *ngIf="profileResponse && profileResponse.Title; else NoDataProvided">{{profileResponse.Title}}</h4>
+      </div>
+      <div class="col-md-4">
+        <h3>Suffix</h3>
+        <h4 *ngIf="profileResponse && profileResponse.Suffix; else NoDataProvided">{{profileResponse.Suffix}}</h4>
+      </div>
+      <div class="col-md-4">
+        <h3>First Name</h3>
+        <h4 *ngIf="profileResponse && profileResponse.FirstName; else NoDataProvided">{{profileResponse.FirstName}}</h4>
+      </div>
+      <div class="col-md-4">
+        <h3>Middle Name</h3>
+        <h4 *ngIf="profileResponse && profileResponse.MiddleName; else NoDataProvided">{{profileResponse.MiddleName}}</h4>
+      </div>
+      <div class="col-md-4">
+        <h3>Last Name</h3>
+        <h4 *ngIf="profileResponse && profileResponse.LastName; else NoDataProvided">{{profileResponse.LastName}}</h4>
+      </div>
+      <div class="col-md-4">
+        <h3>Gender</h3>
+        <h4 *ngIf="profileResponse && profileResponse.Gender; else NoDataProvided">{{profileResponse.Gender}}</h4>
+      </div>
+      <ng-template #NoDataProvided>
+        Not Provided
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<div id="profileHistory" class="edit-modal  modal fade history-modal" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="form-title">Account Holder History</h3>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" *ngIf="showProfileHistoryFlag">
+        <div class="table-bdr m-t-10">
+          <div class="table-default table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th *ngIf="organizationName"> Business Name </th>
+                  <th>First Name</th>
+                  <th>Middle Name</th>
+                  <th>Last Name</th>
+                  <th>Gender</th>
+                  <th>Created By</th>
+                  <th> Created Date/Time </th>
+                  <th>Updated by</th>
+                  <th>Update Date/Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor='let item of profileResponseHistory | paginate: { itemsPerPage: pageItemNumber, currentPage: p,totalItems:totalRecordCount }'>
+                  <td *ngIf="organizationName">{{item.OrganisationName}}</td>
+                  <td>{{item.FirstName}}</td>
+                  <td>{{item.MiddleName}}</td>
+                  <td>{{item.LastName}}</td>
+                  <td>{{item.Gender}}</td>
+                  <td>{{item.CreatedUser}}</td>
+                  <td>{{item.CreatedDate | customDateTimeFormat}}</td>
+                  <td>{{item.UpdatedUser}}</td>
+                  <td>{{item.UpdatedDate | customDateTimeFormat}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="page-info">
+              <div class="col-md-6 text-left">
+                <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+              </div>
+              <div class="col-md-6 text-right">
+                <pagination-controls (pageChange)="profileHistoryPageChanged($event)"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

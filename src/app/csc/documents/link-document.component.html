@@ -1,0 +1,151 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li>
+          <a href="#">Documents</a>
+        </li>
+        <li class="active">Link Documents</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Link Documents</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <!--<div class="panel-body" *ngIf="errorMessage && errorMessage.length || successMessage && successMessage.length">
+    <div class="alert alert-danger" *ngIf='errorMessage && errorMessage.length'>
+      <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> {{errorMessage}}
+      <button type="button" class="close" (click)="close()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="alert alert-success" *ngIf='successMessage && successMessage.length'>
+      <i class="fa fa-check" aria-hidden="true"></i> {{successMessage}}
+      <button type="button" class="close" (click)="close()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>-->
+  <form class="*form-horizontal" name="linkDocumentForm" [formGroup]="linkDocumentForm">
+    <div class="row">
+      <div class="form-group col-sm-6 popover-field">
+        <label class="focused">Customer Type</label>
+        <label class="focused">Customer Type</label>
+        <select class="form-control" id="documentType" formControlName="documentType" (change)="documentTypeSelectionChange($event.target.value)">
+                  <option value="Customer" selected="Selected">Customer</option>
+                  <option value="Violator">Violator</option>
+                </select>
+        <div class="msg" *ngIf="linkDocumentForm.controls['documentType'].invalid && (linkDocumentForm.controls['documentType'].dirty || linkDocumentForm.controls['documentType'].touched)">
+          <div *ngIf="linkDocumentForm.controls['documentType'].errors.required">
+            *Required.
+          </div>
+        </div>
+        <button type="button" class="pop-over" [popover]="popCT" popoverTitle="Help" data-container="body" triggers="mouseenter:mouseleave"
+          placement="top">?</button>
+        <ng-template #popCT>
+          <ul>
+            <li>Document Type is Required</li>
+            <li>Select Document Type</li>
+          </ul>
+        </ng-template>
+        <!--<div class="msg" *ngIf="linkDocumentForm.controls['documentType'].invalid && (linkDocumentForm.controls['documentType'].dirty || linkDocumentForm.controls['documentType'].touched)">
+                  <div *ngIf="linkDocumentForm.controls['documentType'].hasError('required')">Required</div>
+                </div>-->
+      </div>
+      <!--<button type="button" class="col-sm-1 tool-tip" data-toggle="tooltip" data-placement="right" title="Tooltip Message">?</button>-->
+      <div class="col-md-6">
+        <div class="row">
+          <div class="form-group col-sm-10 popover-field">
+            <label for="accountId">Account #</label>
+            <input type="text" pattern="[0-9]*" class="form-control" maxlength="17" id="AccountId" placeholder="Account #" formControlName="accountId">
+            <div class="msg" *ngIf="linkDocumentForm.controls['accountId'].invalid && (linkDocumentForm.controls['accountId'].dirty || linkDocumentForm.controls['accountId'].touched)">
+              <div *ngIf="linkDocumentForm.controls['accountId'].errors.pattern">
+                Only numbers allowed.
+              </div>
+              <div *ngIf="linkDocumentForm.controls['accountId'].errors.required">
+                *Required.
+              </div>
+            </div>
+            <button type="button" class="pop-over" [popover]="popAcc" data-container="body" popoverTitle="Help" triggers="mouseenter:mouseleave"
+              placement="top">?</button>
+            <ng-template #popAcc>
+              <ul>
+                <li>Customer# is Required</li>
+                <li>Enter customer# </li>
+                <li>(or) Search Customer or Violator </li>
+                <li>Customer# allows only numbers </li>
+                <li>It allows maximum of 10 characters length </li>
+              </ul>
+            </ng-template>
+          </div>
+          <span class="col-sm-2 p-t-7" style="margin-top:30px;" (click)="searchButton()" class="shared-search">Search</span>
+          <!--<button type="button" class="col-sm-1 tool-tip" data-toggle="tooltip" data-placement="right" title="Tooltip Message">?</button>-->
+        </div>
+      </div>
+      <div class="form-group col-md-6" *ngIf="accountName">
+        <label for="">Account Name</label>
+        <input type="text" class="form-control" id="accountName" disabled [ngModel]="accountName" placeholder="" formControlName="accountName">
+      </div>
+      <div class="form-group col-sm-6 pull-right">
+        <label for="">Notice Number</label>
+        <input type="text" class="form-control" id="noticeNumber" placeholder="" formControlName="noticeNumber">
+      </div>
+      <div class="form-group col-sm-6 popover-field">
+        <label for="keywords">Keywords</label>
+        <input type="text" class="form-control" id="keywords" placeholder="Keywords" formControlName="keywords">
+        <div class="msg" *ngIf="linkDocumentForm.controls['keywords'].invalid && (linkDocumentForm.controls['keywords'].dirty || linkDocumentForm.controls['keywords'].touched)">
+          <div *ngIf="linkDocumentForm.controls['keywords'].errors.required">
+            *Required.
+          </div>
+        </div>
+        <button type="button" class="pop-over" [popover]="popKey" data-container="body" popoverTitle="Help" triggers="mouseenter:mouseleave"
+          placement="top">?</button>
+        <ng-template #popKey>
+          <ul>
+            <li>Keywords is Required</li>
+          </ul>
+        </ng-template>
+        <!--<button type="button" class="col-sm-1 tool-tip" data-toggle="tooltip" data-placement="right" title="Tooltip Message">?</button>-->
+      </div>
+      <div class="col-md-6 popover-field form-group">
+        <label for="" class="focused">Description</label>
+        <textarea name="" id="description" cols="" rows="4" maxlength="250" class="form-control" formControlName="description"></textarea>
+        <div class="msg" *ngIf="linkDocumentForm.controls['description'].invalid && (linkDocumentForm.controls['description'].dirty || linkDocumentForm.controls['description'].touched)">
+          <div *ngIf="linkDocumentForm.controls['description'].errors.required">
+            *Required.
+          </div>
+        </div>
+        <button type="button" class="pop-over" [popover]="popDesc" popoverTitle="Help" triggers="mouseenter:mouseleave" data-container="body"
+          placement="top">?</button>
+        <ng-template #popDesc>
+          <ul>
+            <li>Description is Required</li>
+            <li>It allows maximum of 250 characters length</li>
+          </ul>
+        </ng-template>
+        <!--<button type="button" class="col-sm-1 tool-tip" data-toggle="tooltip" data-placement="right" title="Tooltip Message">?</button>-->
+      </div>
+      <div class="form-group col-md-6">
+        <label class="focused" for="">Document Name</label>
+        <div class="control-label">
+          <a class="btn-link" href="{{pdfPath}}" target="_blank">                 
+              <strong style="word-wrap: break-word;"> {{selectedDocumentName}} </strong>                    
+          </a>
+        </div>
+      </div>
+      <div class="col-md-12 form-group">
+        <button type="submit" id="link" class="btn btn-primary btn-search" [disabled]="disableLinkButton" (click)="linkCustomerDocuments()">Link</button>
+        <button type="submit" class="btn btn-primary btn-reset" (click)="cancelLinking()">Cancel</button>
+      </div>
+    </div>
+  </form>
+</div>

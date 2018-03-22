@@ -1,0 +1,149 @@
+<!--<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">FMC</a></li>
+        <li><a href="#">Configurations</a></li>
+        <li class="active">Special Journal Associations</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Add New Special Journal Association</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="panel-body" *ngIf="errorMessage && errorMessage.length || successMessage && successMessage.length">
+    <div class="alert alert-danger" *ngIf='errorMessage && errorMessage.length'>
+      <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> {{errorMessage}}
+      <button type="button" class="close" (click)="close()" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+    </div>
+    <div class="alert alert-success" *ngIf='successMessage && successMessage.length'>
+      <i class="fa fa-check" aria-hidden="true"></i> {{successMessage}}
+      <button type="button" class="close" (click)="close()" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12" *ngIf="addNewSpecialJournalAssociation">
+      <div class="form-group">
+        <button class="btn btn-primary btn-search pull-right" (click)="JournalButton()"><i class="fa fa-plus-circle" aria-hidden="true"></i>Add New Special Journal</button>
+        <div class="clear"> </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="clearfix"></div>
+
+  <div class="panel-body">
+    <div class="container-fluid">
+      <div class="panel panel-default" *ngIf="AssociationJournal">
+        <div class="panel-heading">
+          <h4 class="panel-title">Special Journal Details</h4>
+        </div>
+
+        <div class="container">
+          <form role="form" #ResetForm="ngForm" name="addNewSpecialJournalAssociationForm" [formGroup]="addNewSpecialJournalAssociationForm"
+            novalidate>
+            <div class="form-group row">
+              <label for="code" class="col-sm-1 col-form-label">Special Journal</label>
+              <div class="col-sm-4">
+                <div class="input-group">
+                  <select class="form-control" name="SpecialJournalAssociation" id="SpecialJournalAssociation" formControlName="SpecialJournalAssociation"
+                    required>
+                  <option selected="selected" value="">--Select--</option>
+                  
+                   <option *ngFor='let specialJournal of specialJournalDropDownRes' value="{{specialJournal.SpecialJournalId}}">{{specialJournal.SpecialJournalName}}</option> 
+                  </select>
+                  <div class="msg" *ngIf="addNewSpecialJournalAssociationForm.controls['SpecialJournalAssociation'].invalid && (addNewSpecialJournalAssociationForm.controls['SpecialJournalAssociation'].dirty || addNewSpecialJournalAssociationForm.controls['SpecialJournalAssociation'].touched)">
+                    <div *ngIf="addNewSpecialJournalAssociationForm.controls['SpecialJournalAssociation'].errors.required">
+                      *Required.
+                    </div>
+                  </div>
+                  <div class="input-group-addon">
+                    <button class="pop-over" [popover]="popSpecialJournalAssociation" popoverTitle="Help" placement="right" data-container="body"
+                      popovertitle="Help" tabindex="-1" triggers="mouseenter:mouseleave" type="button" ng-reflect-popover="[object Object]"
+                      ng-reflect-popover-title="Help" ng-reflect-triggers="mouseenter:mouseleave" ng-reflect-container="body">?</button>
+                  </div>
+                  <ng-template #popSpecialJournalAssociation>
+                    <i class="fa fa-arrow-circle-right"></i>Special Journal is Required<br>
+                    <i class="fa fa-arrow-circle-right"></i> Select any special journal<br>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="description" class="col-sm-1 col-form-label">G/L Accounts</label>
+              <div class="col-sm-6">
+                <div class="input-group">
+                  <angular2-multiselect [data]="dropdownList" [settings]="dropdownSettings" (onSelect)="onItemSelect($event)" [(ngModel)]="selectedItems"
+                    (onDeSelect)="OnItemDeSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)"
+                    formControlName="description" required>
+                  </angular2-multiselect>
+                  <div class="msg" *ngIf="addNewSpecialJournalAssociationForm.controls['description'].invalid && (addNewSpecialJournalAssociationForm.controls['description'].dirty || addNewSpecialJournalAssociationForm.controls['description'].touched)">
+                    <div *ngIf="addNewSpecialJournalAssociationForm.controls['description'].errors.required">
+                      *Required.
+                    </div>
+                  </div>
+                  <div class="input-group-addon">
+                    <button class="pop-over" [popover]="popAccounts" popoverTitle="Help" placement="right" data-container="body" popovertitle="Help"
+                      tabindex="-1" triggers="mouseenter:mouseleave" type="button" ng-reflect-popover="[object Object]" ng-reflect-popover-title="Help"
+                      ng-reflect-triggers="mouseenter:mouseleave" ng-reflect-container="body">?</button>
+                  </div>
+                  <ng-template #popAccounts>
+                    <i class="fa fa-arrow-circle-right"></i>G/L Accounts is Required<br>
+                    <i class="fa fa-arrow-circle-right"></i> Select any G/L Accounts<br>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <button type="submit" class="btn btn-primary btn-search" *ngIf="addButton">Add</button>
+              <button type="button" class="btn btn-primary btn-search" (click)="updateSpecialJournalAssociaton()" *ngIf="updateButton">Update</button>
+              <button type="button" class="btn btn-default btn-reset" (click)="cancelManageSpecialJournalsAssociation()">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="clearfix"> </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">Special Journal Association</h4>
+    </div>
+    <div class="panel-body" class="table-responsive">
+      <table class="table">
+        <thead class="thead-default">
+          <tr>
+            <th>Special Journal</th>
+            <th>G/L Accounts</th>
+            <th>Edit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let specialJournalAssociation of objManageSpecialJournalResponseAssociations| paginate: { itemsPerPage:pageItemNumber, currentPage: p, totalItems:totalRecordCount}">
+            <td>{{specialJournalAssociation.SpecialJournalDesc}}</td>
+            <td>{{specialJournalAssociation.ChartofAccounts}}</td>
+            <td><i class="fa fa-pencil fa-lg" aria-hidden="true" style="cursor:pointer" (click)="editSpecialJournalAssociation(specialJournalAssociation)"></i></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="col-md-6 text-left">
+        <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+      </div>
+      <div class="col-md-6 text-right">
+        <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+      </div>
+    </div>
+  </div>
+</div>-->

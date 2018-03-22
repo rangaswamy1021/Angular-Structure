@@ -1,0 +1,72 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li class="active">Invoice Details</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Invoice Details</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<!--<button type="submit" (click)="backToSummary()" class="btn btn-primary btn-search pull-right">Back</button>-->
+
+<div class="content">
+  <app-account-info></app-account-info>
+  <div *ngIf='isInvoiceDisplay'>
+    <tabset>
+      <tab heading='Current Invoice Details'>
+        <app-invoice-details [invoiceStatus]="'MostRecent'"></app-invoice-details>
+      </tab>
+
+      <tab heading='Last Invoice Details'>
+        <app-invoice-details [invoiceStatus]="'Last'"></app-invoice-details>
+      </tab>
+      <tab heading='Previous Invoice Details'>
+        <div *ngIf='invoiceResponse && invoiceResponse.length'>
+          <div class="panel panel-default">
+            <div class="panel-heading">Invoice Details</div>
+            <div class="panel-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <td>Invoice #</td>
+                    <td>Due Date </td>
+                    <td>Previous Due </td>
+                    <td>Paid/Adjusted Amount</td>
+                    <td>Billed Amount</td>
+                    <td>Balance Due </td>
+                    <td></td>
+                  </tr>
+                </thead>
+                <tr *ngFor="let object of invoiceResponse">
+                  <td> {{object.InvoiceNumber}} </td>
+                  <td> {{object.DueDate | customDateFormat}} </td>
+                  <td> {{object.PreviousDue | currencycustom}} </td>
+                  <td> {{object.AmountPaid + object.AdjustmentAmount | currencycustom}} </td>
+                  <td> {{object.TotalAmount - object.PreviousDue | currencycustom}} </td>
+                  <td> {{object.BalanceDue | currencycustom}} </td>
+                  <td><a (click)="goToView(object)">View</a> </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div *ngIf='isPrevious'>
+          <div *ngIf='!invoiceResponse || invoiceResponse.length===0'>
+            <div class="alert alert-info" role="alert">No details to display</div>
+          </div>
+        </div>
+      </tab>
+    </tabset>
+  </div>
+  <div *ngIf='!isInvoiceDisplay'>
+    <div class="alert alert-info" role="alert">Invoice details displayed only for Post Paid Accounts</div>
+  </div>
+</div>

@@ -1,0 +1,95 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">TVC</a></li>
+        <li><a href="#">Search</a></li>
+        <li><a href="#">Account Summary</a></li>
+        <li><a href="#">Invoices</a></li>
+        <li class="active">Invoice Fee Adjustments</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row m-b-10">
+      <div class="col-md-6">
+        <div class="page-header">
+          <h1>Invoice Fee Adjustments</h1>
+        </div>
+      </div>
+      <div class="col-md-6 text-right">
+        <span id="" class="accno">Account #: {{accountId}}</span>
+        <button class="btn btn-primary btn-search" (click)="backClick();">Back</button>
+        <button type="submit" (click)="exit()" class="btn btn-default btn-reset btn-sm">Exit</button>
+      </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div *ngFor="let entry of adjustmentType;let idx = index" class="custom-control custom-radio radio-inline">
+        <input name="inlineRadioOptions" (change)="onSelectionChange(entry.id)" type="radio" [(ngModel)]="defaultAdjustment" class="custom-control-input"
+          [id]="entry.id" [value]="entry.id">
+        <label [for]="entry.id" class="custom-control-description">{{ entry.Value }}
+              </label>
+      </div>
+    </div>
+
+    <div class="col-md-12 m-t-20" *ngIf='vioAmountsList && vioAmountsList.length'> 
+      <div class="row">
+        <div class="col-md-12">
+          <strong>Invoice# :</strong> {{invoiceNumber}}
+        </div>
+      </div>
+      <div *ngIf='vioAmountsList && vioAmountsList.length;let i=index'>
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Fee</th>
+                <th>Amount($)</th>
+                <th></th>
+                <th>Total Due($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let invoiceFee of vioAmountsList'>
+                <td> {{invoiceFee.FeeDesc}}</td>
+                <td>{{invoiceFee.InvoiceAmount | currency:'USD':true:'1.2-2'}}</td>
+                <td>
+                  <input type="number" maxlength=7 class="form-control" [(ngModel)]="invoiceFee.FeeAmount" (change)="onChange($event.target.value,invoiceFee)">
+                </td>
+                <td>
+                  <input type="text" class="form-control" readonly='true' value="{{invoiceFee.OustandingAmount | currency:'USD':true:'1.2-2'}}">
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td> Total Due </td>
+                <td>{{adjustTollAmount | currency:'USD':true:'1.2-2'}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row m-t-20">
+          <div class="col-md-12 text-right">
+            <button class="btn btn-primary btn-search" type="submit" [disabled]="disableUpdateButton" (click)="applyAdjustment()">Apply Adjustment</button>
+            <button class="btn btn-primary btn-reset" type="submit" (click)="resetAdjustmnet()">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--<div class="container p-b-11 p-t-2" style="background:#fff;" *ngIf='!paymentHistoryResponse || paymentHistoryResponse.length==0'>
+      <div class="panel panel-default">
+        <div class="panel-heading">  </div>
+        <div class="panel-body">
+          <div class="status-content">
+            <p>No records to display</p>
+          </div>
+        </div>
+      </div>
+    </div>-->
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

@@ -1,0 +1,63 @@
+<div class="table-bdr">
+  <h3> Fee Details</h3>
+  <div class="pad-10">
+    <div *ngIf='invoiceResponse && invoiceResponse.length'>
+      <div *ngIf="isDisplay">
+      <table class="table">
+        <thead>
+          <tr>
+            <td>Fee Type </td>
+            <td>Amount</td>
+            <td>Amount Paid</td>
+            <td>Outstanding Due</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let object of invoiceResponse| paginate: { itemsPerPage: fpageItemNumber, currentPage: fp , totalItems:ftotalRecordCount, id: 'first' }">
+            <td> {{object.Stmt_Literal }} </td>
+            <td> {{object.TotalAmount | currencycustom}} </td>
+            <td> {{object.AmountRecieved | currencycustom}} </td>
+            <td> {{object.OutstandingAmount | currencycustom}} </td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+       <div *ngIf="!isDisplay">
+      <table class="table">
+        <thead>
+          <tr>
+            <td>Fee Type </td>
+            <td>Amount</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let object of invoiceResponse| paginate: { itemsPerPage: fpageItemNumber, currentPage: fp , totalItems:ftotalRecordCount, id: 'first' }">
+            <td> {{object.Stmt_Literal }} </td>
+            <td> {{object.TotalAmount | currencycustom}} </td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+    </div>
+    <div *ngIf='invoiceResponse && invoiceResponse.length'>
+      <div class="row page-info">
+        <div class="col-md-6 text-left">
+          <p>Display {{fstartItemNumber}} - {{fendItemNumber}} Records of {{ftotalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)" id="first"></pagination-controls>
+        </div>
+         <div class="col-md-12 text-right"> 
+            <a style="color:#0068b3; font-size:14px; font-weight: bold;" class="pull-right" *ngIf="isDisplay" (click)="goToAdjustment()"><strong> Make Adjustment </strong></a>
+         </div>
+
+      </div>
+      
+      <div *ngIf='!invoiceResponse|| invoiceResponse.length===0'>
+        <div >No fee details to display</div>
+      </div>
+    </div>
+  </div>
+</div>
+

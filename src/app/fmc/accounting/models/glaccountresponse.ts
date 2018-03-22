@@ -1,0 +1,22 @@
+export interface IGLAccountResponse {
+    SpecialJournalId: number,
+    ChartOfAccountId: number,
+    CustomerId: number,
+    StartDate: Date,
+    EndDate: Date,
+    LinkId: number,
+    CreditAmount: number,
+    DebitAmount: number,
+    TxnType: any,
+    User: any,
+    PostedDate: Date,
+    JournalTypeId: number,
+    AccountGroupDescription: string,
+    GLAccount: string,
+    GLTransactionId: number,
+    SortColumn: any,
+    SortDir: number,
+    PageNumber: number,
+    PageSize: number,
+    ReCount: number
+}

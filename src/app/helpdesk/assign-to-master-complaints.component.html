@@ -1,0 +1,181 @@
+<div class="page-title-header">
+    <div class="row no-gutters">
+        <div class="col-md-12">
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#">CSC</a>
+                </li>
+                <li>
+                    <a href="#">Helpdesk</a>
+                </li>
+                <li class="active">Assign to Master</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-header">
+                <h1>Assign to Master</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<form role="form" name="assignToMaster" [formGroup]="assignToMaster">
+
+    <div class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary btn-search pull-right" (click)="backClick()"> Back </button>
+                    <div class="clear">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Assign To Master
+            </div>
+
+            <div class="panel-body bordered">
+                <div class="col-md-6">
+                    <div class="form-group col-md-12">
+                        <label> Ticket # </label>
+                        <input type="text" class="form-control" formControlName="ticketid" name="ticketid">
+                    </div>
+                </div>
+                <!--<div class="col-md-6">
+                    <div class="form-group col-md-12">
+                        <label for="timePeriod" class="focused">Time Period</label>
+                        <input class="form-control" placeholder="Daterangepicker" bsDaterangepicker #dpr="bsDaterangepicker" name="timePeriod" formControlName="timePeriod"
+                            [(ngModel)]="timePeriodValue" autocomplete="off">
+                    </div>
+                </div>-->
+
+                <div class="col-md-6">
+                    <div class=" form-group col-md-12">
+                        <label for="Date Range" class="focused">Time Period</label>
+                        <div class="show-error" *ngIf="!invalid&&(assignToMaster.controls['timePeriod'].invalid && (assignToMaster.controls['timePeriod'].dirty || assignToMaster.controls['timePeriod'].touched))">
+                            <div *ngIf="assignToMaster.controls['timePeriod'].errors.required">
+                                Required.
+                            </div>
+                        </div>
+                        <my-date-range-picker name="mydaterange" [options]="myDateRangePickerOptions" formControlName="timePeriod" (inputFieldChanged)='onDateRangeChanged($event)'
+                            placeholder="MM/DD/YYYY-MM/DD/YYYY"></my-date-range-picker>
+                    </div>
+                    <div class="show-error" *ngIf='invalid'>
+                        <div> Invalid Date Range</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group col-md-12">
+                        <label class="focused"> Type </label>
+                        <select class="form-control" formControlName="CmpType" name="CmpType">
+                            <option selected='selected' value="">--Select--</option>
+                            <option *ngFor='let pt of problemTypes' value="{{pt.Key}}">{{pt.Value}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group col-md-12">
+                        <label class="focused"> Status </label>
+                        <select class="form-control" formControlName="CmpStatus" name="CmpStatus">
+                            <option selected='selected' value="">--Select--</option>
+                            <option *ngFor='let p of pmStatus' value="{{p.LookUpTypeCode}}">{{p.LookUpTypeCodeDesc}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group col-md-12">
+                        <label class="focused"> Priority </label>
+                        <select class="form-control" formControlName="CmpPriority" name="CmpPriority">
+                            <option selected='selected' value="">--Select--</option>
+                            <option *ngFor='let p of pmPriority' value="{{p.LookUpTypeCode}}">{{p.LookUpTypeCodeDesc}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group col-md-12">
+                        <label class="focused"> Severity </label>
+                        <select class="form-control" formControlName="CmpSeverity" name="CmpSeverity">
+                            <option selected='selected' value="">--Select--</option>
+                            <option *ngFor='let p of pmSeverity' value="{{p.LookUpTypeCode}}">{{p.LookUpTypeCodeDesc}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <button type="submit" (click)="searchClick()" class="btn btn-primary btn-search">Search</button>
+                    <button type="button" (click)="resetClick()" class="btn btn-primary btn-reset"> Reset </button>
+                </div>
+
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading"> Complaint Details </div>
+            <div class="panel-body bordered">
+                <div *ngIf='search && search.length;else NodetailsBlock'>
+                    <table class="table table-bordered table-sm">
+                        <thead>
+                            <tr>
+                                <th>Check box</th>
+                                <th> Ticket# </th>
+                                <th> Status </th>
+                                <th> Type </th>
+                                <th> Created Date </th>
+                                <th> Due Date </th>
+                                <th> Severity </th>
+                                <th> Title </th>
+                                <th> Priority </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let srch of search| paginate: { itemsPerPage: pageItemNumber, currentPage: currentPage }">
+                                <td>
+                                    <div class="checkbox" *ngIf="srch.TicketId!=arrTicketID">
+                                        <input type="checkbox" (change)='checkboxCheckedEvent(srch,$event)' id="{{srch.TicketId}}" name="selectedSearchList" [checked]="srch.isSearchBoxSelected"
+                                            formControlName="selectedSearchList" style="margin-top: 4px;">
+                                        <label for="{{srch.TicketId}}">
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>{{srch.TicketId}}</td>
+                                <td>{{srch.Status}}</td>
+                                <td>{{srch.ProblemType}}</td>
+                                <td>{{srch.DateReported| customDateTimeFormat}}</td>
+                                <td>{{srch.TargetDate| customDateTimeFormat}}</td>
+                                <td>{{srch.Severity}}</td>
+                                <td>{{srch.ProblemTitle}}</td>
+                                <td>{{srch.Priority}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="row page-info ">
+                        <div class="col-md-6 text-left ">
+                            <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+                        </div>
+                        <div class="col-md-6 text-right ">
+                            <pagination-controls (pageChange)="pageChanged($event) "></pagination-controls>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ng-template #NodetailsBlock>
+                <div>No details to display</div>
+            </ng-template>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button type="submit" (click)="mergeTicket()" class="btn btn-primary btn-search">Assign</button>
+        </div>
+    </div>
+
+
+</form>

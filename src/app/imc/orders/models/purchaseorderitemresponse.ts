@@ -1,0 +1,20 @@
+export interface IPurchaseOrderItemResponse {
+    PurchaseOrderStatus: string,
+    PurchaseOrderId: number,
+    OrderNumber: string,
+    OrderDate: Date,
+    LineItemId: number,
+    ItemDesc: string,
+    ItemQuantity: number,
+    ReceivedQty: number,
+    WarrantyInMonths: number,
+    WarrantyTypeName: string,
+    CompanyName: string,
+    ItemName: string,
+    ItemCode: string,
+    LookupTypeCodeDescription: string,
+    MaxOrderLevel:number,
+    MinOrderLevel:number,
+    ItemId:number,
+    VendorId:number
+}

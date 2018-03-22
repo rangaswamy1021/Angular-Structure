@@ -1,0 +1,236 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">ICN</a></li>
+        <li class="active">Assign ICN</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Assign ICN</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"
+  (onOk)="userAction($event)"></app-success-failure-alerts-message>
+<div class="content">
+  <div class="row" *ngIf="isAssignBlock">
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <h3>Assign ICN Details</h3>
+        <div class="pad-20">
+          <div class="row">
+            <div class="col-md-12 text-right">
+              Username : {{userName}}
+            </div>
+          </div>
+          <tabset>
+            <tab heading='Float Amount'>
+              <div class="row m-t-20">
+                <div class="form-group col-md-4 popover-field">
+                  <label for="" class="focused">Float Amount:</label>
+                    <input type="number" class="form-control" id="" placeholder="" min="0" onkeypress="return this.value.length<=7" [(ngModel)]="floatAmount">
+                    <button type="button" class="pop-over" [popover]="popFA" popoverTitle="Help" triggers="mouseenter:mouseleave" placement='left'>?</button>
+                    <ng-template #popFA>
+                      <ul>
+                        <li>Float Amount is optional</li>
+                        <li>Float Amount should match<br> with Total Amount</li>
+                      </ul>
+                    </ng-template>
+                </div>
+                <div class="col-md-4 col-md-offset-2">
+                  <div class="table-responsive">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th style='text-align: right;'>Denomination</th>
+                          <th width='30%' style='text-align: center;'>Quantity</th>
+                          <th width='30%' style='text-align: center;'>Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td style='text-align: right;'>$100</td>
+                          <td style='text-align: center;'><input type="number" class="form-control" min="0" id="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57 && this.value.length<8)|| event.which == 8"
+                              [(ngModel)]="denom100" (change)="calculateTotal()"></td>
+                          <td style='text-align: center;'><input type="number" class="form-control" id="" [value]="denom100*100" disabled></td>
+                        </tr>
+                        <tr>
+                          <td style='text-align: right;'>$50</td>
+                          <td style='text-align: center;'><input type="number" class="form-control" min="0" id="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57 && this.value.length<8)|| event.which == 8"
+                              [(ngModel)]="denom50" (change)="calculateTotal()"></td>
+                          <td style='text-align: center;'><input type="number" class="form-control" id="" [value]="denom50*50" disabled></td>
+                        </tr>
+                        <tr>
+                          <td style='text-align: right;'>$20</td>
+                          <td style='text-align: center;'><input type="number" class="form-control" min="0" id="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57 && this.value.length<8)|| event.which == 8"
+                              [(ngModel)]="denom20" (change)="calculateTotal()"></td>
+                          <td style='text-align: center;'><input type="number" class="form-control" id="" [value]="denom20*20" disabled></td>
+                        </tr>
+                        <tr>
+                          <td style='text-align: right;'>$10</td>
+                          <td style='text-align: center;'><input type="number" class="form-control" min="0" id="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57 && this.value.length<8)|| event.which == 8"
+                              [(ngModel)]="denom10" (change)="calculateTotal()"></td>
+                          <td style='text-align: center;'><input type="number" class="form-control" id="" [value]="denom10*10" disabled></td>
+                        </tr>
+                        <tr>
+                          <td style='text-align: right;'>$5</td>
+                          <td style='text-align: center;'><input type="number" class="form-control" min="0" id="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57 && this.value.length<8)|| event.which == 8"
+                              [(ngModel)]="denom5" (change)="calculateTotal()"></td>
+                          <td style='text-align: center;'><input type="number" class="form-control" id="" [value]="denom5*5" disabled></td>
+                        </tr>
+                        <tr>
+                          <td style='text-align: right;'>$2</td>
+                          <td style='text-align: center;'><input type="number" class="form-control" min="0" id="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57 && this.value.length<8)|| event.which == 8"
+                              [(ngModel)]="denom2" (change)="calculateTotal()"></td>
+                          <td style='text-align: center;'><input type="number" class="form-control" id="" [value]="denom2*2" disabled></td>
+                        </tr>
+                        <tr>
+                          <td style='text-align: right;'>$1</td>
+                          <td style='text-align: center;'><input type="number" class="form-control" min="0" id="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57 && this.value.length<8)|| event.which == 8"
+                              [(ngModel)]="denom1" (change)="calculateTotal()"></td>
+                          <td style='text-align: center;'><input type="number" class="form-control" id="" [value]="denom1*1" disabled></td>
+                        </tr>
+                        <tr>
+                          <td style='text-align: right;'>Half Dollar</td>
+                          <td style='text-align: center;'><input type="number" class="form-control" min="0" id="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57 && this.value.length<8)|| event.which == 8"
+                              [(ngModel)]="denomHalf" (change)="calculateTotal()"></td>
+                          <td style='text-align: center;'><input type="number" class="form-control" id="" [value]="denomHalf*0.5" disabled></td>
+                        </tr>
+                        <tr>
+                          <td style='text-align: right;'>Quarter</td>
+                          <td style='text-align: center;'><input type="number" class="form-control" min="0" id="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57 && this.value.length<8)|| event.which == 8"
+                              [(ngModel)]="denomQuater" (change)="calculateTotal()"></td>
+                          <td style='text-align: center;'><input type="number" class="form-control" id="" [value]="denomQuater*0.25" disabled></td>
+                        </tr>
+                        <tr>
+                          <td style='text-align: right;'>Dime</td>
+                          <td style='text-align: center;'><input type="number" class="form-control" min="0" id="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57 && this.value.length<8)|| event.which == 8"
+                              [(ngModel)]="denomDime" (change)="calculateTotal()"></td>
+                          <td style='text-align: center;'><input type="number" class="form-control" id="" [value]="denomDime*0.1" disabled></td>
+                        </tr>
+                        <tr>
+                          <td style='text-align: right;'>Nickel</td>
+                          <td style='text-align: center;'><input type="number" class="form-control" min="0" id="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57 && this.value.length<8)|| event.which == 8"
+                              [(ngModel)]="denomNickel" (change)="calculateTotal()"></td>
+                          <td style='text-align: center;'><input type="number" class="form-control" id="" [value]="denomNickel*0.05" disabled></td>
+                        </tr>
+                        <tr>
+                          <td style='text-align: right;'>Penny</td>
+                          <td style='text-align: center;'><input type="number" class="form-control" min="0" id="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57 && this.value.length<8)|| event.which == 8"
+                              [(ngModel)]="denomPenny" (change)="calculateTotal()"></td>
+                          <td style='text-align: center;'><input type="number" class="form-control" id="" [value]="denomPenny*0.01" disabled></td>
+                        </tr>
+                        <tr>
+                          <td style='text-align: right;'><strong>Total Amount</strong></td>
+                          <td style='text-align: center;'></td>
+                          <td style='text-align: center;'><input type="number" class="form-control" id="" [value]="totalAmount" disabled></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="row m-t-20 m-b-20">
+                    <div class="col-md-12 text-right">
+                      <button class="btn btn-primary btn-reset" type="submit" (click)="amountReset()">Reset</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </tab>
+            <tab heading='Items'>
+              <div class="row m-t-20">
+                <div class="form-group col-md-4 popover-field">
+                  <label for="" class="focused">Allotted Items:</label>
+                    <input type="text" class="form-control" id="" placeholder="" [(ngModel)]="allotedItems">
+                    <button type="button" class="pop-over" [popover]="popAI" popoverTitle="Help" triggers="mouseenter:mouseleave" placement='left'>?</button>
+                    <ng-template #popAI>
+                      Alloted items are optional
+                    </ng-template>
+                </div>
+                <div class="col-md-4 col-md-offset-2">
+                  <div class="table-responsive">
+                    <table class="table table-bordered">
+                      <thead class="nowrap">
+                        <tr>
+                          <th style='text-align: right;'>Item Details</th>
+                          <th width='30%' style='text-align: center;'>No. of Items</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of tagItems">
+                          <td style='text-align: right;'>{{item.ItemName}}</td>
+                          <td style='text-align: center;'><input type="text" class="form-control" min="0" [value]="item.ItemQuantity" id="" (change)="tagItemChange(item,$event.target.value)"></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="row m-t-20 m-b-20">
+                    <div class="col-md-12 text-right">
+                      <button class="btn btn-primary btn-reset" type="submit" (click)="itemReset()">Reset</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </tab>
+            <div class="row">
+              <div class="col-md-12 text-right">
+                <button class="btn btn-primary btn-search" type="submit" [disabled]="isAssign" (click)="validate()">Assign</button>
+                <button class="btn btn-primary btn-reset" type="submit" (click)="onCancel()">Cancel</button>
+              </div>
+            </div>
+          </tabset>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group col-md-6">
+      <label for="" class="focused">Select Role</label>
+      <select class="form-control" id="roles" name="roles" (change)="getICNsofRole($event.target.value)">
+              <option selected="selected" value="">--Select--</option>
+              <option *ngFor="let role of roles" value="{{role.RoleName}}">{{role.RoleName}}</option>
+          </select>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="table-bdr m-t-20" *ngIf="showAfterSelection">
+        <h3>User Details</h3>
+        <div class="table-responsive pad-10" *ngIf="icnDetails.length>0">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>ICN Status</th>
+                <th>ICN #</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let detail of icnDetails">
+                <td>{{detail.UserName}}</td>
+                <td>{{detail.ICNStatus}}</td>
+                <td>{{detail.ICNId}}</td>
+                <td>
+                  <div *ngIf='detail.ICNStatus == "Closed" || detail.ICNStatus == "NotAssigned"'>
+                    <a [ngClass]="isAssign?'disabletextbox':''" (click)="assignICN(detail)">Assign</a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="panel-body" *ngIf="icnDetails.length==0">
+          <div class="status-content">
+            <p>No records to display</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

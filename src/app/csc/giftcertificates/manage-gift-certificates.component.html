@@ -1,0 +1,277 @@
+<div class="page-title-header">
+    <div class="row no-gutters">
+        <div class="col-md-12">
+            <ol class="breadcrumb">
+                <li><a href="#">CSC</a></li>
+                <li><a href="#">Gift Certificates</a></li>
+                <li class="active">Manage Gift Certificate</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-header">
+                <h1>Manage Gift Certificate</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="payment-steps">
+                <div class="row">
+                    <div class="col-md-12">
+                        <ul>
+                            <li class="active"><span>1</span>Manage Gift Certificate</li>
+                            <li><span>2</span>Verify Details</li>
+                            <li><span>3</span>Thank You</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="accordion-mgc">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Gift Certificate Details</a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="form-group col-sm-12 popover-field">
+                                                <select class="form-control">
+                                                <option>* Gift Certificate No.</option>
+                                                </select>
+                                                <button type="button" class="pop-over" [popover]="popGSN" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1" placement="left">?</button>
+                                                <ng-template #popGSN>
+                                                <ul>
+                                                    <li>Tool tip message</li>
+                                                </ul>
+                                                </ng-template>  
+                                                <!--<button type="button" class="tool-tip" data-toggle="tooltip" data-placement="right" title="Tooltip Message">?</button>-->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="form-group col-sm-12 popover-field">
+                                                <input type="text" class="form-control" id="" placeholder="Face Value Amount ($)">
+                                            </div>
+                                            <!--<button type="button" class="tool-tip col-sm-1" data-toggle="tooltip" data-placement="right" title="Tooltip Message">?</button>-->
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="form-group col-sm-12 popover-field">
+                                                <input type="text" class="form-control" id="" placeholder="* Purchase Date">
+                                            </div>
+                                            <!--<button type="button" class="tool-tip col-sm-1" data-toggle="tooltip" data-placement="right" title="Tooltip Message">?</button>-->
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="form-group col-sm-12 popover-field">
+                                                <input type="text" class="form-control" id="" placeholder="Status">
+                                            </div>
+                                            <!--<button type="button" class="tool-tip col-sm-1" data-toggle="tooltip" data-placement="right" title="Tooltip Message">?</button>-->
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="form-group col-sm-12 popover-field">
+                                                <input type="text" class="form-control" id="" placeholder="Account No.">
+                                                <button type="button" class="pop-over" [popover]="popAccNo" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1" placement="left">?</button>
+                                                <ng-template #popAccNo>
+                                                <ul>
+                                                    <li>Tool tip message</li>
+                                                </ul>
+                                                </ng-template>  
+                                                <!--<button type="button" class="tool-tip" data-toggle="tooltip" data-placement="right" title="Tooltip Message">?</button>-->
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="form-group col-sm-12 popover-field">
+                                                <input type="text" class="form-control" id="" placeholder="Purchase First Name">
+                                                <button type="button" class="pop-over" [popover]="popPFName" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1" placement="left">?</button>
+                                                <ng-template #popPFName>
+                                                <ul>
+                                                    <li>Tool tip message</li>
+                                                </ul>
+                                                </ng-template>  
+                                                <!--<button type="button" class="tool-tip" data-toggle="tooltip" data-placement="right" title="Tooltip Message">?</button>-->
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="form-group col-sm-12 popover-field">
+                                                <input type="text" class="form-control" id="" placeholder="* Purchaser Last Name">
+                                                <button type="button" class="pop-over" [popover]="popPLName" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1" placement="left">?</button>
+                                                <ng-template #popPLName>
+                                                <ul>
+                                                    <li>Tool tip message</li>
+                                                </ul>
+                                                </ng-template> 
+                                                <!--<button type="button" class="tool-tip" data-toggle="tooltip" data-placement="right" title="Tooltip Message">?</button>-->
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingTwo">
+                            <h4 class="panel-title">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false"
+                                    aria-controls="collapseTwo">Payment Details</a>
+                            </h4>
+                        </div>
+                        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                            <div class="panel-body">
+                                <div class="payment-type">
+                                    <form name='select-pay'>
+                                        <label class="radio-inline">
+                                        <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" (change)='changePayment()'  [(ngModel)]='paymethod'> Credit Card</label>
+                                        <label class="radio-inline">
+                                        <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" (change)='changePayment()' [(ngModel)]='paymethod'> Bank Account</label>
+                                        <label class="radio-inline">
+                                        <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3" (change)='changePayment()' [(ngModel)]='paymethod'> Check
+                                        </label>
+                                        <label class="radio-inline">
+                                        <input type="radio" name="inlineRadioOptions" id="inlineRadio4" value="option4" (change)='changePayment()' [(ngModel)]='paymethod'> Money Order
+                                        </label>
+                                        <label class="radio-inline">
+                                        <input type="radio" name="inlineRadioOptions" id="inlineRadio5" value="option5" (change)='changePayment()' [(ngModel)]='paymethod'> Gift Certificate
+                                    </label>
+                                    </form>
+                                </div>
+                                <div class="payment-details" [ngSwitch]="paymethod">
+                                    <div *ngSwitchCase="'option1'">
+                                        <app-credit-card-information></app-credit-card-information>
+                                    </div>
+                                    <div *ngSwitchCase="'option2'">
+                                        <app-bank-information></app-bank-information>
+                                    </div>
+                                    <div *ngSwitchCase="'option3'">
+                                        <app-cheque></app-cheque>
+                                    </div>
+                                    <div *ngSwitchCase="'option4'">
+                                        <app-money-order></app-money-order>
+                                    </div>
+                                    <div *ngSwitchCase="'option5'">
+                                        <app-add-gift-certificate></app-add-gift-certificate>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingThree">
+                            <h4 class="panel-title">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false"
+                                    aria-controls="collapseThree">Address Details</a>
+                            </h4>
+                        </div>
+                        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                            <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label> Address Line1 </label>
+                                        <input type="text" class="form-control" placeholder="Address Line1">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Address Line2</label>
+                                        <input type="text" class="form-control" placeholder="Address Line2">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label> Address Line3 </label>
+                                        <input type="text" class="form-control" placeholder="Address Line3">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label> City </label>
+                                        <input type="text" class="form-control" placeholder="City">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label> State </label>
+                                        <select class="form-control"> 
+                                            <option> Option 1 </option>
+                                            <option> Option 2 </option>
+                                            <option> Option 3 </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label> Zip </label>
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control" placeholder="Zip1">
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control" placeholder="Zip2">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label> Country </label>
+                                        <select class="form-control"> 
+                                            <option> Country one </option>
+                                            <option> Country two </option>
+                                            <option> Country three </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,434 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">SAC</a>
+        </li>
+        <li>
+          <a href="#">Promos</a>
+        </li>
+        <li class="active">Manage Promos </li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Promos</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <form role="form" name="seachPromoForm" [formGroup]="seachPromoForm" novalidate>
+        <div class="row">
+          <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+            (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+          <div class="col-md-6">
+            <div class="form-group col-md-12">
+              <label class="" for="">Promo Name</label>
+              <input type="text" class="form-control" placeholder="Promo Name" id="promoNameSearch" name="promoNameSearch" formControlName="promoNameSearch">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group col-md-12">
+              <label class="" for="">Promo Code</label>
+              <input type="text" class="form-control" id="promoCodeSearch" name="promoCodeSearch" formControlName="promoCodeSearch" placeholder="Promo Code">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group col-md-12">
+              <label class="focused" for="">Promo Factor</label>
+              <select class="form-control" id="promoCodeSearch" name="promoFactorSearch" formControlName="promoFactorSearch">
+                <option selected="Promo Factor" value="">--Select--</option>
+                <option *ngFor="let promo of promoFactors" value="{{promo.Key}}">{{promo.Value}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group col-md-12">
+              <label class="focused" for="">Status</label>
+              <select class="form-control" id="promoStatusSearch" name="promoStatusSearch" formControlName="promoStatusSearch">
+                <!--<option>select</option>-->
+                <option>Active</option>
+                <option>Future</option>
+                <option>Expired</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group col-md-12">
+              <label class="focused">Time Period</label>
+              <!--<input class="form-control" placeholder="Time Period" bsDaterangepicker #dpr="bsDaterangepicker" name="dateRange" formControlName="dateRange"
+                [(ngModel)]="dateRange">-->
+              <div class="show-error" *ngIf="invalidDate">
+                <div> Invalid Date Range</div>
+              </div>
+              <my-date-range-picker name="dateRange" [options]="myDateRangePickerOptions" formControlName="dateRange" 
+                (inputFieldChanged)='onDateRangeFieldChanged($event)'></my-date-range-picker>
+              <!--<div  *ngIf=invalidDate  class="msg" style="color:red; " >
+                    Invalid Date Range
+                </div>-->
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="*form-horizontal">
+              <button type="submit" (click)="searchPromo()" [ngClass]="isSearchAllowed?'disabletextbox':''" class="btn btn-primary btn-search">Search</button>
+              <button type="reset" (click)="resetSearchPromo()" class="btn btn-default btn-reset">Reset</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="panel panel-default" [hidden]="!isAddUpdatePanelNeedtoShow">
+    <form role="form" name="managePromoForm" [formGroup]="managePromoForm" novalidate>
+      <div class="panel-heading" [hidden]="!isAddUpdatePanelNeedtoShow">{{operation}} Promo Details </div>
+      <div class="panel-body bordered" [hidden]="!isAddUpdatePanelNeedtoShow">
+        <div class="row">
+          <div class="col-md-8 col-md-offset-1">
+            <div class="*form-horizontal">
+              <div class="row col-md-12">
+                <div class="form-group col-sm-12 popover-field">
+                  <label>Promo Name </label>
+                  <input type="text" class="form-control" placeholder="Promo Name" id="promoName" name="promoName" formControlName="promoName">
+                  <div class="msg" *ngIf="managePromoForm.controls['promoName'].invalid && (managePromoForm.controls['promoName'].dirty||managePromoForm.controls['promoName'].touched)">
+                    <div *ngIf="managePromoForm.controls['promoName'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="managePromoForm.controls['promoName'].errors.pattern">
+                      Special characters are not allowed.
+                    </div>
+                    <div *ngIf="managePromoForm.controls['promoName'].errors.minlength">
+                      Minimum 1 characters are allowed.
+                    </div>
+                    <div *ngIf="managePromoForm.controls['promoName'].errors.maxlength">
+                      Maximum 50 characters are allowed.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="promoname" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #promoname>
+                    <ul>
+                      <li>Promo Name is required.</li>
+                      <li>It allows only alphanumerics, spaces and underscore.</li>
+                      <li>Special characters and spaces are not allowed.
+                      </li>
+                      <li>It should be minimum 1 character and maximum 50 characters long</li>
+                    </ul>
+                  </ng-template>
+                </div>
+              </div>
+
+              <div class="row col-md-12">
+                <div class="form-group col-sm-12 popover-field">
+                  <label>Promo Code </label>
+                  <input type="text" class="form-control" id="promoCode" name="promoCode" formControlName="promoCode" placeholder="Promo Code ">
+                  <div class="msg" *ngIf="managePromoForm.controls['promoCode'].invalid && (managePromoForm.controls['promoCode'].dirty||managePromoForm.controls['promoCode'].touched)">
+                    <div *ngIf="managePromoForm.controls['promoCode'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="managePromoForm.controls['promoCode'].errors.pattern">
+                      Special characters
+                      <> are not allowed.
+                    </div>
+                    <div *ngIf="managePromoForm.controls['promoCode'].errors.minlength">
+                      Minimum 1 characters are allowed.
+                    </div>
+                    <div *ngIf="managePromoForm.controls['promoCode'].errors.maxlength">
+                      Maximum 50 characters are allowed.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popPromoCode" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popPromoCode>
+                    <ul>
+                      <li>Promo Code is required.</li>
+                      <li>It allows only alphanumerics.</li>
+                      <li>Special characters and spaces are not allowed.
+                      </li>
+                      <li>It should be minimum 1 character and maximum 50 characters long</li>
+                    </ul>
+                  </ng-template>
+                </div>
+              </div>
+
+              <div class="row col-md-12">
+                <div class="form-group col-md-12 popover-field">
+                  <label class="focused">Description </label>
+                  <textarea class="form-control" rows="3" (keyup)="descEvent($event)" maxlength="255" placeholder="Description" id="promoDescription"
+                    name="promoDescription" formControlName="promoDescription"></textarea>
+                  <div class="msg" *ngIf="managePromoForm.controls['promoDescription'].invalid && (managePromoForm.controls['promoDescription'].dirty||managePromoForm.controls['promoDescription'].touched)">
+                    <div *ngIf="managePromoForm.controls['promoDescription'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="managePromoForm.controls['promoDescription'].errors.minlength">
+                      Minimum 1 characters are allowed.
+                    </div>
+                    <div *ngIf="managePromoForm.controls['promoDescription'].errors.maxlength">
+                      Maximum 255 characters are allowed.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popDescription" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popDescription>
+                    <ul>
+                      <li>Description is required.</li>
+                      <li>It allows alphanumerics, spaces and all special characters.</li>
+                      <li>It should be minimum 1 character and maximum 255 characters long</li>
+                    </ul>
+                  </ng-template>
+
+                </div>
+                <span #desc class="pull-right">Left: {{descLength}} characters </span>
+
+              </div>
+              <div class="row col-md-12">
+                <div class="form-group col-sm-12 popover-field">
+                  <label>Face Value </label>
+
+                  <input type="text" (keyup)="checkFaceValue()" class="form-control" id="faceValue" name="faceValue" formControlName="faceValue"
+                    placeholder="Face Value">
+                  <div class="msg" *ngIf="managePromoForm.controls['faceValue'].invalid && (managePromoForm.controls['faceValue'].dirty||managePromoForm.controls['faceValue'].touched)">
+                    <div *ngIf="managePromoForm.controls['faceValue'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="managePromoForm.controls['faceValue'].errors.pattern">
+                      It allows only numbers with decimals.
+                    </div>
+                    <div *ngIf="isPromoLimitExceeded">
+                      {{promoLimitExceededErrorMsg}}
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="FaceValue" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #FaceValue>
+
+                    <ul>
+                      <li>Face Value is required.</li>
+                      <li>It allows only numbers with decimals.</li>
+                    </ul>
+                  </ng-template>
+
+                </div>
+              </div>
+              <div class="row col-md-12">
+                <div class="form-group col-sm-12 popover-field">
+                  <label class="focused">Promo Factor </label>
+
+                  <select class="form-control" id="promoFactor" (change)="checkPromoFactor($event.target.value)" name="promoFactor" formControlName="promoFactor">
+                    <option selected="Promo Factor" value="">--Select--</option>
+                    <option *ngFor="let promo of promoFactors" value="{{promo.Key}}">{{promo.Value}}</option>
+                  </select>
+                  <div class="msg" *ngIf="managePromoForm.controls['promoFactor'].invalid && (managePromoForm.controls['promoFactor'].dirty||managePromoForm.controls['promoFactor'].touched)">
+                    <div *ngIf="managePromoForm.controls['promoFactor'].errors.required">
+                      Required.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popPfactor" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popPfactor>
+                    <ul>
+                      <li>Promo Factor is required</li>
+                      <li>Select Promo Factor.</li>
+                    </ul>
+                  </ng-template>
+
+                </div>
+              </div>
+              <div class="row col-md-12">
+                <div class="form-group col-sm-12 popover-field" [hidden]="!isCount">
+                  <label>Max. Quantity </label>
+
+                  <input type="text" maxlength="4" class="form-control" id="maxQuantity" name="maxQuantity" formControlName="maxQuantity" placeholder="Max. Quantity">
+                  <div class="msg" *ngIf="managePromoForm.controls['maxQuantity'].invalid && (managePromoForm.controls['maxQuantity'].dirty||managePromoForm.controls['maxQuantity'].touched)">
+                    <div *ngIf="managePromoForm.controls['maxQuantity'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="managePromoForm.controls['maxQuantity'].errors.pattern">
+                      It allows only numbers.
+                    </div>
+                    <div *ngIf="managePromoForm.controls['maxQuantity'].errors.maxlength">
+                      Maximum 4 digits are allowed.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" [popover]="popMaxQun" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <ng-template #popMaxQun>
+                    <ul>
+                      <li>Max. Value is required.</li>
+                      <li>It allows only numbers.</li>
+                      <li>It should be minimum 1 character and maximum 5 characters long</li>
+                    </ul>
+                  </ng-template>
+
+                </div>
+              </div>
+              <div class="row col-md-12">
+                <div class="form-group col-sm-12 popover-field" [hidden]="!isCountAndPeriod">
+                  <label id="focused">Start Effective Date </label>
+
+                  <!--<input class="form-control" placeholder="MM/DD/YYYY" [minDate]="presentDate" [maxDate]="endDate" #dp="bsDatepicker" bsDatepicker
+                    name="startDate" formControlName="startDate" [(ngModel)]="startDate"  (ngModelChange)="startDateChange()">-->
+                  <div class="show-error" *ngIf="invalidStartDate">
+                    <div> Invalid Date</div>
+                  </div>
+                  <my-date-picker name="startDate" [options]="myDatePickerOptions" formControlName="startDate" placeholder="MM/DD/YYYY" (inputFieldChanged)='startDateChange($event)'></my-date-picker>
+                  <!--<div class="msg" *ngIf="managePromoForm.controls['startDate'].invalid &&  (managePromoForm.controls['startDate'].dirty||managePromoForm.controls['startDate'].touched)">
+                    <div *ngIf="managePromoForm.controls['startDate'].errors.required">
+                      Required.
+                    </div>
+                  </div>-->
+
+                  <button type="button" class="pop-over" [popover]="popStartDate" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <!--<div  *ngIf=invalidStartDate  class="msg" style="color:red; " >
+                    Invalid Date
+                </div>-->
+                  <ng-template #popStartDate>
+                    <ul>
+                      <li>Start Effective Date is required.</li>
+                      <li>Select Start Effective Date.</li>
+                    </ul>
+                  </ng-template>
+
+                </div>
+              </div>
+              <div class="row col-md-12">
+                <div class="form-group col-sm-12 popover-field" [hidden]="!isCountAndPeriod">
+                  <label id="focused">End Effective Date </label>
+
+                  <!--<input class="form-control" placeholder="MM/DD/YYYY" [minDate]="startDate==undefined ?presentDate:startDate" #dp="bsDatepicker"
+                    bsDatepicker name="endDate" formControlName="endDate" [(ngModel)]="endDate" (ngModelChange)="endDateChange()">-->
+                  <div class="show-error" *ngIf="invalidEndDate">
+                    <div> Invalid Date</div>
+                  </div>
+                  <my-date-picker name="endDate" [options]="myDatePickerOptions" formControlName="endDate" placeholder="MM/DD/YYYY" (inputFieldChanged)='endDateChange($event)'></my-date-picker>
+                  <!--<div class="msg" *ngIf="managePromoForm.controls['endDate'].invalid && (managePromoForm.controls['endDate'].dirty||managePromoForm.controls['endDate'].touched)">
+                    <div *ngIf="managePromoForm.controls['endDate'].errors.required">
+
+                      Required.
+                    </div>
+                  </div>-->
+
+                  <button type="button" class="pop-over" [popover]="popEndDate" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                  <!--<div  *ngIf=invalidEndDate  class="msg" style="color:red; " >
+                    Invalid Date
+                </div>-->
+                  <ng-template #popEndDate>
+                    <ul>
+                      <li>End Effective Date is required.</li>
+                      <li>Select End Effective Date.</li>
+                    </ul>
+                  </ng-template>
+
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-offset-3 col-sm-9">
+                  <button type="submit" (click)="addPromo()" *ngIf="!isUpdateFlag" [ngClass]="isAddAllowed?'disabletextbox':''" class="btn btn-primary btn-search">Submit</button>
+                  <button type="submit" (click)="updatePromo()" *ngIf="isUpdateFlag" [ngClass]="isUpdateAllowed?'disabletextbox':''" class="btn btn-primary btn-search">Update</button>
+                  <button class="btn btn-default btn-reset" (click)="resetClick()" *ngIf="!isUpdateFlag">Reset</button>
+                  <a href='javascript:;' class="btn btn-default btn-reset" (click)="cancelClick()">Cancel</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="row m-b-10">
+    <div class="col-md-12">
+      <a (click)="addLinkClick()" [ngClass]="isAddAllowed?'disabletextbox':''" *ngIf="!isAddUpdatePanelNeedtoShow">
+        <img src="assets/images/svg/add-file2.svg" class="icon-svg3" alt="">Add Promo Details</a>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading"> Promo Details </div>
+    <div *ngIf="noDetails">
+
+      <table class="table table-bordered table-sm bordered">
+        <thead>
+          <tr>
+            <td>No details to display</td>
+          </tr>
+        </thead>
+      </table>
+    </div>
+    <div class="panel-body bordered">
+
+      <div class="table-responsive" *ngIf="promosResponse&& promosResponse.length">
+        <table class="table table-bordered table-sm ">
+          <thead>
+            <tr>
+              <th (click)="sortDirection('PROMONAME')" class="sorting-handle">Promo Name
+                <span *ngIf="gridArrowPROMONAME">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('PROMOCODE')" class="sorting-handle">Promo Code
+                  <span *ngIf="gridArrowPROMOCODE">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+              </th>
+              <th>Description</th>
+              <th (click)="sortDirection('FACEVALUE')" class="sorting-handle">Face Value
+                  <span *ngIf="gridArrowFACEVALUE">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+              </th>
+              <th>Max. Quantity</th>
+              <th (click)="sortDirection('PROMOFACTOR_CODE')" class="sorting-handle">Promo Factor
+                  <span *ngIf="gridArrowPROMOFACTOR_CODE">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+              </th>
+              <th (click)="sortDirection('STARTEFFECTIVEDATE')" class="sorting-handle">Start Effective Date
+                  <span *ngIf="gridArrowSTARTEFFECTIVEDATE">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+              </th>
+              <th (click)="sortDirection('ENDEFFECTIVEDATE')" class="sorting-handle">End Effective Date
+                  <span *ngIf="gridArrowENDEFFECTIVEDATE">
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                    </span>
+              </th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let promoRes of promosResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount }">
+              <td>{{promoRes.PROMONAME}}</td>
+              <td>{{promoRes.PROMOCODE}}</td>
+              <td>{{promoRes.PROMODESCRIPTION}}</td>
+              <td>{{promoRes.FACEVALUE}}</td>
+              <td>{{promoRes.MAXQUANTITY}}</td>
+              <td>{{promoRes.PROMOFACTOR_DESC}}</td>
+              <td>{{promoRes.STARTEFFECTIVEDATE|customDateFormat}}</td>
+              <td>{{promoRes.ENDEFFECTIVEDATE|customDateFormat}}</td>
+              <td>{{promoRes.PromoStatus}}</td>
+              <td>
+                <img src="assets/images/svg/edit.svg" [ngClass]="isUpdateAllowed?'disabletextbox':''" (click)="editPromoClick(promoRes.PROMOCODE)"
+                  alt="edit" class="icon-svg3">
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+      <div class="row page-info" *ngIf='promosResponse && promosResponse.length'>
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

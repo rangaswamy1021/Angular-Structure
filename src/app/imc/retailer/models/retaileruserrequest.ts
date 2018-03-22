@@ -1,0 +1,75 @@
+import { IPaging } from "../../../shared/models/paging";
+import { SubSystem, ActivitySource } from "../../../shared/constants";
+import { IRetailerLoginRequest } from "./retailerloginrequest";
+
+export interface IRetailerUserRequest {
+    RetailerUserId: number;
+    CustomerId: number;
+    RetailerUserName: number;
+    RoleName: string;
+    RetailerLoginId: number;
+    FirstName: string;
+    MiddleName: string;
+    LastName: string;
+    EmailAddress: string;
+    PhoneNumber: string;
+    IsActive: boolean;
+    Status: string;
+    PerformedBy: string;
+    RetailerLogin:IRetailerLoginRequest;
+    Paging: IPaging;
+    SubSystem:string;//SubSystem;
+    ActivitySource:string  //ActivitySource;
+    UserId: Number;
+    LoginId: Number;
+    SearchActivity: Boolean;
+    SearchFlag: string;
+    IsEmailCheck: boolean;
+    RoleFlag: number;
+}
+export interface IPOSOutletItems {
+RetailerId:number;
+POSRequestId:number;
+TxnAmount:number;
+CustomerId:number;
+UserName:string;
+POSOutletId:number;
+PaymentMode:string;
+NameOnCard:string;
+CreditCardType:string;
+ddlYears:string;
+ddlMonths:string;
+CVV :number;
+Line1:string;
+Line2:string;
+Line3:string;
+City:string;
+State:string;
+Country:string;
+Zip1:number;
+Zip2:number;
+DefaultFlag:boolean;
+CCardNumber:string;
+AccountID:number;
+ICNId:number;
+Mounting:string;
+Protocol:string;
+PerformedBy:string;
+SearchFlag:string;
+UserId:number;
+LoginId:number;
+FirstName:string;
+LastName:string;
+POSOutletName:string;
+SerialNo:string;
+CreatedDate:Date;
+EnrollmentNo:string;
+TotalAmount:number;
+TagValue:number;
+Quantity:number;
+ItemId:number;
+ItemCode:string;
+ActivitySource:string;
+SubSystem:string;
+
+}

@@ -1,0 +1,147 @@
+<div class="page-title-header wow fadeInDown">
+  <div class="row">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li><a href="#">Search</a></li>
+        <li class="active">Advanced Search</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Advanced Search</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content wow fadeInUp">
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <app-search-details [Search]="2"></app-search-details>
+      <div class="row">
+        <app-advance-search> </app-advance-search>
+        <form role="form" name="advancedSearchForm" [formGroup]="advancedSearchForm" (ngSubmit)="advancedSearch(p,true)" novalidate>
+          <div class="col-md-6 form-group">
+            <label>Language Preference </label>
+            <select class="form-control" id="PreferredLanguage" name="PreferredLanguage" formControlName="PreferredLanguage">
+              <option value="">--Select--</option>
+              <option value="english">English</option>
+              <option value="spanish">Spanish</option>
+            </select>
+          </div>
+          <div class="col-md-6 form-group">
+            <div class="checkbox-inline checkbox">
+              <input type="checkbox" id="HearingImpairment" name="HearingImpairment" formControlName="HearingImpairment">
+              <label for="HearingImpairment">
+                <span></span> Hearing Impairment
+              </label>
+            </div>
+            <div class="checkbox-inline checkbox">
+              <input type="checkbox" id="FrequentCaller" name="FrequentCaller" formControlName="FrequentCaller">
+              <label for="FrequentCaller">
+                <span></span> Frequent Caller
+              </label>
+            </div>
+            <div class="checkbox-inline checkbox">
+              <input type="checkbox" id="Supervisor" name="Supervisor" formControlName="Supervisor">
+              <label for="Supervisor">
+                <span></span> Special Handling
+              </label>
+            </div>
+          </div>
+
+
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-primary btn-search" [disabled]="disableButton">Search</button>
+            <button type="reset" class="btn btn-default btn-reset" (click)="advancedSearchReset()">Reset</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="table-bdr wow fadeIn" [hidden]="!profileResponse || !profileResponse.length">
+    <h3>Advanced Search Results</h3>
+    <div class="pad-10">
+      <div class="table-responsive">
+        <table class="table">
+          <thead class="nowrap">
+            <tr>
+              <th (click)="sortDirection('AccountType')" class="sorting-handle">Account Type
+                <span *ngIf="gridArrowAccountType">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('CUSTOMERID')" class="sorting-handle">Account #
+                <span *ngIf="gridArrowCUSTOMERID">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('FirstName')" class="sorting-handle"> First Name
+                <span *ngIf="gridArrowFirstName">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('LastName')" class="sorting-handle">Last Name
+                <span *ngIf="gridArrowLastName">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th>Address</th>
+              <th (click)="sortDirection('PhoneNumber')" class="sorting-handle">Phone #
+                <span *ngIf="gridArrowPhoneNumber">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('EmailAddress')" class="sorting-handle">Email Address
+                <span *ngIf="gridArrowEmailAddress">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th>Status</th>
+              <th>View</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let res of profileResponse| paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount };">
+              <td> {{res.AccountType}} </td>
+              <td> {{res.AccountId}} </td>
+              <td> {{res.FirstName}} </td>
+              <td> {{res.LastName}} </td>
+              <td> {{res.FullAddress}} </td>
+              <td class="nowrap"> {{res.Phone}} </td>
+              <td> {{res.Email}} </td>
+              <td class="nowrap"> {{res.AccountStatusDesc}} </td>
+              <td>
+                <a (click)="viewButton(res)">View</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="row page-info" *ngIf="(totalRecordCount > 10 || totalRecordCount == 0 || totalRecordCount == undefined )">
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="table-bdr" *ngIf='profileResponse && profileResponse.length == 0 && afterSearch'>
+    <h3>Advanced Search Results</h3>
+    <div class="pad-10">
+      <div class="status-content">
+        <p class="alert alert-info"> <i class="fa fa-exclamation-circle" aria-hidden="true"></i> No records to display</p>
+      </div>
+    </div>
+  </div>
+  <app-blocked-list [blockListArray]="blockListDetails" (status)="goToSummary()"></app-blocked-list>

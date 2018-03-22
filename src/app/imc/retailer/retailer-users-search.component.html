@@ -1,0 +1,494 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">IMC</a></li>
+        <li class="active">Retailer </li>
+        <li class="active">Manage Retailer User</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Retailer User</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 text-right">
+    <div class="form-group">
+      <button class="btn btn-default btn-search btn-small" (click)="goToRetailerSearch()">Back</button>
+      <div class="clear"> </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      Manage Retailer User
+    </div>
+    <div class="panel-body">
+      <!--Search Form -->
+      <form role="form" name="retailerUserSearchForm" [formGroup]="retailerUserSearchForm">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="col-md-12 form-group">
+              <label>First Name</label>
+              <input type="text" class="form-control" placeholder="First Name" formControlName="firstName" maxlength="50" tabindex="1">
+              <div class="msg" *ngIf="retailerUserSearchForm.controls['firstName'].invalid && (retailerUserSearchForm.controls['firstName'].dirty || retailerUserSearchForm.controls['firstName'].touched)">
+                <div *ngIf="retailerUserSearchForm.controls['firstName'].errors.required">
+                  At least one field is Required.
+                </div>
+                <div *ngIf="retailerUserSearchForm.controls['firstName'].errors.pattern">
+                  Only alphabets and spaces are allowed !
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="col-md-12 form-group">
+              <label> Last Name</label>
+              <input type="text" class="form-control" placeholder="Last Name" formControlName="lastName" maxlength="50" tabindex="2">
+              <div class="msg" *ngIf="retailerUserSearchForm.controls['lastName'].invalid && (retailerUserSearchForm.controls['lastName'].dirty || retailerUserSearchForm.controls['lastName'].touched)">
+                <div *ngIf="retailerUserSearchForm.controls['lastName'].errors.pattern">
+                  Only alphabets and spaces are allowed !
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="col-md-12 form-group">
+              <label class="focused">Status</label>
+              <select class="form-control" formControlName="status" tabindex="3">
+                <option value=""> --select--</option>
+               <option *ngFor="let retailer of getLookupsResponse"  value={{retailer.Value}} >
+               <span >{{retailer.Value}}</span>
+               <!--*ngIf='(retailer.Value=="Inactive"||retailer.Value=="Active")'-->
+                 </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-primary btn-search" (click)="searchRetailer()" tabindex="4" [disabled]="disableSearchbtn">Search</button>
+            <button type="reset" class="btn btn-default btn-reset" (click)="resetClick()" tabindex="5">Reset</button>
+          </div>
+        </div>
+      </form>
+      <!--Search Form Ends..-->
+    </div>
+  </div>
+
+  <!--Add New Retailer -->
+  <div class="row" *ngIf=!isAddNewRetailerUser>
+    <div class="col-md-12">
+      <div class="form-group">
+        <button class="btn btn-primary btn-search" (click)="addNewRetailerUser()" [disabled]="disableCreatebtn"><i class="fa fa-plus-square-o fa-lg fa-fw" aria-hidden="true" ></i> Add New Retailer User</button>
+      </div>
+    </div>
+  </div>
+  <!-- Add New Retailer button End...-->
+
+  <!--Add New Retailer User Start-->
+
+  <div class="col-md-12">
+  </div>
+  <div [hidden]="!divNewRetailerUser">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        {{message}} Retailer User Details
+      </div>
+      <!---->
+      <form role="form" name="addRetailerUserForm" [formGroup]="addRetailerUserForm">
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="col-md-12 form-group popover-field">
+                <label> First Name</label>
+                <input type="text" class="form-control" placeholder="First Name" formControlName="firstName" minlength="2" maxlength="50"
+                  tabindex="6">
+                <div class="msg" *ngIf="addRetailerUserForm.controls['firstName'].invalid && (addRetailerUserForm.controls['firstName'].dirty || addRetailerUserForm.controls['firstName'].touched)">
+                  <div *ngIf="addRetailerUserForm.controls['firstName'].errors.required">
+                    Required.
+                  </div>
+                  <div *ngIf="addRetailerUserForm.controls['firstName'].errors.minlength && !addRetailerUserForm.controls['firstName'].errors.pattern">
+                    Minimum 2 characters are required.
+                  </div>
+                  <div *ngIf="addRetailerUserForm.controls['firstName'].errors.maxlength && !addRetailerUserForm.controls['firstName'].errors.pattern">
+                    Maximum 50 characters are allowed.
+                  </div>
+                  <div *ngIf="addRetailerUserForm.controls['firstName'].errors.pattern">
+                    It allows only alphabets and Spaces and Initial Spaces is not allowed
+                  </div>
+                </div>
+                <ng-template #popFirstName>
+                  <ul>
+                    <li> First Name is required</li>
+                    <li> It allows only alphabets and Spaces </li>
+                    <li> it should be minimum 2 <br> characters and maximum 50 <br> characters long</li>
+                    <li> Initial Spaces is not allowed</li>
+                  </ul>
+                </ng-template>
+                <button type="button" data-container="body" class="pop-over" [popover]="popFirstName" popoverTitle="Help" placement="left"
+                  triggers="mouseenter:mouseleave">
+               <i class="fa fa-question" aria-hidden="true"></i></button>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="col-md-12 form-group popover-field">
+                <label>MI</label>
+                <input type="text" class="form-control" placeholder="MI" formControlName="mi" maxlength="2" tabindex="7">
+                <div class="msg" *ngIf="addRetailerUserForm.controls['mi'].invalid && (addRetailerUserForm.controls['mi'].dirty || addRetailerUserForm.controls['mi'].touched)">
+                  <div *ngIf="addRetailerUserForm.controls['mi'].errors.required">
+                    Required.
+                  </div>
+                  <div *ngIf="addRetailerUserForm.controls['mi'].errors.pattern">
+                    It allows only alphabets and Initial Spaces is not allowed
+                  </div>
+                  <div *ngIf="addRetailerUserForm.controls['mi'].errors.maxlength">
+                    Maximum 2 characters are allowed.
+                  </div>
+                </div>
+                <ng-template #popMI>
+                  <ul>
+                    <li>It allows only alphabets</li>
+                    <li>It is maximum 2 characters long </li>
+                    <li>Intial Spaces is not allowed</li>
+                  </ul>
+                </ng-template>
+                <button type="button" data-container="body" class="pop-over" [popover]="popMI" popoverTitle="Help" placement="left" triggers="mouseenter:mouseleave">
+                <i class="fa fa-question" aria-hidden="true"></i></button>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="col-md-12 form-group popover-field">
+                <label>Last Name</label>
+                <input type="text" class="form-control" placeholder="Last Name" formControlName="lastName" maxlength="50" tabindex="8">
+                <div class="msg" *ngIf="addRetailerUserForm.controls['lastName'].invalid && (addRetailerUserForm.controls['lastName'].dirty || addRetailerUserForm.controls['lastName'].touched)">
+                  <div *ngIf="addRetailerUserForm.controls['lastName'].errors.required">
+                    Required.
+                  </div>
+                  <div *ngIf="addRetailerUserForm.controls['lastName'].errors.minlength && !addRetailerUserForm.controls['lastName'].errors.pattern">
+                    Minimum 2 characters are required.
+                  </div>
+                  <div *ngIf="addRetailerUserForm.controls['lastName'].errors.maxlength && !addRetailerUserForm.controls['lastName'].errors.pattern">
+                    Maximum 50 characters are allowed.
+                  </div>
+                  <div *ngIf="addRetailerUserForm.controls['lastName'].errors.pattern">
+                    It allows only alphabets and Spaces and (-) and Initial Spaces is not allowed
+                  </div>
+                </div>
+                <ng-template #popLastName>
+                  <ul>
+                    <li> Last Name is required</li>
+                    <li> It allows only alphabets,Spaces and (-)
+                    </li>
+                    <li> it should be minimum 2 <br> characters and maximum 50 <br> characters long</li>
+                    <li> Initial Spaces is not allowed</li>
+                  </ul>
+                </ng-template>
+                <button type="button" data-container="body" class="pop-over" [popover]="popLastName" popoverTitle="Help" placement="left"
+                  triggers="mouseenter:mouseleave">
+                 <i class="fa fa-question" aria-hidden="true"></i></button>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="col-md-12 form-group popover-field">
+                <label> Mobile #              
+                 </label>
+                <input type="text" class="form-control" maxlength="14" placeholder="Mobile #" formControlName="mobile" (change)="validateMobileAllZeros()"
+                  (keydown)="formatPhone($event)" tabindex="9">
+                <div class="msg" *ngIf="addRetailerUserForm.controls['mobile'].invalid && (addRetailerUserForm.controls['mobile'].dirty || addRetailerUserForm.controls['mobile'].touched)">
+                  <div *ngIf="addRetailerUserForm.controls['mobile'].errors.required">
+                    Required.
+                  </div>
+                  <div *ngIf="addRetailerUserForm.controls['mobile'].errors.pattern">
+                    Invalid Phone number
+                  </div>
+                </div>
+                <div class="show-error">
+                  <div *ngIf="isInvalidMobile">Invalid phone number</div>
+                </div>
+                <ng-template #popMobile>
+                  <ul>
+                    <li>Mobile # is required</li>
+                    <li>IT allows Only numbers</li>
+                    <li>It should be minimum 10<br> characters and maximum 11 digits long</li>
+                  </ul>
+                </ng-template>
+                <button type="button" class="pop-over" data-container="body" [popover]="popMobile" popoverTitle="Help" placement="left" triggers="mouseenter:mouseleave">
+                    <i class="fa fa-question" aria-hidden="true"></i></button>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="col-md-12 form-group popover-field">
+                <label>Email Address
+                 </label>
+                <input type="text" class="form-control" placeholder="Email Address" formControlName="email" maxlength="100" (change)="checkEmailExists()"
+                  tabindex="10">
+                <div class="msg" *ngIf="addRetailerUserForm.controls['email'].invalid && (addRetailerUserForm.controls['email'].dirty || addRetailerUserForm.controls['email'].touched)">
+                  <div *ngIf="addRetailerUserForm.controls['email'].errors.required">
+                    Required.
+                  </div>
+                  <div *ngIf="addRetailerUserForm.controls['email'].errors.minlength && !addRetailerUserForm.controls['email'].errors.pattern">
+                    Minimum 6 characters are required.
+                  </div>
+                  <div *ngIf="addRetailerUserForm.controls['email'].errors.maxlength && !addRetailerUserForm.controls['email'].errors.pattern">
+                    Maximum 100 characters are allowed.
+                  </div>
+                  <div *ngIf="addRetailerUserForm.controls['email'].errors.pattern">
+                    Invalid format
+                  </div>
+                </div>
+                <div class="show-error">
+                  <div *ngIf="isInvalidEmail">Email Is Already Exists</div>
+                </div>
+                <ng-template #popEmailAddress>
+                  <ul>
+                    <li>EmailAddress is required</li>
+                    <li>It allows alphanumerics with special characters(@,.,_).</li>
+                    <li> Spaces are not allowed</li>
+                    <li> It should be minimum 6 <br> characters and maximum 100 <br> characters long.</li>
+                    <li>It should follow the format <br>yourname@domain.com</li>
+                  </ul>
+
+                </ng-template>
+                <button type="button" class="pop-over" data-container="body" [popover]="popEmailAddress" popoverTitle="Help" placement="left"
+                  triggers="mouseenter:mouseleave">
+                    <i class="fa fa-question" aria-hidden="true"></i></button>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="col-md-12 form-group popover-field">
+                <label>Username  
+                   
+                 </label>
+                <input type="text" class="form-control" placeholder="Username" tabindex="11" formControlName="userName" maxlength="50" (change)="checkUserNameExist()">
+                <div class="msg" *ngIf="addRetailerUserForm.controls['userName'].invalid && (addRetailerUserForm.controls['userName'].dirty || addRetailerUserForm.controls['userName'].touched)">
+                  <div *ngIf="addRetailerUserForm.controls['userName'].errors.required">
+                    Required.
+                  </div>
+                  <div *ngIf="addRetailerUserForm.controls['userName'].errors.minlength && !addRetailerUserForm.controls['userName'].errors.pattern">
+                    Minimum 5 characters are required.
+                  </div>
+                  <div *ngIf="addRetailerUserForm.controls['userName'].errors.maxlength && !addRetailerUserForm.controls['userName'].errors.pattern">
+                    Maximum 50 characters are allowed.
+                  </div>
+                  <div *ngIf="addRetailerUserForm.controls['userName'].errors.pattern">
+                    Enter valid Username
+                  </div>
+                </div>
+                <div class="show-error">
+                  <div *ngIf="isInvalidUserName">UserName Is Already Exists</div>
+                </div>
+                <ng-template #popUserName>
+                  <ul>
+                    <li>Username is required</li>
+                    <li>It allows only alphanumerics</li>
+                    <li>Special characters and spaces<br>are not allowed
+                    </li>
+                    <li>It should be minimum 5 characters<br>and maximum 50 characters long</li>
+                    <li>Initial Space is not allowed</li>
+                  </ul>
+                </ng-template>
+                <button type="button" class="pop-over" data-container="body" [popover]="popUserName" popoverTitle="Help" placement="left"
+                  triggers="mouseenter:mouseleave">
+                    <i class="fa fa-question" aria-hidden="true"></i></button>
+              </div>
+            </div>
+            <div class="col-md-6" *ngIf="isStatusEnabled">
+              <div class="col-md-12 form-group popover-field">
+                <label class="focused">Status</label>
+                <select class="form-control" formControlName="status" tabindex="12" (change)="statusChange($event)">
+                  <option value=""> --select--</option>
+                  <option value="true"> Active </option>
+                   <option value="false">InActive</option>
+                   </select>
+                <div class="msg" *ngIf="addRetailerUserForm.controls['status'].invalid && (addRetailerUserForm.controls['status'].dirty || addRetailerUserForm.controls['status'].touched)">
+                  <div *ngIf="addRetailerUserForm.controls['status'].errors.required">
+                    Required.
+                  </div>
+                </div>
+                <ng-template #popstatus>
+                  <ul>
+                    <li>Select status</li>
+                  </ul>
+                </ng-template>
+                <button type="button" class="pop-over" data-container="body" [popover]="popstatus" popoverTitle="Help" placement="left" triggers="mouseenter:mouseleave">
+                    <i class="fa fa-question" aria-hidden="true"></i></button>
+              </div>
+            </div>
+            <div class="col-md-6" [hidden]="isPasswordEnabled">
+              <div class="col-md-12 form-group popover-field">
+                <label>Password
+                   <span  style="padding-left: 250px;" >  <span *ngIf=shortPass style= 'color:Red;' ><b>Too short</b></span><span *ngIf=badPass  style= 'color:#ce2222;'><b>Weak</b></span><span *ngIf=goodPass  style= 'color:#52b3f3;'  > <b>Average </b></span><span *ngIf=strongPass style='color:Green;'><b>Strong</b></span></span>
+                </label>
+                <input type="password" class="form-control" placeholder="Password" formControlName="password" minlength="7" maxlength="20"
+                  (change)="checkRetypePassword()" (keydown)=passwordStrength() tabindex="13">
+                <div class="msg" *ngIf="addRetailerUserForm.controls['password'].invalid && (addRetailerUserForm.controls['password'].dirty || addRetailerUserForm.controls['password'].touched)">
+                  <div *ngIf="addRetailerUserForm.controls['password'].errors.required && !isInvalidPassword">
+                    Required.
+                  </div>
+                  <div *ngIf="addRetailerUserForm.controls['password'].errors.minlength && !addRetailerUserForm.controls['password'].errors.pattern">
+                    Minimum 7 characters are required.
+                  </div>
+                  <div *ngIf="addRetailerUserForm.controls['password'].errors.maxlength && !addRetailerUserForm.controls['password'].errors.pattern">
+                    Maximum 20 characters are allowed.
+                  </div>
+                  <div *ngIf="addRetailerUserForm.controls['password'].errors.pattern">
+                    Invalid Password Type.
+                    <!--It should be contains three of these four combination(uppercase letters,lowercase letters,numbers and-->
+                    <!--special characters)<br>atleast one each.Allowed special<br>characters are(~!@#$%^&()_+={}|:;<>?/).<br>-->
+                  </div>
+                </div>
+                <ng-template #popPassword>
+                  <ul>
+                    <li>Password is required</li>
+                    <li>It should be contains three of these<br>four combination Like uppercase letters,<br> lowercase letters,numbers
+                      and special characters</li>
+                    <!--special characters.<br>atleast one each.Allowed special<br>characters are(~!@#$%^()_+={}|:;?/).<br>-->
+                    <li> It should be minimum 7 characters and <br>maximum 20 characters long</li>
+                    <li>Initial Space is not allowed.</li>
+                  </ul>
+                </ng-template>
+                <button type="button" class="pop-over" data-container="body" [popover]="popPassword" popoverTitle="Help" placement="left"
+                  triggers="mouseenter:mouseleave">
+                    <i class="fa fa-question" aria-hidden="true"></i></button>
+              </div>
+            </div>
+            <div class="col-md-6" [hidden]="isPasswordEnabled">
+              <div class="col-md-12 form-group popover-field">
+                <label>Retype Password
+                 </label>
+                <input type="password" class="form-control" placeholder="Retype Password" tabindex="14" formControlName="reTypePassword"
+                  (change)="checkRetypePassword()" maxlength="20">
+                <div class="msg" *ngIf="addRetailerUserForm.controls['reTypePassword'].invalid && (addRetailerUserForm.controls['reTypePassword'].dirty || addRetailerUserForm.controls['reTypePassword'].touched)">
+                  <div *ngIf="addRetailerUserForm.controls['reTypePassword'].errors.required && !isInvalidPassword">
+                    Required.
+                  </div>
+                  <div *ngIf="addRetailerUserForm.controls['reTypePassword'].errors.minlength && !addRetailerUserForm.controls['reTypePassword'].errors.pattern">
+                    Minimum 7 characters are required.
+                  </div>
+                  <div *ngIf="addRetailerUserForm.controls['reTypePassword'].errors.maxlength && !addRetailerUserForm.controls['reTypePassword'].errors.pattern">
+                    Maximum 20 characters are allowed.
+                  </div>
+                  <div *ngIf="addRetailerUserForm.controls['reTypePassword'].errors.pattern">
+                    Invalid Password Type.
+                  </div>
+                </div>
+                <div class="show-error">
+                  <div *ngIf="isInvalidPassword">Password and ReTypePassword Must Be Same</div>
+                </div>
+                <ng-template #popReTypePassword>
+                  <ul>
+                    <li>Retype Password is required</li>
+                    <li>It should be same as Password</li>
+                    <li>Initial Space is not allowed</li>
+                  </ul>
+                </ng-template>
+                <button type="button" class="pop-over" data-container="body" [popover]="popReTypePassword" popoverTitle="Help" placement="left"
+                  triggers="mouseenter:mouseleave">
+                   <i class="fa fa-question" aria-hidden="true"></i></button>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <button class="btn btn-default btn-search" *ngIf="isAddUpdateButtonEnabled" (click)="updateNewRetilerUser()" tabindex="15">Update </button>
+              <button class="btn btn-default btn-search" *ngIf="!isAddUpdateButtonEnabled" (click)="addRetilerUser()" tabindex="16">Add </button>
+              <button class="btn btn-default btn-reset" (click)="addNewRetilerUserReset()" tabindex="17">Reset</button>
+              <button class="btn btn-default btn-reset" (click)="cancelAddNewRetilerUser()" tabindex="18">Cancel </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!--Add New Retailer User Form End-->
+  <!-- Grid Data Start...-->
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      Retailer Users Search Results
+    </div>
+    <div class="panel-body">
+      <table class="table" *ngIf='retailerUserResponse && retailerUserResponse.length  ;else elseBlock'>
+        <thead>
+          <tr style="padding:10px">
+            <!--Dont'Remove Any One If Sorting Is Mandatory We Can Use This One -->
+            <!--(click)="sortDirection('RETAILERID')" 
+               (click)="sortDirection('RETAILERUSERNAME')"
+               (click)="sortDirection('FIRSTNAME')" 
+               (click)="sortDirection('LASTNAME')"
+               (click)="sortDirection('PHONENUMBER')"-->
+            <th><span style="cursor: pointer;">Retailer Id  
+              <!--<span *ngIf=gridArrowRETAILERID style="color:black"><i class="fa fa-sort-amount-asc fa-fw fa-lg" aria-hidden="true" *ngIf=sortingDirection></i><i class="fa fa-sort-amount-desc fa-fw fa-lg" aria-hidden="true" *ngIf=!sortingDirection></i></span>-->
+              </span>
+            </th>
+            <th> <span>Username  
+              <!--<span *ngIf=gridArrowRETAILERUSERNAME style="color:black"><i class="fa fa-sort-amount-asc fa-fw fa-lg" aria-hidden="true" *ngIf=sortingDirection></i><i class="fa fa-sort-amount-desc fa-fw fa-lg"  aria-hidden="true" *ngIf=!sortingDirection></i></span>-->
+              </span>
+            </th>
+            <th> <span> First Name 
+               <!--<span *ngIf=gridArrowFIRSTNAME style="color:black"><i class="fa fa-sort-amount-asc fa-fw fa-lg" aria-hidden="true" *ngIf=sortingDirection></i><i class="fa fa-sort-amount-desc fa-fw fa-lg"  aria-hidden="true" *ngIf=!sortingDirection></i></span>-->
+              </span>
+            </th>
+            <th> <span> Last Name   
+              <!--<span *ngIf=gridArrowLASTNAME style="color:black"><i class="fa fa-sort-amount-asc fa-fw fa-lg" aria-hidden="true" *ngIf=sortingDirection></i><i class="fa fa-sort-amount-desc fa-fw fa-lg"  aria-hidden="true" *ngIf=!sortingDirection></i></span>-->
+              </span>
+            </th>
+            <th> <span> Phone Number 
+                <!--<span *ngIf=gridArrowPHONENUMBER style="color:black"><i class="fa fa-sort-amount-asc fa-fw fa-lg" aria-hidden="true" *ngIf=sortingDirection></i><i class="fa fa-sort-amount-desc fa-fw fa-lg"  aria-hidden="true" *ngIf=!sortingDirection></i> </span>-->
+              </span>
+            </th>
+            <th> Email Address </th>
+            <th> Status </th>
+            <th> </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let retailer of retailerUserResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount }">
+
+            <td>{{retailer.CustomerId}} </td>
+            <td>{{retailer.RetailerUserName}} </td>
+            <td>{{retailer.FirstName}} </td>
+            <td>{{retailer.LastName}} </td>
+            <td>{{retailer.PhoneNumber}} </td>
+            <td>{{retailer.EmailAddress}} </td>
+            <td>{{retailer.Status}} </td>
+            <td>
+              <i *ngIf="disableEditRetailerbtn" title="you don't have permission to access" class="fa fa-pencil-square-o fa-lg fa-fw link-disabled"
+                aria-hidden="true"></i>
+              <a *ngIf="!disableEditRetailerbtn" (click)="populateTheData(retailer)" title="Edit"> <i class="fa fa-pencil-square-o fa-lg fa-fw" aria-hidden="true"></i></a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="row page-info" *ngIf='retailerUserResponse && retailerUserResponse.length >0'>
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Grid Data End...-->
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+</div>
+<ng-template #elseBlock>
+  <div>
+    <p class="alert alert-success">
+      <i class="fa fa-info-circle fa-lg" aria-hidden="true"></i> No Records To Display
+    </p>
+  </div>
+</ng-template>
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,74 @@
+@charset "utf-8";
+/* CSS Document */
+
+.btn-search
+{
+	color: #fff;
+	background-color: #007bff;
+	border-color: #007bff;
+	background-image:linear-gradient(to bottom, #1b7cdb, #085db0);
+	border-bottom:3px solid #1fabf6;
+	min-width:139px;
+	height:45px;
+	padding-left: 20px;
+	padding-right: 20px;
+  margin-right: 10px;
+}
+.btn-large{
+	min-width: 210px;
+	font-size: 18px;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+.btn-reset
+{
+	color: #2068b5;
+	background-color: #007bff;
+	border-color: #bdc7d1;
+	background-image:linear-gradient(to bottom, #bdc7d3, #e5eaee);
+	border-bottom:3px solid #7c92a0;
+	min-width:139px;
+	padding-left: 20px;
+	padding-right: 20px;
+	height:45px;
+	margin-left: 20px;
+}
+
+.btn-search:link, .btn-search:visited,
+{
+	color: #FFFFFF;
+}
+
+.btn-search:hover, .btn-search:active,
+{
+	color: #FFFFFF;
+}
+
+.btn-reset:link, .btn-reset:visited,
+{
+	color: #2068b5;
+}
+
+.btn-reset:hover, .btn-reset:active,
+{
+	color: #2068b5;
+}
+.btn-sm{
+	width:120px;
+}
+.button-dropdown{
+	.dropdown-menu{    min-width: 138px;
+    left: 20px;
+    background: #fff;
+	padding:0px;
+	border: 0px;
+	li{
+		    font-size: 12px;
+    border-bottom: 1px solid #aaa;
+    padding: 3px 0px;
+	a{
+		color: #818181;
+	}
+	}
+	}
+}

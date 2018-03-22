@@ -1,0 +1,15 @@
+<div class="row">
+  <div class="col-md-6">
+    <label class="display-inline" style="padding-right: 10px; font-weight: 500; font-size: 14px; padding-right: 20px;"> Search By : </label>
+    <div class="display-inline csc-search-radio">
+    <div *ngFor="let entry of SearchTypes;let idx = index" class="custom-control custom-radio radio-inline">
+      <input type="radio"  [(ngModel)]="Search" name="radiogroup" class="custom-control-input" [value]="entry.id" (change)="onSelectionChange(entry.id)" [id]="entry.id">             
+        <!--<span class="custom-control-indicator"> </span>-->
+        <label [for]="entry.id" class="custom-control-description">{{ entry.Value }}</label>
+    </div>
+    </div>
+  </div>
+  <div class="col-md-6 text-right">
+       <span class="info-blue"> <img src="assets/images/svg/info-blue.svg" class="icon-svg5" alt=""> </span> <span class="name">Enter input in any  of the fields below.</span>
+    </div>
+</div>

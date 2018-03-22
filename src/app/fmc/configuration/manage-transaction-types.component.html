@@ -1,0 +1,486 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">FMC</a></li>
+        <li><a href="#">Configuration</a></li>
+        <li class="active">Transaction Types</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Transaction Types</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <form role="form" name="transactionTypeForm" [formGroup]="transactionTypeForm" novalidate (ngSubmit)="searchTransTypes()">
+    <div class=" bordered pad-20">
+      <div class="row ">
+        <div class="col-md-6">
+          <div class="form-group col-md-12 popover-field">
+            <label for="txnType">Txn Type</label>
+            <input type="text" class="form-control" placeholder="Txn Type" id="txnType" name="txnType" formControlName="txnType">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group col-md-12 popover-field">
+            <label class="focused">Category Type</label>
+            <select class="form-control" formControlName="categoryType" name="categoryType" [(ngModel)]="categorySearchType">
+ <option selected="selected" value="">--select--</option>
+ <option *ngFor="let categoryType of categoryTypes" [value]="categoryType.CategoryId" >{{categoryType.CategoryName}}</option>
+ </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group col-md-12 popover-field">
+            <label class="focused">Adjustment Type</label>
+            <select class="form-control" formControlName="adjustmentType" [(ngModel)]="adjustmentSearchType">
+ <option selected="selected" value="">--Select--</option>
+ <option *ngFor='let adjustmentType of adjustmentTypes' [value]="adjustmentType.AdjustmentCategoryId">{{adjustmentType.AdjustmentCategory}}</option>
+ </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group col-md-12 popover-field">
+            <label class="focused">Special Journal Type</label>
+            <select class="form-control" name="specialJournalType" formControlName="specialJournalType" [(ngModel)]="specialJournalSearchType">
+ <option selected="selected" value="">--Select--</option>
+ <option *ngFor='let specialJournalType of specialJournalTypes' [value]="specialJournalType.SpecialJournalId" >{{specialJournalType.SpecialJournalName}}</option>
+ </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group col-md-12 popover-field">
+            <label class="focused">Status </label>
+            <select class="form-control" [(ngModel)]="statusValue" name="status" formControlName="status">
+ <option *ngFor="let status of activeInactiveStatus" [value]="status.Value" >{{status.Value}}</option>
+ </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class=" col-md-12 ">
+            <button class="btn btn-primary btn-search" type="submit" [disabled]="disableSearchButton">Search</button>
+            <button class="btn btn-primary btn-reset" type="reset" (click)="resetTransTypes()">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="row m-t-20" *ngIf="!addNewTransactionType">
+    <div class="col-md-12">
+      <button class="btn btn-primary btn-search" (click)="showAddNewTransactionType()" [disabled]="disableCreateButton"><i class="fa fa-plus-circle fa-lg" aria-hidden="true" ></i> <span>Add Transaction Type</span></button>
+    </div>
+  </div>
+  <form role="form" name="addNewTransactionTypeForm" [formGroup]="addNewTransactionTypeForm" novalidate>
+    <div class="row m-t-20" [hidden]='!addNewTransactionType'>
+      <div class="col-md-12">
+        <div class="table-bdr">
+          <h3>Add New Transaction Type</h3>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group col-md-12 popover-field">
+                <label for="type">Type</label>
+                <input type="text" class="form-control" id="type" name="type" placeholder="Type" formControlName="type" required/>
+                <div class="msg" style="color: red;" *ngIf="addNewTransactionTypeForm.controls['type'].invalid && (addNewTransactionTypeForm.controls['type'].dirty || addNewTransactionTypeForm.controls['type'].touched)">
+                  <div *ngIf="addNewTransactionTypeForm.controls['type'].errors.required">
+                    Required.
+                  </div>
+                  <div *ngIf="addNewTransactionTypeForm.controls['type'].errors.pattern">
+                    Only alphanumerics allowed.
+                  </div>
+                  <div *ngIf="addNewTransactionTypeForm.controls['type'].errors.maxlength">
+                    Maximum 50 characters are allowed.
+                  </div>
+                </div>
+                <button type="button" class="pop-over" [popover]="popType" data-container="body" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                  tabindex="-1" placement="left">?</button>
+                <ng-template #popType>
+                  <ul>
+                    <li>Type is required.</li>
+                    <li>It allows only alphanumerics. </li>
+                    <li> It should be minimum 1 character and maximum 50 characters long.</li>
+                  </ul>
+                </ng-template>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group col-md-12 popover-field">
+                <label for=" description">Description</label>
+                <textarea class="form-control" id="description" name="description" placeholder="Description" cols="30" rows="2" formControlName="description"></textarea>
+                <div class="msg" style="color: red;" *ngIf="addNewTransactionTypeForm.controls['description'].invalid && (addNewTransactionTypeForm.controls['description'].dirty || addNewTransactionTypeForm.controls['description'].touched)">
+                  <div *ngIf="addNewTransactionTypeForm.controls['description'].errors.required">
+                    Required.
+                  </div>
+                  <div *ngIf="addNewTransactionTypeForm.controls['description'].errors.maxlength">
+                    Maximum 255 characters are allowed.
+                  </div>
+                </div>
+                <button type="button" class="pop-over" [popover]="popDesc" data-container="body" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                  tabindex="-1" placement="left">?</button>
+                <ng-template #popDesc>
+                  <ul>
+                    <li>Description is required. </li>
+                    <li> It should be minimum 1 character and maximum 255 characters long.</li>
+                  </ul>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group col-md-12 popover-field">
+                <label class="focused">Category Type</label>
+                <select class="form-control" formControlName="categoryType" name="categoryType" [(ngModel)]="categoryType" required>
+ <option selected="selected" value="">--select--</option>
+ <option *ngFor="let categoryType of categoryTypes" [value]="categoryType.CategoryId" >{{categoryType.CategoryName}}</option>
+ </select>
+                <div class="msg" style="color: red;" *ngIf="addNewTransactionTypeForm.controls['categoryType'].invalid && (addNewTransactionTypeForm.controls['categoryType'].dirty || addNewTransactionTypeForm.controls['categoryType'].touched)">
+                  <div *ngIf="addNewTransactionTypeForm.controls['categoryType'].errors.required">
+                    Required.
+                  </div>
+                </div>
+                <button type="button" class="pop-over" [popover]="popCategoryType" data-container="body" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                  tabindex="-1" placement="left">?</button>
+                <ng-template #popCategoryType>
+                  <ul>
+                    <li> Category Type is required. </li>
+                    <li>Select Category Type.
+                    </li>
+                  </ul>
+                </ng-template>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group checkbox">
+                <input type="checkbox" id="automatic" name="automatic" [(ngModel)]="isAutoChecked" formControlName="automatic">
+                <label for="automatic"><span></span> Automatic</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group col-md-12 popover-field" style="clear: left;">
+                <label class="focused">Adjustment Type</label>
+                <select class="form-control" formControlName="adjustmentType" [(ngModel)]="adjustmentType">
+ <option selected="selected" value="">--Select--</option>
+ <option *ngFor='let dropDownValuesResult of adjustmentTypes' [value]="dropDownValuesResult.AdjustmentCategoryId">{{dropDownValuesResult.AdjustmentCategory}}</option>
+ </select>
+                <div class="msg" style="color: red;" *ngIf="addNewTransactionTypeForm.controls['adjustmentType'].invalid && (addNewTransactionTypeForm.controls['adjustmentType'].dirty || addNewTransactionTypeForm.controls['adjustmentType'].touched)">
+                  <div *ngIf="addNewTransactionTypeForm.controls['adjustmentType'].errors.required">
+                    Required.
+                  </div>
+                </div>
+                <button type="button" class="pop-over" [popover]="popAType" data-container="body" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                  tabindex="-1" placement="left">?</button>
+                <ng-template #popAType>
+                  <ul>
+                    <li> Select Adjustment Type. </li>
+                  </ul>
+                </ng-template>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group col-md-12 popover-field">
+                <label class="focused">Special Journal Type</label>
+
+                <select class="form-control" name="specialJournalType" formControlName="specialJournalType" [(ngModel)]="specialJournalType"
+                  required>
+ <option selected="selected" value="">--Select--</option>
+ <option *ngFor='let journalType of specialJournalTypes' [value]="journalType.SpecialJournalId" >{{journalType.SpecialJournalName}}</option>
+ </select>
+                <div class="msg" *ngIf="addNewTransactionTypeForm.controls['specialJournalType'].invalid && (addNewTransactionTypeForm.controls['specialJournalType'].dirty || addNewTransactionTypeForm.controls['specialJournalType'].touched )">
+                  <div *ngIf="addNewTransactionTypeForm.controls['specialJournalType'].errors.required">
+                    Required.
+                  </div>
+                </div>
+                <button type="button" class="pop-over" [popover]="popSJType" data-container="body" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                  tabindex="-1" placement="left">?</button>
+                <ng-template #popSJType>
+                  <ul>
+                    <li> Special Jouranal Type is required. </li>
+                    <li> Select Special Journal Type.</li>
+                  </ul>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 m-l-20">
+              <label for="" class="focused" class="display-inline">Status</label>
+              <div *ngFor="let status of radioStatus;let idx = index" class="custom-control custom-radio radio-inline">
+                <input formControlName="rdostatus" type="radio" [(ngModel)]="defaultStatus" class="custom-control-input" [value]="status.id"
+                  [id]='idx'>
+                <!--<span class="custom-control-indicator"> </span>-->
+                <label [for]="idx" class="custom-control-description">{{status.Value}}</label>
+              </div>
+            </div>
+          </div>
+          <div classs="row m-t-20">
+            <div class="col-md-12">
+              <div class="table-bdr">
+                <h3>Add Line Items</h3>
+                <div class="panel-body" *ngIf="showLineItemButton">
+                  <div class="col-md-12 pull-right">
+                    <button class="btn btn-primary btn-search pull-right" (click)="showLineItemButtons()"><i class="fa fa-plus-circle fa-lg" aria-hidden="true"></i> <span>Add Line Items</span></button>
+                  </div>
+                </div>
+                <div class="pad-10">
+                  <div *ngIf="showDropdowns">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group col-md-12 popover-field">
+                          <label for="glAccount" class="focused"> G/L Account # </label>
+                          <ng-select [active]="glAccountName" [allowClear]="true && !glAccountAlreadyExists" [items]="items" placeholder="--select--"
+                            name="glAccount" formControlName="glAccount" (selected)="glAccountSelected($event)">
+                          </ng-select>
+                          <div class="msg" *ngIf="glAccountAlreadyExists">
+                            <div> Duplicate G/L Account # is not allowed</div>
+                          </div>
+                          <div class="msg" *ngIf="addNewTransactionTypeForm.controls['glAccount'].invalid && (addNewTransactionTypeForm.controls['glAccount'].dirty || addNewTransactionTypeForm.controls['glAccount'].touched)">
+                            <div *ngIf="addNewTransactionTypeForm.controls['glAccount'].errors.required">
+                              Required.
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group col-md-12 popover-field">
+                          <label for="debitCreditSelect" class="focused"> DR/CR Flag</label>
+                          <select class="form-control" id="debitCreditSelect" formControlName="debitCreditSelect" name="debitCreditSelect" [(ngModel)]="selectedDcValue"
+                            required>
+ <option selected="selected" value="">--Select--</option>
+ <option value="D">Debit</option>
+ <option value="C">Credit</option>
+ </select>
+                          <div class="msg" *ngIf="addNewTransactionTypeForm.controls['debitCreditSelect'].invalid && (addNewTransactionTypeForm.controls['debitCreditSelect'].dirty || addNewTransactionTypeForm.controls['debitCreditSelect'].touched)">
+                            <div *ngIf="addNewTransactionTypeForm.controls['debitCreditSelect'].errors.required">
+                              Required.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row m-b-20">
+                      <div class="col-md-12">
+                        <button class="btn btn-primary btn-search" type="submit" [disabled]="glAccountAlreadyExists || selectedDcValue == '' || addNewTransactionTypeForm.controls['glAccount'].value==''||addNewTransactionTypeForm.controls['glAccount'].value==null"
+                          (click)="addGlAccounts()">Add</button>
+                        <button class="btn btn-primary btn-reset" type="button" (click)="resetGlAccounts();">Reset</button>
+                        <button class="btn btn-primary btn-reset" type="button" (click)="cancelGlAccounts();" *ngIf="showCancelButton">Cancel</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="table-bdr" style="margin-top:20px;" *ngIf="glAccountDetails">
+                    <h3>G/L Account# Details</h3>
+                    <div class="pad-10">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th>G/L Account #</th>
+                            <th>DRCR Flags</th>
+                            <th>Delete</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let selectedActDetail of selectedGlActDetails; let i = index" style="margin-bottom: 10px;">
+                            <td>{{selectedActDetail.glAccount}}</td>
+                            <td>{{selectedActDetail.creditDebit}}</td>
+                            <td><img src="assets/images/svg/delete-blue.svg" class="icon-svg3" alt="" (click)="removeGlAccount(selectedActDetail)"></td>
+                          </tr>
+                          <tr *ngIf='!selectedGlActDetails || selectedGlActDetails.length==0'>
+                            <td colspan="3">
+                              <div>
+                                <div>No Records to display</div>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row m-r-10 m-b-20">
+              <div class="col-md-12 text-right ">
+                <button class="btn btn-primary btn-search" type="submit" (click)="submitAddNewTransType()" *ngIf="submitAddNewTrans" [disabled]="disableCreateButton">Submit</button>
+                <button type="button" class="btn btn-primary btn-search" (click)="updateAddNewTransType()" *ngIf="updateAddNewTrans" [disabled]="disableUpdateButton">Update</button>
+                <button type="button" class="btn btn-primary btn-search" (click)="resetAddNewTransType()" *ngIf="resetAddNewTrans">Reset</button>
+                <button class="btn btn-primary btn-reset" type="reset" (click)="cancelNewTransType()" *ngIf="cancelAddNewTrans">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="row m-t-10">
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <h3>Transaction Types</h3>
+        <div class="pad-20">
+          <div class="table-responsive" *ngIf='transactionTypeDetails && transactionTypeDetails.length'>
+            <table class="table bordered">
+              <thead class="nowrap">
+                <tr>
+                  <th (click)="sortDirection('TXNTYPE')" class="sorting-handle"> Type
+                    <span *ngIf="gridArrowTXNTYPE">
+                            <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                          </span>
+                  </th>
+                  <th>Description</th>
+                  <th>Category Type</th>
+                  <th (click)="sortDirection('Adjustmentcategory')" class="sorting-handle"> Adjustment Type
+                    <span *ngIf="gridArrowAdjustmentcategory">
+                          <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                        </span>
+                  </th>
+                  <th>Status</th>
+                  <th>Edit</th>
+                  <th>View</th>
+                  <th>History</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor='let item of transactionTypeDetails | paginate: { itemsPerPage:pageItemNumber, currentPage: p, totalItems:totalRecordCount}'>
+                  <td>{{item.TxnType}}</td>
+                  <td>{{item.TxnDescription}}</td>
+                  <td>{{item.TxnTypeCategoryName}}</td>
+                  <td>{{item.AdjustmentCategory}}</td>
+                  <td>{{item.Status}}</td>
+                  <!--<td><i *ngIf="item.Status === 'Active' || item.Status === 'ACTIVE' || item.Status === 'active'" class="fa fa-toggle-on"
+ aria-hidden="true"></i>
+ <i *ngIf="item.Status === 'Inactive' || item.Status === 'INACTIVE' ||item.Status === 'InActive'" class="fa fa-toggle-off"
+ aria-hidden="true"></i></td>-->
+                  <td><i class="fa fa-pencil fa-lg cursorPointer" aria-hidden="true" (click)="editTransTypes(item)" [ngClass]="{'disabletextbox': disableUpdateButton}"></i></td>
+                  <td>
+                    <i class="fa fa-eye fa-lg cursorPointer" aria-hidden="true" (click)="viewTransTypes(item)" data-toggle="modal" data-target="#myviewModal"
+                      [ngClass]="{'disabletextbox': disableViewButton}"></i>
+                  </td>
+                  <td><i class="fa fa-history fa-lg cursorPointer" aria-hidden="true" (click)="historyTransTypes(item)" data-toggle="modal"
+                      data-target="#myHistoryModal" [ngClass]="{'disabletextbox': disableHistoryButton}"></i></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p *ngIf='!transactionTypeDetails || transactionTypeDetails.length==0' class="alert alert-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i><span style="padding-left:10px">You have no added transaction types</span></p>
+          <div *ngIf="totalRecordCount >= 11">
+            <div class="row page-info" *ngIf='transactionTypeDetails && transactionTypeDetails.length > 0'>
+              <div class="col-md-6 text-left">
+                <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+              </div>
+              <div class="col-md-6 text-right">
+                <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="viewPopup">
+  <div class="modal fade " id="myviewModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Transaction Type Details
+            </div>
+            <div class="panel-body bordered">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Txn Type</th>
+                    <th>G/L Account #</th>
+                    <th>DR/CR Flag</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let listItems of getLineItemsResponse">
+                    <td> {{listItems.TxnType}} </td>
+                    <td> {{listItems.ChartofAccountids}} </td>
+                    <td> {{listItems.DRCRFlags}} </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="historyPopup">
+  <div class="modal fade " id="myHistoryModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title"></h4>
+        </div>
+        <div class="modal-body">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Transaction Type History
+            </div>
+            <div class="panel-body bordered">
+              <table class="table" *ngIf="hideHistory">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Category Type</th>
+                    <th>Adjustment Type</th>
+                    <th>Status</th>
+                    <th>Created Date</th>
+                    <th>User</th>
+                    <th>Updated Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let historyItem of getTransactionTypeHistoryResponse">
+                    <td> {{historyItem.TxnType}} </td>
+                    <td> {{historyItem.TxnDescription}} </td>
+                    <td> {{historyItem.TxnTypeCategoryName}} </td>
+                    <td> {{historyItem.AdjustmentCategory}} </td>
+                    <td> {{historyItem.Status}} </td>
+                    <td> {{historyItem.CreatedDtae | customDateFormat}} </td>
+                    <td> {{historyItem.User}} </td>
+                    <td> {{historyItem.UpdatedDate | customDateFormat}} </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div *ngIf=' !getTransactionTypeHistoryResponse || getTransactionTypeHistoryResponse.length==0'>
+                No Records to display
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

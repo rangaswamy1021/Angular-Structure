@@ -1,0 +1,361 @@
+<div class="page-title-header wow fadeInDown">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">COURT</a>
+        </li>
+        <li class="active">Court Tracking</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Court Tracking</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      Court Tracking
+    </div>
+
+    <div class="panel-body bordered">
+      <form [formGroup]="searchForm" name="searchForm" novalidate>
+        <div class="col-md-6 form-group">
+          <label> Account # </label>
+          <input type="text" class="form-control" name="customerId" formControlName="customerId" [(ngModel)]="customerId">
+        </div>
+
+        <div class="col-md-6 form-group">
+          <label> Trip #  </label>
+          <input type="text" class="form-control" name="tripId" formControlName="tripId" [(ngModel)]="tripId">
+        </div>
+
+        <div class="col-md-6 form-group">
+          <label> Cause Number  </label>
+          <input type="text" class="form-control" name="causeNo" formControlName="causeNo" [(ngModel)]="causeNo">
+        </div>
+
+
+        <div class="col-md-6 form-group">
+          <label class="focused"> Court Status </label>
+          <select class="form-control" name="courtStatus" formControlName="courtStatus" [(ngModel)]="courtStatus"> 
+              <option selected="selected" value="">--SELECT--</option>
+            <option value="PreHearing"> PRE-HEARING </option>
+            <option value="Trail"> TRAIL </option>
+          </select>
+        </div>
+
+        <div class="col-md-12">
+          <button class="btn btn-default btn-search" (click)="SearchCourtCustomers()">Search</button>
+          <button class="btn btn-default btn-reset" (click)="resetSearch()">Reset</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      Court Customer Tracking
+    </div>
+    <div class="panel-body bordered">
+      <div class="table-responsive" *ngIf="courtCustomerRes && courtCustomerRes.length > 0;else noData">
+        <table class="table">
+          <thead class="nowrap">
+            <tr>
+              <th> Account # </th>
+              <th> Full Name </th>
+              <th> Evidence Created Date </th>
+              <th> Trip # </th>
+              <th> Complaint Amount </th>
+              <th> Total Outstanding Amount </th>
+              <th> Disposition </th>
+              <th> Cause Number </th>
+              <th> Status </th>
+              <th> Payment Amount </th>
+              <th> </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let courtCustomerDetails of courtCustomerRes | paginate: { itemsPerPage: pageItemNumber, currentPage: p,totalItems:totalRecordCount}">
+              <td> {{courtCustomerDetails.CustomerId}} </td>
+              <td class="nowrap"> {{courtCustomerDetails.FullName}} </td>
+              <td> {{courtCustomerDetails.EvidencePktCreatedDate | customDateFormat}} </td>
+              <td> {{courtCustomerDetails.TripId}} </td>
+              <td> {{courtCustomerDetails.ComplaintAmount| currencycustom}} </td>
+              <td> {{courtCustomerDetails.OutstandingAmt| currencycustom}} </td>
+
+              <td *ngIf="courtCustomerDetails.DispositionStatus == '';else Dispostion" class="nowrap">
+                <a (click)="getDispositionDetails(courtCustomerDetails)" data-toggle="modal" data-target="#caseDisposition">Disposition </a>                </td>
+              <ng-template #Dispostion>
+                <td class="nowrap">
+                  <a (click)="getDispositionDetails(courtCustomerDetails)" *ngIf="courtCustomerDetails.DispositionStatus == 'Guilty';else courtCustomerDetails.DispositionStatus=='Not Guilty'? notGuilty:guiltyPaid"
+                    data-toggle="modal" data-target="#caseDisposition"> {{courtCustomerDetails.DispositionStatus}} </a>
+                </td>
+              </ng-template>
+              <ng-template #notGuilty>
+                <span [ngClass]="{'disabletextbox': true}">Not Guilty</span>
+              </ng-template>
+              <ng-template #guiltyPaid>
+                <span [ngClass]="{'disabletextbox': true}">Guilty Paid</span>
+              </ng-template>
+              <td *ngIf="courtCustomerDetails.CaseNo.trim() != '';else noData1"><a (click)="getDetailsOfCaseNo(courtCustomerDetails)" data-toggle="modal" data-target="#caseNo"> {{courtCustomerDetails.CaseNo}} </a></td>
+              <!--<td><a (click)="getDetailsOfCaseNo(courtCustomerDetails)" data-toggle="modal" data-target="#caseNo" *ngIf="courtCustomerDetails.CaseNo == '' || courtCustomerDetails.CaseNo == null"> N/A </a></td>-->
+              <ng-template #noData1>
+                <td><a (click)="getDetailsOfCaseNo(courtCustomerDetails)" data-toggle="modal" data-target="#caseNo">N/A</a></td>
+              </ng-template>
+
+              <td class="nowrap"><a (click)="getDetailsOfCaseStatus(courtCustomerDetails)" data-toggle="modal" data-target="#caseStatus"> {{courtCustomerDetails.TrailStatus}} </a></td>
+              <td class="text-right"> {{courtCustomerDetails.PaymentAmt| currencycustom}} </td>
+              <td style="text-align: center; cursor: pointer"><a href="{{courtCustomerDetails.FileFullPath}}" target="_blank"><img src="assets/images/pdf.jpg" alt=""></a></td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-template #noData>
+        <div>No records to display</div>
+      </ng-template>
+    </div>
+
+    <div *ngIf="totalRecordCount >= 11">
+      <div class="row page-info" *ngIf="(this.courtCustomerRes && this.courtCustomerRes.length > 0)">
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for case no-->
+<div class="modal fade" id="caseNo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" *ngIf="detailsOfCaseNo != null && detailsOfCaseNo !=''">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Cause Number
+          </div>
+          <div class="panel-body bordered">
+            <div class="row">
+              <div class="col-md-12">
+                <label class="col-md-6">Account #</label>
+                <span class="col-md-6">{{detailsOfCaseNo.CustomerId}}</span>
+              </div>
+              <div class="col-md-12">
+                <label for="causeNo" class="col-md-6">Cause Number</label>
+                <div class="col-md-6">
+                  <input type="text" id="causeNo" class="form-control" [(ngModel)]="editableCaseNo">
+                  <div class="msg red" *ngIf="validateCaseNo">
+                    <div>Required</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 text-right">
+            <button type="button" class="btn btn-primary btn-search" (click)="updateCaseNo(detailsOfCaseNo)">Submit</button>
+            <button type="button" class="btn btn-primary btn-reset" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for case status-->
+<div class="modal fade" id="caseStatus" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" *ngIf="detailsOfCaseStatus != null && detailsOfCaseStatus !=''">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Case Status
+          </div>
+          <div class="panel-body bordered">
+            <div class="row">
+              <div class="col-md-12">
+                <label class="col-md-6">Account #</label>
+                <span class="col-md-6">{{detailsOfCaseStatus.CustomerId}}</span>
+              </div>
+              <div class="col-md-12">
+                <label class="col-md-6">Current Case Status</label>
+                <span class="col-md-6">{{detailsOfCaseStatus.TrailStatus}}</span>
+              </div>
+              <div class="col-md-12">
+                <label for="courtStatus" class="col-md-6">Court Status</label>
+                <div class="col-md-6">
+                  <select id="courtStatus" class="form-control" [(ngModel)]="editableCaseStatus"> 
+                    <option selected="selected" value="">--SELECT--</option>
+                    <option value="PreHearing"> PRE-HEARING </option>
+                    <option value="Trail"> TRAIL </option>
+                 </select>
+                  <div class="show-error" *ngIf="validateCaseStatus">
+                    <div>Required</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 text-right">
+            <button type="button" class="btn btn-primary btn-search" (click)="updateCaseStatus(detailsOfCaseStatus)">Submit</button>
+            <button type="button" class="btn btn-primary btn-reset" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for disposition-->
+<div class="modal fade" id="caseDisposition" role="dialog">
+  <div class="modal-dialog" role="document">
+
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Case Disposition
+          </div>
+          <div class="panel-body bordered">
+            <div class="row">
+              <div class="col-md-12">
+                <label class="col-md-6">Account #</label>
+                <span class="col-md-6">{{detailsOfDisposition.CustomerId}}</span>
+              </div>
+              <div class="col-md-12">
+                <label class="col-md-6">Current Case Status</label>
+                <span class="col-md-6">{{detailsOfDisposition.TrailStatus}}</span>
+              </div>
+              <div *ngIf="isDisposition">
+                <form [formGroup]="dispositionForm" name="dispositionForm">
+                  <div class="col-md-12">
+                    <label class="col-md-6">Disposition</label>
+                    <div class="col-md-6">
+                      <div class="display-inline">
+                        <div *ngFor="let status of statuses" class="custom-control custom-radio radio-inline">
+                          <input formControlName="disposition" type="radio" [(ngModel)]="defaultStatus" class="custom-control-input" [value]="status.id"
+                            [id]="status.id">
+                          <label [for]="status.id" class="custom-control-description">{{status.Value}}</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <label class="col-md-6" for="browseFile">Upload Document</label>
+                    <div class="file-upload-field col-md-6 popover-field">
+                      <input type="file" formControlName="uploadFile" accept=".pdf" id="browseFile" class="form-control" #cmpFile/>
+                      <button type="button" class="pop-over" data-container="body" [popover]="popFileUpload" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                        placement='left'>?</button>
+                      <ng-template #popFileUpload>
+                        <ul>
+                          <li>Document is required</li>
+                        </ul>
+                      </ng-template>
+                      <!--<div class="show-error" *ngIf="isNotPDF">
+                        <div>Attach PDF document only.</div>
+                      </div>-->
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <label class="col-md-6">Notes</label>
+                    <div class="col-md-6 popover-field">
+                      <textarea class="form-control" formControlName="notes" cols="5" rows="3" id="description" name="description" (keyup)="calculateLength($event)"
+                        [maxLength]="descriptionMaxLength"> </textarea>
+                      <button type="button" class="pop-over" data-container="body" [popover]="popD" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                        placement='left'>?</button>
+                      <ng-template #popD>
+                        <ul>
+                          <li>Description allows 255 characters only.</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                    <small class="pull-right" style="padding-right:30px"> Left: {{descriptionLength}} characters </small>
+                  </div>
+                </form>
+              </div>
+              <div class="col-md-12" *ngIf="!isDisposition">
+                <label class="col-md-6">Disposition</label>
+                <span class="col-md-6">Guilty</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-default" *ngIf="!isDisposition">
+          <div class="panel-heading">
+            Check Details
+          </div>
+          <div class="panel-body bordered">
+            <div class="row">
+              <div class="col-md-12">
+                <label class="col-md-6">Trip Amount</label>
+                <span class="col-md-6">{{detailsOfDisposition.ComplaintAmount | currencycustom}}</span>
+              </div>
+              <div class="col-md-12">
+                <form [formGroup]="checkForm" name="checkForm">
+                  <label for="causeNo" class="col-md-6">Check #</label>
+                  <div class="col-md-6 popover-field">
+                    <input type="text" maxlength="15" minlength="4" id="causeNo" class="form-control" formControlName="checkId" name="checkId">
+                    <div class="msg" *ngIf="checkForm.controls['checkId'].invalid && (checkForm.controls['checkId'].dirty || checkForm.controls['checkId'].touched)">
+                      <div *ngIf="checkForm.controls['checkId'].errors.required">
+                        Required
+                      </div>
+                      <div *ngIf="checkForm.controls['checkId'].errors.pattern">
+                        Only numbers allowed
+                      </div>
+                    </div>
+                    <button type="button" class="pop-over" [popover]="popDesc" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                      placement="left">?</button>
+                    <ng-template #popDesc>
+                      <ul>
+                        <li>Check # is required.</li>
+                        <li>It allows only numbers.</li>
+                        <li>It should be minimum 4 and maximum 15 numbers.</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </form>
+              </div>
+              <div class="col-md-12">
+                <label for="causeNo" class="col-md-6">Routing #</label>
+                <div class="col-md-6">
+                  <input type="text" disabled="disabled" id="causeNo" class="form-control" value="0000000000">
+                </div>
+              </div>
+              <div class="col-md-12">
+                <label for="causeNo" class="col-md-6">Check Date</label>
+                <div class="col-md-6">
+                  <input type="text" disabled="disabled" id="causeNo" class="form-control" value="{{toDayDate}}">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 text-right">
+            <button type="button" *ngIf="isDisposition" class="btn btn-primary btn-search" (click)="updateDisposition(detailsOfDisposition)">Submit</button>
+            <button type="button" *ngIf="!isDisposition" class="btn btn-primary btn-search" (click)="makePayment(detailsOfDisposition)">Make Payment</button>
+            <button type="button" *ngIf="!isDisposition" class="btn btn-primary btn-reset" (click)="resetClickGuilty()">Reset</button>
+            <button type="button" *ngIf="isDisposition" class="btn btn-primary btn-reset" (click)="resetClickDisposition()">Reset</button>
+            <button type="button" class="btn btn-primary btn-reset" data-dismiss="modal" (click)="resetClickGuilty();resetClickDisposition()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event, 1000)"></app-success-failure-alerts-message>

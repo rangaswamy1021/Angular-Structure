@@ -1,0 +1,141 @@
+<form role="form" name="trackComplaints" [formGroup]="trackComplaints">
+    <div class="page-title-header">
+        <div class="row no-gutters">
+            <div class="col-md-12">
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="#">CSC</a>
+                    </li>
+                    <li>
+                        <a href="#">Helpdesk</a>
+                    </li>
+                    <li class="active">Track Complaints</li>
+                </ol>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-header">
+                    <h1>Track Complaints</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="content">
+        <div *ngIf="currentSubSystem=='CSC'">
+            <app-account-info></app-account-info>
+        </div>
+
+        <div class="panel panel-default">
+
+
+            <div class="panel-body">
+
+                <div class="col-md-6">
+                    <div class="form-group col-md-12">
+                        <label for="timePeriod" class="focused" >Time Period</label>
+                         <div class="show-error" *ngIf="!invalidDate && trackComplaints.controls['timePeriod'].invalid && (trackComplaints.controls['timePeriod'].dirty || trackComplaints.controls['timePeriod'].touched)">
+                        <div *ngIf="trackComplaints.controls['timePeriod'].errors.required">
+                        Required.
+                        </div>
+                        </div>
+                        <my-date-range-picker name="timePeriod" (inputFieldChanged)="onDateRangeFieldChanged($event)" [options]="myDateRangePickerOptions" formControlName="timePeriod"  tabindex="2"></my-date-range-picker>
+                      <div class="show-error" *ngIf="invalidDate">
+                   <div> Invalid Date Range</div>
+                    </div>
+
+                        <!--<input class="form-control" placeholder="Daterangepicker" bsDaterangepicker #dpr="bsDaterangepicker" name="timePeriod" formControlName="timePeriod"
+                            [(ngModel)]="timePeriodValue" autocomplete="off">-->
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group col-md-12">
+                        <label class="focused" > Status </label>
+                        <select class="form-control" formControlName="CmpStatus" name="CmpStatus">
+                            <option selected='selected' value="0">--Select--</option>
+                            <option *ngFor='let p of pmStatus' value="{{p.LookUpTypeCode}}">{{p.LookUpTypeCodeDesc}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-6 clear serve
+                " >
+                    <div class="form-group col-md-12">
+                        <label class="focused"> Type </label>
+                        <select class="form-control" formControlName="CmpType" name="CmpType">
+                            <option selected='selected' value="0">--Select--</option>
+                            <option *ngFor='let pt of problemTypes' value="{{pt.Key}}">{{pt.Value}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group col-md-12">
+                        <label> Ticket # </label>
+                        <input type="text" class="form-control" formControlName="ticketid" name="ticketid">
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <button type="submit" (click)="searchTrack()" class="btn btn-primary btn-search">Search</button>
+                    <button type="button" (click)="resetClick()" class="btn btn-primary btn-reset"> Reset </button>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading"> Complaint Details </div>
+            <div class="panel-body bordered">
+                <div *ngIf='searchTrackResponse && searchTrackResponse.length;else NodetailsBlock'>
+                    <table class="table table-bordered table-sm">
+                        <thead>
+                            <tr>
+                                <th>Ticket#</th>
+                                <th>Created Date</th>
+                                <th>Status</th>
+                                <th>Due Date</th>
+                                <th> Title </th>
+                                <th>Type</th>
+                                <th> Action </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor='let item of searchTrackResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: currentPage }'>
+                                <td>{{item.TicketId}}</td>
+                                <td>{{item.DateReported| customDateTimeFormat}}</td>
+                                <td>{{item.Status}}</td>
+                                <td>{{item.TargetDate| customDateTimeFormat}}</td>
+                                <td>{{item.ProblemTitle}}</td>
+                                <td>{{item.ProblemTypeDesc}}</td>
+                                <td>
+                                    <a (click)='viewComplaint(item.ProblemId)'>View</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row page-info ">
+                        <div class="col-md-6 text-left ">
+                            <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+                        </div>
+                        <div class="col-md-6 text-right ">
+                            <pagination-controls (pageChange)="pageChanged($event) "></pagination-controls>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ng-template #NodetailsBlock>
+                <div>No details to display</div>
+            </ng-template>
+        </div>
+    </div>
+
+
+
+
+
+</form>

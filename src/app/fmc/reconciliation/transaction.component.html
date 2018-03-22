@@ -1,0 +1,223 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">FMC</a></li>
+        <li><a href="#">Reconciliation</a></li>
+        <li class="active">Transaction Reconciliation</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Transaction Reconciliation</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="table-bdr">
+    <form role="form" name="transactionForm" [formGroup]="transactionForm">
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-6 form-group">
+            <label class="focused">Transaction Type </label>
+            <select class="form-control" id="TransactionType" formControlName="TransactionType" name="TransactionType" (change)="tollTransType($event)">
+              <option selected="selected" value="0">ALL</option>
+              <option *ngFor="let tollType of tollTypes" [value]="tollType.Key">{{tollType.Value}}</option>
+            </select>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="timePeriod" class="focused">Date</label>
+            <!--<input class="form-control disbale-to-write" formControlName="timePeriod" placeholder="Select Date Range" bsDaterangepicker
+                #dpr="bsDaterangepicker" name="timePeriod" [(ngModel)]="timePeriod">-->
+            <my-date-range-picker (inputFieldChanged)='onDateRangeFieldChanged($event)' name="timePeriod" [options]="myDateRangePickerOptions"
+              formControlName="timePeriod" placeholder="MM/DD/YYYY - MM/DD/YYYY"></my-date-range-picker>
+            <div class="show-error" *ngIf="!invalidDate && transactionForm.controls['timePeriod'].invalid && (transactionForm.controls['timePeriod'].dirty || transactionForm.controls['timePeriod'].touched)">
+              <div *ngIf="transactionForm.controls['timePeriod'].errors.required">
+                Required.
+              </div>
+            </div>
+            <div class="show-error" *ngIf="invalidDate">
+              <div>
+                Invalid Date Range
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <button type="button" class="btn btn-primary btn-search" [disabled]="disableSubmit" (click)="tranactionSearch()">Search</button>
+            <button type="button" class="btn btn-default btn-reset" (click)="resetbtn()">Reset</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+ <div class="panel panel-default">
+    
+    <div class="panel-heading">
+      <span>{{tollTransName}} Reconciliation Report </span>
+    </div>
+    <div class="panel-body bordered">
+      <div>
+        <table class="table bordered col-md-12">
+          <thead>
+            <tr>
+                <th></th>
+              <th >
+                Received
+              </th>
+              <th></th>
+              <th >
+                Qualified
+              </th>
+            </tr>
+          </thead>
+          <tbody  >
+            <tr  *ngFor="let transaction of AckTransaction">
+              <td class="col-xs-3">{{transaction.Source}}</td>
+              <td class="col-xs-3">{{transaction.HOSTTRXN_RECEIVED}}</td>
+              <td class="col-xs-4">{{transaction.AckSource}}</td>
+              <td class="col-xs-2">{{transaction.HOSTTRXN_ACKNOWLEDGED}}</td>
+            </tr>
+            <tr *ngIf="rowcount>=2"  >
+              <td >Total</td>
+              <td>{{cntReceivedTotal}}</td>
+              <td></td>
+              <td>{{cntAckTotal}}</td>
+            </tr>
+            <tr>
+              <td >Unqualified(Format Error)</td>
+              <td>{{cntErrorTotal}}</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="row">
+          <div class="col-xs-6">
+            <table class="table bordered  m-t-20">
+              <thead>
+                <tr>
+                  <th colspan="2">
+                    Total Transactions
+                  </th>
+                </tr>
+              </thead>
+              <tbody *ngFor="let txnPoste of transactionres">
+                <tr>
+                  <td class="col-xs-6">Qualified </td>
+                  <td>{{txnPoste.Trxn.TRXN_RECEIVED}}</td>
+                </tr>
+                <tr>
+                  <td>Processed</td>
+                  <td>{{finalCount}}</td>
+                </tr>
+                <tr>
+                  <td>Backlog</td>
+                  <td>{{(txnPoste.Trxn.TRXN_RECEIVED-finalCount)+txnPoste.Trxn.TRXN_INPROCESS}}</td>
+                </tr>
+                <tr>
+                  <td>Exception</td>
+                  <td>{{txnPoste.Trxn.TRXN_ERROR}}</td>
+
+              </tbody>
+            </table>
+          </div>
+
+          <div class="col-xs-6 m-t-20">
+            <table class="table bordered">
+              <thead>
+                <tr>
+                  <th colspan="3">
+                    Transactions Summary
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td> </td>
+                  <td style="font-weight:bold"><span class="pull-right">Count</span></td>
+                  <td style="font-weight:bold"><span class="pull-right">Potential Revenue</span></td>
+                </tr>
+                <tr *ngFor="let trxnPosted of trxnPostedRes">
+                  <td style="width:50%">{{trxnPosted.Source}}</td>
+                  <td><span class="pull-right">{{trxnPosted.Count}}</span></td>
+                  <td><span class="pull-right">{{trxnPosted.Amount | currencycustom}}</span></td>
+                </tr>
+                <tr>
+                  <td class="tfoot-total">Total</td>
+                  <td><span class="pull-right">{{countTotal}}</span></td>
+                  <td><span class="pull-right">{{TrxnPostedTotal | currencycustom}}</span></td>
+                </tr>
+                <tr *ngFor="let trxnPosted12 of trxnPostedLinkedRes">
+                  <td style="width:50%">{{trxnPosted12.Source}}</td>
+                  <td><span class="pull-right">{{trxnPosted12.Count}}</span></td>
+                  <td><span class="pull-right">{{trxnPosted12.Amount | currencycustom}}</span></td>
+                </tr>
+              </tbody>
+              <tfoot class="total-amount">
+                <tr>
+                  <td class="tfoot-total">Grand Total</td>
+                  <td><span class="pull-right">{{finalCount}}</span></td>
+                  <td><span class="pull-right">{{finalTrxnPostedTotal | currencycustom}}</span></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+        <table class="table bordered col-md-12 m-t-20">
+          <thead>
+            <tr>
+              <th colspan="4">
+                Transactions Status Details
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td></td>
+              <td></td>
+              <td style="font-weight:bold"><span class="pull-right">Count</span></td>
+              <td style="font-weight:bold"><span class="pull-right">Potential Revenue</span></td>
+            </tr>
+            <tr *ngFor="let trxnPosted of tripReconRes">
+              <td style="width:30%">{{trxnPosted.Source}}</td>
+              <td style="width:30%">{{trxnPosted.ReconType}}</td>
+              <td><span class="pull-right">{{trxnPosted.Count}}</span></td>
+              <td><span class="pull-right">{{trxnPosted.Amount | currencycustom}}</span></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td class="tfoot-total">Total</td>
+              <td><span class="pull-right">{{countTrxnPostedTotal}}</span></td>
+              <td><span class="pull-right">{{TripReconTotal | currencycustom}}</span></td>
+            </tr>
+            <tr *ngFor="let trxnPosted of tripReconLinkedRes">
+              <td style="width:30%">{{trxnPosted.Source}}</td>
+              <td style="width:30%">{{trxnPosted.ReconType}}</td>
+              <td><span class="pull-right">{{trxnPosted.Count}}</span></td>
+              <td><span class="pull-right">{{trxnPosted.Amount | currencycustom}}</span></td>
+            </tr>
+          </tbody>
+          <tfoot class="total-amount">
+            <tr>
+              <td></td>
+              <td class="tfoot-total">Grand Total</td>
+              <td><span class="pull-right">{{finalCount}}</span></td>
+              <td><span class="pull-right">{{finalTrxnPostedTotal | currencycustom}}</span></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+ </div>
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>

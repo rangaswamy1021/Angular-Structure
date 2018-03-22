@@ -1,0 +1,149 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Customer Services</a></li>
+        <li class="active">Manage Discounts</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Discounts</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <app-account-info></app-account-info>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (onOk)="deleteOKDiscount($event)" (setFlag)="setOutputFlag($event)">
+  </app-success-failure-alerts-message>
+  <div class="panel panel-default">
+  <div *ngIf="isNonRevenue">
+  <div class="table-bdr">
+    <h3>Discounts assigned to Customer</h3>
+    <div class="table-default table-responsive">
+      <div *ngIf='discountResponse && discountResponse.length;else NodetailsBlock'>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Discount Code</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Type</th>
+              <th>Start Date/Time</th>
+              <th>End Date/Time</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let object of discountResponse">
+              <td> {{object.DiscountCode }} </td>
+              <td> {{object.DiscountName}} </td>
+              <td> {{object.Description}} </td>
+              <td> {{object.DiscountType}} </td>
+              <td> {{object.StartEffectiveDate | customDateTimeFormat}} </td>
+              <td> {{object.EndEffectiveDate | customDateTimeFormat}} </td>
+              <td><button type="submit" data-toggle="modal" (click)="deleteDiscount(object.DiscountId, object.AvailedDiscountId, object.DiscountName)"
+                  [disabled]="isDelete" class="btn btn-default btn-reset">Delete</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  <div class="table-bdr">
+    <h3>Discounts available for selected Plan</h3>
+    <div class="table-default table-responsive">
+      <div *ngIf='planResponse && planResponse.length;else NodetailsBlock'>
+        <table class="table bordered">
+          <thead>
+            <tr>
+              <th>
+              </th>
+              <th>Discount Code</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Type</th>
+              <th>Start Date/Time</th>
+              <th>End Date/Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let object1 of planResponse; let row_no=index'>
+              <td>
+                <div class="radio">
+                  <input type="radio" (change)="selectedChkBox(row_no,object1)" name="radio" [id]='object1.DiscountCode' class="custom-control-input">
+                  <label [for]="object1.DiscountCode" class="custom-control-description"></label>
+                </div>
+              </td>
+              <td> {{object1.DiscountCode }} </td>
+              <td> {{object1.DiscountName}} </td>
+              <td> {{object1.Description}} </td>
+              <td> {{object1.DiscountType}} </td>
+              <td> {{object1.StartEffectiveDate | customDateTimeFormat}} </td>
+              <td> {{object1.EndEffectiveDate | customDateTimeFormat}} </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #NodetailsBlock>
+    <div>No details to display</div>
+  </ng-template>
+  <div *ngIf="planResponse && planResponse.length>0">
+    <div class="row">
+      <div class="col-md-12">
+        <form role="form" name="dateForm" [formGroup]="dateForm">
+          
+           
+            <div class="col-md-6">
+              <div class="form-group popover-field col-md-12">
+                 <label  class="focused">Start Date/Time</label>
+                <div class="show-error" *ngIf="!invalidStartDate && dateForm.controls['start'].invalid && (dateForm.controls['start'].dirty || dateForm.controls['start'].touched)">
+                  <div *ngIf="dateForm.controls['start'].errors.required">
+                    Required.
+                  </div>
+                </div>
+                  <my-date-picker name="start" [options]="myDatePickerOptions" formControlName="start" placeholder="MM/DD/YYYY" [ngClass]="{'disabletextbox-bgcolor': !enableStartDate}"
+                  (dateChanged)="changeDate($event)" (inputFieldChanged)='onDateRangeFieldChanged($event)'></my-date-picker>
+                 <div  *ngIf=invalidStartDate  class="show-error">
+                  <div> Invalid Date</div>
+                </div>
+              </div>
+            </div>
+            <!--<label class="focused col-sm-2 control-label col-sm-offset-4 text-right p-t-7">End Date/Time</label>-->
+           <div class="col-md-6">
+              <div class="form-group popover-field col-md-12">
+                 <label  class="focused">End Date/Time</label>
+                  <div class="show-error" *ngIf="!invalidEndDate && dateForm.controls['end'].invalid && (dateForm.controls['end'].dirty || dateForm.controls['end'].touched)">
+                  <div *ngIf="dateForm.controls['end'].errors.required">
+                    Required.
+                  </div>
+                  </div>
+                 <my-date-picker name="end" [options]="myDatePickerOptions1" formControlName="end" placeholder="MM/DD/YYYY" [ngClass]="{'disabletextbox-bgcolor': !enableEndDate}" (inputFieldChanged)="changeEndDate($event)"></my-date-picker>
+                  <div  *ngIf=invalidEndDate  class="show-error" >
+                    <div>Invalid Date</div>
+                </div>
+              </div>
+            </div>
+         
+        </form>
+      </div>
+    </div>
+    <div class="row m-t-20">
+      <div class="col-md-12 text-right">
+        <button class="btn btn-primary btn-search" [disabled]="isAssign" (click)="assignCustomerDiscounts()">Assign Discounts</button>
+        <button class="btn btn-primary btn-reset" (click)="reset()" type="reset">Reset</button>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>

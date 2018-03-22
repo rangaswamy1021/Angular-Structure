@@ -1,0 +1,400 @@
+<div class="page-title-header container">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">IMC</a></li>
+        <li class="active">Purchase Orders</li>
+        <li class="active">Return Purchase Orders</li>
+      </ol>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Return Purchase Order</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)" (onOk)="deletePurchaseOrder($event)"></app-success-failure-alerts-message>
+<div class="content">
+  <div class="content">
+    <div class="content">
+      <div [hidden]="isSubmitted">
+        <form role="form" name="returnOrdersSearchForm" [formGroup]="returnOrdersSearchForm">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Search Return Purchase Order
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group col-md-12">
+                    <label>New Purchase Order #</label>
+                    <input type="text" class="form-control" placeholder="New Purchase Order #" id="newOrderNumber" name="newOrderNumber" maxlength="20"
+                      tabindex="1" formControlName="newOrderNumber" autofocus>
+                    <div class="msg" *ngIf="returnOrdersSearchForm.controls['newOrderNumber'].invalid && (returnOrdersSearchForm.controls['newOrderNumber'].dirty || returnOrdersSearchForm.controls['newOrderNumber'].touched)">
+                      <div *ngIf="returnOrdersSearchForm.controls['newOrderNumber'].errors.pattern">
+                        Only Alphanumerics - / and spaces allowed.
+                      </div>
+                      <div *ngIf="returnOrdersSearchForm.controls['newOrderNumber'].errors.required">
+                        At least 1 field is required.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group col-md-12">
+                    <label>Old Purchase Order #</label>
+                    <input type="text" class="form-control" placeholder="Old Purchase Order #" id="oldOrderNumber" name="oldOrderNumber" maxlength="20"
+                      tabindex="2" formControlName="oldOrderNumber">
+                    <div class="msg" *ngIf="returnOrdersSearchForm.controls['oldOrderNumber'].invalid && (returnOrdersSearchForm.controls['oldOrderNumber'].dirty || returnOrdersSearchForm.controls['oldOrderNumber'].touched)">
+                      <div *ngIf="returnOrdersSearchForm.controls['oldOrderNumber'].errors.pattern">
+                        Only Alphanumerics - / and spaces allowed
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group col-md-12">
+                    <label class="focused">Purchase Order Status</label>
+                    <select class="form-control" id="orderStatus" name="orderStatus" formControlName="orderStatus" tabindex="3">
+                 <option selected="selected" value="">--Select--</option>
+                <option *ngFor="let status of purchaseStatuses" value="{{status.LookUpTypeCode}}">{{status.LookUpTypeCodeDesc}}</option>
+             </select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group col-md-12">
+                    <label id="focused">Time Period</label>
+                    <my-date-range-picker name="timePeriod" [options]="myDateRangePickerOptions" placeholder="MM/DD/YYYY-MM/DD/YYYY" formControlName="timePeriod"
+                      (dateRangeChanged)="onDateRangeChanged($event)" (inputFieldChanged)='onDateRangeChanged($event)'></my-date-range-picker>
+                    <div class="show-error" *ngIf="invalidDateRange">
+                      <div> Invalid Date Range.</div>
+                    </div>
+                    <!--<input class="form-control" placeholder="MM/DD/YYYY-MM/DD/YYYY" bsDaterangepicker #dpr="bsDaterangepicker"
+                    name="timePeriod" formControlName="timePeriod" [(ngModel)]="timePeriod" tabindex="4" (bsValueChange)='bsValueChange($event)'>-->
+                  </div>
+
+                </div>
+                <div class="col-md-12">
+                  <button type="submit" class="btn btn-primary btn-search" (click)="returnPurchaseOrderSearchClick()" title="Search" tabindex="5"
+                    [disabled]="searchButton">Search</button>
+
+                  <button type="button" class="btn btn-primary btn-reset" (click)="returnPurchaseOrderSearchReset()" title="Clear Fields" tabindex="6">Reset</button>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-md-12">
+                <button class="btn btn-primary btn-search" (click)="addNewReturnPurchaseOrder()" tabindex="7" [disabled]="addPurchaseOrderButton"><i class="fa fa-plus-square-o fa-lg fa-fw" aria-hidden="true"></i>Add Return Purchase Order</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-bdr">
+          <h3>Return Purchase Order Search Results</h3>
+          <div class="pad-10" *ngIf='purchaseOrderResponse &&purchaseOrderResponse.length;else noRecordBlock '>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th (click)="sortDirection('COMPANYNAME')" class="sorting-handle">Vendor
+                      <span *ngIf=gridArrowCOMPANYNAME>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                      </span>
+                    </th>
+                    <th (click)="sortDirection('NEW_PONUMBER')" class="sorting-handle">New Purchase Order #
+                      <span *ngIf=gridArrowNEW_PONUMBER>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                      </span>
+                    </th>
+                    <th (click)="sortDirection('OLD_PONUMBER')" class="sorting-handle">Old Purchase Order #
+                      <span *ngIf=gridArrowOLD_PONUMBER>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                      </span>
+                    </th>
+                    <th (click)="sortDirection('ORDERDATE')" class="sorting-handle">Purchase Order Date
+                      <span *ngIf=gridArrowORDERDATE>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                      </span>
+                    </th>
+                    <th (click)="sortDirection('ORDERSTATUS')" class="sorting-handle">Purchase Order Status
+                      <span *ngIf=gridArrowORDERSTATUS>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                      </span>
+                    </th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor='let purchaseOrder of purchaseOrderResponse |paginate: { itemsPerPage: pageItemNumber, currentPage: page, totalItems:dataLength}'>
+                    <td>{{purchaseOrder.VendorName}}</td>
+                    <td>{{purchaseOrder.PurchaseOrderNumber}}</td>
+                    <td>{{purchaseOrder.OldPurchaseOrderNumber}}</td>
+                    <td> {{purchaseOrder.PurchaseOrderDate |customDateFormat}}</td>
+                    <td> {{getStatus(purchaseOrder.POStatus)}}</td>
+                    <td>
+                      <i *ngIf="disableViewLink" title="You can't view Purchase order details" class="fa fa-file-text-o fa-fw fa-lg link-disabled"
+                        aria-hidden="true"></i>
+                      <a *ngIf="!disableViewLink" class="btn" (click)="getPurchaseOrderDetailstoGrid(purchaseOrder)" title="View" tabindex="8"><i class="fa fa-file-text-o fa-fw fa-lg"></i></a>
+                    </td>
+                    <td>
+                      <span *ngIf="disableCancelLink">
+                    <span title="You can't cancel purchase order" class="link-disabled" *ngIf="getStatus(purchaseOrder.POStatus)=='Purchase Order Created';else elseStatusBlock"
+                     tabindex="8"> Cancel</span>
+                      </span>
+                      <span *ngIf="!disableCancelLink">
+                     <a class="btn" *ngIf="getStatus(purchaseOrder.POStatus)=='Purchase Order Created';else elseStatusBlock" (click)="deletePurchaseOrderBtn(purchaseOrder.PurchaseOrderId)"
+                      title="Cancel" tabindex="8"> Cancel</a>
+                        </span>
+                      <ng-template #elseStatusBlock>
+                        <a></a>
+                      </ng-template>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="row page-info">
+              <div class="col-md-6 text-left">
+                <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+              </div>
+              <div class="col-md-6 text-right">
+                <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div [hidden]="!isSubmitted">
+        <div class="table-bdr">
+          <h3>Purchase Order</h3>
+          <form role="form" name="returnOrdersAddForm" [formGroup]="returnOrdersAddForm">
+            <div class="pad-10">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group col-md-12 popover-field">
+                    <label> New Purchase Order #  
+                         <span style="padding-left: 40px;"> 
+                           <span *ngIf="!poNumberStatus" style="color:red;">Already Exists</span>
+                         </span></label>
+                    <input type="text" placeholder="New Purchase Order #" class="form-control" id="newOrderNumber" name="newOrderNumber" minlength=1
+                      maxlength="20" formControlName="newOrderNumber" (change)="POUniquenessCheck(returnOrdersAddForm.controls['newOrderNumber'].value)"
+                      tabindex="10">
+                    <div class="msg" *ngIf="returnOrdersAddForm.controls['newOrderNumber'].invalid && (returnOrdersAddForm.controls['newOrderNumber'].dirty || returnOrdersAddForm.controls['newOrderNumber'].touched)">
+                      <div *ngIf="returnOrdersAddForm.controls['newOrderNumber'].errors.required">
+                        Required.
+                      </div>
+                      <div *ngIf="returnOrdersAddForm.controls['newOrderNumber'].errors.pattern">
+                        Only allows alphanumerics - / space(s) and Initial space(s) are not allowed.
+                      </div>
+                      <div *ngIf="returnOrdersAddForm.controls['newOrderNumber'].errors.minlength">
+                        Minimum 1 characters are required.
+                      </div>
+                      <div *ngIf="returnOrdersAddForm.controls['newOrderNumber'].errors.maxlength">
+                        Maximum 20 characters are allowed.
+                      </div>
+                    </div>
+                    <ng-template #popNewOrderNumber>
+                      <ul>
+                        <li>Purchase Order is Mandatory</li>
+                        <li>It allows alphanumerics - / and spaces only</li>
+                        <li> It should be minimum 1 characters and maximum20 Characters long</li>
+                      </ul>
+                    </ng-template>
+                    <button type="button" data-container="body" class="pop-over" popoverTitle="Help" [popover]="popNewOrderNumber" placement="left"
+                      triggers="mouseenter:mouseleave">?</button>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group col-md-12 popover-field">
+                    <label> Old Purchase Order # 
+                         <span style="padding-left: 40px;"> 
+                               <span *ngIf="oldNumberStatus" style="color:red;">Not Exists</span> 
+                           </span>
+                    </label>
+                    <input type="text" placeholder="Old Purchase Order #" class="form-control" id="oldOrderNumber" maxlength="20" name="oldOrderNumber"
+                      formControlName="oldOrderNumber" (change)="getPOInfoByPONumberToReturn($event);oldPOUniquenessCheck($event)"
+                      tabindex="11">
+                    <div class="msg" *ngIf="returnOrdersAddForm.controls['oldOrderNumber'].invalid && (returnOrdersAddForm.controls['oldOrderNumber'].dirty || returnOrdersAddForm.controls['oldOrderNumber'].touched)">
+                      <div *ngIf="returnOrdersAddForm.controls['oldOrderNumber'].errors.required">
+                        Required.
+                      </div>
+                      <div *ngIf="returnOrdersAddForm.controls['oldOrderNumber'].errors.pattern">
+                        Only allows alphanumerics - / space(s) and Initial space(s) are not allowed.
+                      </div>
+                      <div *ngIf="returnOrdersAddForm.controls['oldOrderNumber'].errors.minlength">
+                        Minimum 1 characters are required.
+                      </div>
+                      <div *ngIf="returnOrdersAddForm.controls['oldOrderNumber'].errors.maxlength">
+                        Maximum 20 characters are allowed.
+                      </div>
+                    </div>
+                    <ng-template #popOldOrderNumber>
+                      <ul>
+                        <li>Purchase Order is Mandatory</li>
+                        <li>It allows alphanumerics - / and spaces only</li>
+                        <li> It should be minimum 1 characters and maximum20 Characters long</li>
+                      </ul>
+                    </ng-template>
+                    <button type="button" data-container="body" class="pop-over" popoverTitle="Help" placement="left" [popover]="popOldOrderNumber"
+                      triggers="mouseenter:mouseleave">?</button>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group col-md-12 popover-field">
+                    <label id="focused">Purchase Order Date</label>
+                    <!--<input type="text" class="form-control" id="orderDate" name="orderDate" formControlName="orderDate" #dp="bsDatepicker" placement='bottom'
+                    bsDatepicker [maxDate]="toDayDate" tabindex="12" (change)='onDateChange($event)'>-->
+                    <div class="show-error" *ngIf="!invalidDate && returnOrdersAddForm.controls['orderDate'].invalid && (returnOrdersAddForm.controls['orderDate'].dirty || returnOrdersAddForm.controls['orderDate'].touched)">
+                      <div *ngIf="returnOrdersAddForm.controls['orderDate'].errors.required">
+                        Required.
+                      </div>
+                    </div>
+                    <my-date-picker name="orderDate" [options]="myDatePickerOptions" formControlName="orderDate" (inputFieldChanged)='onDateChanged($event)'></my-date-picker>
+                    <div class="show-error" *ngIf="invalidDate">
+                      <div>Invalid Date </div>
+                    </div>
+                    <ng-template #popOrderDate>
+                      <ul>
+                        <li> Purchase Order Date is Mandatory</li>
+                        <li>Purchase Order Date should be a valid</li>
+                        <li> Purchase Order Date cannot be a greater than current date</li>
+                      </ul>
+                    </ng-template>
+                    <button type="button" data-container="body" class="pop-over" [popover]="popOrderDate" popoverTitle="Help" placement="left"
+                      triggers="mouseenter:mouseleave">?</button>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group col-md-12 popover-field">
+                    <label class="focused">Vendor</label>
+                    <select class="form-control" id="vendor" name="vendor" formControlName="vendor" (change)="getVendorSupplierCode($event)"
+                      tabindex="13">
+                  <option selected="selected" value="">--Select--</option>
+                  <option *ngFor="let name of vendorNames" value={{name.VendorId}}>
+                    {{name.CompanyName}}</option>
+               </select>
+                    <div class="msg" *ngIf="returnOrdersAddForm.controls['vendor'].invalid && (returnOrdersAddForm.controls['vendor'].dirty || returnOrdersAddForm.controls['vendor'].touched)">
+                      <div *ngIf="returnOrdersAddForm.controls['vendor'].errors.required">
+                        Required.
+                      </div>
+                    </div>
+                    <ng-template #popVendor>
+                      <ul>
+                        <li> Vendor is Mandatory</li>
+                        <li>Select Vendor</li>
+                      </ul>
+                    </ng-template>
+                    <button type="button" data-container="body" class="pop-over" [popover]="popVendor" popoverTitle="Help" placement="left" triggers="mouseenter:mouseleave">?</button>
+                  </div>
+                </div>
+                <div class="col-md-6 clear">
+                  <div class="form-group col-md-12 popover-field">
+                    <label class="focused">Contract #</label>
+                    <select class="form-control" id="contractNumber" name="contractNumber" formControlName="contractNumber" tabindex="14">
+                  <option selected="selected" value="">--Select--</option>
+                  <option *ngFor="let contactName of getContractResponse" [value]="contactName.ContractId">
+                    {{contactName.ContractName}}</option>
+               </select>
+                    <div class="msg" *ngIf="returnOrdersAddForm.controls['contractNumber'].invalid && (returnOrdersAddForm.controls['contractNumber'].dirty || returnOrdersAddForm.controls['contractNumber'].touched)">
+                      <div *ngIf="returnOrdersAddForm.controls['contractNumber'].errors.required">
+                        Required.
+                      </div>
+                    </div>
+                    <ng-template #popcontractNumber>
+                      <ul>
+                        <li> Contract is Mandatory</li>
+                        <li>Select Contract</li>
+                      </ul>
+                    </ng-template>
+                    <button type="button" data-container="body" class="pop-over" [popover]="popcontractNumber" popoverTitle="Help" placement="left"
+                      triggers="mouseenter:mouseleave">?</button>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group col-md-12 popover-field">
+                    <label class="focused">Warranty Name</label>
+                    <select class="form-control" id="warrantyName" name="warrantyName" formControlName="warrantyName" tabindex="15">
+                  <option selected="selected" value="">--Select--</option>
+                 <option *ngFor="let warranty of warrantyResponse" [value]="warranty.WarrantyId">{{warranty.WarrantyName}}</option>
+               </select>
+                    <div class="msg" *ngIf="returnOrdersAddForm.controls['warrantyName'].invalid && (returnOrdersAddForm.controls['warrantyName'].dirty || returnOrdersAddForm.controls['warrantyName'].touched)">
+                      <div *ngIf="returnOrdersAddForm.controls['vendor'].errors.required">
+                        Required.
+                      </div>
+                    </div>
+                    <ng-template #popwarrantyName>
+                      <ul>
+                        <li> Warranty Name is Mandatory</li>
+                        <li> Select Warranty Name</li>
+                      </ul>
+                    </ng-template>
+                    <button type="button" data-container="body" class="pop-over" [popover]="popwarrantyName" popoverTitle="Help" placement="left"
+                      triggers="mouseenter:mouseleave">?</button>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group col-md-12 popover-field">
+                    <label class="focused">Warranty(in months)</label>
+                    <div>{{warrantyInMonths}}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="table-bdr" *ngIf="selectedVendorItems && selectedVendorItems.length">
+          <h3>Items</h3>
+          <div class="pad-10">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ItemName</th>
+                  <th>Description</th>
+                  <th>Quantity</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let purchaseOrder of selectedVendorItems">
+                  <td>{{purchaseOrder.ItemName}}</td>
+                  <td>{{purchaseOrder.ItemDesc}}</td>
+                  <td>{{purchaseOrder.ItemQuantity}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="col-md-4 pull-right">
+            <button type="button" class="btn btn-primary btn-search " (click)=" generateReturnPurchaseOrder()" tabindex="19">Generate</button>
+            <button type="button" class="btn btn-primary btn-reset" (click)="returnPurchaseCancel()" tabindex="20">Cancel</button>
+          </div>
+        </div>
+
+      </div>
+      <ng-template #noRecordBlock>
+        <div class="pad-10">
+          No purchase orders
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>

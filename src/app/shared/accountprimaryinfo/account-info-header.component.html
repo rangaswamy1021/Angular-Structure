@@ -1,0 +1,11 @@
+<div *ngIf="customerInfoResponse" id="accountInfo">
+  <div class="well">
+    <span class="account-no"> Account#: </span> <span class="account-no-details"> {{accountId}} </span>
+    <span class="account-no"> Type: </span> <span class="account-no-details"> {{customerInfoResponse.UserType}}  </span>
+    <span class="account-no"> Plan: </span> <span class="account-no-details"> {{customerInfoResponse.PlanName}} </span>
+    <span class="account-no"> Status: </span> <span class="account-no-details active"> {{customerInfoResponse.AccountStatusDesc}}  </span>
+    <span class="account-no blink" *ngIf="customerInfoResponse.HearingImpairment"> Hearing Impairment </span> <span *ngIf="customerInfoResponse.HearingImpairment" class="account-no-details active blink">  </span>
+    <span class="account-no blink" *ngIf="customerInfoResponse.SuperVisor" > Special Handling </span><span *ngIf="customerInfoResponse.SuperVisor" class="account-no-details active blink">  </span>
+    <span class="account-no-details"> Customer Since {{customerCreatedYear}}  </span>
+  </div>
+</div>

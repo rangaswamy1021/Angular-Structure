@@ -1,0 +1,17 @@
+<table class="table">
+    <caption *ngIf="caption">{{ caption }}</caption>
+    <thead>
+        <tr>
+            <th *ngFor="let key of keys">{{ key }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let record of records">
+            <td *ngFor="let key of keys">{{ record[key] }}</td>
+            <span style="margin:3px">
+                <i class="fa fa-pencil fa-lg" aria-hidden="true" style="cursor:pointer" (click)="editRecord(record)"></i>
+                <i class="fa fa-trash fa-lg" aria-hidden="true" style="cursor:pointer" (click)="deleteRecord(record)"></i>
+            </span>
+        </tr>
+    </tbody>
+</table>

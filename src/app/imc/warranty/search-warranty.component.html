@@ -1,0 +1,319 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">IMC</a>
+        </li>
+        <li class="active">Set up</li>
+        <li class="active">Warranty</li>
+      </ol>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Warranty</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <form role="form" name="WarrantyForm" [formGroup]="WarrantyForm">
+        <div class="pad-10">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-sm-12">
+                  <label>Warranty Name</label>
+                  <input type="text" class="form-control" id="warrantyNameSearch" tabindex="1" name="warrantyNameSearch" placeholder="Warranty Name"
+                    formControlName="warrantyNameSearch">
+                  <div class="msg" *ngIf="WarrantyForm.controls['warrantyNameSearch'].invalid && (WarrantyForm.controls['warrantyNameSearch'].dirty || WarrantyForm.controls['warrantyNameSearch'].touched)">
+                    <div *ngIf="WarrantyForm.controls['warrantyNameSearch'].errors.required">
+                      At least 1 field is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="form-group col-sm-12">
+                  <label class="focused">Warranty Type</label>
+                  <select class="form-control" id="warrantyTypeSearch" tabindex="2" name="warrantyTypeSearch" formControlName="warrantyTypeSearch">
+                    <option selected="selected" value="">--Select--</option>
+                    <option *ngFor='let dropDownValuesResult of warrantyTypeDropdownValues' value="{{dropDownValuesResult.LookUpTypeCode}}">{{dropDownValuesResult.LookUpTypeCodeDesc}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <button type="submit" class="btn btn-primary btn-search" [disabled]="disableSearchButton" tabindex="3" (click)="searchWarranty('onSearch')">Search</button>
+              <button type="reset" class="btn btn-default btn-reset" tabindex="4" (click)="searchResetData()">Reset</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row m-b-10">
+    <div class="col-md-12" [hidden]="!AddWarrantyButtonShow">
+      <button (click)="addWarranty()" tabindex="5" [disabled]="disableAddButton" class="btn btn-default btn-search">
+        <i class="fa fa-plus-square-o fa-lg fa-fw"> </i> Add New Warranty</button>
+    </div>
+    <div class="col-md-12" [hidden]="!ManageWarrantyDiv">
+      <form role="form" name="newWarrantyForm" [formGroup]="newWarrantyForm">
+        <div class="panel panel-default">
+          <div class="panel-heading">{{warrantyHeading}} Warranty </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="form-group col-sm-12 popover-field">
+                    <label for="warrantyName">Warranty Name
+                      <span style="padding-left: 20px;">
+                        <span style="color:red;" *ngIf="warrantyNameMessage">{{warrantyNameMessage}}</span>
+                        <span style="color:green;" *ngIf="warrantyAvailable">{{warrantyAvailable}}</span>
+                      </span>
+                    </label>
+                    <input type="text" class="form-control" id="warrantyName" tabindex="5" name="warrantyName" placeholder="Warranty Name" formControlName="warrantyName"
+                      (blur)="checkWarranty()" (focus)="focusWarranty()" maxlength="50">
+                    <div class="msg" *ngIf="newWarrantyForm.controls['warrantyName'].invalid && (newWarrantyForm.controls['warrantyName'].dirty || newWarrantyForm.controls['warrantyName'].touched)">
+                      <div *ngIf="newWarrantyForm.controls['warrantyName'].errors.required">
+                        * Required
+                      </div>
+                      <div *ngIf="newWarrantyForm.controls['warrantyName'].errors.minlength || newWarrantyForm.controls['warrantyName'].errors.maxlength">
+                        Enter minimum 1 character and maximum 50 characters
+                      </div>
+                      <div *ngIf="newWarrantyForm.controls['warrantyName'].errors.pattern">
+                        Initial spaces are not allowed, Only alphanumerics and spaces are allowed
+                      </div>
+                    </div>
+                    <button type="button" data-container="body" class="pop-over" [popover]="popWarrantyName" popoverTitle="Help" placement="left"
+                      triggers="mouseenter:mouseleave">?</button>
+                    <ng-template #popWarrantyName>
+                      <ul>
+                        <li>Warranty Name is mandatory</li>
+                        <li>it allows only alphanumerics and spaces</li>
+                        <li>it should be minimum 1 characters and maximum 50 characters long</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="form-group col-md-12 popover-field">
+                    <label class="focused">Warranty Type</label>
+                    <select class="form-control" id="warrantyType" name="warrantyType" tabindex="6" formControlName="warrantyType" required>
+                      <option value="">--Select--</option>
+                      <option *ngFor='let dropDownValuesResult of warrantyTypeDropdownValues' value="{{dropDownValuesResult.LookUpTypeCode}}">{{dropDownValuesResult.LookUpTypeCodeDesc}}</option>
+                    </select>
+                    <div class="msg" *ngIf="newWarrantyForm.controls['warrantyType'].invalid && (newWarrantyForm.controls['warrantyType'].dirty || newWarrantyForm.controls['warrantyType'].touched)">
+                      <div *ngIf="newWarrantyForm.controls['warrantyType'].errors.required">
+                        * Required
+                      </div>
+                    </div>
+                    <button type="button" class="pop-over" data-container="body" [popover]="popWarrantyType" popoverTitle="Help" placement="left"
+                      triggers="mouseenter:mouseleave">?</button>
+                    <ng-template #popWarrantyType>
+                      <ul>
+                        <li>Warranty Type is mandatory</li>
+                        <li>Select Warranty Type</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="form-group col-md-12 popover-field">
+                    <label for="warrantyDuration">Warranty Duration (Months)</label>
+                    <input type="text" class="form-control" id="warrantyDuration" tabindex="7" name="warrantyDuration" formControlName="warrantyDuration"
+                      placeholder="Warranty Duration" maxlength="2">
+                    <div class="msg" *ngIf="newWarrantyForm.controls['warrantyDuration'].invalid && (newWarrantyForm.controls['warrantyDuration'].dirty || newWarrantyForm.controls['warrantyDuration'].touched)">
+                      <div *ngIf="newWarrantyForm.controls['warrantyDuration'].errors.required">
+                        * Required
+                      </div>
+                      <div *ngIf="newWarrantyForm.controls['warrantyDuration'].errors.pattern">
+                        Warranty Duration is invalid
+                      </div>
+                    </div>
+                    <button type="button" data-container="body" class="pop-over" [popover]="popWarrantyDuration" popoverTitle="Help" placement="left"
+                      triggers="mouseenter:mouseleave">?</button>
+                    <ng-template #popWarrantyDuration>
+                      <ul>
+                        <li>Warranty Duration is mandatory</li>
+                        <li>it allows only numeric values</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="form-group col-md-12 popover-field">
+                    <label class="focused">Contract #</label>
+                    <select class="form-control" id="contract" name="contract" tabindex="8" formControlName="contract" required>
+                      <option value="">--Select--</option>
+                      <option *ngFor="let contract of warrantyResponseEdit" value="{{contract.ContractId}}">{{contract.ContractName}}</option>
+                    </select>
+                    <div class="msg" *ngIf="newWarrantyForm.controls['contract'].invalid && (newWarrantyForm.controls['contract'].dirty || newWarrantyForm.controls['contract'].touched)">
+                      <div *ngIf="newWarrantyForm.controls['contract'].errors.required">
+                        * Required
+                      </div>
+                    </div>
+                    <button type="button" data-container="body" class="pop-over" [popover]="popWarrantyContract" popoverTitle="Help" placement="left"
+                      triggers="mouseenter:mouseleave">?</button>
+                    <ng-template #popWarrantyContract>
+                      <ul>
+                        <li>Contract# is mandatory</li>
+                        <li>Select Contract#</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="form-group col-md-12 popover-field">
+                    <label for="warrantyDescription" class="focused">Warranty Description</label>
+                    <textarea class="form-control" id="warrantyDescription" tabindex="9" name="warrantyDescription" formControlName="warrantyDescription"
+                      placeholder="Warranty Description" maxlength="128" (keyup)="descEvent($event)"></textarea>
+                    <div class="msg" *ngIf="newWarrantyForm.controls['warrantyDescription'].invalid && (newWarrantyForm.controls['warrantyDescription'].dirty || newWarrantyForm.controls['warrantyDescription'].touched)">
+                      <div *ngIf="newWarrantyForm.controls['warrantyDescription'].errors.required">
+                        * Required
+                      </div>
+                      <div *ngIf="newWarrantyForm.controls['warrantyDescription'].errors.pattern">
+                        Initial spaces are not allowed
+                      </div>
+                      <div *ngIf="newWarrantyForm.controls['warrantyDescription'].errors.minlength">
+                        Minimum 1 characters are required.
+                      </div>
+                      <div *ngIf="newWarrantyForm.controls['warrantyDescription'].errors.maxlength">
+                        Maximum 128 characters are allowed.
+                      </div>
+                    </div>
+                    <button type="button" data-container="body" class="pop-over" [popover]="popWarrantyDesc" popoverTitle="Help" placement="left"
+                      triggers="mouseenter:mouseleave">?</button>
+                    <ng-template #popWarrantyDesc>
+                      <ul>
+                        <li>Warranty Description is mandatory</li>
+                        <li>it allows only alphanumeric,spaces and special characters</li>
+                        <li>it should be minimum 1 characters and maximum 128 characters long</li>
+                      </ul>
+                    </ng-template>
+                    <span class="text-count" #desc>Left: {{descLength}} characters </span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <button type="submit" class="btn btn-primary btn-search" tabindex="10" (click)="addNewWarranty()" *ngIf="addDivButtons">Add</button>
+                <button type="submit" class="btn btn-primary btn-search" tabindex="11" (click)="updateWarrantyDetails()" *ngIf="editDivButtons">
+                Update</button>
+                <button type="button" class="btn btn-default btn-reset" tabindex="12" (click)="addNewFormReset()" *ngIf="addResetButton">Reset</button>
+                <button type="button" class="btn btn-default btn-reset" tabindex="13" (click)="cancelUpdateWarranty()">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="table-bdr">
+        <div *ngIf="warrantyResponse && warrantyResponse.length">
+          <h3>Warranty Results</h3>
+          <div class="pad-10">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th (click)="sortDirection('WARRANTYNAME')" class="sorting-handle">Warranty Name
+                      <span *ngIf="gridArrowWARRANTYNAME">
+                        <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                      </span>
+                    </th>
+                    <th (click)="sortDirection('WARRANTYTYPENAME')" class="sorting-handle">Warranty Type
+                      <span *ngIf="gridArrowWARRANTYTYPENAME">
+                        <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                      </span>
+                    </th>
+                    <th (click)="sortDirection('WARRANTYINMONTHS')" class="sorting-handle">Warranty Duration
+                      <span *ngIf="gridArrowWARRANTYINMONTHS">
+                        <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                      </span>
+                    </th>
+                    <th (click)="sortDirection('ContractName')" class="sorting-handle">Contract#
+                      <span *ngIf="gridArrowContractName">
+                        <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                      </span>
+                    </th>
+                    <th (click)="sortDirection('WARRANTYDESC')" class="sorting-handle">Warranty Description
+                      <span *ngIf="gridArrowWARRANTYDESC">
+                        <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                      </span>
+                    </th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor='let warranty of warrantyResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: currentPage, totalItems:totalRecordCount }'>
+                    <td>{{warranty.WarrantyName}} </td>
+                    <td>{{warranty.WarrantyTypeId}}</td>
+                    <td> {{warranty.WarrantyInMonths}}</td>
+                    <td>{{warranty.ContractName}}</td>
+                    <td>{{warranty.WarrantyDesc}}</td>
+                    <td>
+                      <i *ngIf="disableUpdateButton" title="Cannot Edit" class="fa fa-pencil-square-o fa-lg fa-fw link-disabled" aria-hidden="true"></i>
+                      <span *ngIf="!disableUpdateButton">
+                        <a tabindex="14" (click)="editWarrantyDetails(warranty)" title="Edit">
+                          <i class="fa fa-pencil-square-o fa-lg fa-fw" aria-hidden="true"></i>
+                        </a>
+                      </span>
+                    </td>
+
+                    <td>
+                      <i *ngIf="disableDeleteButton" title="Cannot delete" class="fa fa-trash-o fa-fw fa-lg fa-fw link-disabled" aria-hidden="true"></i>
+                      <span *ngIf="!disableDeleteButton">
+                        <a tabindex="14" (click)=deleteClick(warranty) title="Delete">
+                          <i class="fa fa-trash-o fa-fw fa-lg"></i>
+                        </a>
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="row page-info" *ngIf='warrantyResponse && warrantyResponse.length>0'>
+              <div class="col-md-6 text-left">
+                <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+              </div>
+              <div class="col-md-6 text-right">
+                <pagination-controls tabindex="15" (pageChange)="pageChanged($event)"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="searchCheck">
+          <h3>Warranty Results</h3>
+          <div class="pad-10">
+            <div>
+              No Warranty to display
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)" (onOk)="deleteWarrantyDetails($event)"></app-success-failure-alerts-message>
+</div>

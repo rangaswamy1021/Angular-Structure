@@ -1,0 +1,246 @@
+<div #AddFeediv>
+  <form role="form" name="updateFeeForm" [formGroup]="updateFeeForm">
+    <div class="table-bdr m-t-10">
+      <h3>Update Fee Type</h3>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label for="">Fee Code:</label>
+              <input type="text" [(ngModel)]="nggetFeesResponse.FeeCode" class="form-control" id="txtFeeCode" formControlName="feeCode"
+                disabled>
+              <div class="msg" *ngIf="updateFeeForm.controls['feeCode'].invalid && (updateFeeForm.controls['feeCode'].dirty || updateFeeForm.controls['feeCode'].touched)">
+                <div *ngIf="updateFeeForm.controls['feeCode'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="updateFeeForm.controls['feeCode'].errors.pattern">
+                  Only alphabets are allowed.
+                </div>
+              </div>
+              <button type="button" class="pop-over" [popover]="popFCode" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                placement="left">?</button>
+              <ng-template #popFCode>
+                <ul>
+                  <li>Fee Code is required.</li>
+                  <li>It allows alphanumerics.</li>
+                  <li>It allows upto 15 characters long</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label for="" class="">Fee Name:</label>
+              <input type="text" class="form-control" id="txtFeeName" [(ngModel)]="nggetFeesResponse.FeeName" formControlName="feeName">
+              <div class="msg" *ngIf="updateFeeForm.controls['feeName'].invalid && (updateFeeForm.controls['feeName'].dirty || updateFeeForm.controls['feeName'].touched)">
+                <div *ngIf="updateFeeForm.controls['feeName'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="updateFeeForm.controls['feeName'].errors.pattern">
+                  Only Alphabets, space are allowed.
+                </div>
+                <div *ngIf="updateFeeForm.controls['feeName'].errors.maxlength">
+                  Maximum 50 characters are allowed.
+                </div>
+              </div>
+              <button type="button" class="pop-over" [popover]="popFname" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                placement="left">?</button>
+              <ng-template #popFname>
+                <ul>
+                  <li>Fee Name is required.</li>
+                  <li>It allows only Alphabets and spaces .</li>
+                  <li>Special characters are not allowed .</li>
+                  <li>It allows upto 25 characters long</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label for="" class="focused">Fee Description:</label>
+               <textarea class="form-control" id="txtFeeDesc" (keyup)="descEvent($event)" [(ngModel)]="nggetFeesResponse.FeeDescription" name="feeDesc" formControlName="feeDesc" rows="2"></textarea>
+              <!--<input type="text" class="form-control" id="txtFeeDesc" [(ngModel)]="nggetFeesResponse.FeeDescription" formControlName="feeDesc">-->
+              <div class="msg" *ngIf="updateFeeForm.controls['feeDesc'].invalid && (updateFeeForm.controls['feeDesc'].dirty || updateFeeForm.controls['feeDesc'].touched)">
+                <div *ngIf="updateFeeForm.controls['feeDesc'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="updateFeeForm.controls['feeDesc'].errors.maxlength">
+                  Maximum 256 characters are allowed.
+                </div>
+              </div>
+              <button type="button" class="pop-over" [popover]="popdesc" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                placement="left">?</button>
+              <ng-template #popdesc>
+                <ul>
+                  <li>Fee Description is required.</li>
+                  <li>It allows upto 256 characters long</li>
+                </ul>
+              </ng-template>
+            </div>
+            <small class="pull-right" style="padding-right:30px">Left: {{descLength}} characters </small>
+          </div>
+         
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label>{{lbAmount}}</label>
+              <input type="text" class="form-control" id="txtAmount" [(ngModel)]="nggetFeesResponse.Amount" formControlName="amount">
+              <div class="msg" *ngIf="updateFeeForm.controls['amount'].invalid && (updateFeeForm.controls['amount'].dirty || updateFeeForm.controls['amount'].touched)">
+                <div *ngIf="updateFeeForm.controls['amount'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="updateFeeForm.controls['amount'].errors.pattern">
+                  Invalid amount.
+                </div>
+              </div>
+              <button type="button" class="pop-over" [popover]="popAmt" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                placement="left">?</button>
+              <ng-template #popAmt>
+                <ul>
+                  <li>Amount is required.</li>
+                  <li>It allows numbers with decimals</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="col-md-12 popover-field form-group">
+              <label for="Date Range" class="focused">Start Effective Date:</label>
+              <div class="show-error" *ngIf="!invalid&&(updateFeeForm.controls['strtDate'].invalid && (updateFeeForm.controls['strtDate'].dirty || updateFeeForm.controls['strtDate'].touched))">
+                <div *ngIf="updateFeeForm.controls['strtDate'].errors.required">
+                  Required.
+                </div>
+              </div>
+              <my-date-picker name="mydaterange" [options]="myDatePickerOptions1" (inputFieldChanged)='onDateChanged1($event)' formControlName="strtDate"
+                placeholder="MM/DD/YYYY"></my-date-picker>
+              <div class="show-error" *ngIf='invalid'>
+                <div> Invalid Date</div>
+              </div>
+              <button type="button" class="pop-over" [popover]="popDate" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                placement="left">?</button>
+              <ng-template #popDate>
+                <ul>
+                  <li>Start Effective Date is required.</li>
+                  <li>Start Effective date should not be less than todays date</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+
+
+          <!--<div class="form-group col-md-6">
+            <label for="" class="col-sm-4 control-label">Start Effective Date:</label>
+            <div class="col-sm-7">
+              <input type="text" [minDate]="minDate" [maxDate]="maxDate" #dp="bsDatepicker" bsDatepicker [(bsValue)]="bsvalue" class="form-control"
+                id="endDate" name="endDate" formControlName="strtDate" [(ngModel)]="nggetFeesResponse.StartDate">
+            </div>
+            <button type="button" class="pop-over" [popover]="popDate" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+              placement="left">?</button>
+            <ng-template #popDate>
+              <ul>
+                <li>Start Effective Date is required.</li>
+                <li>Start Effective date should not be less than todays date</li>
+              </ul>
+            </ng-template>
+          </div>-->
+
+          <div class="col-md-6">
+            <div class="col-md-12 popover-field form-group">
+              <label for="Date Range" class="focused">End Effective Date:</label>
+              <div class="show-error" *ngIf="!invalidDate&&(updateFeeForm.controls['endDate'].invalid && (updateFeeForm.controls['endDate'].dirty || updateFeeForm.controls['endDate'].touched))">
+                <div *ngIf="updateFeeForm.controls['endDate'].errors.required">
+                  Required.
+                </div>
+              </div>
+              <my-date-picker name="mydaterange" [options]="myDatePickerOptions2" (inputFieldChanged)='onDateChanged2($event)' formControlName="endDate"
+                placeholder="MM/DD/YYYY"></my-date-picker>
+              <div class="show-error" *ngIf='invalidDate'>
+                <div> Invalid Date</div>
+              </div>
+              <button type="button" class="pop-over" [popover]="popDateff" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                placement="left">?</button>
+              <ng-template #popDateff>
+                <ul>
+                  <li>End Effective Date is required.</li>
+                  <li>End Effective date should not be less than Start date</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+        <!--<div class="form-group col-md-6">
+            <label for="" class="col-sm-4 control-label">End Effective Date:</label>
+            <div class="col-sm-7">
+              <input type="text" [minDate]="minDate" [maxDate]="maxDate" #dp="bsDatepicker" bsDatepicker [(bsValue)]="bsvalue1" class="form-control"
+                id="endDate" name="endDate" formControlName="endDate" [(ngModel)]="nggetFeesResponse.EndDate">
+            </div>
+            <button type="button" class="pop-over" [popover]="popDateff" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+              placement="left">?</button>
+            <ng-template #popDateff>
+              <ul>
+                <li>End Effective Date is required.</li>
+                <li>End Effective date should not be less than Start date</li>
+              </ul>
+            </ng-template>
+          </div>-->
+        <div class="row">
+          <div class="col-md-6">
+            <div class="col-md-12">
+              <label>Status:</label>
+              <input type="radio" class="" id="active" value="active" name="status" [checked]="activeCheck" formControlName="status" ngModel>
+              <label class="radio-inline" for="active"> Active           
+              </label>
+              <input type="radio" class="" value="inactive" id="inactive" name="status" [checked]="inActiveCheck" formControlName="status"
+                ngModel>
+              <label class="radio-inline" for="inactive"> InActive</label>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="col-md-12">
+              <label>Fee Factor:</label>
+              <input type="radio" class="" value="AmountBased" (change)="factorChange()" [checked]="amntCheck" id="feeFactor" name="feeFactor"
+                formControlName="feeFactor" ngModel>
+              <label class="radio-inline" for="feeFactor"> Amount Based
+                </label>
+              <input type="radio" class="" value="PercentageBased" (change)="factorChange()" name="feeFactor" id="percentage" [checked]="percenCheck"
+                formControlName="feeFactor" ngModel>
+              <label class="radio-inline" for="percentage"> Percentage Based</label>
+            </div>
+          </div>
+        </div>
+        <!--<div class="form-group col-md-5">
+            <label for="" class="col-sm-6 control-label">Is Fee Apply at Create Account:</label>
+            <div class="col-sm-4  ">
+              <div class="checkbox-inline checkbox">
+                <label>
+                  <input type="checkbox" formControlName="chkFee" [checked]="isFeeAtCreate">
+                </label>
+              </div>
+            </div>
+          </div>-->
+
+        <div class="form-group">
+          <div class="col-sm-5">
+            <div class="checkbox-inline checkbox">
+              <input type="checkbox" id="feecreate" formControlName="chkFee" [checked]="isFeeAtCreate">
+              <label for="feecreate">Is Fee Apply at Create Account<span></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row pull-right m-t-20">
+          <div class="col-md-12 m-t-20">
+            <button type="submit" (click)="updateData()" class="btn btn-primary btn-search">Update</button>
+            <button type="reset" (click)="closeDiv()" class="btn btn-default btn-reset">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</form>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+</div>

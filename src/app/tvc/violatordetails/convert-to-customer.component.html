@@ -1,0 +1,79 @@
+<div class="page-title-header">
+    <div class="row no-gutters">
+        <div class="col-md-12">
+            <ol class="breadcrumb">
+                <li><a href="#">TVC</a></li>
+                <li><a href="#">Violator Details</a></li>
+                <li class="active">Convert to Customer</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-header">
+                <h1>Convert to Customer</h1>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="row m-b-10">
+        <div class="col-md-6">
+            <h3>Account #: {{vioalatorId}}</h3>
+        </div>
+        <div class="col-md-6 text-right">
+            <button class="btn btn-primary btn-search" (click)="back()" type="submit">Back</button>
+            <button class="btn btn-primary btn-reset" (click)="exit()" type="submit">Exit</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+                (setFlag)="setOutputFlag($event)">
+            </app-success-failure-alerts-message>
+            <div class="table-bdr padding-20 pay-confirm m-t-20">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row" *ngIf='isEmiDue'>
+                            <div class="col-md-6 text-right">
+                                EMI due is:
+                            </div>
+                            <div class="col-md-6">
+                                <span>${{emiDue | number : '1.2-2'}}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 text-right">
+                                Outstanding amount
+                            </div>
+                            <div class="col-md-6">
+                                <span>${{outStanding| number : '1.2-2'}}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 text-right">
+                                OverPayment Amount
+                            </div>
+                            <div class="col-md-6">
+                                <span>${{overPayment| number : '1.2-2'}}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 m-t-20 text-center">
+                                <button class="btn btn-primary btn-search" type="submit" (click)="makePayment()" [disabled]="isPayment">Make Payment</button>
+                                <button class="btn btn-primary btn-reset" type="submit" (click)="convertToCustomer()" [disabled]="isConvert">Convert To Customer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--<div *ngIf='isEmiDue'>
+                <div>EMI due is: ${{emiDue | number : '1.2-2'}}</div>
+            </div>-->
+            <!--<div>Outstanding amount :${{outStanding| number : '1.2-2'}}</div>
+            <div>OverPayment Amount : ${{overPayment| number : '1.2-2'}}</div>-->
+            <!--<a routerLink='tvc/paymentdetails/violation-payment'> makePayment </a>-->
+        </div>
+    </div>
+</div>

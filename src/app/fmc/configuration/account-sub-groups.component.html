@@ -1,0 +1,155 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">FMC</a></li>
+        <li><a href="#">Configurations</a></li>
+        <li class="active">Account Sub Groups</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Account Sub Groups</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+  <div class="row">
+    <div class="col-md-12 form-group" *ngIf="addNewAccountSubGroupDetails">
+      <button class="btn btn-primary btn-search pull-left" (click)="addNewAccountGroup()" [disabled]="createButton"><i class="fa fa-plus-circle fa-lg" aria-hidden="true"></i> <span>Add New Account Sub Group</span>        
+          </button>
+    </div>
+    <div class="clear">
+    </div>
+  </div>
+  <div class="clearfix"></div>
+  <div class="table-bdr" [hidden]="!enterNewAccountSubGroupDetails">
+    <h3>{{status}} Account Sub Groups</h3>
+    <div class="panel-body">
+      <form role="form" name="addNewAccountSubGroupFrom" [formGroup]="addNewAccountSubGroupFrom" novalidate>
+        <div class="col-md-6">
+          <div class="col-sm-12 form-group popover-field">
+            <label for="code" class="focused">Code</label>
+            <select class="form-control" id="AccountGroupCode" name="AccountGroupCode" formControlName="AccountGroupCode" (change)="accountGroupSelectedChange($event.target.value)"
+              required>
+                      <option selected="selected" value="">--Select--</option>
+                      <option *ngFor='let dropDownValuesResult of accountGroupRes' value="{{dropDownValuesResult.AccountGroupCode}}" >{{dropDownValuesResult.AccountGroupCode }}</option>
+                  </select>
+            <div class="msg" *ngIf="addNewAccountSubGroupFrom.controls['AccountGroupCode'].invalid && (addNewAccountSubGroupFrom.controls['AccountGroupCode'].dirty || addNewAccountSubGroupFrom.controls['AccountGroupCode'].touched)">
+              <div *ngIf="addNewAccountSubGroupFrom.controls['AccountGroupCode'].errors.required">
+                Required.
+              </div>
+            </div>
+            <ng-template #popContent1>
+              <ul>
+                <li>Code is required</li>
+                <li> Select code</li>
+              </ul>
+            </ng-template>
+            <button type="button" class="pop-over" [popover]="popContent1" data-container="body" popoverTitle="Help" placement="left"
+              triggers="mouseenter:mouseleave">
+                    <i class="fa fa-question" aria-hidden="true"></i>
+                 </button>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="col-sm-12 form-group popover-field">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" placeholder="Name" id="name" name="name" formControlName="name">
+            <div class="msg" *ngIf="addNewAccountSubGroupFrom.controls['name'].invalid && (addNewAccountSubGroupFrom.controls['name'].dirty || addNewAccountSubGroupFrom.controls['name'].touched)">
+              <div *ngIf="addNewAccountSubGroupFrom.controls['name'].errors.required">
+                Required.
+              </div>
+              <div *ngIf="addNewAccountSubGroupFrom.controls['name'].errors.pattern">
+                only alphabets & .- and spaces are allowed
+              </div>
+              <div *ngIf="addNewAccountSubGroupFrom.controls['name'].errors.maxlength">
+                Maximum 100 characters are allowed.
+              </div>
+            </div>
+            <ng-template #popContent2>
+              <ul>
+                <li>Name is required</li>
+                <li>It allows only alphabets & .- and <br>spaces only
+                  <br></li>
+                <li> It should be minimum 1<br> characters and maximum 100 <br> characters long<br></li>
+              </ul>
+            </ng-template>
+            <button type="button" class="pop-over" [popover]="popContent2" data-container="body" popoverTitle="Help" placement="left"
+              triggers="mouseenter:mouseleave">
+                      <i class="fa fa-question" aria-hidden="true"></i>
+                </button>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group col-sm-12 popover-field">
+            <label for="description">Description</label>
+            <textarea class="form-control" #description placeholder="Description" id="description" name="description" formControlName="description"
+              cols="30" rows="3"></textarea>
+            <div class="msg" *ngIf="addNewAccountSubGroupFrom.controls['description'].invalid && (addNewAccountSubGroupFrom.controls['description'].dirty || addNewAccountSubGroupFrom.controls['description'].touched)">
+              <div *ngIf="addNewAccountSubGroupFrom.controls['description'].errors.required">
+                Required.
+              </div>
+              <div *ngIf="addNewAccountSubGroupFrom.controls['description'].errors.maxlength">
+                Maximum 500 characters are allowed.
+              </div>
+            </div>
+            <ng-template #popContent3>
+              <ul>
+                <li>Description is required</li>
+                <li>It should be minimum 1<br> characters and maximum 500 <br> characters long<br></li>
+              </ul>
+            </ng-template>
+            <button type="button" class="pop-over" [popover]="popContent3" data-container="body" popoverTitle="Help" placement="left"
+              triggers="mouseenter:mouseleave">
+                    <i class="fa fa-question" aria-hidden="true"></i>
+                 </button>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <button type="submit" class="btn btn-primary btn-search" (click)="createAccountGroups()" *ngIf="showAdd" [disabled]="createButton">Add</button>
+          <button type="submit" class="btn btn-primary btn-search" (click)="update()" *ngIf="showUpdate" [disabled]="updateButton">Update</button>
+          <button type="reset" class="btn btn-default btn-reset" (click)=" cancelNewAccount()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="clearfix"></div>
+  <div class="table-bdr">
+    <h3>Account Sub Group Details</h3>
+    <div class="panel-body">
+      <table class="table bordered">
+        <thead class="thead-default">
+          <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Edit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let eachsubgroup of subgroupresponse | paginate: { itemsPerPage:pageItemNumber, currentPage: p, totalItems:totalRecordCount}">
+            <td>{{eachsubgroup.AccountGroupCode}}</td>
+            <td>{{eachsubgroup.AccountSubGroupCode}}</td>
+            <td>{{eachsubgroup.Description}}</td>
+            <td> <i class="fa fa-pencil fa-lg" aria-hidden="true" style="cursor:pointer" (click)="editAccountGroup(eachsubgroup)"
+                [ngClass]="{'disabletextbox': updateButton}"></i> </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="row page-info" *ngIf='totalRecordCount > 10'>
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+    <p *ngIf="accountGroupLength == 0" class="alert alert-warning"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> No Account Groups to display for this</p>
+  </div>
+</div>

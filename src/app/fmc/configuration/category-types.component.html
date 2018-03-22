@@ -1,0 +1,158 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">FMC</a></li>
+        <li><a href="#">Configurations</a></li>
+        <li class="active">Category Types</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Category Types</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+  <div class="row">
+    <div class="col-md-12" *ngIf="!enterNewCategoryTypeDetail">
+      <div class="form-group">
+        <button class="btn btn-primary btn-search pull-left" [disabled]="disableCreateButton" (click)="addNewCategoryType()"><i class="fa fa-lg fa-plus-circle" aria-hidden="true"></i>  Add Category Type</button>
+        <div class="clear"> </div>
+      </div>
+    </div>
+  </div>
+  <div class="clearfix"></div>
+  <div class="table-bdr" [hidden]="!enterNewCategoryTypeDetail">
+    <h3 *ngIf="addDetails">Add New Category Type</h3>
+    <h3 *ngIf="updateDetails">Update Category Type</h3>
+    <div class="panel-body">
+      <div class="">
+        <form role="form" name="addNewCategoryTypeFrom" [formGroup]="addNewCategoryTypeFrom" novalidate (ngSubmit)="submitNewCategoryTypeDetails()">
+          <div class="row">
+            <div class="col-sm-6 form-group popover-field">
+              <label for="Name">Name</label>
+              <input type="text" class="form-control" placeholder="Name" id="name" name="name" formControlName="name">
+              <div class="msg" *ngIf="addNewCategoryTypeFrom.controls['name'].invalid && (addNewCategoryTypeFrom.controls['name'].dirty || addNewCategoryTypeFrom.controls['name'].touched)">
+                <div *ngIf="addNewCategoryTypeFrom.controls['name'].errors.required">
+                  <div>Name is Required.</div>
+                </div>
+                <div *ngIf="addNewCategoryTypeFrom.controls['name'].errors.pattern">
+                  <div>It allows only alphabet</div>
+                </div>
+                <div *ngIf="addNewCategoryTypeFrom.controls['name'].errors.maxlength">
+                  <div>Maximum 100 characters are allowed.</div>
+                </div>
+              </div>
+              <ng-template #popContent>
+                <ul>
+                  <li>Name is required</li>
+                  <li>It allows only alphabet<br> and spaces<br></li>
+                  <li>It should be minimum 1 characters<br> and maximum 100 characters long
+                    <br></li>
+                </ul>
+              </ng-template>
+              <button class="pop-over" [popover]="popContent" placement="left" data-container="body" popoverTitle="Help" tabindex="-1"
+                triggers="mouseenter:mouseleave" type="button" ng-reflect-popover="[object Object]" ng-reflect-popover-title="Help"
+                ng-reflect-triggers="mouseenter:mouseleave" ng-reflect-container="body">?</button>
+            </div>
+            <div class="col-sm-6 form-group popover-field">
+              <label for="description">Description</label>
+              <textarea type="text" class="form-control" maxlength="250" placeholder="Description" id="description" name="description"
+                formControlName="description" cols="10" rows="3"></textarea>
+              <div class="msg" *ngIf="addNewCategoryTypeFrom.controls['description'].invalid && (addNewCategoryTypeFrom.controls['description'].dirty || addNewCategoryTypeFrom.controls['description'].touched)">
+                <div *ngIf="addNewCategoryTypeFrom.controls['description'].errors.required">
+                  <div>Description is Required.</div>
+                </div>
+                <div *ngIf="addNewCategoryTypeFrom.controls['description'].errors.maxlength">
+                  <div>Maximum 250 characters are allowed.</div>
+                </div>
+              </div>
+              <ng-template #popContent1>
+                <ul>
+                  <li>Description is mandatory</li>
+                  <li>It should be minimum 1 characters<br> and maximum 250 characters long
+                    <br></li>
+                </ul>
+              </ng-template>
+              <button class="pop-over" [popover]="popContent1" placement="left" data-container="body" popoverTitle="Help" tabindex="-1"
+                triggers="mouseenter:mouseleave" type="button" ng-reflect-popover="[object Object]" ng-reflect-popover-title="Help"
+                ng-reflect-triggers="mouseenter:mouseleave" ng-reflect-container="body">?</button>
+            </div>
+          </div>
+          <!--<div class="col-md-12">
+            <div class="form-group row">
+              <label class="col-sm-1 col-form-label"> Status </label>
+              <label *ngFor="let status of statuses;let idx = index" class="custom-control custom-radio radio-inline">
+                  <input formControlName="rdostatus" type="radio" [(ngModel)]="defaultStatus" class=""
+                    [value]="status.id">
+                  <span class="custom-control-indicator"> </span>
+                  <span class="custom-control-description">{{status.Value}}
+                  </span>
+              </label>
+            </div>
+          </div>-->
+          <div class="col-md-6">
+            <div class="row">
+              <label class="display-inline"> Status </label>
+              <div class="display-inline">
+                <div *ngFor="let status of statuses" class="custom-control custom-radio radio-inline">
+                  <input formControlName="rdostatus" type="radio" [(ngModel)]="defaultStatus" class="custom-control-input" [value]="status.id"
+                    [id]="status.id">
+                  <!--<span class="custom-control-indicator"> </span>-->
+                  <label [for]="status.id" class="custom-control-description">{{status.Value}}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <button type="submit" class="btn btn-primary btn-search" *ngIf="addDetails" (click)="CreateFinanceCategoryTypes()" [disabled]="disableCreateButton">Add</button>
+              <button type="submit" class="btn btn-primary btn-search" *ngIf="updateDetails" (click)="UpdateFinanceCategoryTypes()" [disabled]="disableUpdateButton">Update</button>
+              <button type="button" class="btn btn-default btn-reset" (click)="cancelCategoryType()">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="clearfix"> </div>
+  <div class="table-bdr">
+    <h3>Category Types</h3>
+    <div class="panel-body">
+      <table class="table bordered">
+        <thead class="thead-default">
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Edit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let categorytype of categoryTypeRes | paginate: { itemsPerPage:pageItemNumber, currentPage: p, totalItems:totalRecordCount}">
+            <td>{{categorytype.CategoryName}}</td>
+            <td>{{categorytype.CategoryDesc}}</td>
+            <td>{{categorytype.Status}}</td>
+            <!--<td><i *ngIf="categorytype.Status === 'Active'" class="fa fa-toggle-on" aria-hidden="true"></i>
+              <i *ngIf="categorytype.Status === 'Inactive'" class="fa fa-toggle-off" aria-hidden="true"></i></td>-->
+            <td><i class="fa fa-pencil fa-lg" aria-hidden="true" style="cursor:pointer" (click)="editCategoryType(categorytype)"
+                [ngClass]="{'disabletextbox': disableUpdateButton}"></i></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="row page-info" *ngIf='categoryTypeRes && categoryTypeRes.length > 0'>
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

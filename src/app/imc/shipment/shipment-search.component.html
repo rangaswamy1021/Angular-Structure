@@ -1,0 +1,165 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">IMC</a>
+        </li>
+        <li class="active"> Shipments </li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1> Search Shipment </h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="content">
+  <form role="form" name="shipmentForm" [formGroup]="shipmentForm">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-6  form-group">
+              <label> Purchase Order #</label>
+              <input type="text" class="form-control" placeholder="Purchase Order #" id="purchaseOrder" name="purchaseOrder" formControlName="purchaseOrder"
+                maxlength="50">
+              <div class="msg" *ngIf="shipmentForm.controls['purchaseOrder'].invalid && (shipmentForm.controls['purchaseOrder'].dirty || shipmentForm.controls['purchaseOrder'].touched)">
+                <div *ngIf="shipmentForm.controls['purchaseOrder'].errors.required">
+                  At least 1 field is required
+                </div>
+                <div *ngIf="shipmentForm.controls['purchaseOrder'].errors.pattern">
+                  Only alphanumerics - / and spaces are allowed
+                </div>
+              </div>
+          </div>
+
+          <div class="col-md-6  form-group">
+              <label class="focused"> Ship Status</label>
+              <select class="form-control" id="shipStatus" name="shipStatus" formControlName="shipStatus">
+                <option selected="selected" value="">--Select--</option>
+                <option *ngFor="let status of shipStatuses" value="{{status.LookUpTypeCode}}">{{status.LookUpTypeCodeDesc}}</option>
+              </select>
+          </div>
+        </div>
+        <div class="row">
+          <!--<div class="col-md-6">
+            <div class="form-group">
+              <span>Time Period </span>
+              <input class="form-control disbale-to-write" placeholder="MM/DD/YYYY-MM/DD/YYYY" bsDaterangepicker #dpr="bsDaterangepicker"
+                name="timePeriod" (bsValueChange)='bsValueChange($event)' formControlName="timePeriod" [(ngModel)]="timePeriod">
+            </div>
+          </div>-->
+          
+          <!--Invalid Date Range new issue fixed -->
+               <div class="col-md-6 form-group">
+            <label for="timePeriod" id="focused">Time Period</label>
+           <my-date-range-picker name="mydaterange" [options]="myDateRangePickerOptions" formControlName="timePeriod" (inputFieldChanged)='onDateRangeChanged($event)'
+                placeholder="MM/DD/YYYY-MM/DD/YYYY"></my-date-range-picker>
+          
+            <div class="show-error" *ngIf="invalid">
+              <div>
+                Invalid Date Range
+              </div>
+          </div>
+           
+          </div>
+
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-default btn-search" [disabled]="disableSearchButton" (click)="shipmentSearch($event)">Search </button>
+            <button type="reset" class="btn btn-default btn-reset" (click)="searchReset()"> Reset </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="col-md-12">
+    <div class="row">
+      <div class="form-group pull-right">
+        <button class="btn btn-default btn-search" [disabled]="disableButton" (click)="receiveBatchInformation()">
+          Click here to receive shipment
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="clear">
+  </div>
+
+  <div class="table-bdr">
+    <h3>Shipment Information</h3>
+    <div class="pad-10" *ngIf='shipmentResponse && shipmentResponse.length;else elseBlock'>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th (click)="sortDirection('ORDERNUMBER')" class="sorting-handle">Purchase Order #
+                <span *ngIf="gridArrowORDERNUMBER">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('ORDERDATE')" class="sorting-handle">Purchase Order Date
+                <span *ngIf="gridArrowORDERDATE">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('SHIPDATE')" class="sorting-handle">Ship Date
+                <span *ngIf="gridArrowSHIPDATE">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('SHIPSTATUS')" class="sorting-handle">Shipment Status
+                <span *ngIf="gridArrowSHIPSTATUS">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th> </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let shipment of shipmentResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p ,totalItems:totalRecordCount }'>
+              <td>{{shipment.PurchaseOrderNumber}}</td>
+              <td>{{shipment.OrderDate | customDateFormat}}</td>
+              <td>{{shipment.ShipDate | customDateFormat}}</td>
+              <td>{{shipment.ShipStatus}}</td>
+              <!--<td><a (click)="getItemDetailsByShipmentId(shipment.ShipmentID)" title="View Details"><i class="fa fa-file-text-o fa-lg"> </i></a></td>-->
+
+              <td>
+                <i *ngIf="disableEditbtn" title="You can't view details" class="fa fa-file-text-o fa-lg link-disabled" aria-hidden="true"></i>
+                <span *ngIf="!disableEditbtn">
+                  <a (click)="getItemDetailsByShipmentId(shipment.ShipmentID)" title="View Details">
+                    <i class="fa fa-file-text-o fa-lg" aria-hidden="true"></i>
+                  </a>
+                </span>
+              </td>
+
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+      <div class="row page-info" *ngIf='shipmentResponse && shipmentResponse[0].RecordCount > 0'>
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+<ng-template #elseBlock>
+  <div class="pad-10">
+    No Shipment Information available
+  </div>
+</ng-template>

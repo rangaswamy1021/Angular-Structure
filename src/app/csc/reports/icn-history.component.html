@@ -1,0 +1,175 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li>
+          <a href="#">Reports</a>
+        </li>
+        <li class="active"> ICN History </li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1> ICN History </h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="content">
+  <!-- <div class="panel-heading">
+      ICN History Report
+    </div> -->
+  <!--Search Form -->
+  <form role="form" [formGroup]=icnHistoryReportsForm>
+    <div class="row">
+      <div class="col-md-6 form-group">
+        <!--(keypress)= "onlyNumberKey($event)"-->
+        <label>ICN #</label>
+        <input type="text" maxlength="10" class="form-control" placeholder="ICN #" formControlName="icn">
+        <div class="msg" *ngIf="icnHistoryReportsForm.controls['icn'].invalid && (icnHistoryReportsForm.controls['icn'].dirty || icnHistoryReportsForm.controls['icn'].touched)">
+          <div *ngIf="icnHistoryReportsForm.controls['icn'].errors.pattern">
+            Only numbers allowed
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-md-6">
+        <label class="focused"> Location </label>
+        <select class="form-control" formControlName="location" name="location">
+                <option selected='selected' value="">--Select--</option>
+                <option *ngFor='let loc of locationResponse' value="{{loc.LocationName}}">{{loc.LocationName}}</option>
+              </select>
+      </div>
+      <div class="form-group col-md-6">
+        <label class="focused">Time Period
+              </label>
+        <!--<input type="text" class="form-control disbale-to-write" bsDaterangepicker #dpr="bsDaterangepicker" name="timePeriod" [(ngModel)]="timePeriodValue"
+                placeholder="MM/DD/YYYY -MM/DD/YYYY" formControlName="timePeriod" (bsValueChange)='bsValueChange($event)'>-->
+        <my-date-range-picker name="mydaterange" [options]="myDateRangePickerOptions" formControlName="timePeriod" placeholder="MM/DD/YYYY -MM/DD/YYYY"
+          (inputFieldChanged)='onDateRangeFieldChanged($event)'></my-date-range-picker>
+        <div class="show-error" *ngIf="!invalidDate && (icnHistoryReportsForm.controls['timePeriod'].invalid && (icnHistoryReportsForm.controls['timePeriod'].dirty || icnHistoryReportsForm.controls['timePeriod'].touched))">
+          <div *ngIf='icnHistoryReportsForm.controls["timePeriod"].errors'>
+            Required
+          </div>
+        </div>
+        <div class="show-error" *ngIf='invalidDate'>
+          <div>
+            Invalid Date Range
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 m-t-20">
+        <button (click)="searchIcnHistpryReports()" class="btn btn-primary btn-search" [disabled]="disableSearchbtn">Search</button>
+        <button (click)="resetIcnHistpryReports()" class="btn btn-default btn-reset">Reset</button>
+      </div>
+    </div>
+  </form>
+  <!--Search Form Ends..-->
+
+  <div class="table-bdr m-t-20">
+    <div *ngIf='icnHistoryResponse && icnHistoryResponse.length'>
+      <h3>ICN History Details</h3>
+      <div class="pad-10">
+        <table class="table">
+          <thead>
+            <tr>
+              <th (click)="sortDirection('ICNID')" class="sorting-handle">ICN #
+                <span *ngIf=gridArrowICNID>
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+              </th>
+              <th (click)="sortDirection('USERID')" class="sorting-handle">User#
+                <span *ngIf=gridArrowUSERID>
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+              </th>
+              <th (click)="sortDirection('FLOATAMOUNT')" class="sorting-handle">Float Amount
+                <span *ngIf=gridArrowFLOATAMOUNT>
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+              </th>
+              <th (click)="sortDirection('CASHAMOUNT')" class="sorting-handle">Cash Amount
+                <span *ngIf=gridArrowCASHAMOUNT>
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+              </th>
+              <th (click)="sortDirection('CHECKAMOUNT')" class="sorting-handle">Check Amount
+                <span *ngIf=gridArrowCHECKAMOUNT>
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+              </th>
+              <th (click)="sortDirection('MOAMOUNT')" class="sorting-handle">MO Amount
+                <span *ngIf=gridArrowMOAMOUNT>
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+              </th>
+              <th (click)="sortDirection('ITEMASSIGNCOUNT')" class="sorting-handle">Tag Assign Count
+                <span *ngIf=gridArrowITEMASSIGNCOUNT>
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+              </th>
+              <th (click)="sortDirection('ITEMRETURNEDCOUNT')" class="sorting-handle">Tag Returned Count
+                <span *ngIf=gridArrowITEMRETURNEDCOUNT>
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+              </th>
+              <th (click)="sortDirection('ICNSTATUS')" class="sorting-handle">ICN Status
+                <span *ngIf=gridArrowICNSTATUS>
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+              </th>
+              <th (click)="sortDirection('LOCATIONNAME')" class="sorting-handle">Location
+                <span *ngIf="gridArrowLOCATIONNAME">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('REVENUEDATE')" class="sorting-handle">Status Date
+                <span *ngIf=gridArrowREVENUEDATE>
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+              </th>
+            </tr>
+          </thead>
+          <tr *ngFor="let icnHistory of icnHistoryResponse| paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount }">
+            <td> {{icnHistory.ICNId}}</td>
+            <td> {{icnHistory.UserId}}</td>
+            <td> {{icnHistory.FloatAmount|currencycustom}} </td>
+            <td> {{icnHistory.CashAmount|currencycustom}} </td>
+            <td> {{icnHistory.CheckAmount|currencycustom}}</td>
+            <td> {{icnHistory.MOAmount|currencycustom}}</td>
+            <td> {{icnHistory.ItemAssignCount}}</td>
+            <td> {{icnHistory.ItemReturnedCount}}</td>
+            <td> {{icnHistory.ICNStatus}}</td>
+            <td> {{icnHistory.LocationName}} </td>
+            <td> {{icnHistory.RevenueDate|customDateFormat}}</td>
+          </tr>
+        </table>
+        <div class="row page-info" *ngIf='icnHistoryResponse && icnHistoryResponse.length >0'>
+          <div class="col-md-6 text-left">
+            <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div *ngIf=' !icnHistoryResponse || icnHistoryResponse.length==0'>
+      <h3>ICN History Details</h3>
+      <div class="pad-10">
+        <div class="status-content">
+          No ICN history details to display
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+</div>

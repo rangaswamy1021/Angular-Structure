@@ -1,0 +1,111 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">FMC</a></li>
+        <li><a href="#">Reconciliation</a></li>
+        <li class="active">Finance Reconciliation By Category</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Finance Reconciliation By Category</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="table-bdr">
+    <form role="form" name="financebycategoryForm" [formGroup]="financebycategoryForm">
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-6 form-group">
+            <label for="timePeriod" class="focused">Time Period</label>
+            <!--<input class="form-control disbale-to-write" formControlName="timePeriod" placeholder="Select Date Range" bsDaterangepicker
+                #dpr="bsDaterangepicker" name="timePeriod" [(ngModel)]="timePeriod">-->
+            <my-date-range-picker (inputFieldChanged)='onDateRangeFieldChanged($event)' name="timePeriod" [options]="myDateRangePickerOptions"
+              formControlName="timePeriod" placeholder="MM/DD/YYYY - MM/DD/YYYY"></my-date-range-picker>
+            <div class="show-error" *ngIf="!invalidDate && financebycategoryForm.controls['timePeriod'].invalid && (financebycategoryForm.controls['timePeriod'].dirty || financebycategoryForm.controls['timePeriod'].touched)">
+              <div *ngIf="financebycategoryForm.controls['timePeriod'].errors.required">
+                Required.
+              </div>
+            </div>
+            <div class="show-error" *ngIf="invalidDate">
+              <div>
+                Invalid Date Range
+              </div>
+            </div>
+          </div>
+          <div class="form-group col-md-6 popover-field">
+            <label for="customerId">  Customer # </label>
+            <input type="text" class="form-control" placeholder="Customer" id="customer" name="customer" formControlName="customer">
+            <div class="msg" *ngIf="financebycategoryForm.controls['customer'].invalid && (financebycategoryForm.controls['customer'].dirty || financebycategoryForm.controls['customer'].touched)">
+              <div *ngIf="financebycategoryForm.controls['customer'].errors.pattern">
+                Only numarical values are allowed.
+              </div>
+            </div>
+            <button _ngcontent-c16="" class="pop-over" [popover]="popContent1" placement="left" data-container="body" popoverTitle="Help"
+              tabindex="-1" triggers="mouseenter:mouseleave" type="button" ng-reflect-popover="[object Object]" ng-reflect-popover-title="Help"
+              ng-reflect-triggers="mouseenter:mouseleave" ng-reflect-container="body">?</button>
+            <ng-template #popContent1>
+              <ul>
+                <li>CustomerId allows only numeric values</li>
+              </ul>
+            </ng-template>
+          </div>
+          <div class="col-md-12">
+            <button type="button" class="btn btn-primary btn-search" [disabled]="disableSearchButton" (click)="SearchDate()">Search</button>
+            <button type="button" class="btn btn-default btn-reset" (click)="resetbtn()">Reset</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="table-bdr" *ngIf="tablehide">
+    <h3>Finance Reconciliation By Category </h3>
+    <div class="panel-body">
+      <div *ngIf="financebycategoryLength >= 1">
+        <table class="table bordered">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Application</th>
+              <th>Finance </th>
+              <th>Variance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor=" let financebycategory of financebycatrgoryres; let idx = index">
+              <td> <span [ngClass]="idx<7?'p-s-15':'p-l-50'">{{financebycategory.PaymentMode}}</span></td>
+              <td class="text-right">
+                <span *ngIf='financebycategory.PaymentMode=="Adjustments"'></span>
+                <span *ngIf='financebycategory.PaymentMode!="Adjustments"'>{{financebycategory.ApplicationAmount | currencycustom}}</span>
+              </td>
+              <td class="text-right">
+                <span *ngIf='financebycategory.PaymentMode=="Adjustments"'></span>
+                <span *ngIf='financebycategory.PaymentMode!="Adjustments"'>{{financebycategory.FinanceAmount | currencycustom}}</span>
+              </td>
+              <td class="text-right">
+                <span *ngIf='financebycategory.PaymentMode=="Adjustments"'></span>
+                <span *ngIf='financebycategory.PaymentMode!="Adjustments"'>{{financebycategory.VarianceAmount | currencycustom}}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="financebycategoryLength == 0">
+        <div>No Records to display</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>

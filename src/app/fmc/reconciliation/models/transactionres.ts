@@ -1,0 +1,17 @@
+export interface ITransactionRes {
+    StartDate: Date,
+    EndDate: Date,
+    DateType: Date,
+    User: string,
+    HOSTTRXN_RECEIVED: number,
+    HOSTTRXN_ACKNOWLEDGED: number,
+    HOSTTRXN_ERROR: number,
+    TRXN_INPROCESS: number,
+    Source: string,
+    ReconType: string,
+    Count: number,
+    Amount: number,
+    TrxnPosted: Array<any>,
+    TripRecon: Array<any>,
+    HostTrxns: any,
+}

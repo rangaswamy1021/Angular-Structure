@@ -1,0 +1,512 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">SAC</a>
+        </li>
+        <li>User Management</li>
+        <li class="active">Manage Users</li>
+      </ol>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Users</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)" (onOk)="userAction($event)"></app-success-failure-alerts-message>
+
+  <app-success-failure-alerts-message [messageFlag]='msgFlagReset' [msgType]='msgTypeReset' [msgTitle]='msgTitleReset' [msgDesc]='msgDescReset'
+    (setFlag)="setOutputFlagReset($event)" (onOk)="userActionReset($event)"></app-success-failure-alerts-message>
+
+  <app-success-failure-alerts-message [messageFlag]='msgFlagDeactive' [msgType]='msgTypeDeactive' [msgTitle]='msgTitleDeactive'
+    [msgDesc]='msgDescDeactive' (setFlag)="setOutputFlagDeactive($event)" (onOk)="userActionDeactive($event)"></app-success-failure-alerts-message>
+
+  <div class="panel panel-default">
+    <form role="form" #searchForm="ngForm">
+      <div class="panel-body bordered">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="form-group col-md-12">
+              <label class="focused">
+                User Role
+              </label>
+              <select class="form-control" #ddlrole="ngModel" [(ngModel)]="ddlRole" required (change)="ddlRoleChange()" name="ddlRole">
+                <option label="select" selected="selected" value=""> --Select--</option>
+                <option *ngFor='let role of roles'>
+                  {{role.RoleName}}
+                </option>
+              </select>
+              <div class="msg" *ngIf="isInValidSearch">
+                <!-- <div *ngIf="ddlrole.errors.required"> -->
+                <span style="color: red"> At least 1 field is required</span>
+                <!-- </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+            <div class="form-group col-md-12">
+
+              <label for="txtUserName"> Username </label>
+              <input type="text" class="form-control" [(ngModel)]="txtUserName" name="txtUserName">
+
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+            <div class="form-group col-md-12">
+              <label class="focused">
+                Status
+              </label>
+              <select class="form-control" [(ngModel)]="ddlStatus" name="ddlStatus">
+                <option label="select" selected="selected" value=""> --Select--</option>
+                <option> Active </option>
+                <option> Inactive </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+            <div class="form-group col-md-12">
+              <label for="txtEmail"> Email Address</label>
+              <input type="text" class="form-control" #email="ngModel" minlength="6" maxlength="100" [(ngModel)]="txtEmail" name="txtEmail"
+                pattern="^[A-Za-z0-9]([_\.\-\+]?[a-zA-Z0-9])*@([A-Za-z0-9]+)([\.\-]?[a-zA-Z0-9])*\.([A-Za-z]{2,6})$">
+              <div class="msg" *ngIf="email.invalid && (email.dirty || email.touched)">
+                <div *ngIf="email.errors.pattern">
+                  Invalid Email Address.
+                </div>
+                <div *ngIf="email.errors.minlength">
+                  Minimum 6 characters are required.
+                </div>
+                <div *ngIf="email.errors.maxlength">
+                  Maximum 100 characters are allowed.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+            <div class="form-group col-md-12">
+              <label class="focused">
+                Location
+              </label>
+              <select class="form-control" #searchLocation="ngModel" name="ddlSearchLocation" [(ngModel)]="ddlSearchLocation">
+                <option label="select" selected="selected" value="">--Select--</option>
+                <option *ngFor='let loc of locationResponse' value="{{loc.LocationName}}">
+                  {{loc.LocationName}}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <button class="btn btn-default btn-search" [disabled]="isUserSearch" (click)="search()">Search </button>
+          <input type="reset" class="btn btn-default btn-reset" (click)="resetDiv()" value="Reset"/>
+        </div>
+      </div>
+    </form>
+
+    <!--<div class="row m-l-10 m-t-10"  *ngIf="isEnableAddbtn">
+      <button class="btn btn-primary btn-search" (click)="enableAddDiv()" [disabled]="createButton"><i class="fa fa-plus-circle fa-lg" aria-hidden="true"></i> <span> Add New User</span>        
+          </button>
+    </div>-->
+
+  </div>
+
+  <div class="pad-10" *ngIf="isEnableAddbtn">
+    <a [ngClass]="{'disabletextbox': disableAddButton}" (click)="enableAddDiv()">
+      <i class="fa fa-plus-square-o fa-lg fa-fw" aria-hidden="true"></i> Add New User </a>
+  </div>
+
+  <div class="panel panel-default" [hidden]="!isEnableAddDiv">
+    <form role="form" #addForm="ngForm">
+      <div class="panel-heading">
+        {{pageHeading}}
+      </div>
+      <div class="panel-body bordered">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="form-group popover-field col-md-12">
+              <label for="UserName"> Username </label>
+              <input type="text" pattern="[a-zA-Z0-9]*" class="form-control" name="UserName" #userName="ngModel" pattern="[a-zA-Z0-9]*"
+                [(ngModel)]="txtAddUname" required maxlength="50" minlength="2" (change)="verifyUser()">
+              <div class="msg" *ngIf="userName.invalid && (userName.dirty || userName.touched)">
+                <div *ngIf="userName.errors.required">
+                  Required.
+                </div>
+                <div *ngIf="userName.errors.pattern">
+                  UserName accepts only alphabets and numbers
+                </div>
+                <div *ngIf="userName.errors.minlength">
+                  Minimum 2 characters are required.
+                </div>
+                <div *ngIf="userName.errors.maxlength">
+                  Maximum 50 characters are allowed.
+                </div>
+              </div>
+              <button type="button" class="pop-over" [popover]="popover1" popoverTitle="Help" placement='left' triggers="mouseenter:mouseleave">?</button>
+              <ng-template #popover1>
+                <ul>
+                  <li>UserName is required</li>
+                  <li>UserName allows only alphabets and numbers</li>
+                  <li>UserName should be minimum 2 characters and maximum 50 characters long</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+            <div class="form-group popover-field col-md-12">
+              <label for="firstName"> First Name </label>
+              <input type="text" required pattern="[a-zA-Z]+([ ][a-zA-Z]+)*" name="firstName" class="form-control" #firstName="ngModel"
+                maxlength="50" minlength="2" [(ngModel)]="txtaddFname">
+              <div class="msg" *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)">
+                <div *ngIf="firstName.errors.required">
+                  Required.
+                </div>
+                <div *ngIf="firstName.errors.pattern">
+                  First Name accepts only alphabets and spaces
+                </div>
+                <div *ngIf="firstName.errors.minlength">
+                  Minimum 2 characters are required.
+                </div>
+                <div *ngIf="firstName.errors.maxlength">
+                  Maximum 50 characters are allowed.
+                </div>
+              </div>
+              <button type="button" class="pop-over" [popover]="popover2" popoverTitle="Help" placement='left' triggers="mouseenter:mouseleave">?</button>
+              <ng-template #popover2>
+                <ul>
+                  <li>First Name is required</li>
+                  <li>It allows only alphabets and spaces</li>
+                  <li>special characters are not allowed</li>
+                  <li>It should be minimum 2 characters and maximum 50 characters long</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+            <div class="form-group popover-field col-md-12">
+              <label for="lastName"> Last Name </label>
+              <input type="text" required pattern="[a-zA-Z]+([ ][a-zA-Z]+)*" name="lastName" class="form-control" #lastName="ngModel" maxlength="50"
+                minlength="2" [(ngModel)]="txtAddLname">
+              <div class="msg" *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)">
+                <div *ngIf="lastName.errors.required">
+                  Required.
+                </div>
+                <div *ngIf="lastName.errors.pattern">
+                  Last Name accepts only alphabets and spaces
+                </div>
+                <div *ngIf="lastName.errors.minlength">
+                  Minimum 2 characters are required.
+                </div>
+                <div *ngIf="lastName.errors.maxlength">
+                  Maximum 50 characters are allowed.
+                </div>
+              </div>
+              <button type="button" class="pop-over" [popover]="popover3" popoverTitle="Help" placement='left' triggers="mouseenter:mouseleave">?</button>
+              <ng-template #popover3>
+                <ul>
+                  <li>Last Name is required</li>
+                  <li>It allows only alphabets and spaces</li>
+                  <li>Special characters are not allowed</li>
+                  <li>It should be minimum 2 characters and maximum 50 characters long</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+            <div class="form-group popover-field col-md-12">
+              <label for="txtAddEmail"> Email Address </label>
+              <input type="text" required class="form-control" (change)="verifyEmailExist($event.target.value)" name="emails" [(ngModel)]="txtAddEmail"
+                #emails="ngModel" pattern="^[A-Za-z0-9]([_\.\-\+]?[a-zA-Z0-9])*@([A-Za-z0-9]+)([\.\-]?[a-zA-Z0-9])*\.([A-Za-z]{2,6})$">
+              <div class="msg" *ngIf="emails.invalid && (emails.dirty || emails.touched)">
+                <div *ngIf="emails.errors.required">
+                  Required.
+                </div>
+                <div *ngIf="emails.errors.pattern">
+                  Invalid Email format.
+                </div>
+                <div *ngIf="emails.errors.minlength">
+                  Minimum 6 characters are required.
+                </div>
+                <div *ngIf="emails.errors.maxlength">
+                  Maximum 100 characters are allowed.
+                </div>
+              </div>
+              <button type="button" class="pop-over" [popover]="popover4" popoverTitle="Help" placement='left' triggers="mouseenter:mouseleave">?</button>
+              <ng-template #popover4>
+                <ul>
+                  <li>Email Address allows Alphanumerics with special characters (@,_,.,-,+)</li>
+                  <li>It should be minimum 6 characters and maximum 100 characters long</li>
+                  <li>It should follow the format yourname@domain.com</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <div class="form-group popover-field col-md-12">
+              <label class="focused"> User Role </label>
+              <select class="form-control" required #role="ngModel" name="role" (change)="getSubSytemUrls($event.target.value)" [(ngModel)]="ddlAddRoles">
+                <option value=""> --Select--</option>
+                <option *ngFor='let role of roles'>
+                  {{role.RoleName}}
+                </option>
+              </select>
+              <div class="msg" *ngIf="role.invalid && (role.dirty || role.touched)">
+                <div *ngIf="role.errors.required">
+                  Required.
+                </div>
+              </div>
+              <button type="button" class="pop-over" [popover]="popover5" popoverTitle="Help" placement='left' triggers="mouseenter:mouseleave">?</button>
+              <ng-template #popover5>
+                <ul>
+                  <li>User role is required</li>
+                  <li>select user role</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+            <div class="form-group popover-field col-md-12">
+              <label class="focused"> Location </label>
+              <select class="form-control" required #location="ngModel" name="location" [(ngModel)]="ddlAddLocation">
+                <option value="">--Select--</option>
+                <option *ngFor='let loc of locationResponse' value="{{loc.LocationName}}">
+                  {{loc.LocationName}}
+                </option>
+              </select>
+              <div class="msg" *ngIf="location.invalid && (location.dirty || location.touched)">
+                <div *ngIf="location.errors.required">
+                  Required.
+                </div>
+              </div>
+              <button type="button" class="pop-over" [popover]="popover6" popoverTitle="Help" placement='left' triggers="mouseenter:mouseleave">?</button>
+              <ng-template #popover6>
+                <ul>
+                  <li>Location is required</li>
+                  <li>Select location</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 row">
+          <div class="form-group col-md-12">
+
+            <div class="checkbox">
+              <input type="checkbox" id="isActiveCheck" [checked]="isActiveCheck" (change)="storeStatus(!isActiveCheck)">
+              <label for="isActiveCheck">
+                <span></span>Is Active
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12" *ngIf="isEnableAddDiv && !isUpdateEnable">
+          <div class="form-group">
+            <button class="btn btn-default btn-search" (click)="addUser()"> Add </button>
+            <input type="reset" class="btn btn-default btn-reset" (click)="resetSubSystem()" value="Reset" />
+            <input type="reset" class="btn btn-default btn-reset" (click)="cancel()" value="Cancel" />
+          </div>
+        </div>
+
+
+        <table class="table bordered" *ngIf="isEnableSubSystem && subSystemUrls">
+          <thead>
+            <tr>
+              <th> Subsystem </th>
+              <th> Default URL </th>
+              <th> Level </th>
+              <th> Is Default </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let role of subSystemUrls;let row_no=index'>
+              <td>
+
+                <div class="p-t-10"> {{role.SubSystems}}</div>
+
+              </td>
+              <td>
+                <span class="">
+                  <select class="form-control" #url="ngModel" required name="url[{{row_no}}]" required (change)="storeSubSystemValue($event.target.value,role.SubSystems)"
+                    [(ngModel)]="role.url">
+                    <option label="select" selected="selected" value=""> --Select--</option>
+                    <option *ngFor='let urls of getURL(role.SubSystemURL)' [hidden]="urls==''">
+                      {{urls}}
+                    </option>
+                  </select>
+                  <div class="msg" *ngIf="url.invalid && (url.dirty || url.touched)">
+                    <div *ngIf="url.errors.required">
+                      Required.
+                    </div>
+                  </div>
+
+                </span>
+              </td>
+              <td>
+
+
+                <span class="">
+                  <select class="form-control" #level="ngModel" required name="level[{{row_no}}]" (change)="storeLevles($event.target.value,role.SubSystems)"
+                    [(ngModel)]="role.DesignationLevels">
+                    <option label="select" selected="selected" value=""> --Select--</option>
+                    <option value="LEVEL1">LEVEL1 </option>
+                    <option value="LEVEL2">LEVEL2 </option>
+                    <option value="LEVEL3">LEVEL3 </option>
+                    <option value="LEVEL4">LEVEL4 </option>
+                    <option value="LEVEL5">LEVEL5 </option>
+                  </select>
+                  <div class="msg" *ngIf="level.invalid && (level.dirty || level.touched)">
+                    <div *ngIf="level.errors.required">
+                      Required.
+                    </div>
+
+
+                  </div>
+                </span>
+              </td>
+              <td>
+
+                <div class="radio p-t-10">
+                  <input type="radio" name="rdo" [id]='role.SubSystems' (change)="storeDefault($event.target.checked,role.SubSystems)" [checked]="role.IsDefault"
+                    class="custom-control-input">
+                  <label [for]="role.SubSystems" class="custom-control-description"></label>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf='!subSystemUrls || subSystemUrls.length == 0'>
+              <td colspan="4">No details to display</td>
+            </tr>
+          </tbody>
+        </table>
+
+
+
+
+
+
+
+        <div class="row m-t-20">
+          <div class="col-md-12" *ngIf="isUpdateEnable">
+            <button class="btn btn-default btn-search" (click)="updateUser()"> Update </button>
+            <button class="btn btn-default btn-search" (click)="cancel()"> Cancel </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      User Details
+    </div>
+
+    <div class="panel-body table-bdr">
+      <table class="table bordered">
+        <thead *ngIf='userResponse'>
+          <tr>
+            <th (click)="sortDirection('UserName')" class="sorting-handle"> Username
+              <span *ngIf="gridArrowUSERNAME">
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+            </th>
+            <th (click)="sortDirection('EmailAddress')" class="sorting-handle"> Email Address
+              <span *ngIf="gridArrowEmail">
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+            </th>
+            <th (click)="sortDirection('UserRole')" class="sorting-handle"> User Role
+              <span *ngIf="gridArrowUserRole">
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+            </th>
+            <th> Location </th>
+            <th (click)="sortDirection('IsActive')" class="sorting-handle"> Status
+              <span *ngIf="gridArrowIsActive">
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+            </th>
+            <th (click)="sortDirection('IsLocked')" class="sorting-handle"> Is Locked
+              <span *ngIf="gridArrowIsLocked">
+                <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+              </span>
+            </th>
+            <th> </th>
+            <th> </th>
+            <th> </th>
+            <th> </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor='let user of userResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p}'>
+            <td> {{user.UserName}} </td>
+            <td> {{user.Email}} </td>
+            <td> {{user.RoleName}} </td>
+            <td> {{user.LocationName}}</td>
+            <td>
+              {{user.IsActive ?"Active":"InActive"}}
+            </td>
+            <td>
+              <a>
+                <i class="fa fa-unlock fa-lg fa-fw" aria-hidden="true"></i>
+              </a> {{user.IsLocked ?"Yes":"No"}}</td>
+            <td style='text-align: center'>
+              <img src="assets/images/svg/edit-blue.svg" [ngClass]="{'disabletextbox': disableUpdateButton}" class="icon-svg3" alt="" style="margin-right: 0 "
+                (click)="editUser(user)">
+            </td>
+            <td style='text-align: center'>
+              <img src="assets/images/svg/delete.svg" [ngClass]="{'disabletextbox': disableDeleteButton}" class="icon-svg3" alt="" style="margin-right: 0"
+                (click)="approveDiactivate(user)">
+            </td>
+            <td>
+              <span class="red" *ngIf="user.IsActive">
+                <a [ngClass]="{'disabletextbox': disableResetPwd}" (click)="approveReset(user)">
+                  <i class="fa fa-undo fa-lg" aria-hidden="true"></i>Reset Password</a>
+              </span>
+            </td>
+            <td>
+              <span class="red" *ngIf="user.IsLocked">
+                <a [ngClass]="{'disabletextbox': disableUnlock}" (click)="approveUnlock(user)">
+                  <i class="fa fa-lock fa-lg fa-fw" aria-hidden="true"></i>Unlock</a>
+              </span>
+            </td>
+          </tr>
+          <tr *ngIf='!userResponse || userResponse.length==0'>
+            <td colspan="9">No details to display</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="row page-info" *ngIf='userResponse'>
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

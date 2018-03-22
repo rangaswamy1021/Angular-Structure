@@ -1,0 +1,529 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">CSC</a>
+        </li>
+        <li class="active"> Reports </li>
+        <li class="active"> CSC Payment Details </li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1> CSC Payment Details </h1>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+<div class="content">
+  <!--Search Form -->
+  <form role="form" name="cscPaymentDetailsForm" [formGroup]="cscPaymentDetailsForm">
+    <div class="row">
+      <div class="col-md-6 form-group">
+        <label class="focused">Payment Type </label>
+        <select class="form-control" formControlName="paymentType">
+                <option value=""> --select--</option>
+                <option *ngFor="let dropdownData of dropdownData" value={{dropdownData.Key}}>
+                  <span>{{dropdownData.Value}}</span>
+                </option>
+              </select>
+      </div>
+      <div class="col-md-6 form-group">
+        <label>ICN #</label>
+        <input type="text" maxlength="10" class="form-control" placeholder="ICN #" formControlName="icn">
+        <div class="msg" *ngIf="cscPaymentDetailsForm.controls['icn'].invalid && (cscPaymentDetailsForm.controls['icn'].dirty || cscPaymentDetailsForm.controls['icn'].touched)">
+          <div *ngIf="cscPaymentDetailsForm.controls['icn'].errors.required">
+            Required.
+          </div>
+          <div *ngIf="cscPaymentDetailsForm.controls['icn'].errors.pattern">
+            Only numbers allowed
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-md-6">
+        <label class="focused"> Location </label>
+        <select class="form-control" formControlName="location" name="location">
+                <option selected='selected' value="">--Select--</option>
+                <option *ngFor='let loc of locationResponse' value="{{loc.LocationName}}">{{loc.LocationName}}</option>
+              </select>
+      </div>
+      <div class="form-group col-md-6">
+        <label class="focused">Time Period</label>
+
+        <!--<input type="text" class="form-control" id="orderDate" bsDaterangepicker #dpr="bsDaterangepicker" name="timePeriod"
+                [(ngModel)]="timePeriodValue" placeholder="mm/dd/yyyy - mm/dd/yyyy" formControlName="timePeriod">-->
+        <my-date-range-picker name="mydaterange" (inputFieldChanged)='onDateRangeFieldChanged($event)' [options]="myDateRangePickerOptions"
+          formControlName="timePeriod" placeholder="MM/DD/YYYY - MM/DD/YYYY"></my-date-range-picker>
+        <div class="show-error" *ngIf="!invalidDate && cscPaymentDetailsForm.controls['timePeriod'].invalid && (cscPaymentDetailsForm.controls['timePeriod'].touched)">
+          <div *ngIf="cscPaymentDetailsForm.controls['timePeriod'].errors.required">
+            Date Range is Required
+          </div>
+        </div>
+        <div class="show-error" *ngIf="invalidDate">
+          <div>Invalid Date Range</div>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <button class="btn btn-primary btn-search" (click)="generateReport()" [disabled]="searchButton">Generate Report</button>
+        <button class="btn btn-default btn-reset" (click)="resetDetails()">Reset</button>
+      </div>
+    </div>
+  </form>
+  <!--Search Form Ends..-->
+  <div class="table-bdr m-t-20" *ngIf="isCscPaymentCreditCardDetails">
+    <h3>Credit Card Entries</h3>
+    <div class="pad-10">
+      <div class="table-responsive">
+        <table class="table" *ngIf='cscPaymentCreditCardDetailsResponse && cscPaymentCreditCardDetailsResponse.length;else creditCardEntries'>
+          <thead>
+            <tr>
+              <th (click)="sortDirection('TRANSACTIONID','creditCard')" class="sorting-handle">Transaction #
+                <span *ngIf=gridArrowTRANSACTIONID>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('CUSTOMERID','creditCard')" class="sorting-handle">Account #
+                <span *ngIf=gridArrowCUSTOMERID>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('VOUCHERNUMBER','creditCard')" class="sorting-handle">Reference #
+                <span *ngIf=gridArrowVOUCHERNUMBER>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('TRANSACTIONAMOUNT','creditCard')" class="sorting-handle">Transaction Amount
+                <span *ngIf=gridArrowTRANSACTIONAMOUNT>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('ACOOUNTHOLDERNAME','creditCard')" class="sorting-handle">Account Holder Name
+                <span *ngIf=gridArrowACOOUNTHOLDERNAME>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('LOCATIONNAME','creditCard')" class="sorting-handle">Location
+                <span *ngIf="gridArrowLOCATIONNAME">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tr *ngFor="let cscPaymentCreditCardDetails of cscPaymentCreditCardDetailsResponse| paginate: { itemsPerPage: creditPageItemNumber, currentPage: creditPage, totalItems:creditTotalRecordCount, id:'first' }">
+            <td>{{cscPaymentCreditCardDetails.TransactionId}} </td>
+            <td>{{cscPaymentCreditCardDetails.CustomerId}}</td>
+            <td>{{cscPaymentCreditCardDetails.VocherNumber}}</td>
+            <td>{{cscPaymentCreditCardDetails.TransactionAmount| currencycustom}}</td>
+            <td>{{cscPaymentCreditCardDetails.CustomerName}}</td>
+            <td>{{cscPaymentCreditCardDetails.LocationName}}</td>
+
+          </tr>
+        </table>
+        <div *ngIf='cscPaymentCreditCardDetailsResponse && cscPaymentCreditCardDetailsResponse.length >0'>
+          <div class="col-md-6 text-left">
+            <p>Display {{creditStartItemNumber}} - {{creditEndItemNumber}} Records of {{creditTotalRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls id='first' (pageChange)="creditCardDetailsPageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #creditCardEntries>
+      <div>
+         No credit card details to display
+      </div>
+    </ng-template>
+  </div>
+  <div class="table-bdr m-t-20" *ngIf="isCscPaymentChequeDetails">
+    <h3>Check Entries</h3>
+    <div class="pad-10">
+      <div class="table-responsive">
+        <table class="table" *ngIf='cscPaymentChequeDetailsResponse && cscPaymentChequeDetailsResponse.length;else chequeDetails'>
+          <thead>
+            <tr>
+              <th (click)="sortDirection('TRANSACTIONID', 'checkEntries' )" class="sorting-handle">Transaction #
+                <span *ngIf=gridArrowTRANSACTIONID>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('CUSTOMERID', 'checkEntries')" class="sorting-handle">Account #
+                <span *ngIf=gridArrowCUSTOMERID>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('VOUCHERNUMBER', 'checkEntries')" class="sorting-handle">Reference #
+                <span *ngIf=gridArrowVOUCHERNUMBER>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('TRANSACTIONAMOUNT', 'checkEntries')" class="sorting-handle">Transaction Amount
+                <span *ngIf=gridArrowTRANSACTIONAMOUNT>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('ACOOUNTHOLDERNAME', 'checkEntries')" class="sorting-handle">Account Holder Name
+                <span *ngIf=gridArrowACOOUNTHOLDERNAME>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('LOCATIONNAME', 'checkEntries')" class="sorting-handle">Location
+                <span *ngIf="gridArrowLOCATIONNAME">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tr *ngFor="let cscPaymentChequeDetails of cscPaymentChequeDetailsResponse|paginate: { itemsPerPage: chequePageItemNumber, currentPage: chequePage, totalItems:chequeTotalRecordCount ,id: 'second' }">
+            <td>{{cscPaymentChequeDetails.TransactionId}} </td>
+            <td>{{cscPaymentChequeDetails.CustomerId}}</td>
+            <td>{{cscPaymentChequeDetails.VocherNumber}}</td>
+            <td>{{cscPaymentChequeDetails.TransactionAmount| currencycustom}}</td>
+            <td>{{cscPaymentChequeDetails.CustomerName}}</td>
+            <td>{{cscPaymentChequeDetails.LocationName}}</td>
+          </tr>
+        </table>
+        <div *ngIf='cscPaymentChequeDetailsResponse && cscPaymentChequeDetailsResponse.length >0'>
+          <div class="col-md-6 text-left">
+            <p>Display {{chequeStartItemNumber}} - {{chequeEndItemNumber}} Records of {{chequeTotalRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls id='second' (pageChange)="chequeDetailsPageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #chequeDetails>
+      <div>
+        No check details to display
+      </div>
+    </ng-template>
+  </div>
+  <div class="table-bdr m-t-20" *ngIf="isCscPaymentCashDetails">
+    <h3>Cash Entries</h3>
+    <div class="pad-10">
+      <div class="table-responsive">
+        <table class="table" *ngIf='cscPaymentCashDetailsResponse && cscPaymentCashDetailsResponse.length;else cashDetails'>
+          <thead>
+            <tr>
+              <th (click)="sortDirection('TRANSACTIONID', 'cashEntries')" class="sorting-handle">Transaction #
+                <span *ngIf=gridArrowTRANSACTIONID>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('CUSTOMERID', 'cashEntries')" class="sorting-handle">Account #
+                <span *ngIf=gridArrowCUSTOMERID>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('VOUCHERNUMBER', 'cashEntries')" class="sorting-handle">Reference #
+                <span *ngIf=gridArrowVOUCHERNUMBER>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('TRANSACTIONAMOUNT', 'cashEntries')" class="sorting-handle">Transaction Amount
+                <span *ngIf=gridArrowTRANSACTIONAMOUNT>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('ACOOUNTHOLDERNAME', 'cashEntries')" class="sorting-handle">Account Holder Name
+                <span *ngIf=gridArrowACOOUNTHOLDERNAME>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('LOCATIONNAME', 'cashEntries')" class="sorting-handle">Location
+                <span *ngIf="gridArrowLOCATIONNAME">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tr *ngFor="let cscPaymentCashDetails of cscPaymentCashDetailsResponse|paginate: { itemsPerPage: cashPageItemNumber, currentPage: cashPage, totalItems:cashTotalRecordCount,  id:'third'  }">
+            <td>{{cscPaymentCashDetails.TransactionId}} </td>
+            <td>{{cscPaymentCashDetails.CustomerId}}</td>
+            <td>{{cscPaymentCashDetails.VocherNumber}}</td>
+            <td>{{cscPaymentCashDetails.TransactionAmount| currencycustom}}</td>
+            <td>{{cscPaymentCashDetails.CustomerName}}</td>
+            <td>{{cscPaymentCashDetails.LocationName}}</td>
+          </tr>
+        </table>
+        <div *ngIf='cscPaymentCashDetailsResponse && cscPaymentCashDetailsResponse.length >0'>
+          <div class="col-md-6 text-left">
+            <p>Display {{cashStartItemNumber}} - {{cashEndItemNumber}} Records of {{cashTotalRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls id='third' (pageChange)="cashDetailsPageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #cashDetails>
+      <div>
+ No cash details to Display
+      </div>
+    </ng-template>
+  </div>
+  <div class="table-bdr m-t-20" *ngIf="isCscPaymentMoDetails">
+    <h3>Money Order Entries</h3>
+    <div class="pad-10">
+      <div class="table-responsive">
+        <table class="table" *ngIf='cscPaymentMODetailsResponse && cscPaymentMODetailsResponse.length;else PaymentMODetails'>
+          <thead>
+            <tr>
+              <th (click)="sortDirection('TRANSACTIONID','moneyOrder')" class="sorting-handle">Transaction #
+                <span *ngIf=gridArrowTRANSACTIONID>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('CUSTOMERID', 'moneyOrder')" class="sorting-handle">Account #
+                <span *ngIf=gridArrowCUSTOMERID>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('VOUCHERNUMBER', 'moneyOrder')" class="sorting-handle">Reference #
+                <span *ngIf=gridArrowVOUCHERNUMBER>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('TRANSACTIONAMOUNT', 'moneyOrder')" class="sorting-handle">Transaction Amount
+                <span *ngIf=gridArrowTRANSACTIONAMOUNT>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('ACOOUNTHOLDERNAME', 'moneyOrder')" class="sorting-handle">Account Holder Name
+                <span *ngIf=gridArrowACOOUNTHOLDERNAME>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('LOCATIONNAME', 'moneyOrder')" class="sorting-handle">Location
+                <span *ngIf="gridArrowLOCATIONNAME">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tr *ngFor="let cscPaymentMODetails of cscPaymentMODetailsResponse|paginate: { itemsPerPage: moPageItemNumber, currentPage: moPage, totalItems:moTotalRecordCount,id:'fourth' }">
+            <td>{{cscPaymentMODetails.TransactionId}} </td>
+            <td>{{cscPaymentMODetails.CustomerId}}</td>
+            <td>{{cscPaymentMODetails.VocherNumber}}</td>
+            <td>{{cscPaymentMODetails.TransactionAmount| currencycustom}}</td>
+            <td>{{cscPaymentMODetails.CustomerName}}</td>
+            <td>{{cscPaymentMODetails.LocationName}}</td>
+          </tr>
+        </table>
+        <div *ngIf='cscPaymentMODetailsResponse && cscPaymentMODetailsResponse.length >0'>
+          <div class="col-md-6 text-left">
+            <p>Display {{moStartItemNumber}} - {{moEndItemNumber}} Records of {{moTotalRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls id='fourth' (pageChange)="mODetailsPageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #PaymentMODetails>
+      <div>
+ No money order details to display
+      </div>
+    </ng-template>
+  </div>
+  <div class="table-bdr m-t-20" *ngIf="isCscPaymentBankDetails">
+    <h3>Bank Entries</h3>
+    <div class="pad-10">
+      <div class="table-responsive">
+        <table class="table" *ngIf='cscPaymentBankDetailsResponse && cscPaymentBankDetailsResponse.length;else bankDetails'>
+          <thead>
+            <tr>
+              <th (click)="sortDirection('TRANSACTIONID', 'bankEntries')" class="sorting-handle">Transaction #
+                <span *ngIf=gridArrowTRANSACTIONID>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('CUSTOMERID', 'bankEntries')" class="sorting-handle">Account #
+                <span *ngIf=gridArrowCUSTOMERID>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('VOUCHERNUMBER','bankEntries')" class="sorting-handle">Reference #
+                <span *ngIf=gridArrowVOUCHERNUMBER>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('TRANSACTIONAMOUNT','bankEntries')" class="sorting-handle">Transaction Amount
+                <span *ngIf=gridArrowTRANSACTIONAMOUNT>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('ACOOUNTHOLDERNAME','bankEntries')" class="sorting-handle">Account Holder Name
+                <span *ngIf=gridArrowACOOUNTHOLDERNAME>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('LOCATIONNAME','bankEntries')" class="sorting-handle">Location
+                <span *ngIf="gridArrowLOCATIONNAME">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tr *ngFor="let cscPaymentBankDetails of cscPaymentBankDetailsResponse|paginate: { itemsPerPage: bankPageItemNumber, currentPage: bankPage, totalItems:bankTotalRecordCount,id:'five'  }">
+            <td>{{cscPaymentBankDetails.TransactionId}} </td>
+            <td>{{cscPaymentBankDetails.CustomerId}}</td>
+            <td>{{cscPaymentBankDetails.VocherNumber}}</td>
+            <td>{{cscPaymentBankDetails.TransactionAmount| currencycustom}}</td>
+            <td>{{cscPaymentBankDetails.CustomerName}}</td>
+            <td>{{cscPaymentBankDetails.LocationName}}</td>
+          </tr>
+        </table>
+        <div *ngIf='cscPaymentBankDetailsResponse && cscPaymentBankDetailsResponse.length >0'>
+          <div class="col-md-6 text-left">
+            <p>Display {{bankStartItemNumber}} - {{bankEndItemNumber}} Records of {{bankTotalRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls id='five' (pageChange)="bankDetailsPageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #bankDetails>
+      <div>
+ No bank details to display
+      </div>
+    </ng-template>
+  </div>
+  <div class="table-bdr m-t-20" *ngIf="isCscPaymentGCDetails">
+    <h3>Gift Certificate Entries</h3>
+    <div class="pad-10">
+      <div class="table-responsive">
+        <table class="table" *ngIf='cscPaymentGCDetailsResponse && cscPaymentGCDetailsResponse.length;else paymentGCDetails'>
+          <thead>
+            <tr>
+              <th (click)="sortDirection('TRANSACTIONID', 'Gift')" class="sorting-handle">Transaction #
+                <span *ngIf=gridArrowTRANSACTIONID>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('CUSTOMERID', 'Gift')" class="sorting-handle">Account #
+                <span *ngIf=gridArrowCUSTOMERID>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('VOUCHERNUMBER', 'Gift')" class="sorting-handle">Reference #
+                <span *ngIf=gridArrowVOUCHERNUMBER>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('TRANSACTIONAMOUNT', 'Gift')" class="sorting-handle">Transaction Amount
+                <span *ngIf=gridArrowTRANSACTIONAMOUNT>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('ACOOUNTHOLDERNAME','Gift')" class="sorting-handle">Account Holder Name
+                <span *ngIf=gridArrowACOOUNTHOLDERNAME>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('LOCATIONNAME','Gift')" class="sorting-handle">Location
+                <span *ngIf="gridArrowLOCATIONNAME">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tr *ngFor="let cscPaymentGCDetails of cscPaymentGCDetailsResponse|paginate: { itemsPerPage: gcPageItemNumber, currentPage: gcPage, totalItems:gcTotalRecordCount,id:'six' }">
+            <td>{{cscPaymentGCDetails.TransactionId}} </td>
+            <td>{{cscPaymentGCDetails.CustomerId}}</td>
+            <td>{{cscPaymentGCDetails.VocherNumber}}</td>
+            <td>{{cscPaymentGCDetails.TransactionAmount| currencycustom}}</td>
+            <td>{{cscPaymentGCDetails.CustomerName}}</td>
+            <td>{{cscPaymentGCDetails.LocationName}}</td>
+          </tr>
+        </table>
+        <div *ngIf='cscPaymentGCDetailsResponse && cscPaymentGCDetailsResponse.length >0'>
+          <div class="col-md-6 text-left">
+            <p>Display {{gcStartItemNumber}} - {{gcEndItemNumber}} Records of {{gcTotalRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls id='six' (pageChange)="gCDetailsPageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #paymentGCDetails>
+      <div>
+ No gift certificate details to display
+      </div>
+    </ng-template>
+  </div>
+  <div class="table-bdr m-t-20" *ngIf="isCscPaymentPromoDetails">
+    <h3>Promo Payment Entries</h3>
+    <div class="pad-10">
+      <div class="table-responsive">
+        <table class="table" *ngIf='cscPaymentPromoDetailsResponse && cscPaymentPromoDetailsResponse.length;else paymentPromoDetails'>
+          <thead>
+            <tr>
+              <th (click)="sortDirection('TRANSACTIONID', 'Promo')" class="sorting-handle">Transaction #
+                <span *ngIf=gridArrowTRANSACTIONID>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('CUSTOMERID', 'Promo')" class="sorting-handle">Account #
+                <span *ngIf=gridArrowCUSTOMERID>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('VOUCHERNUMBER', 'Promo')" class="sorting-handle">Reference #
+                <span *ngIf=gridArrowVOUCHERNUMBER>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('TRANSACTIONAMOUNT', 'Promo')" class="sorting-handle">Transaction Amount
+                <span *ngIf=gridArrowTRANSACTIONAMOUNT>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('ACOOUNTHOLDERNAME', 'Promo')" class="sorting-handle">Account Holder Name
+                <span *ngIf=gridArrowACOOUNTHOLDERNAME>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('LOCATIONNAME','Promo')" class="sorting-handle">Location
+                <span *ngIf="gridArrowLOCATIONNAME">
+                  <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tr *ngFor="let cscPaymentPromoDetails of cscPaymentPromoDetailsResponse|paginate: { itemsPerPage: promoPageItemNumber, currentPage: promoPage, totalItems:promoTotalRecordCount,id:'seven' }">
+            <td>{{cscPaymentPromoDetails.TransactionId}} </td>
+            <td>{{cscPaymentPromoDetails.CustomerId}}</td>
+            <td>{{cscPaymentPromoDetails.VocherNumber}}</td>
+            <td>{{cscPaymentPromoDetails.TransactionAmount| currencycustom}}</td>
+            <td>{{cscPaymentPromoDetails.CustomerName}}</td>
+            <td>{{cscPaymentPromoDetails.LocationName}}</td>
+
+          </tr>
+        </table>
+        <div *ngIf='cscPaymentPromoDetailsResponse && cscPaymentPromoDetailsResponse.length >0'>
+          <div class="col-md-6 text-left">
+            <p>Display {{promoStartItemNumber}} - {{promoEndItemNumber}} Records of {{promoTotalRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls id='seven' (pageChange)="promoDetailsPageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #paymentPromoDetails>
+      <div>
+ No promo payment details to display
+      </div>
+    </ng-template>
+  </div>
+</div>

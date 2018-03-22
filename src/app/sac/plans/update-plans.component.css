@@ -1,0 +1,13 @@
+.width
+{
+    margin-top: 33px;
+}
+
+
+.disabletextbox {pointer-events: none;cursor: default;}
+.link-disabled
+{
+    cursor: not-allowed;
+    pointer-events: none;
+    color: #aaa3a3;
+}

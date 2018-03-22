@@ -1,0 +1,102 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">SAC</a>
+        </li>
+        <li>
+          <a href="#">Configuration</a>
+        </li>
+        <li class="active">Include Message to Invoice</li>
+      </ol>
+    </div>
+    <!--<div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Pages</h1>
+      </div>
+    </div>-->
+  </div>
+</div>
+
+<div class="content">
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+  <div class="panel panel-default">
+    <div class="panel-heading">Manage Invoice Message</div>
+    <div class="panel-body bordered">
+      <form class="*form-horizontal" name="includeMessage" [formGroup]="includeMessage">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label for="invoicemessage" class="focused">Invoice Message</label>
+              <textarea class="form-control" formControlName="invoicemessage" cols="5" rows="3" name="invoicemessage" id="invoicemessage"
+                [ngClass]="{'disabletextbox':isDeleteClicked }" (keyup)="calculateLength($event)" [maxlength]="descriptionMaxLength"></textarea>
+              <div class="msg" *ngIf="includeMessage.controls['invoicemessage'].invalid && (includeMessage.controls['invoicemessage'].dirty || includeMessage.controls['invoicemessage'].touched)">
+                <div *ngIf="includeMessage.controls['invoicemessage'].errors.required">
+                  Required.
+                </div>
+              </div>
+              <div>
+              
+              </div>
+            </div>
+<small class="pull-right" style="padding-right:30px"> Left: {{descriptionLength}} characters </small>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group col-md-12 ">
+
+              <div class="checkbox">
+                <input #saveCheckbox type="checkbox" id="saveCheckbox" name="active" formControlName="active" [checked]="active" (change)="checkActive(saveCheckbox.checked)">
+                <label for="saveCheckbox"><span></span>Include in Invoice </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="text-right">
+          <button class="btn btn-default btn-search" [disabled]="disableCButton" (click)='addMessage()' *ngIf="isAddClicked"> Submit </button>
+          <button class="btn btn-default btn-search" [disabled]="disableUButton" (click)='onUpdateClick()' *ngIf="isEditClicked"> Update </button>
+          <button type="submit" (click)="resetClick()" class="btn btn-primary btn-reset" *ngIf="isResetClicked"> Reset </button>
+          <button class="btn btn-default btn-search" [disabled]="disableDButton" (click)='onDelClick()' *ngIf="isDeleteClicked"> Delete </button>
+          <button class="btn btn-default btn-reset" (click)="cancel()" *ngIf="isCancelClicked"> Cancel </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="m-t-20">
+    <div class="panel panel-default">
+      <div class="panel-heading">Invoice Message Details</div>
+      <div *ngIf='invoices && invoices.length;else NodetailsBlock'>
+        <table class="table table-bdr">
+          <thead>
+            <tr>
+              <th> Invoice Message </th>
+              <th> Include in Invoice </th>
+              <th> Edit </th>
+              <th> Delete </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let inv of invoices">
+
+              <td>{{inv.DocumentsText}}</td>
+              <td style="width:15%;">{{inv.IncludeInDocument?'Yes':'No'}}</td>
+              <!-- <td><button (click)='onEditClick(inv)' class="btn btn-default ">Edit</button></td> -->
+              <td>
+                <img src="assets/images/svg/edit.svg" (click)='onEditClick(inv)' class="icon-svg3">
+              </td>
+              <td>
+                <img src="assets/images/svg/delete.svg" (click)='onDeleteClick(inv)' class="icon-svg3">
+              </td>
+              <!-- <td><button (click)='onDeleteClick(inv)' class="btn btn-default ">Delete</button></td> -->
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+    <ng-template #NodetailsBlock>
+      <div class="alert alert-info " role="alert ">No details to display</div>
+    </ng-template>
+  </div>
+
+</div>

@@ -1,0 +1,256 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">IMC</a></li>
+        <li class="active">Shipment Details</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1> Receive Shipment </h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="row">
+    <div class="col-md-12  text-right">
+      <div class="form-horizontal m-b-10">
+        <button type="submit" class="btn btn-primary btn-search" (click)="backMethod()"> Back</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-bdr">
+    <h3>Tag Details</h3>
+    <div class="pad-10">
+      <form role="form" name="receiveShipmentForm" [formGroup]="receiveShipmentForm">
+        <div class="row">
+        <div class="col-md-6">
+          <div class="form-group popover-field col-md-12">
+            <label class="focused"> Tag Type </label>
+            <select class="form-control" formControlName="tagType" disabled> 
+                  *ngIf='tagType && tagType.length'>
+                    <option selected="selected" value="">--Select--</option>
+                    <option *ngFor="let tagType of tagType" value="{{tagType.LookUpTypeCode}}">
+                      {{tagType.LookUpTypeCode}}</option>
+                </select>
+
+            <button type="button" class="pop-over" data-container="body" [popover]="poptagType" popoverTitle="Help" placement="left"
+              triggers="mouseenter:mouseleave">?</button>
+            <ng-template #poptagType>
+              <ul>
+                <li>Tag Type</li>
+              </ul>
+            </ng-template>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group popover-field col-md-12" *ngIf="receivedAgencyCodes && receivedAgencyCodes.length">
+            <label class="focused"> Agencies </label>
+            <select class="form-control" formControlName="agencies"> 
+                  <option *ngFor="let item of receivedAgencyCodes" 
+                   [selected]="item.AgencyCode" 
+                   [value]="item.AgencyCode"> 
+                  {{item.AgencyDescription}}   
+                  </option>
+                </select>
+            <button type="button" class="pop-over" data-container="body" [popover]="pop111" popoverTitle="Help" placement="left" triggers="mouseenter:mouseleave">
+                    <i class="fa fa-question" aria-hidden="true"></i></button>
+
+            <ng-template #pop111>
+              <ul>
+                <li>EZPass Agencies </li>
+              </ul>
+            </ng-template>
+
+          </div>
+        </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="table-bdr">
+    <h3> Item Information</h3>
+    <div class="panel-body">
+      <form role="form" name="receiveShipmentForm" [formGroup]="receiveShipmentForm">
+        <!--Radio Buttons start-->
+        <div class="row">
+          <div class="col-md-12">
+              <div class="custom-control custom-radio radio-inline">
+                <input type="radio" id="rad1" class="custom-control-input" name="options" value="Series" checked="{{!isChecked}}" (change)="divTypeChange($event.target.value)">
+                <label class="custom-control-description" for="rad1"><strong> Serial #</strong></label>  
+                </div> 
+              <div class="custom-control custom-radio radio-inline">
+                <input type="radio" id="rad2" class="custom-control-input" name="options" value="Range" checked="{{isChecked}}" (change)="divTypeChange($event.target.value)">
+                <label class="custom-control-description" for="rad2"><strong>Range</strong></label>
+              </div>
+          </div>
+        </div>
+        <!--Radio Buttons end-->
+
+
+        <div class="row">
+          <div class="col-md-12">
+            <div class="row" [hidden]="!seriesDiv">
+              <div class="col-md-5">
+                <div class="col-md-12 form-group popover-field">
+                  <label> Serial #</label>
+                  <input type="text" class="form-control" placeholder="Serial #" formControlName="serialNumber" (keypress)="_keyPress($event)" maxlength="13">
+                  <button type="button" class="pop-over" [popover]="pop222" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #pop222>
+                    <ul>
+                      <li>Serial # is mandatory</li>
+                      <li>It allows only numbers</li>
+                    </ul>
+                  </ng-template>
+                </div>
+                
+                    <button class="btn btn-default btn-search"><i class="fa fa-qrcode" aria-hidden="true"></i> Scan </button>
+                  
+              </div>
+
+              <div class="col-md-2">
+                <div class="form-group">
+                  <button class="btn btn-default btn-search" (click)="BtnAddClick()"> 
+                        <span class="glyphicon glyphicon-arrow-right"> </span> 
+                      </button>
+                </div>
+                <div class="form-group">
+                  <button class="btn btn-default btn-search" (click)="BtnRemoveClick()" > 
+                        <span class="glyphicon glyphicon-arrow-left" > </span> 
+                      </button>
+                </div>
+              </div>
+              <div class="col-md-5">
+                <div class="form-group popover-field">
+                  <label class="focused"> Added Serial #</label>
+                   <select size="4" class="form-control" aria-placeholder="Added Serial #" formControlName="serialNumbersList" (click)="getSerialNumber($event)"> 
+                  <option *ngFor="let item of serialNumbersList" 
+                  
+                   [value]="item"> 
+                  {{item}}   
+                  </option>
+                </select>
+                 <div class="msg" *ngIf="receiveShipmentForm.controls['serialNumbersList'].invalid && (receiveShipmentForm.controls['serialNumbersList'].dirty || receiveShipmentForm.controls['serialNumbersList'].touched)">
+                      <div *ngIf="receiveShipmentForm.controls['serialNumbersList'].errors.required">
+                        Required.
+                      </div>
+                    </div>
+                  <button type="button" class="pop-over" [popover]="pop333" popoverTitle="Help" triggers="mouseenter:mouseleave" tabindex="-1"
+                    placement="left">?</button>
+                  <ng-template #pop333>
+                    <ul>
+                      <li>Quantity is mandatory </li>
+                      <li>It allows only numbers</li>
+                      <li>It should contain minimum 1 and maximum 6 numbers</li>
+                    </ul>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+            <!--Series Div end-->
+
+
+            <!--Range Div start-->
+            <div class="row" [hidden]="!rangeDiv">
+              <div class="col-md-6">
+                <div class="col-md-12 form-group popover-field">
+                  <label>Start Range</label>
+                    <input type="text" class="form-control" placeholder="Start Range" formControlName="startRange" (change)="checkStartRange($event.target.value)" (keypress)="_keyPress($event)" maxlength="13">
+                    <div class="msg" *ngIf="receiveShipmentForm.controls['startRange'].invalid && (receiveShipmentForm.controls['startRange'].dirty || receiveShipmentForm.controls['startRange'].touched)">
+                      <div *ngIf="receiveShipmentForm.controls['startRange'].errors.required">
+                        Required.
+                      </div>
+                    </div>
+                       <button type="button" class="pop-over" data-container="body" [popover]="pop221" popoverTitle="Help" placement="left" triggers="mouseenter:mouseleave">?</button>
+                  <ng-template #pop221>
+                    <ul>
+                      <li>Start Range is mandatory</li>
+                      <li>It allows only numbers</li>
+                    </ul>
+                  </ng-template>             
+
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="col-md-12 form-group popover-field">
+                  <label>Quantity</label>
+                  <input type="text" class="form-control" placeholder="Quantity" formControlName="quantity" (change)="onQuantityChange($event.target.value)" (keypress)="_keyPress($event)" maxlength="6">
+                  <div class="msg" *ngIf="receiveShipmentForm.controls['quantity'].invalid && (receiveShipmentForm.controls['quantity'].dirty || receiveShipmentForm.controls['quantity'].touched)">
+                    <div *ngIf="receiveShipmentForm.controls['quantity'].errors.required">
+                      Required.
+                    </div>
+                  </div>
+                  <button type="button" class="pop-over" data-container="body" [popover]="pop222" popoverTitle="Help" placement="left" triggers="mouseenter:mouseleave">
+                    <i class="fa fa-question" aria-hidden="true"></i></button>
+                  <ng-template #pop222>
+                    <ul>
+                      <li>Quantity is mandatory </li>
+                      <li>It allows only numbers</li>
+                      <li>It should contain minimum 1 and maximum 6 numbers</li>
+                    </ul>
+                  </ng-template>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="col-md-12 form-group popover-field">   
+                  <label for="endRange">End Range</label>
+                  <input type="text" class="form-control" disabled="true" formControlName="endRange" placeholder="End Range" id="endRange">
+                  </div>
+              </div>
+
+            </div>
+            <!--Range Div end-->
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="table-bdr">
+    <h3>Items</h3>
+    <div class="pad-10">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Item Name </th>
+            <th>Requested Quantity </th>
+            <th>Shipped Quantity</th>
+            <th>Received Quantity</th>
+            <th>Vendor Name </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let gridItems of receivedGridItems">
+            <td>{{gridItems.ItemName}}</td>
+            <td>{{gridItems.ItemQuantity}}</td>
+            <td>{{gridItems.ReceivedQty}}</td>
+            <td><input type="text" class="form-control" disabled="true" value="{{quantityValue}}" placeholder="Received Quantity"> </td>
+            <td>{{gridItems.CompanyName}} </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="pull-right">
+        <button type="button" class="btn btn-primary btn-search " (click)="receivedShipmentItems()" [disabled]="viewDisableButton">Next</button>
+        <button type="button" class="btn btn-default btn-reset" title="To cancel recieve shipment" (click)="cancelShipmentItems()" >Cancel</button>
+      </div>
+    </div>
+      <app-success-failure-alerts-message style="word-break: break-all;" [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)" (onOk)="btnYesClick($event)"></app-success-failure-alerts-message>
+  </div>
+</div>
+
+

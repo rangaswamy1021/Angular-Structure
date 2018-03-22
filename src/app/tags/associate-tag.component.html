@@ -1,0 +1,175 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <div class="row no-gutters">
+          <div class="col-md-12">
+
+            <ol class="breadcrumb">
+              <li>
+                <a href="#">CSC</a>
+              </li>
+              <li class="active">Manage Tags</li>
+            </ol>
+          </div>
+        </div>
+        <h1>Associate Tags</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<form role="form" [formGroup]="associateForm" name="associateForm" novalidate>
+  <div class="content">
+    <div class="panel panel-default">
+      <div class="panel-heading"> Tag Serial Number </div>
+      <div class="panel-body">
+        <div class='row'>
+          <div class="col-md-3">
+            <div class="form-group">
+              <select class="form-control" style="width:300px " (change)="onSelectTagSerialNum($event.target.value)" formControlName="serialno"
+                name="serialno">
+                <option value="">--Select--</option>
+                <option value="{{serialnum.TagSerialNumber}}" *ngFor='let serialnum of serialNumResponse;let row_no=index'>{{serialnum.TagSerialNumber}} - {{serialnum.TagType}} </option>
+              </select>
+              <div class="msg" *ngIf="associateForm.controls['serialno'].invalid && (associateForm.controls['serialno'].dirty || associateForm.controls['serialno'].touched)">
+                <div *ngIf="associateForm.controls['serialno'].errors.required">
+                  Required.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading"> Vehicle Details </div>
+      <div class="panel-body">
+        <div *ngIf='vehicleResponse && vehicleResponse.length;else NoDetailsBlock'>
+          <table class="table">
+            <thead>
+              <tr>
+                <th></th>
+                <th *ngIf='plateVisible'></th>
+                <th> Plate #</th>
+                <!-- <th> Tag # </th> -->
+                <th> Class </th>
+                <th> Vehicle Class Desc </th>
+                <th> Description </th>
+                <th> Color </th>
+                <th> State </th>
+                <th> Country </th>
+                <th> Associate Start Date </th>
+                <th> Associate End Date </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let vehicles of vehicleResponse; let row_no=index'>
+                <td>
+                  <div class="checkbox">
+                    <input style="position:relative; margin-left: 0px;" type="checkbox" id="{{vehicles.VehicleId}}" [(ngModel)]="vehicles.IsSelected"
+                      [checked]="vehicles.IsSelected" value="{{vehicles.VehicleId}}" (change)="onCheckChange($event, vehicles)"
+                      formControlName="chkvehicle" name="chkvehicle">
+                    <label for="{{vehicles.VehicleId}}">
+                      <span></span>
+                    </label>
+                  </div>
+                </td>
+                <td *ngIf='plateVisible'>{{vehicles.VehicleId}}</td>
+                <td>{{vehicles.VehicleNumber}}</td>
+                <!-- <td>{{vehicles.TagSerialNumber}}</td> -->
+                <td>{{vehicles.VehicleClass}}</td>
+                <td>{{vehicles.VehicleClassDesc}}</td>
+                <td>{{vehicles.VehicleDescription}}</td>
+                <td>{{vehicles.Color}}</td>
+                <td>{{vehicles.State}}</td>
+                <td>{{vehicles.Country}}</td>
+                <td>
+                  <!-- <my-date-picker name="myDatePickerGridStart" [options]="myDatePickerOptionsGridStart" (inputFieldChanged)='validateStartDate(vehicles,$event)'
+                    placeholder="MM/DD/YYYY" [disabled]="!(vehicles.IsSelected)" [(ngModel)]="vehicles.Startrow_no" [ngModelOptions]="{standalone: true}"></my-date-picker> -->
+                  <my-date-picker name="myDatePickerGridStart" [options]="myDatePickerOptionsGridStart" (dateChanged)='setEndEfficetiveDate(vehicles,$event)'
+                    placeholder="MM/DD/YYYY" [disabled]="!(vehicles.IsSelected)" [(ngModel)]="vehicles.Startrow_no" [ngModelOptions]="{standalone: true}"></my-date-picker>
+                  <div class="show-error" *ngIf='invalid'>
+                    <div> Invalid Date</div>
+                  </div>
+                  <!-- <input type='text' class="form-control" [minDate]="maxDate" #dp="bsDatepicker"  bsDatepicker  [(bsValue)]="vehicles.Startrow_no"
+                  [disabled]="!(vehicles.IsSelected)" (bsValueChange)="validateStartDate(vehicles,vehicles.Startrow_no)"> -->
+                </td>
+                <td>
+                  <!-- <input type='text' class="form-control" [minDate]="maxDate" #dp="bsDatepicker" bsDatepicker [(ngModel)]="vehicles.Endrow_no"
+                    [disabled]="!(vehicles.IsSelected)" (bsValueChange)="validateEndDate(vehicles,vehicles.Endrow_no)"> -->
+                  <!-- <my-date-picker name="myDatePickerGridEnd" [options]="myDatePickerOptionsGridEnd" (inputFieldChanged)='validateEndDate(vehicles,$event)'
+                    placeholder="MM/DD/YYYY" [disabled]="!(vehicles.IsSelected)" [(ngModel)]="vehicles.Endrow_no" [ngModelOptions]="{standalone: true}"></my-date-picker> -->
+                  <my-date-picker name="myDatePickerGridEnd" [options]="myDatePickerOptionsGridEnd" placeholder="MM/DD/YYYY" [disabled]="!(vehicles.IsSelected)"
+                    [(ngModel)]="vehicles.Endrow_no" [ngModelOptions]="{standalone: true}" (dateChanged)='setEndEfficetive(vehicles,$event)'></my-date-picker>
+                </td>
+                <!-- <td>{{vehicles.StartEffectiveDate | customDateTimeFormat}}</td>
+                <td>{{vehicles.EndEffectiveDate | customDateTimeFormat}}</td> -->
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <ng-template #NoDetailsBlock>
+        <div class="alert alert-info" role="alert">No records to display</div>
+      </ng-template>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <button class="btn btn-primary btn-search" [disabled]="disableButton" type="submit" (click)="associateTagstoVehicle(vehicleResSelected)">
+          Update </button>
+        <button class="btn btn-primary btn-reset" (click)="clearFields()"> Reset </button>
+        <a href='javascript:;' class="btn btn-primary btn-reset" (click)="onCancelClick()"> Cancel </a>
+      </div>
+    </div>
+    <br/>
+    <br/>
+    <div class="panel panel-default">
+      <div class="panel-heading"> Vehicles Associated </div>
+      <table class="table">
+        <thead *ngIf="assocResponse && assocResponse.length > 0 ">
+          <tr>
+            <th *ngIf='plateVisible'></th>
+            <th> serial #</th>
+            <th> Plate #</th>
+            <th> State </th>
+            <th> Class </th>
+            <th> Associate Start Date </th>
+            <th> Associate End Date </th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let vehicles of assocResponse | paginate: { itemsPerPage: assocPageItemNumber, currentPage: assocPageNumber, totalItems:assocTotalRecordCount,id: 'assoc' }">
+            <td *ngIf='plateVisible'>{{vehicles.VehicleId}}</td>
+            <td>{{vehicles.TagSerialNumber}}</td>
+            <td>{{vehicles.VehicleNumber}}</td>
+            <td>{{vehicles.State}}</td>
+            <td>{{vehicles.VehicleClass}}</td>
+            <td>{{vehicles.StartEffectiveDate | customDateTimeFormat}}</td>
+            <td>{{vehicles.EndEffectiveDate | customDateTimeFormat}}</td>
+            <td>
+              <img src="assets/images/svg/delete.svg" title="Deactivate" class="icon-svg3" alt="" style="margin-right: 0" (click)="deactivateAssociation(vehicles.VehicleId)">
+            </td>
+          </tr>
+          <tr *ngIf='!assocResponse || assocResponse.length==0'>
+              <td colspan="8">No details to display</td>
+            </tr>
+        </tbody>
+      </table>
+      <div class="row page-info" *ngIf="assocResponse && assocResponse.length > 0 ">
+        <div class="col-md-6 text-left">
+          <p>Display {{assocStartItemNumber}} - {{assocEndItemNumber}} Records of {{assocTotalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="cashPageChanged($event)" id="assoc"></pagination-controls>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</form>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event, 1000)"></app-success-failure-alerts-message>

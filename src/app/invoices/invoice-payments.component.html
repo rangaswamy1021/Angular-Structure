@@ -1,0 +1,37 @@
+
+<div class="table-bdr">
+  <h3>Payments/Adjustments History</h3>
+  <div class="pad-10">
+   <div *ngIf='invoiceResponse && invoiceResponse.length'>
+    <table class="table">
+      <thead>
+        <tr>
+          <td>Txn Type </td>
+          <td>Total Amount</td>
+          <td>Created Date</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let object of invoiceResponse| paginate: { itemsPerPage: ppageItemNumber, currentPage: pp , totalItems:ptotalRecordCount, id: 'third' }">
+          <td> {{object.TXNTYPE | customDateFormat }} </td>
+          <td> {{object.TotalAmount | currencycustom}} </td>
+          <td> {{object.CreatedDate | customDateFormat}} </td>
+        </tr>
+      </tbody>
+    </table>
+     </div>
+    <div *ngIf='invoiceResponse && invoiceResponse.length'>
+      <div class="row page-info">
+        <div class="col-md-6 text-left">
+          <p>Display {{pstartItemNumber}} - {{pendItemNumber}} Records of {{ptotalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)" id="third"></pagination-controls>
+        </div>
+      </div>
+
+    </div>
+     <div *ngIf='!invoiceResponse|| invoiceResponse.length===0'>
+        <div>No payments/adjustments to display</div>
+      </div>
+  </div>

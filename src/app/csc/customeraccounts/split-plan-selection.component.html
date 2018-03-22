@@ -1,0 +1,416 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Customer Accounts</a></li>
+        <li class="active">Split Account Plan Selection</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Split Account Plan Selection</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-account-info></app-account-info>
+  <div class="clear"></div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="payment-steps">
+        <div class="row">
+          <div class="col-md-12">
+            <ul>
+              <li class="done"><span>1</span>Account Information</li>
+              <li class="active"><span>2</span>Plan(s) Selection</li>
+              <li><span>3</span>Vehicle Information</li>
+              <li><span>4</span>Payment</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="content">
+    <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+    <div class="row">
+      <div class="col-md-8">
+        <div class="accordion-mgc" style="padding: 0;">
+          <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title">
+                  <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Plans</a>
+                </h4>
+              </div>
+              <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <div class="panel-body">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <!--<tabset>
+                      <tab *ngFor="let toll of tollTypes;let row=index" heading="{{toll.Key}}" [active]="row==0"  (select)="bindPlansData(toll.Value)">-->
+                      <div class="tab-title-div">
+                        <div *ngFor="let toll of tollTypes;let row=index">
+                          <div class="tab-title" [class.active]='toll.Key==accountType?"active":""' (click)="bindPlansData(toll.Value)">{{toll.Key}}</div>
+                        </div>
+                      </div>
+                      <div class="table-default table-responsive">
+                        <table class="table table-bordered" *ngIf="plansResponse && plansResponse.length>0">
+                          <thead>
+                            <tr>
+                              <th> <strong> Select </strong> </th>
+                              <th> <strong> Plan Name </strong> </th>
+                              <th> <strong> Fee ($) </strong> </th>
+                              <th> <strong> Discount </strong></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let plan of plansResponse;let row_no=index">
+                              <td>
+                                <div class="custom-radio custom-radio">
+
+                                  <input type="radio" class="custom-control-input" name="planradio" id="planradio{{row_no}}" [checked]="plan.IsSelected" (change)="planChange(plan)"
+                                  />
+                                  <label class="custom-control-discription" for="planradio{{row_no}}"></label>
+                                </div>
+                              </td>
+                              <td>
+                                <span class="icon-space" *ngIf="plan.IsTagRequired">
+                                      <img src="assets/images/svg/tag.svg" alt="" class="icon">
+                                   </span>
+                                <span class="icon-space" *ngIf="!plan.IsTagRequired">
+                                      <img src="assets/images/svg/casino-cctv.svg" alt="" class="icon">
+                                   </span>
+                                <span class="detail">
+                                      <span class="plan-heading">{{plan.Name}}</span> <br>
+                                <small>{{plan.Desc}} <span>Fee:{{plan.FeeDesc}}</span></small>
+                                </span>
+                              </td>
+                              <td width="20%">{{plan.TotalFee}}</td>
+                              <td width="20%">{{plan.DiscountDesc}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <!--</tab>
+                    </tabset>-->
+                    </div>
+                    <div class="col-md-12 m-t-20">
+                      <div class="pad-20-bdr">
+                        <h3 *ngIf="(accountType == 'POSTPAID')">Auto Debit Method</h3>
+                        <h3 *ngIf="(accountType == 'PREPAID')">Replenishment Type</h3>
+                        <div class="custom-control custom-radio radio-inline">
+                          <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="CREDITCARD" [checked]="(replenishType=='CREDITCARD')"
+                            (click)="onReplenishTypeChange($event.target.value)">
+                          <label for="inlineRadio1" class="custom-control-discription"> Credit Card</label>
+                        </div>
+                        <div class="custom-control custom-radio radio-inline">
+                          <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="ACH" [checked]="(replenishType=='ACH')" (click)="onReplenishTypeChange($event.target.value)">
+                          <label for="inlineRadio2" class="custom-control-discription">ACH </label>
+                        </div>
+                        <div class="custom-control custom-radio radio-inline">
+                          <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="CASH" [checked]="(replenishType=='CASH')" (click)="onReplenishTypeChange($event.target.value)">
+                          <label for="inlineRadio3" class="custom-control-discription">Cash </label>
+                        </div>
+                        <div class="Info" *ngIf="(accountType == 'PREPAID')">
+                          <h4 class="plan-heading">Replenishment Amount</h4>
+                          <ul>
+                            <li>- For Credit Card is {{creditCardReplnAmt|currency:'USD':true}} and Threshold Amount is {{creditCardThresAmt|currency:'USD':true}}</li>
+                            <li>- For ACH is {{bankReplnAmt|currency:'USD':true}} and Threshold Amount is {{bankThresAmt|currency:'USD':true}}</li>
+                            <li>- For Cash is {{cashReplnAmt|currency:'USD':true}} and Threshold Amount is {{cashThresAmt|currency:'USD':true}}</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf='revenueCategory.toUpperCase() == "REVENUE"'>
+                      <form role="form" [formGroup]="stmtCycleForm">
+                        <div class="col-md-6" *ngIf='!(isPostPaid)'>
+                          <div class="form-group col-md-12">
+                            <label class="focused">Statement Cycle </label>
+                            <select class="form-control" id="statementCycle" [(ngModel)]="ngSatamentCycle" name="statementCycle" formControlName="statementCycle">
+                          <option selected="selected" value="">--Select--</option>
+                          <option *ngFor="let statCycle of objStatementCycle" value="{{statCycle.CycleType}}">{{statCycle.CycleDescription}}</option>
+                        </select>
+                          </div>
+                        </div>
+                        <div class="col-md-6" *ngIf='isPostPaid'>
+                          <div class="form-group col-md-12">
+                            <label class="focused">Invoice Interval Type </label>
+                            <select class="form-control" id="invoiceTypeInterval" (change)="getInvoiceInterval($event.target.value)" name="invoiceTypeInterval"
+                              formControlName="invoiceTypeInterval">
+                              <option selected="selected" value="">--Select--</option>
+                              <option *ngFor="let options of invoiceTypes" value="{{options.CycleID}}">{{options.CycleType}}</option>
+                           </select>
+                            <div class="msg" *ngIf="stmtCycleForm.controls['invoiceTypeInterval'].invalid && (stmtCycleForm.controls['invoiceTypeInterval'].dirty || stmtCycleForm.controls['invoiceTypeInterval'].touched)">
+                              <div *ngIf="stmtCycleForm.controls['invoiceTypeInterval'].errors.required">
+                                Required.
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-12 form-group" *ngIf="isInvoiceAmountTextfeild">
+                            <label class="focused">Invoice Amount ($) </label>
+                            <input type="text" class="form-control" pattern="^[0-9]+(\.{1}[0-9]{1,2})?$" formControlName="invoiceAmountTextbox" id="invoiceAmountTextbox"
+                              maxlength="9"  name="invoiceAmountTextbox" placeholder="Invoice Amount ">
+                            <div class="msg" *ngIf="stmtCycleForm.controls['invoiceAmountTextbox'].invalid && (stmtCycleForm.controls['invoiceAmountTextbox'].dirty || stmtCycleForm.controls['invoiceAmountTextbox'].touched)">
+                              <div *ngIf="stmtCycleForm.controls['invoiceAmountTextbox'].errors.required">
+                                Required.
+                              </div>
+                              <div *ngIf="stmtCycleForm.controls['invoiceAmountTextbox'].errors.pattern">
+                                Only numbers are allowed.
+                              </div>
+                            </div>
+                            <!--<div class="msg">error message</div>-->
+                            <!--<i *ngIf="stmtCycleForm.controls['invoiceAmountTextbox'].hasError('required') && isInvoiceAmountTextfeild">Invoice Amount is required.</i>-->
+                            <div class="form-group" *ngIf="isInvoiceDayFeild">
+                              <label class="focused">Invoice Schedule Day </label>
+                              <select class="form-control" id="invoiceScheduleDay" name="invoiceScheduleDay" formControlName="invoiceScheduleDay">
+                             <!--<option selected="selected"></option>-->
+                             <option *ngFor="let scheduleDay of scheduleDays" value="{{scheduleDay}}">{{scheduleDay}}</option>
+                            </select>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                    <div class="col-md-12 m-t-20">
+                      <div class="pad-20-bdr">
+                        <div>
+                          <h3>Split Type</h3>
+                          <div>
+                            <div class="custom-control custom-radio radio-inline">
+                              <input type="radio" id="EXIST" name="tagslist" value="EXIST" [checked]="isExistTag" (click)="onTagSplitChange($event.target.value)">
+                              <label for="EXIST" class="custom-control-description">Split from Existing Tags</label>
+                            </div>
+                            <div class="custom-control custom-radio radio-inline">
+                              <input type="radio" id="NEW" name="tagslist" value="NEW" [checked]="!isExistTag" (click)="onTagSplitChange($event.target.value)">
+                              <label class="custom-control-description" for="NEW"> Order New Tags </label>
+                            </div>
+                            <div *ngIf="isExistTag">
+                              <div *ngIf='parentTags.length>1'>
+                                <button (click)="transferTags()" class="btn btn-default btn-search pull-right">Split Tag(s) to Customer</button>
+                              </div>
+                              <div class="clear">
+                              </div>
+                              <div>
+                                <div *ngIf=' !parentTags || parentTags.length==0'>
+                                  <div class="panel-heading"> Existing Tag(s) Details </div>
+                                  <div class="panel-body">
+                                    <div class="status-content">
+                                      <p>No records to display</p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <table class="table table-type-2 m-t-10" *ngIf='parentTags && parentTags.length>0'>
+                                  <thead>
+                                    <tr>
+                                      <th>Select</th>
+                                      <th>Serial #</th>
+                                      <th>Protocol</th>
+                                      <th>Mounting</th>
+                                      <th>Alias Name</th>
+                                      <th>Start Date Time</th>
+                                      <th>End Date Time</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <!--<tr *ngFor="let pTags of parentTags | paginate: { itemsPerPage: ppageItemNumber, currentPage: pcurrentPage }">-->
+                                    <tr *ngFor="let pTags of parentTags">
+                                      <td *ngIf='parentTags.length>1'>
+                                        <div class="checkbox">
+                                          <input type="checkbox" id="{{pTags.SerialNumber}}" (click)="parentChange($event.target.checked,pTags)" />
+                                          <label for="{{pTags.SerialNumber}}"><span></span></label></div>
+                                      </td>
+                                      <td>{{pTags.SerialNumber}}</td>
+                                      <td>{{pTags.Protocol}}</td>
+                                      <td>{{pTags.Mounting}}</td>
+                                      <td>{{pTags.TagAlias}}</td>
+                                      <td>{{pTags.StartEffectiveDate | customDateTimeFormat}} </td>
+                                      <td>{{pTags.EndEffectiveDate | customDateTimeFormat}}</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                <!--<div class="row page-info" *ngIf="parentTags && parentTags.length>9">
+                                  <div class="col-md-6 text-left">
+                                    <p>Display {{pstartItemNumber}} - {{pendItemNumber}} Records of {{pdataLength}}</p>
+                                  </div>
+                                  <div class="col-md-6 text-right">
+                                    <pagination-controls (pageChange)="parentpageChanged($event)"></pagination-controls>
+                                  </div>
+                                </div>-->
+                              </div>
+                              <div *ngIf='childTags && childTags.length>0'>
+                                <div class="m-t-10">
+                                  <button (click)="revertTags()" class="btn btn-default btn-search pull-right">Revert to Existing Tags</button>
+                                  <div class="clear">
+                                  </div>
+                                </div>
+                              </div>
+                              <!--<div *ngIf=' !childTags || childTags.length==0'>
+                                <div class="panel-heading"> Split Tag(s) Details </div>
+                                <div class="panel-body">
+                                  <div class="status-content">
+                                    <p>No records to display</p>
+                                  </div>
+                                </div>
+                              </div>-->
+                              <div *ngIf='childTags && childTags.length>0'>
+                                <table class="table table-type-2 m-t-10" *ngIf='childTags && childTags.length > 0'>
+                                  <thead>
+                                    <tr>
+                                      <th>Select</th>
+                                      <th>Serial #</th>
+                                      <th>Protocol</th>
+                                      <th>Mounting</th>
+                                      <th>Alias Name</th>
+                                      <th>Start Date Time</th>
+                                      <th>End Date Time</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <!--<tr *ngFor="let cTags of childTags | paginate: { itemsPerPage: cpageItemNumber, currentPage: ccurrentPage }">-->
+                                    <tr *ngFor="let cTags of childTags">
+                                      <td>
+                                        <div class="checkbox">
+                                          <input type="checkbox" id="check{{cTags.SerialNumber}}" (click)="childChange($event.target.checked,cTags)" />
+                                          <label for="check{{cTags.SerialNumber}}"><span></span></label></div>
+                                      </td>
+                                      <td>{{cTags.SerialNumber}}</td>
+                                      <td>{{cTags.Protocol}}</td>
+                                      <td>{{cTags.Mounting}}</td>
+                                      <td>{{cTags.TagAlias}}</td>
+                                      <td>{{cTags.StartEffectiveDate | customDateTimeFormat}} </td>
+                                      <td>{{cTags.EndEffectiveDate | customDateTimeFormat}}</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                <!--<div class="row page-info" *ngIf="parentTags && parentTags.length>9">
+                                  <div class="col-md-6 text-left">
+                                    <p>Display {{cstartItemNumber}} - {{cendItemNumber}} Records of {{cdataLength}}</p>
+                                  </div>
+                                  <div class="col-md-6 text-right">
+                                    <pagination-controls (pageChange)="childpageChanged($event)"></pagination-controls>
+                                  </div>
+                                </div>-->
+                              </div>
+                            </div>
+                            <div class="table-bdr" *ngIf="!isExistTag">
+                              <h3>Tag Details</h3>
+                              <div class="table-responsive">
+                                <table class="table table-type-2">
+                                  <thead>
+                                    <tr *ngIf='tagconfigs && tagconfigs.lnegth>0'>
+                                      <th>Protocol</th>
+                                      <th>Mounting</th>
+                                      <th>No. of Tags</th>
+                                      <th>Per Tag Fee ($)</th>
+                                      <th>Per Tag Deposit ($)</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <tr *ngFor='let tagconfig of tagconfigs; let row_no = index'>
+                                        <td>{{tagconfig.Protocol}}</td>
+                                        <td>{{tagconfig.Mounting}}</td>
+                                        <td><input type="number" class="form-control" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 && this.value.length<3"
+                                            [(ngModel)]="tagconfig.Tagcount"
+                                            (change)="onTagConfigChange(tagconfig,$event.target.value)" [disabled]="!isTagRequired"
+                                          /></td>
+                                        <td>{{tagconfig.TagFee}}</td>
+                                        <td>{{tagconfig.TagDeposit}}</td>
+                                      </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12 m-t-20">
+                      <div class="pad-20-bdr" *ngIf="isTagRequired && !isExistTag">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="form-inline">
+                              <div class="form-group">
+                                <label class="focused">Tag Delivery Method:</label>
+                                <select class="form-control" (change)="onPurchaseMethodChange($event.target.value)">
+                                <option value="{{method.Key}}" [selected]="method.Key == purchaseMethod" *ngFor='let method of tagPurchaseMethod;let row_no=index' >{{method.Value}}</option>
+                              </select>
+                              </div>
+                            </div>
+                            <div class="">
+                              <table class="table table-type-2 m-t-10" *ngIf="shipmentTypes && shipmentTypes.length>0">
+                                <thead>
+                                  <tr>
+                                    <th>Service Type</th>
+                                    <th>Description</th>
+                                    <th>Amount ($)</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor="let service of shipmentTypes;let row=index">
+                                    <td>
+                                      <div class="custom-radio custom-control">
+
+                                        <input type="radio" name="serviceoptions" id="serviceoptions{{row}}" [checked]="service.IsSelected" value="service.ServiceTypeId"
+                                          (click)="onServiceTypeChange(service)">
+                                        <label class="custom-control-discription" for="serviceoptions{{row}}">{{service.ServiceTypeName}}</label>
+                                      </div>
+                                    </td>
+                                    <td>{{service.ServiceDescription}}{{service.IsSelected}} </td>
+                                    <td>{{service.Cost|currency:'USD':true}}</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12 m-t-20" *ngIf="shipmentTypes && shipmentTypes.length>0 && isTagRequired && !isExistTag">
+                      <div class="pad-20-bdr">
+                        <h3>Shipping Address</h3>
+                        <div class="custom-control custom-radio">
+                          <input type="radio" class="custom-control-input" [checked]="!isAddressEnable" name="addressRadioOptions" id="inlineRadio11"
+                            value="exist" (change)="addressChange($event.target.value)">
+                          <label class="custom-control-description" for="inlineRadio11"> Use Existing Address</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                          <input type="radio" class="custom-control-input" [checked]="isAddressEnable" name="addressRadioOptions" id="inlineRadio22"
+                            value="new" (change)="addressChange($event.target.value)">
+                          <label class="custom-control-description" for="inlineRadio22"> Add New Address</label>
+                        </div>
+                        <div>
+                          <div *ngIf="!isAddressEnable">
+                            <app-add-address [customerID]="customerId" [isEnable]="true"></app-add-address>
+                          </div>
+                          <div *ngIf="isAddressEnable">
+                            <app-add-address [addressObject]="addressRequest" [isEnable]="false"></app-add-address>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <app-amounts-summary-details [tollBalance]="tollBalance" [totalFee]="totalFee" [totalTagFee]="totalTagFee" [totalTagDeposit]="totalTagDeposit"
+          [totalServiceTax]="totalServiceTax" [totalShippingCharge]="totalShippingCharge" [planId]="planId"></app-amounts-summary-details>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <button class="btn btn-primary btn-search" type="submit" (click)="onPrevious()">Account Information</button>
+        <button class="btn btn-primary btn-search" type="submit" (click)="onSubmit()">Vehicle Information </button>
+        <button class="btn btn-primary btn-reset" type="submit" (click)="onCancel()">Cancel</button>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,472 @@
+<div class="page-title-header">
+
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">TVC</a></li>
+        <li class="active">Account Summary</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Account Summary</h1>
+        <div class="text-right">
+          <span id="" class="accno">Account #: {{longAccountId}}</span>
+
+          <button (click)="exitClick()" class="btn btn-primary btn-reset">Exit </button>
+          <button (click)="backClick()" class="btn btn-primary btn-search">Back</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+<div class="content">
+
+  <div class="panel panel-default" id="userInfo">
+    <div class="panel-body table-bdr">
+      <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"
+        (onOk)="userAction($event)"></app-success-failure-alerts-message>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">CONTACT INFORMATION</div>
+            <table *ngIf='contactDetailsRes' class="table">
+              <tbody>
+                <tr>
+                  <td class="text-left">Account #:</td>
+                  <td class="text-right">{{longAccountId}}</td>
+                </tr>
+                <tr>
+                  <td class="text-left">Name:</td>
+                  <td class="text-right"><strong>{{contactDetailsRes.FirstName + " " + contactDetailsRes.LastName}}</strong> </td>
+                </tr>
+                <tr>
+                  <td class="text-left">Address: </td>
+                  <td class="text-right">
+                    <div role="alert" data-html="true"><span [innerHTML]="contactDetailsRes.FormattedFullAddress"></span></div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-left"> Contact #: </td>
+                  <td class="text-right" *ngIf="contactDetailsRes.Phone != null && contactDetailsRes.Phone != '';else DisplayNA"> {{ contactDetailsRes.Phone}} </td>
+                </tr>
+                <tr>
+                  <td class="text-left">Email: </td>
+                  <td class="text-right" *ngIf='contactDetailsRes.Email != "";else DisplayNA'>{{ contactDetailsRes.Email}} </td>
+                </tr>
+                <ng-template #DisplayNA>
+                  <td class="text-right"> N/A </td>
+                </ng-template>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+        <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">BILLING INFORMATION</div>
+            <div>
+              <table class="table" *ngIf='balanceRes'>
+                <tbody>
+                  <tr>
+                    <td class="text-left">Last Payment Method:</td>
+                    <td class="text-right" *ngIf="balanceRes.LastPaymentMethod != '';else NABlock">{{balanceRes.LastPaymentMethod}}</td>
+                  </tr>
+                  <tr>
+                    <td class="text-left">Last Paid Amount:</td>
+                    <td class="text-right">{{balanceRes.LastPaidAmount | currency:'USD':true:'1.2-2'}}</td>
+                  </tr>
+                  <tr>
+                    <td class="text-left">Last Payment Date: </td>
+                    <td class="text-right" *ngIf="balanceRes.LastPaymentDate != '0001-01-01T00:00:00';else NABlock">{{balanceRes.LastPaymentDate |customDateFormat }}</td>
+                    <ng-template #NABlock>
+                      <td class="text-right"> N/A </td>
+                    </ng-template>
+                  </tr>
+                  <tr>
+                    <td class="text-left">Last Bill Date: </td>
+                    <td class="text-right" *ngIf="balanceRes.LastBillDate != '0001-01-01T00:00:00';else NABlock">{{balanceRes.LastBillDate | customDateFormat}}</td>
+                  </tr>
+                  <tr>
+                    <td class="text-left">Last Bill Amount:</td>
+                    <td class="text-right">{{balanceRes.LastBillAmount | currency:'USD':true:'1.2-2'}}</td>
+                  </tr>
+                  <tr>
+                    <td class="text-left">Disputes:</td>
+                    <td class="text-right">
+                      <div *ngIf='disputeCount && disputeCount>0;else NoDisputes' style="float:right"> {{disputeCount}} <a (click)="viewDisputes()"> View Disputes </a></div>
+                      <ng-template #NoDisputes>
+                        <div style="float:right">0</div>
+                      </ng-template>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+
+
+        <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading"> AMOUNT DETAILS </div>
+            <div>
+              <table *ngIf='paymentdetailsRes' class="table">
+                <tbody>
+                  <tr>
+                    <td class="text-left">Outstanding Invoices Count:</td>
+                    <td class="text-right">{{paymentdetailsRes.OutstandingCount}} </td>
+                  </tr>
+                  <tr>
+                    <td class="text-left">Outstanding Invoices Due:</td>
+                    <td class="text-right">{{paymentdetailsRes.PreviousDue | currency:'USD':true:'1.2-2'}}</td>
+                  </tr>
+                  <tr>
+                    <td class="text-left">Unbilled Charges: </td>
+                    <td class="text-right"> {{ paymentdetailsRes.UnbilledCharges | currency:'USD':true:'1.2-2' }}</td>
+                  </tr>
+                  <tr>
+                    <td class="text-left">Unbilled Payments:</td>
+                    <td class="text-right"> {{paymentdetailsRes.UnbilledPayments | currency:'USD':true:'1.2-2' }} </td>
+                  </tr>
+                  <tr>
+                    <td class="text-left">Unbilled Adjustments: </td>
+                    <td class="text-right"> {{paymentdetailsRes.UnbilledAdjustments | currency:'USD':true:'1.2-2' }}</td>
+                  </tr>
+
+                  <tr>
+                    <td class="text-left">Total Due: </td>
+                    <td class="text-right"> {{paymentdetailsRes.TotalBalanceDue | currency:'USD':true:'1.2-2' }}</td>
+                  </tr>
+                  <tr>
+                    <td class="text-left">Overpayment Amount: </td>
+                    <td class="text-right">
+                      {{paymentdetailsRes.OverpaymentAmount | currency:'USD':true:'1.2-2' }}
+                      <a style="margin-left:3px;" *ngIf='paymentdetailsRes.OverpaymentAmount>0 &&  paymentdetailsRes.OutstandingCount>0' routerLink='../../../tvc/violatordetails/invoice-overpayment-transfer'>
+                        Transfer
+                      </a>
+                    </td>
+
+                  </tr>
+                  <tr>
+                    <td class="text-left">Admin Hearing Deposit:</td>
+                    <td class="text-right">
+                      {{paymentdetailsRes.AdminHearingDeposit | currency:'USD':true:'1.2-2' }}
+                      <a style="margin-left:3px;" [ngClass]="{'disabletextbox': isDisableRefundLink}" *ngIf='paymentdetailsRes.AdminHearingDeposit>0'
+                        (click)="refundCLick()">Refund</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="text-left">Manual Hold:</td>
+                    <td class="text-right" *ngIf='paymentPLanRes && paymentPLanRes.ManualHold == "1";else PutonHoldBlock'> Yes
+                      <a style="margin-left:3px;" [ngClass]="{'disabletextbox': isDisableAccHoldRevLnk}" (click)='alertClick()'>Remove Hold</a>
+                    </td>
+                    <ng-template #PutonHoldBlock>
+                      <td class="text-right">
+                        No
+                        <a style="margin-left:3px;" [ngClass]="{'disabletextbox': isDisableAccHoldLnk}" (click)='alertClick()'>Put on Hold</a>
+                      </td>
+                    </ng-template>
+                  </tr>
+                  <tr>
+                    <td class="text-left">Payment Plan:</td>
+                    <td class="text-right" *ngIf='paymentPLanRes && paymentPLanRes.PaymentPlan == "1";else NoBlock'> Yes </td>
+                    <ng-template #NoBlock>
+                      <td class="text-right">No</td>
+                    </ng-template>
+                  </tr>
+                  <tr>
+                    <td class="text-left"> Payment Plan Defaults: </td>
+                    <td class="text-right" *ngIf='paymentPLanRes'> {{paymentPLanRes.DefaultCount }}</td>
+                  </tr>
+                  <tr>
+                    <td class="text-left">Court Stage:</td>
+                    <td class="text-right" *ngIf='(paymentPLanRes && paymentPLanRes.PreCourt == "1" || paymentPLanRes && paymentPLanRes.CourtStage == "1" );else NoBlockCourt'> Yes </td>
+                    <ng-template #NoBlockCourt>
+                      <td class="text-right">No</td>
+                    </ng-template>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--Vehicles start -->
+  <div class="panel panel-default">
+    <div class="panel-heading"> Vehicles </div>
+    <div class="panel-body  table-bdr">
+      <div *ngIf='vehicleRes && vehicleRes.length;else NodetailsBlock'>
+        <table class="table TableClass">
+          <thead>
+            <tr>
+              <th>Plate #</th>
+              <th>Vehicle Class </th>
+              <th>State</th>
+              <th>Description</th>
+              <th>Color</th>
+              <th>Country</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+            </tr>
+          </thead>
+          <tr *ngFor="let object of vehicleRes">
+            <td> {{object.VehicleNumber}} </td>
+            <td> {{object.VehicleClassDesc}} </td>
+            <td> {{object.StateName}} </td>
+            <td> {{object.VehicleDescription}} </td>
+            <td> {{object.Color}} </td>
+            <td> {{object.Country}} </td>
+            <td> {{object.StartEffectiveDate | customDateTimeFormat}} </td>
+            <td> {{object.EndEffectiveDate | customDateTimeFormat}} </td>
+          </tr>
+        </table>
+        <div *ngIf="vehicleRes[0].RecordCount >=5" style="float:right"><a routerLink='../../../tvc/violatordetails/manage-vehicles'> More </a></div>
+      </div>
+    </div>
+  </div>
+  <!--Vehicles end -->
+
+
+  <!--Invoices start -->
+  <div class="panel panel-default">
+    <div class="panel-heading"> Invoice Details </div>
+    <div class="panel-body table-bdr">
+      <div *ngIf='invoicesRes && invoicesRes.length;else NodetailsBlock'>
+        <table class="table TableClass">
+          <thead>
+            <tr>
+              <th>Due Date</th>
+              <th>Invoice # </th>
+              <th>Plate # </th>
+              <th>Stage</th>
+              <th>Status</th>
+              <th>Invoice Amount </th>
+              <th></th>
+            </tr>
+          </thead>
+          <tr *ngFor="let object of invoicesRes">
+            <td> {{object.DueDate | customDateTimeFormat}} </td>
+            <td> {{object.InvoiceNumber}} </td>
+            <td> {{object.PlateNumber}} </td>
+            <td> {{object.StepDescription}} </td>
+            <td> {{object.Status}} </td>
+            <td> {{object.BalanceDue | currency:'USD':true:'1.2-2'}} </td>
+            <td>
+              <a (click)="viewPDF(object.DocumentPath)"><img src="assets/images/pdf.jpg" alt="View" class="icon-svg3"></a>
+            </td>
+          </tr>
+        </table>
+        <div *ngIf="invoicesRes[0].RecCount >=5" style="float:right">
+          <a routerLink='../../../tvc/customerdetails/search/invoice-search'> More </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Invoices end -->
+
+  <div class="panel panel-default">
+    <div class="panel-heading"> Toll Transactions </div>
+    <div class="panel-body table-bdr">
+      <div *ngIf='violationResponse && violationResponse.length;else NodetailsBlock'>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Trip #</th>
+              <th>Txn Date</th>
+              <th>Location </th>
+              <th>Plate #</th>
+              <th>Txn Amount</th>
+              <th>Outstanding Amount</th>
+            </tr>
+          </thead>
+          <tr *ngFor="let object of violationResponse">
+            <td> {{object.CitationId}} </td>
+            <td> {{object.Entry_TripDateTime | customDateTimeFormat}} </td>
+            <td> {{object.LocationName }} </td>
+            <td> {{object.VehicleNumber}} </td>
+            <td> {{object.TollAmount | currency:'USD':true:'1.2-2'}} </td>
+            <td> {{object.OutstandingAmount | currency:'USD':true:'1.2-2'}} </td>
+          </tr>
+          <!--OutstandingAmount-->
+          <!--<tr *ngIf='ViolationResponse.length>=5'>
+          <td style="float:right" > <a href=""> More </a></td>
+          </tr>-->
+        </table>
+        <div *ngIf='violationResponse.length>=5' style="float:right"><a routerLink='../../../tvc/violatordetails/trips-Search'> More </a></div>
+      </div>
+    </div>
+  </div>
+
+
+  <div *ngIf='parkingTripsRes && parkingTripsRes.length' class="panel panel-default">
+    <div class="panel-heading"> Parking Transactions </div>
+    <div class="panel-body table-bdr">
+      <div *ngIf='parkingTripsRes && parkingTripsRes.length;else NodetailsBlock'>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Entry Date/Time</th>
+              <th>Exit Date/Time</th>
+              <th>Parking Area</th>
+              <th>Plate #</th>
+              <th>Txn Amount</th>
+              <th>Outstanding Amount</th>
+            </tr>
+          </thead>
+          <tr *ngFor="let object of parkingTripsRes">
+            <td> {{object.Entry_TripDateTime | customDateTimeFormat}}</td>
+            <td> {{object.Exit_TripDateTime | customDateTimeFormat}} </td>
+            <td> {{object.LocationName}} </td>
+            <td> {{object.VehicleNumber}} </td>
+            <td> {{object.TollAmount | currency:'USD':true:'1.2-2'}} </td>
+            <td> {{object.OutstandingAmount | currency:'USD':true:'1.2-2'}} </td>
+          </tr>
+        </table>
+        <div *ngIf='parkingTripsRes.length>=5' style="float:right"><a routerLink='../../../tvc/violatordetails/trips-Search'> More </a></div>
+      </div>
+    </div>
+  </div>
+
+
+  <div *ngIf='ferryTripsRes && ferryTripsRes.length' class="panel panel-default">
+    <div class="panel-heading"> Ferry Transactions </div>
+    <div class="panel-body table-bdr">
+      <div *ngIf='ferryTripsRes && ferryTripsRes.length;else NodetailsBlock'>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Departure Date/Time</th>
+              <th>Arrival Date/Time</th>
+              <th>Departure Terminal</th>
+              <th>Plate #</th>
+              <th>Txn Amount</th>
+              <th>Outstanding Amount</th>
+            </tr>
+          </thead>
+          <tr *ngFor="let object of ferryTripsRes">
+            <td> {{object.Entry_TripDateTime | customDateTimeFormat}} </td>
+            <td> {{object.Exit_TripDateTime | customDateTimeFormat}} </td>
+            <td> {{object.LocationName}} </td>
+            <td> {{object.VehicleNumber}} </td>
+            <td> {{object.TollAmount | currency:'USD':true:'1.2-2'}} </td>
+            <td> {{object.OutstandingAmount | currency:'USD':true:'1.2-2'}} </td>
+          </tr>
+        </table>
+        <div *ngIf='ferryTripsRes.length>=5' style="float:right"><a routerLink='../../../tvc/violatordetails/trips-Search'> More </a></div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf='transitTripsRes && transitTripsRes.length' class="panel panel-default">
+    <div class="panel-heading"> Transit Transactions </div>
+    <div class="panel-body table-bdr">
+      <div *ngIf='transitTripsRes && transitTripsRes.length;else NodetailsBlock'>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Departure Date/Time</th>
+              <th>Arrival Date/Time</th>
+              <th>Departure Terminal</th>
+              <th>Plate #</th>
+              <th>Txn Amount</th>
+              <th>Outstanding Amount</th>
+            </tr>
+          </thead>
+          <tr *ngFor="let object of transitTripsRes">
+
+            <td> {{object.Entry_TripDateTime | customDateTimeFormat}}</td>
+            <td> {{object.Exit_TripDateTime | customDateTimeFormat}} </td>
+            <td> {{object.LocationName}} </td>
+            <td> {{object.VehicleNumber}} </td>
+            <td> {{object.TollAmount | currency:'USD':true:'1.2-2'}} </td>
+            <td> {{object.OutstandingAmount | currency:'USD':true:'1.2-2'}} </td>
+          </tr>
+        </table>
+        <div *ngIf='transitTripsRes.length>=5' style="float:right"><a routerLink='../../../tvc/violatordetails/trips-Search'> More </a></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!--Activity History start -->
+  <div class="panel panel-default">
+    <div class="panel-heading"> Activities </div>
+    <div class="panel-body invoiceDetails table-bdr">
+      <div *ngIf='activityRes && activityRes.length;else NodetailsBlock'>
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="col-xs-2">Date/Time</th>
+              <th class="col-xs-2">User</th>
+              <th class="col-xs-1">Performed By </th>
+              <th>Activity Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let object of activityRes">
+              <td> {{object.ActivityDate | customDateTimeFormat }} </td>
+              <td> {{object.User}} </td>
+              <td> {{object.PerformedBy}} </td>
+              <td> {{object.Type}} </td>
+              <td> {{object.Activity}} </td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="activityRes.length >=5" style="float:right"><a routerLink='../../../tvc/violatordetails/activity-details'> More </a></div>
+      </div>
+    </div>
+  </div>
+  <!--Activity History end -->
+
+  <ng-template #NodetailsBlock>
+    <div>No details to display</div>
+  </ng-template>
+</div>
+
+<div id="confirm-dialog" class="modal fade refund-request-modal" role="dialog">
+  <div class="modal-dialog" role="document" style="width: 400px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Admin Hearing Refund</h4>
+      </div>
+      <div class="modal-body" style="padding: 15px;">
+        <form role="form" [formGroup]="refundFrom" name="refundFrom">
+          <div class="row">
+            <div class="col-md-12">
+              <input class="form-control" type="text" pattern="^[0-9]*(\.)?[0-9]{1,2}$" id="refundAmount" name="refundAmount" formControlName="refundAmount">
+              <div class="msg" *ngIf="refundFrom.controls['refundAmount'].invalid && (refundFrom.controls['refundAmount'].dirty || refundFrom.controls['refundAmount'].touched)">
+                <div *ngIf="refundFrom.controls['refundAmount'].errors.required">
+                  Required
+                </div>
+                <div *ngIf="refundFrom.controls['refundAmount'].errors.pattern">
+                  Invalid amount
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row m-t-20">
+            <div class="col-md-12 text-right">
+              <button class="btn btn-primary btn-search" (click)='processRefunds()'>Submit</button>
+              <button class="btn btn-primary btn-reset" data-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

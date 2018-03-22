@@ -1,0 +1,184 @@
+<div class="page-title-header container">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">IMC</a></li>
+        <li><a href="#">Retailer</a></li>
+        <li class="active">Retailer Fulfillment</li>
+      </ol>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Retailer Fulfillment</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <form role="form" name="retailerFulfillmentForm" [formGroup]="retailerFulfillmentForm">
+    <div class="panel panel-default">
+      <!-- <div class="panel-heading">
+        Retailer Fulfillment
+      </div> -->
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="col-md-12 form-group popover-field">
+              <label class="focused">Retailer</label>
+                <select class="form-control" id="retailer" name="retailer" formControlName="retailer">
+                 <option selected="selected" value="">--Select--</option>
+                <option *ngFor="let retailer of activeRetailerDropDown" value="{{retailer.CustomerId}}">{{retailer.CustomerId}}<span>-</span>{{retailer.FirstName}}</option>
+              </select>
+                <div class="msg" *ngIf="retailerFulfillmentForm.controls['retailer'].invalid && (retailerFulfillmentForm.controls['retailer'].dirty || retailerFulfillmentForm.controls['retailer'].touched)">
+                  <div *ngIf="retailerFulfillmentForm.controls['retailer'].errors.required">
+                    Required
+                  </div>
+                </div>
+                <ng-template #retailer>
+                  <ul>
+                    <li>Ratailer is mandatory</li>
+                    <li> Select Retailer </li>
+                  </ul>
+                </ng-template>
+                  <button type="button" data-container="body" class="pop-over" popoverTitle="Help" [popover]="retailer" triggers="mouseenter:mouseleave"
+                    placement="left">
+                  ?
+                </button>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="col-md-12 form-group popover-field">
+              <label class="focused">Protocol</label>
+                <select class="form-control" id="protocol" name="requestType" formControlName="protocol" (change)="getInventoryMounting($event.target.value)">
+                 <option selected="selected" value="">--Select--</option>
+                 <option *ngFor="let protocol of protocolResponse" value="{{protocol.LookUpTypeCode}}">{{protocol.LookUpTypeCode}}</option>
+              </select>
+                <div class="msg" *ngIf="retailerFulfillmentForm.controls['protocol'].invalid && (retailerFulfillmentForm.controls['protocol'].dirty || retailerFulfillmentForm.controls['protocol'].touched)">
+                  <div *ngIf="retailerFulfillmentForm.controls['protocol'].errors.required">
+                    Required
+                  </div>
+                </div>
+                <ng-template #protocol>
+                  <ul>
+                    <li>Protocol is mandatory</li>
+                    <li>Select Protocol</li>
+                  </ul>
+                </ng-template>
+                  <button type="button" data-container="body" class="pop-over" popoverTitle="Help" [popover]="protocol" triggers="mouseenter:mouseleave"
+                    placement="left">
+                  ?
+                </button>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="col-md-12 form-group popover-field">
+              <label class="focused">Mounting</label>
+                <select class="form-control" id="mounting" name="mounting" formControlName="mounting">
+                 <option selected="selected" value="">--Select--</option>
+                 <option *ngFor="let itemmounting of commonResponse" value="{{itemmounting.Mounting}}">{{itemmounting.Mounting}}</option>
+              </select>
+                <div class="msg" *ngIf="retailerFulfillmentForm.controls['mounting'].invalid && (retailerFulfillmentForm.controls['mounting'].dirty || retailerFulfillmentForm.controls['mounting'].touched)">
+                  <div *ngIf="retailerFulfillmentForm.controls['mounting'].errors.required">
+                    Required
+                  </div>
+                </div>
+                <ng-template #mounting>
+                  <ul>
+                    <li>Mounting is mandatory</li>
+                    <li> Select Mounting </li>
+                  </ul>
+                </ng-template>
+                  <button type="button" data-container="body" class="pop-over" popoverTitle="Help" [popover]="mounting" triggers="mouseenter:mouseleave"
+                    placement="left">
+                  ?
+                </button>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="col-md-12 form-group popover-field">
+              <label>Quantity</label>
+                <input type="text" class="form-control" maxlength="6" id="quantity" placeholder="Quantity" name="quantity" formControlName="quantity"
+                  (blur)=" totalAmountCalculation()" (keypress)="_keyPress($event)">
+                <div class="msg" *ngIf="retailerFulfillmentForm.controls['quantity'].invalid && (retailerFulfillmentForm.controls['quantity'].dirty || retailerFulfillmentForm.controls['quantity'].touched)">
+                  <div *ngIf="retailerFulfillmentForm.controls['quantity'].errors.required">
+                    Required
+                  </div>
+                  <div *ngIf="retailerFulfillmentForm.controls['quantity'].errors.pattern">
+                    Value should be greater than zero
+                  </div>
+                </div>
+                <ng-template #quantity>
+                  <ul>
+                    <li>Quantity is mandatory</li>
+                    <li>It allows only numbers</li>
+                    <li>It contains mininum 1 and <br>maxinum 6 characters</li>
+                  </ul>
+                </ng-template>
+                  <button type="button" data-container="body" class="pop-over" popoverTitle="Help" [popover]="quantity" triggers="mouseenter:mouseleave"
+                    placement="left">
+                  ?
+                </button>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="col-md-12 form-group popover-field">
+              <label>Item Value</label>
+                <input type="text" class="form-control" maxlength="8" id="itemValue" placeholder="Item Value" name="itemValue" formControlName="itemValue"
+                  (blur)=" totalAmountCalculation()" (keypress)="onlyDecimalNumberKey($event)">
+                <div class="msg" *ngIf="retailerFulfillmentForm.controls['itemValue'].invalid && (retailerFulfillmentForm.controls['itemValue'].dirty || retailerFulfillmentForm.controls['itemValue'].touched)">
+                  <div *ngIf="retailerFulfillmentForm.controls['itemValue'].errors.required">
+                    Required
+                  </div>
+                  <div *ngIf="retailerFulfillmentForm.controls['itemValue'].errors.pattern">
+                    Value should be greater than zero and Only numerics with two decimals allowed
+                  </div>
+                </div>
+                <ng-template #itemvalue>
+                  <ul>
+                    <li>Item Value is mandatory</li>
+                    <li> It allows Only numbers with two decimals</li>
+                  </ul>
+                </ng-template>
+                  <button type="button" data-container="body" class="pop-over" popoverTitle="Help" [popover]="itemvalue" triggers="mouseenter:mouseleave"
+                    placement="left">
+                  ?
+                </button>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="col-md-12 form-group popover-field">
+              <label class="focused">Total Amount:</label>
+                <input type="text" class="form-control" id="totalAmount" placeholder="0.00" name="totalAmount" formControlName="totalAmount"
+                  disabled style="padding-left:100px">
+                <ng-template #totalAmount>
+                  <ul>
+                    <li>Total Amount varies on Quantity and item value<br></li>
+                  </ul>
+                </ng-template>
+                  <button type="button" data-container="body" class="pop-over" popoverTitle="Help" [popover]="totalAmount" triggers="mouseenter:mouseleave"
+                    placement="left">
+                  ?
+                </button>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-primary btn-search" [disabled]="disableFulFillButton" (click)="getApplicationParameterValueByParameterKey(ParameterKey)" title="Fullfill">Fullfill</button>
+            <button type="reset" class="btn btn-default btn-reset" (click)="retailerFulfillmentReset()" title="Reset"> Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+     <div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="text-center">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  </div>
+</div>

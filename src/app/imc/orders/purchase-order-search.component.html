@@ -1,0 +1,483 @@
+<div class="page-title-header container">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">IMC</a></li>
+        <li class="active">Purchase Orders</li>
+        <li class="active">Vendor Purchase Orders</li>
+      </ol>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Purchase Order</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content" [hidden]="isSubmitted">
+  <form role="form" name="ordersSearchForm" [formGroup]="ordersSearchForm">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Search Purchase Order
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="col-md-12 form-group">
+              <label>Purchase Order #</label>
+              <input type="text" class="form-control" id="orderNumber" name="orderNumber" maxlength="20" formControlName="orderNumber"
+                tabindex="1" autofocus placeholder="Purchase Order #">
+              <div class="msg" *ngIf="ordersSearchForm.controls['orderNumber'].invalid && (ordersSearchForm.controls['orderNumber'].dirty || ordersSearchForm.controls['orderNumber'].touched)">
+                <div *ngIf="ordersSearchForm.controls['orderNumber'].errors.required">
+                  At least 1 field is required.
+                </div>
+                <div *ngIf="ordersSearchForm.controls['orderNumber'].errors.pattern">
+                  Only Alphanumerics - / and spaces allowed
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="col-md-12 form-group">
+              <label class="focused">Purchase Order Status</label>
+              <select class="form-control" id="orderStatus" name="orderStatus" formControlName="orderStatus" tabindex="2">
+ <option selected="selected" value="">--Select--</option>
+ <option *ngFor="let status of purchaseStatuses" value="{{status.LookUpTypeCode}}">{{status.LookUpTypeCodeDesc}}</option> 
+ </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="col-md-12 form-group">
+              <label id="focused">Time Period</label>
+
+              <!--<input class="form-control" placeholder="MM/DD/YYYY-MM/DD/YYYY" bsDaterangepicker #dpr="bsDaterangepicker"
+                name="timePeriod" formControlName="timePeriod" [(ngModel)]="timePeriod"  (bsValueChange)='bsValueChange($event)'>-->
+              <my-date-range-picker name="mydaterange" [options]="myDateRangePickerOptions" placeholder="MM/DD/YYYY-MM/DD/YYYY" formControlName="timePeriod"
+                (inputFieldChanged)='onInputFieldRangeChanged($event)' tabindex="3"></my-date-range-picker>
+              <div class="show-error" *ngIf="invalidDateRange">
+                <div>Date Range is invalid</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-primary btn-search" (click)="purchaseOrderSearchButton()" title="Search" tabindex="4"
+              [disabled]="searchDisableButton">Search</button>
+            <button type="button" class="btn btn-default btn-reset" (click)="purchaseOrderSearchReset()" title="Clear Fields" tabindex="5">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="panel panel-default" *ngIf="!isSubmitted">
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-12">
+          <button class="btn btn-primary btn-search" (click)="addNewPurchaseOrder()" tabindex="6" [disabled]="disableButton"><i class="fa fa-plus-square-o fa-lg fa-fw" aria-hidden="true"></i>Add New Purchase Order</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="table-bdr">
+    <h3>Purchase Order Search Results</h3>
+    <div class="pad-10" *ngIf='purchaseOrderResponse && purchaseOrderResponse.length;else noRecordBlock '>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th (click)="sortDirection('COMPANYNAME')" class="sorting-handle">Vendor
+                <span *ngIf=gridArrowCOMPANYNAME>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('ORDERNUMBER')" class="sorting-handle">Purchase Order#
+                <span *ngIf=gridArrowORDERNUMBER>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('ORDERDATE')" class="sorting-handle">Purchase Order Date
+                <span *ngIf=gridArrowORDERDATE>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th (click)="sortDirection('ORDERSTATUS')" class="sorting-handle">Purchase Order Status
+                <span *ngIf=gridArrowORDERSTATUS>
+                      <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                </span>
+              </th>
+              <th></th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let purchaseOrder of purchaseOrderResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: pageNumber, totalItems:totalRecordCount }'>
+              <td>{{purchaseOrder.VendorName}}</td>
+              <td>{{purchaseOrder.PurchaseOrderNumber}}</td>
+              <td> {{purchaseOrder.PurchaseOrderDate | customDateFormat}}</td>
+              <td>{{getStatus(purchaseOrder.POStatus)}}</td>
+              <td><i *ngIf="pdfDisableButton " title="You can't View PDF" class="fa fa-file-pdf-o fa-fw fa-lg link-disabled"
+                  aria-hidden="true"></i>
+                <span *ngIf="!pdfDisableButton">
+                <a class="btn" href="{{documentLinked+purchaseOrder.LocationPath}}" target="_blank" title="View PDF"> <i class="fa fa-file-pdf-o fa-fw fa-lg" aria-hidden="true"></i></a>
+                 </span>
+              </td>
+              <td>
+                <i class="fa fa-file-text-o fa-fw fa-lg link-disabled" *ngIf="viewDisableButton" title="You can't View PurchaseOrderDetails"></i>
+
+                <span *ngIf="!viewDisableButton">
+                <a class="btn" (click)="getPurchaseOrderDetailsView(purchaseOrder)" title="View" tabindex="7"><i class="fa fa-file-text-o fa-fw fa-lg"></i></a>
+                </span>
+              </td>
+              <td>
+                <span *ngIf="cancelDisableButton" class="link-disabled" title="You can't Cancel PurchaseOrder">Cancel
+           </span>
+
+                <span *ngIf="!cancelDisableButton">
+                <a class="btn" *ngIf="getStatus(purchaseOrder.POStatus)=='Purchase Order Created';else elseStatusBlock" 
+                   (click)="deletePurchaseOrderBtn(purchaseOrder.PurchaseOrderId)" title="Cancel"
+                  tabindex="7">Cancel</a>
+                <ng-template #elseStatusBlock>
+                  <a></a>
+                </ng-template>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="row page-info">
+        <div class="col-md-6 text-left">
+          <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)" (onOk)="deletePurchaseOrder($event)"></app-success-failure-alerts-message>
+
+</div>
+
+
+
+<div class="content" [hidden]="!isSubmitted">
+  <form role="form" name="ordersAddForm" [formGroup]="ordersAddForm">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Add Items for Purchase Order
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label>Purchase Order # 
+              <span  style="padding-left: 20px;">
+                   <span *ngIf="!poNumberStatus" style="color:red;">
+                   Already Exists
+                  </span>
+              </span></label>
+              <input type="text" class="form-control" id="orderNumber" name="orderNumber" formControlName="orderNumber" maxlength="20"
+                (change)="POUniquenessCheck(ordersAddForm.controls['orderNumber'].value)" tabindex="8" placeholder="Purchase Order #">
+              <div class="msg" *ngIf="ordersAddForm.controls['orderNumber'].invalid && (ordersAddForm.controls['orderNumber'].dirty || ordersAddForm.controls['orderNumber'].touched)">
+                <div *ngIf="ordersAddForm.controls['orderNumber'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="ordersAddForm.controls['orderNumber'].errors.pattern">
+                  Initial space(s) are not allowed and only Alphanumerics - / and spaces allowed
+                </div>
+                <div *ngIf="ordersAddForm.controls['orderNumber'].errors.minlength">
+                  Minimum 1 characters are required.
+                </div>
+                <div *ngIf="ordersAddForm.controls['orderNumber'].errors.maxlength">
+                  Maximum 20 characters are allowed.
+                </div>
+              </div>
+              <ng-template #popOrderNumber>
+                <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Purchase Order is Mandatory<br>
+                <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> It allows alphanumerics - / and spaces only
+                <br>
+                <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> It should be minimum 1<br> characters and maximum20
+                <br> Characters long<br>
+              </ng-template>
+              <button type="button" class="pop-over" data-container="body" [popover]="popOrderNumber" popoverTitle="Help" placement="left"
+                triggers="mouseenter:mouseleave">?</button>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label id="focused">Purchase Order Date</label>
+              <my-date-picker name="mydate" [options]="myDatePickerOptions" formControlName="orderDate" (inputFieldChanged)='onInputFieldChanged($event)'
+                tabindex="9"></my-date-picker>
+              <!--<input type="text" class="form-control " id="orderDate" placement='bottom' name="orderDate"  formControlName="orderDate"
+                  #dp="bsDatepicker" bsDatepicker [maxDate]="toDayDate" tabindex="9" (change)='bsValueChang($event)' >-->
+              <div class="show-error" *ngIf=" !invalidDate && (ordersAddForm.controls['orderDate'].invalid && (ordersAddForm.controls['orderDate'].dirty || ordersAddForm.controls['orderDate'].touched))">
+                <div *ngIf="ordersAddForm.controls['orderDate'].errors.required">
+                  Date is required.
+                </div>
+              </div>
+              <div class="show-error" *ngIf="invalidDate">
+                <div>Invalid date</div>
+              </div>
+              <ng-template #popOrderDate>
+                <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Purchase Order Date is <br> Mandatory<br>
+                <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>Purchase Order Date <br>should be a valid date
+                <br>
+                <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Purchase Order Date <br>cannot be a greater than
+                <br> current date
+              </ng-template>
+              <button type="button" class="pop-over" data-container="body" [popover]="popOrderDate" popoverTitle="Help" placement="left"
+                triggers="mouseenter:mouseleave">?</button>
+
+
+            </div>
+
+          </div>
+          <div class="clear">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label class="focused">Vendor</label>
+              <select class="form-control" id="vendor" name="vendor" formControlName="vendor" (change)="getContract($event)" tabindex="10">
+ <option selected="selected" value="">--Select--</option>
+ <option *ngFor="let name of vendorNames" [value]="name.VendorId">
+ {{name.CompanyName}}</option>
+ </select>
+              <div class="msg" *ngIf="ordersAddForm.controls['vendor'].invalid && (ordersAddForm.controls['vendor'].dirty || ordersAddForm.controls['vendor'].touched)">
+                <div *ngIf="ordersAddForm.controls['vendor'].errors.required">
+                  Required.
+                </div>
+              </div>
+              <ng-template #popVendor>
+                <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Vendor is Mandatory<br>
+                <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Select Vendor<br>
+              </ng-template>
+              <button type="button" class="pop-over" data-container="body" [popover]="popVendor" popoverTitle="Help" placement="left" triggers="mouseenter:mouseleave">?
+ </button>
+            </div>
+          </div>
+
+
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label class="focused">Contract #</label>
+              <select class="form-control" id="contractNumber" name="contractNumber" tabindex="11" formControlName="contractNumber" (change)="getWarranty($event)">
+ <option selected="selected" value="">--Select--</option>
+ <option *ngFor="let name of contractNames" [value]="name.ContractId">{{name.ContractName}}</option>
+ </select>
+              <div class="msg" *ngIf="ordersAddForm.controls['contractNumber'].invalid && (ordersAddForm.controls['contractNumber'].dirty || ordersAddForm.controls['contractNumber'].touched)">
+                <div *ngIf="ordersAddForm.controls['contractNumber'].errors.required">
+                  Required.
+                </div>
+              </div>
+              <ng-template #popContractNumber>
+                <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Contract is Mandatory<br>
+                <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Select Contract<br>
+              </ng-template>
+              <button type="button" class="pop-over" data-container="body" [popover]="popContractNumber" popoverTitle="Help" placement="left"
+                triggers="mouseenter:mouseleave">?
+ </button>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label class="focused">Warranty Name</label>
+
+              <select class="form-control" id="warrantyName" name="warrantyName" formControlName="warrantyName" (change)="getWarrantyInMonths($event)"
+                tabindex="12">
+ <option selected="selected" value="">--Select--</option>
+ <option *ngFor="let name of warrantyNames" [value]="name.WarrantyId">{{name.WarrantyName}}</option>
+ </select>
+              <div class="msg" *ngIf="ordersAddForm.controls['warrantyName'].invalid && (ordersAddForm.controls['warrantyName'].dirty || ordersAddForm.controls['warrantyName'].touched)">
+                <div *ngIf="ordersAddForm.controls['warrantyName'].errors.required">
+                  Required.
+                </div>
+              </div>
+              <ng-template #popWarrantyName>
+                <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Warranty Name is Mandatory<br>
+                <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Select Warranty Name<br>
+              </ng-template>
+              <button type="button" class="pop-over" data-container="body" [popover]="popWarrantyName" popoverTitle="Help" placement="left"
+                triggers="mouseenter:mouseleave">?
+ </button>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="col-md-12 form-group">
+              <label class="focused">Warranty(in months)</label>
+              <div>{{warrantyInMonths}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+
+  <form role="form" name="addItemForm" [formGroup]="addItemForm">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Add item(s)
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label class="focused">Item Name</label>
+              <select class="form-control" id="itemName" name="itemName" formControlName="itemName" (change)="getItemQuantity($event)"
+                tabindex="13">
+ <option selected="selected" value="">--Select--</option>
+ <option *ngFor="let itemName of warrantyItemNames" [value]="itemName.ItemId">{{itemName.ItemName}}</option>
+ </select>
+              <div class="msg" *ngIf="addItemForm.controls['itemName'].invalid && (addItemForm.controls['itemName'].dirty || addItemForm.controls['itemName'].touched)">
+                <div *ngIf="addItemForm.controls['itemName'].errors.required">
+                  Required.
+                </div>
+              </div>
+
+              <ng-template #popItemName>
+                <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Item Name is Mandatory<br>
+                <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Select Item Name<br>
+              </ng-template>
+              <button type="button" class="pop-over" data-container="body" [popover]="popItemName" popoverTitle="Help" placement="left"
+                triggers="mouseenter:mouseleave">?
+ </button>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label>Quantity</label>
+
+              <input type="text" class="form-control" id="itemQuantity" name="itemQuantity" placeholder="Quantity" formControlName="itemQuantity"
+                tabindex="14" maxlength="6">
+              <div class="msg" *ngIf="addItemForm.controls['itemQuantity'].invalid && (addItemForm.controls['itemQuantity'].dirty || addItemForm.controls['itemQuantity'].touched)">
+                <div *ngIf="addItemForm.controls['itemQuantity'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="addItemForm.controls['itemQuantity'].errors.pattern">
+                  Only numbers are allowed
+                </div>
+                <div *ngIf="addItemForm.controls['itemQuantity'].errors.minlength">
+                  Minimum 1 characters are required.
+                </div>
+                <div *ngIf="addItemForm.controls['itemQuantity'].errors.maxlength">
+                  Maximum 6 characters are allowed.
+                </div>
+              </div>
+              <ng-template #popQuantity>
+                <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Quantity is Mandatory<br>
+                <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> It allows only Numbers<br>
+                <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> It should be minimum 1<br> characters and maximum
+                6
+                <br>Characters long<br>
+              </ng-template>
+              <button type="button" class="pop-over" data-container="body" [popover]="popQuantity" popoverTitle="Help" placement="left"
+                triggers="mouseenter:mouseleave">?</button>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="pull-right">
+              <button type="button" class="btn btn-primary btn-search" (click)="addPurchaseOrderItems('ADD')" tabindex="15">Add</button>
+              <button type="button" class="btn btn-default btn-reset" (click)="resetPurchaseOrderItems()" tabindex="16">Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="panel panel-default" *ngIf='itemDetailsResponseList && itemDetailsResponseList.length'>
+
+    <div class="panel-heading">Items({{itemDetailsResponseList.length}})</div>
+    <div class="panel-body">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Item Name</th>
+            <th>Description</th>
+            <th>Quantity</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor='let purchaseOrderItems of itemDetailsResponseList; let i = index'>
+            <td>{{purchaseOrderItems.ItemName}}</td>
+            <td>{{purchaseOrderItems.ItemDesc}}</td>
+            <td *ngIf="purchaseOrderItems.editable" (change)="getValue($event)">
+              <form role="form" name="editItemForm" [formGroup]="editItemForm">
+                <div class="form-group" style="position: relative;">
+                  <input type="text" class="form-control" id="editItemQuantity" name="editItemQuantity" formControlName="editItemQuantity"
+                    maxlength="6" value={{purchaseOrderItems.ItemQuantity}}>
+                  <div style="left: 0;" class="msg" *ngIf="editItemForm.controls['editItemQuantity'].invalid && (editItemForm.controls['editItemQuantity'].dirty || editItemForm.controls['editItemQuantity'].touched)">
+                    <div *ngIf="editItemForm.controls['editItemQuantity'].errors.required">
+                      Required.
+                    </div>
+                    <div *ngIf="editItemForm.controls['editItemQuantity'].errors.pattern">
+                      Only numbers are allowed
+                    </div>
+                    <div *ngIf="editItemForm.controls['editItemQuantity'].errors.minlength">
+                      Minimum 1 characters are required.
+                    </div>
+                    <div *ngIf="editItemForm.controls['editItemQuantity'].errors.maxlength">
+                      Maximum 6 characters are allowed.
+                    </div>
+                  </div>
+                </div>
+              </form>
+
+            </td>
+            <td *ngIf="!purchaseOrderItems.editable">{{purchaseOrderItems.ItemQuantity}}</td>
+            <td>
+              <img src="assets/images/svg/edit-blue.svg" alt="" class="icon-svg3" (click)="editPurchaseOrderItems(purchaseOrderItems)"
+                *ngIf="!purchaseOrderItems.editable" title="edit" tabindex="18">
+              <img src="assets/images/svg/save-blue.svg" alt="" class="icon-svg3" (click)="updatePurchaseOrderItems(purchaseOrderItems)"
+                *ngIf="purchaseOrderItems.editable " title="save" tabindex="18">
+            </td>
+            <td>
+              <img src="assets/images/svg/delete-blue.svg" alt="" class="icon-svg3" (click)="deleteItem(purchaseOrderItems)" title="delete"
+                tabindex="18">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="pull-right">
+        <button type="button" class="btn btn-primary btn-search" (click)="generatePurchaseOrder()" tabindex="19">GeneratePO</button>
+        <button type="button" class="btn btn-primary btn-reset" (click)="purchaseOrderCancel()" tabindex="20">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+</div>
+
+<ng-template #noRecordBlock>
+  <div>
+    <p class="alert alert-success m-t-10 m-l-10 m-r-10">
+      <i class="fa fa-info-circle fa-lg" aria-hidden="true"></i>&nbsp; No purchase orders to display
+    </p>
+  </div>
+</ng-template>
+
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>

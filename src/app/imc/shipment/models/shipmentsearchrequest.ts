@@ -1,0 +1,20 @@
+export interface IShipmentSearchRequest {
+    OrderNumber: string,
+    ShipmentStatus: string,
+    SortDirection: number,
+    SortColumn: string,
+    PageNumber: number,
+    PageSize: number,
+    StartDate: any,
+    EndDate: any,
+    UserId: number,
+    LoginId: number,
+    User: string,
+    OnSearchClick: boolean,
+    OnPageLoad: boolean,
+    ActivitySource: string,
+    tagType: string,
+    agencies:string,
+    timePeriod:any,
+    timeRange:any
+}

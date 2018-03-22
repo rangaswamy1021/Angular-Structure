@@ -1,0 +1,100 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">SAC</a>
+        </li>
+        <li>
+          <a href="#">Configurations</a>
+        </li>
+        <li class="active">Tag Deposit and Fee Configurations</li>
+      </ol>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Tag Deposit and Fee Configurations</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <form role="form" name="manageConf" [formGroup]="manageConf">
+    <div class="panel panel-default">
+      <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+      <div class="panel-body">
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label class="focused"> Protocol </label>
+              <select class="form-control" formControlName="protocol" name="protocol">
+            <option selected='selected' value="">--Select--</option>
+            <option *ngFor='let prt of protocolResponse' value="{{prt.LookUpTypeCode}}">{{prt.LookUpTypeCode}}</option>
+          </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label class="focused"> Mounting </label>
+              <select class="form-control" formControlName="mounting" name="mounting">
+            <option selected='selected' value="">--Select--</option>
+            <option *ngFor='let mnt of mountingResponse' value="{{mnt.LookUpTypeCode}}">{{mnt.LookUpTypeCode}}</option>
+          </select>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="form-group col-md-12 popover-field">
+              <button type="submit" (click)="searchTags()" class="btn btn-primary btn-search">Search</button>
+              <button type="reset" (click)="resetClick()" class="btn btn-primary btn-reset">Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+
+  <div class="panel panel-default">
+    <div class="panel-heading"> Tag Configurations </div>
+    <div class="panel-body bordered">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="update-tag-data" *ngIf="isUpdate">
+            <app-update-tags-configuration [id]='TagConfigId' (isUpdate)='closeDiv($event)' (getTagsComp)='onSuccess($event)'></app-update-tags-configuration>
+          </div>
+        </div>
+      </div>
+      <br>
+
+      <table class="table table-bdr">
+        <thead>
+          <tr>
+            <th>Protocol</th>
+            <th>Mounting</th>
+            <th>Tag Fee</th>
+            <th>Tag Fee Start Effective Date</th>
+            <th>Tag Deposit</th>
+            <th>Tag Deposit Start Effective Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tag of tags">
+            <td>{{tag.Protocol}}</td>
+            <td>{{tag.Mounting}}</td>
+            <td>{{tag.TagFee| currency:'USD':true:'1.2-2'}}</td>
+            <td>{{tag.TagFeeStartEffectiveDate | date:'MM/dd/yyyy'}}</td>
+            <td>{{tag.TagDeposit| currency:'USD':true:'1.2-2'}}</td>
+            <td>{{tag.TagDepositStartEffectiveDate | date:'MM/dd/yyyy'}}</td>
+            <td>
+              <img src="assets/images/svg/edit.svg" (click)="onEditclick(tag)" class="icon-svg3">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

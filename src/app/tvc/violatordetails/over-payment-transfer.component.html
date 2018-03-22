@@ -1,0 +1,151 @@
+<div class="page-title-header">
+  <div class="row">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">TVC</a>
+        </li>
+        <li>
+          <a href="#">Violator Details</a>
+        </li>
+        <li class="active">Amount Transfer For The Trip(s)</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Amount Transfer For The Trip(s)</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+
+<div class="content">
+  <div class=" text-right">
+    <span id="" class="accno">Account #:{{accountId}}</span>
+    <button class="btn btn-default  btn-search" type="button" (click)='backClick()'>Back</button>
+  </div>
+  <div class="well m-t-10">
+    <span id="" class="accno"> {{tripIdCSV}} </span>
+  </div>
+  <div>
+    <p>You can apply the overpayment amount for the selected Trip(s).</p>
+  </div>
+  <div class="row" *ngIf='balanceRes'>
+    <div class="col-md-12">
+      <div class="top-little-details">
+        <div class="col-md-3">
+          Overpayment Amount is : {{balanceRes.ViolationDepositBalance| currency:'USD':true:'1.2-2'}}
+        </div>
+        <div class="col-md-3">
+          Eligible Overpayment Amount : {{balanceRes.EligibleOverPaymentAmount| currency:'USD':true:'1.2-2'}}
+        </div>
+        <div class="col-md-5">
+          <span>Apply Overpayment Amount :</span>
+          <input type="text" maxlength="10" class="form-control" id="" placeholder="$0.00" [(ngModel)]='overPayAmount' required>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default m-t-20">
+    <div class="panel-heading">Trip Details </div>
+    <div class="panel-body table-bdr" *ngIf='vioAmountsRes && vioAmountsRes.length'>
+      <table class="table  table-sm">
+        <thead>
+          <tr>
+            <th>Trip #</th>
+            <th>Toll Fee</th>
+            <th>Fine Fee</th>
+            <th>Total Fee</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor='let amts of vioAmountsRes'>
+            <td> {{amts.CitationId}}</td>
+            <td> {{amts.Tollfee| currency:'USD':true:'1.2-2'}}</td>
+            <td>
+              <div *ngIf='amts.FineFee > 0'>
+                <a (click)='showFees(amts)' data-toggle="modal" data-target="#myModal">
+                  {{amts.FineFee| currency:'USD':true:'1.2-2'}}</a>
+              </div>
+              <div *ngIf='amts.FineFee <= 0'>
+                {{amts.FineFee| currency:'USD':true:'1.2-2'}}
+              </div>
+            </td>
+            <td> {{amts.TotalFee| currency:'USD':true:'1.2-2'}}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td> Total</td>
+            <td>{{tollFeeSum| currency:'USD':true:'1.2-2'}}</td>
+            <td>{{fineFeeSum| currency:'USD':true:'1.2-2'}}</td>
+            <td>{{totalFeeSum| currency:'USD':true:'1.2-2'}}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+  <div class="text-right">
+    <button class="btn btn-primary btn-search" type="submit" [disabled]="disableButton" (click)='overPaymentTransfer()'>Transfer</button>
+    <button class="btn btn-primary btn-reset" type="reset" (click)='resetClick()'>Reset</button>
+    <button *ngIf='payReceipt' class="btn btn-primary btn-reset" type="submit" (click)='paymentReceipt()'>Payment Receipt</button>
+      <!-- <a href="{{payReceipt}}" target="_blank">Payment Receipt</a> -->
+    
+  </div>
+
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" *ngIf='showViolationFees'>
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel">Fine Fee Details</h4>
+        </div>
+        <div class="table-bdr">
+          <div *ngIf='violationFees && violationFees.length'>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Fee Description</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor='let amts of violationFees'>
+                  <td> {{amts.FeeDesc}}</td>
+                  <td> {{amts.Amount | currency:'USD':true:'1.2-2'}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade panel panel-default m-t-20" *ngIf='showViolationFees'>
+    <div class="panel-heading">Fine Fee Details </div>
+    <div class="panel-body" *ngIf='violationFees && violationFees.length'>
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr>
+            <th>Fee Description</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor='let amts of violationFees'>
+            <td> {{amts.FeeDesc}}</td>
+            <td> {{amts.Amount | currency:'USD':true:'1.2-2'}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div> -->
+</div>

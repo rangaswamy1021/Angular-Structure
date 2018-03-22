@@ -1,0 +1,72 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">SAC</a></li>
+        <li><a href="#">Work flow</a></li>
+        <li class="active">Invoice Aging</li>
+      </ol>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Invoice Aging</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="panel panel-default">
+    <div class="panel-heading">Aging WorkFlow</div>
+    <div class="panel-body bordered">
+      <div class="col-sm-9">
+        <div class="col-md-5">
+          <div class="form-group">
+            <label class="focused"> Available Stages </label>
+            <select [(ngModel)]="selectedAvailabelStages" multiple class="form-control multipleSelect" multiple="multiple" size="10"
+              name="duallistbox_demo1[]"> 
+            <option *ngFor="let unAssignedItems of getFalseItems" value="{{unAssignedItems.StageId}}"> {{unAssignedItems.StageName}} </option>           
+          </select>
+          </div>
+        </div>
+        <div class="col-md-2 text-center">
+          <br/>
+
+          <br/>
+          <br/>
+          <button class="btn btn-primary btn-xs" (click)="leftAssign()"> <i class="fa fa-angle-left fa-fw fa-2x" aria-hidden="true" ></i> </button>          <br/>
+          <br/>
+          <button class="btn btn-primary btn-xs" (click)="rightAssign()"> <i class="fa fa-angle-right fa-fw fa-2x" aria-hidden="true"></i> </button>          <br/>
+          <br/>
+          <button class="btn btn-primary btn-xs" (click)="allLeftAssign()"> <i class="fa fa-angle-double-left fa-fw fa-2x" aria-hidden="true"></i> </button>          <br/>
+          <br/>
+          <button class="btn btn-primary btn-xs" (click)="allRightAssign()"> <i class="fa fa-angle-double-right fa-fw fa-2x" aria-hidden="true"></i> </button>          <br/><br/>
+        </div>
+        <div class="col-md-5">
+          <div class="form-group">
+            <label class="focused"> Assigned Stages </label>
+            <select [(ngModel)]="selectedAssignedStages" multiple class="form-control multipleSelect" multiple="multiple" size="10" name="duallistbox_demo2"> 
+            <option  *ngFor="let assignedItems of getTrueItems" value="{{assignedItems.StageId}}"> {{assignedItems.StageName}} </option>           
+          </select>
+            <span class="scroll-arrows">
+            <a  (click)="upClick();"><i class="fa fa-arrow-up fa-fw fa-2x" aria-hidden="true" ></i></a>
+          <a (click)="downClick();"><i class="fa fa-arrow-down fa-fw fa-2x" aria-hidden="true" ></i></a>
+          </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-3 pad-20 m-t-20">
+        <div class="text m-t-10" *ngFor="let assignedItems of getTrueItems"><a (click)="editConfiguration(assignedItems.StageName,assignedItems.StageId);">Manage {{assignedItems.StageName.split('(')[0]}} Configuration</a></div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="form-group">
+          <button class="btn btn-default btn-search" [disabled]="isDisabledUpdate" (click)="saveandConfigure(1);">Save Assigned Stages Orders</button>
+          <button class="btn btn-default btn-search" [disabled]="isDisabledUpdate" (click)="saveandConfigure(2);">Save Assigned Stages & Configure Each Stage</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

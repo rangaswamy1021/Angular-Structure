@@ -1,0 +1,174 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">FMC</a></li>
+        <!--breadcrum heading-->
+        <li>Configuration</li>
+        <li class="active">Fiscal Year</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <!-- main heading -->
+        <h1>Fiscal Year</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+  <div class="panel-body">
+    <div class="col-md-12 pull-right" *ngIf="addNewFiscalYearDetails">
+      <button [disabled]="disableCreateButton" class="btn btn-primary btn-search pull-left" (click)="addNewFiscalYear()"><i class="fa fa-plus-circle" aria-hidden="true" ></i> Add Fiscal Year</button>
+    </div>
+  </div>
+  <div class="clearfix"></div>
+  <div class="panel panel-default" [hidden]="!enterNewFiscalYearDetails">
+    <div class="panel-heading">
+      {{fiscalHeading}} Fiscal Year
+    </div>
+    <div class="panel-body bordered">
+      <form role="form" name="addNewFiscalYearForm" [formGroup]="addNewFiscalYearForm" novalidate (ngSubmit)="submitNewFiscalYearDetails()">
+        <div class="row">
+          <div class="form-group col-md-6 popover-field">
+            <label for="name"> Name </label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="Name" formControlName="Name" required>
+            <div class="msg" style="color: red;" *ngIf="addNewFiscalYearForm.controls['Name'].invalid && (addNewFiscalYearForm.controls['Name'].dirty || addNewFiscalYearForm.controls['Name'].touched)">
+              <div *ngIf="addNewFiscalYearForm.controls['Name'].errors.required">
+                Required.
+              </div>
+            </div>
+            <button type="button" class="pop-over" [popover]="popName" data-container="body" popoverTitle="Help" placement="left" triggers="mouseenter:mouseleave">
+                      <i class="fa fa-question" aria-hidden="true"></i>
+                   </button>
+            <ng-template #popName>
+              <ul>
+                <li>Name is mandatory</li>
+                <li>It should be minimum 1 character and maximum 100 characters long</li>
+              </ul>
+            </ng-template>
+          </div>
+
+          <div class="form-group col-md-6 popover-field">
+            <label for="description" class="focused">Description</label>
+            <textarea class="form-control" id="description" name="Description" placeholder="Description" cols="30" rows="3" formControlName="Description"
+              required></textarea>
+            <div class="msg" style="color: red;" *ngIf="addNewFiscalYearForm.controls['Description'].invalid && (addNewFiscalYearForm.controls['Description'].dirty || addNewFiscalYearForm.controls['Description'].touched)">
+              <div *ngIf="addNewFiscalYearForm.controls['Description'].errors.required">
+                Required.
+              </div>
+            </div>
+            <button type="button" class="pop-over" [popover]="popDescription" data-container="body" popoverTitle="Help" placement="left"
+              triggers="mouseenter:mouseleave">
+                      <i class="fa fa-question" aria-hidden="true"></i>
+                   </button>
+            <ng-template #popDescription>
+              <ul>
+                <li>Description is mandatory</li>
+                <li>It should be minimum 1 character and maximum 150 characters long</li>
+              </ul>
+            </ng-template>
+          </div>
+
+          <div class="form-group col-md-6 popover-field">
+            <label for="startdate" id="focused"> Start Date </label>
+            <my-date-picker (dateChanged)="selectEndDate($event)" id="startdate" placeholder="MM/DD/YYYY" (inputFieldChanged)='onDateFieldChanged($event)'
+              [options]="myDatePickerOptions" name="startDate" formControlName="startDate"></my-date-picker>
+            <div class="msg" *ngIf="!invalidDate && addNewFiscalYearForm.controls['startDate'].invalid && (addNewFiscalYearForm.controls['startDate'].dirty || addNewFiscalYearForm.controls['startDate'].touched)">
+              <div *ngIf="addNewFiscalYearForm.controls['startDate'].errors.required">
+                Required.
+              </div>
+            </div>
+
+            <!--<input type="text" #dp="bsDatepicker" bsDatepicker class="form-control" placeholder="Start Date" name="startDate" formControlName="startDate"
+                    (bsValueChange)="selectEndDate($event)" required>
+                  <div class="msg" style="color: red;" *ngIf="addNewFiscalYearForm.controls['startDate'].invalid && (addNewFiscalYearForm.controls['startDate'].dirty || addNewFiscalYearForm.controls['startDate'].touched)">
+                    <div *ngIf="addNewFiscalYearForm.controls['startDate'].errors.required">
+                      Required.
+                    </div>
+                  </div>-->
+            <button type="button" class="pop-over" [popover]="popStartDate" data-container="body" popoverTitle="Help" placement="left"
+              triggers="mouseenter:mouseleave">
+                      <i class="fa fa-question" aria-hidden="true"></i>
+                   </button>
+            <ng-template #popStartDate>
+              <ul>
+                <li>StartDate is mandatory</li>
+                <li>Select Start Date</li>
+              </ul>
+            </ng-template>
+            <div class="show-error" *ngIf="invalidDate">
+              <div>
+                Invalid Date
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group col-md-6 popover-field">
+            <label for="enddate"> End Date </label>
+            <input type="text" class="form-control" id="enddate" name="EndDate" formControlName="endDate" disabled="disabled">
+            <button type="button" class="pop-over" [popover]="popEndDate" data-container="body" popoverTitle="Help" placement="left"
+              triggers="mouseenter:mouseleave">
+                      <i class="fa fa-question" aria-hidden="true"></i>
+                   </button>
+            <ng-template #popEndDate>
+              <ul>
+                <li> Automatically sets End Date<br> when you select Start Date</li>
+              </ul>
+            </ng-template>
+          </div>
+
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-primary btn-search" *ngIf="addDetails" [disabled]="disableCreateButton"> Submit </button>
+            <button type="update" class="btn btn-primary btn-search" *ngIf="updateDetails" (click)="updateFiscalYear()" [disabled]="disableUpdateButton"> Update </button>
+            <button type="reset" class="btn btn-default btn-reset" (click)="cancelNewFiscalYear()"> Cancel </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="clearfix"></div>
+  <div class="table-bdr">
+    <h3>Fiscal Years</h3>
+    <div class="panel-body bordered">
+      <div class="table-responsive">
+        <table class="table bordered">
+          <thead class="thead-default">
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Is Current Year</th>
+              <th>Is Closed</th>
+              <th>Edit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let fiscalyear of objFiscalYearResponse">
+              <td> {{fiscalyear. FiscalYearName}} </td>
+              <td> {{fiscalyear.FiscalYearDesc}} </td>
+              <td> {{fiscalyear.StartDate | customDateFormat}} </td>
+              <td> {{fiscalyear.EndDate | customDateFormat }} </td>
+              <td><span *ngIf="fiscalyear.IsCurrentYear === true" aria-hidden="true">Yes</span>
+                <span *ngIf="fiscalyear.IsCurrentYear === false" aria-hidden="true">No</span></td>
+              <td><span *ngIf="fiscalyear.Isclosed === true" aria-hidden="true">Yes</span>
+                <span *ngIf="fiscalyear.Isclosed === false" aria-hidden="true">No</span>
+              </td>
+              <!--<td><i *ngIf="fiscalyear.IsCurrentYear === true" class="fa fa-toggle-on" aria-hidden="true"></i>
+                  <i *ngIf="fiscalyear.IsCurrentYear === false" class="fa fa-toggle-off" aria-hidden="true"></i></td>
+                <td><i *ngIf="fiscalyear.Isclosed === true" class="fa fa-toggle-on" aria-hidden="true"></i>
+                  <i *ngIf="fiscalyear.Isclosed === false" class="fa fa-toggle-off" aria-hidden="true"></i>
+                </td>-->
+              <td><i class="fa fa-pencil fa-lg" aria-hidden="true" style="cursor:pointer" (click)="editFiscalYear(fiscalyear)"
+                  [ngClass]="{'disabletextbox': disableUpdateButton}"></i></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

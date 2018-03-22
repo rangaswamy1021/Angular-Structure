@@ -1,0 +1,271 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">SAC</a>
+        </li>
+        <li>
+          <a href="#">Agency Setup</a>
+        </li>
+        <li class="active">Manage Plazas</li>
+      </ol>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Plazas</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<!--manage plaza add and edit form-->
+<div class="content">
+<div class="table-bdr">
+  <h3>
+    Plaza Details
+  </h3>
+  <form name="plazaForm" [formGroup]="plazaForm" role="form">
+    <div class="panel-body">
+      <div class="col-md-6">
+        <div class="form-group col-md-12 popover-field">
+          <label class="focused"> Agency </label>
+          <select class="form-control" formControlName="agency" name="agency">
+            <option selected='selected' value="">--Select--</option>
+            <option *ngFor="let agency of agencys" value="{{agency.AgencyCode}}">{{agency.AgencyName}}</option>
+          </select>
+          <div class="msg" *ngIf="plazaForm.controls['agency'].invalid && (plazaForm.controls['agency'].dirty || plazaForm.controls['agency'].touched)">
+            <div *ngIf="plazaForm.controls['agency'].errors.required">
+              Required.
+            </div>
+          </div>
+          <button type="button" class="pop-over" data-container="body" [popover]="popAgency" popoverTitle="Help" triggers="mouseenter:mouseleave"
+            placement='left'>?</button>
+          <ng-template #popAgency>
+            <ul>
+              <li>Agency is required</li>
+              <li>Select Agency</li>
+            </ul>
+          </ng-template>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group col-md-12 popover-field">
+          <label class="focused"> Location </label>
+          <select class="form-control" formControlName="location" name="location">
+            <option selected='selected' value="">--Select--</option>
+            <option *ngFor="let loc of locations" value="{{loc.LocationCode}}">{{loc.LocationName}}</option>
+          </select>
+          <div class="msg" *ngIf="plazaForm.controls['location'].invalid && (plazaForm.controls['location'].dirty || plazaForm.controls['location'].touched)">
+            <div *ngIf="plazaForm.controls['location'].errors.required">
+              Required.
+            </div>
+          </div>
+          <button type="button" class="pop-over" data-container="body" [popover]="popLocation" popoverTitle="Help" triggers="mouseenter:mouseleave"
+            placement='left'>?</button>
+          <ng-template #popLocation>
+            <ul>
+              <li>Location is required</li>
+              <li>Select Location</li>
+            </ul>
+          </ng-template>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group col-md-12 popover-field">
+          <label> Plaza Name </label>
+          <input type="text" maxlength="50" pattern="^[a-zA-Z0-9 ]*$" class="form-control" placeholder="Plaza Name" formControlName="plazaName"
+            name="plazaName">
+          <div class="msg" *ngIf="plazaForm.controls['plazaName'].invalid && (plazaForm.controls['plazaName'].dirty || plazaForm.controls['plazaName'].touched)">
+            <div *ngIf="plazaForm.controls['plazaName'].errors.required">
+              Required.
+            </div>
+            <div *ngIf="plazaForm.controls['plazaName'].errors.pattern">
+              Only alphanumerics and spaces are allowed
+            </div>
+          </div>
+          <button type="button" class="pop-over" data-container="body" [popover]="popPName" popoverTitle="Help
+" triggers="mouseenter:mouseleave" placement='left'>?</button>
+          <ng-template #popPName>
+            <ul>
+              <li>Plaza Name is required</li>
+              <li>It allows only alphabets, numbers and spaces</li>
+              <li>It allows only alphabets, numbers and spaces</li>
+              <li>Special characters are not allowed</li>
+              <li>Plaza Name should be minimum of 1 and maximum of 50 characters in length</li>
+            </ul>
+          </ng-template>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group col-md-12 popover-field">
+          <label> Plaza Code </label>
+          <input type="text" pattern="^[a-zA-Z0-9]*$" maxlength="10" class="form-control" placeholder="Plaza Code" formControlName="plazaCode"
+            name="plazaCode">
+          <div class="msg" *ngIf="plazaForm.controls['plazaCode'].invalid && (plazaForm.controls['plazaCode'].dirty || plazaForm.controls['plazaCode'].touched)">
+            <div *ngIf="plazaForm.controls['plazaCode'].errors.required">
+              Required.
+            </div>
+            <div *ngIf="plazaForm.controls['plazaCode'].errors.pattern">
+              Only alphanumerics allowed
+            </div>
+          </div>
+          <button type="button" class="pop-over" data-container="body" [popover]="popCODE" popoverTitle="Help
+" triggers="mouseenter:mouseleave" placement='left' [ngStyle]="{'display': btnText!='Add' ? 'none':'show'}">?</button>
+          <ng-template #popCODE>
+            <ul>
+              <li>Plaza Code is required</li>
+              <li>It allows only alphabets and numbers</li>
+              <li>Special characters and spaces are not allowed </li>
+              <li>Plaza Code should be minimum of 1 and maximum of 10 characters in length</li>
+            </ul>
+          </ng-template>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group col-md-12 popover-field">
+          <label class="focused">Transaction Type</label>
+          <select class="form-control" formControlName="transactionType" name="transactionType">
+            <option *ngFor="let ttype of transactionTypes" value="{{ttype.TransactionTypeId}}">{{ttype.TransactionType}}</option>
+          </select>
+          <button type="button" class="pop-over" data-container="body" [popover]="popTType" popoverTitle="Help
+" triggers="mouseenter:mouseleave" placement='left'>?</button>
+          <ng-template #popTType>
+            <ul>
+              <li>Select Transaction Type</li>
+            </ul>
+          </ng-template>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group col-md-12 popover-field">
+          <label>IP Address</label>
+          <input type="text" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$|^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$|^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$"
+            class="form-control" placeholder="IP Address" formControlName="ipAddress" name="ipAddress">
+          <div class="msg" *ngIf="plazaForm.controls['ipAddress'].invalid && (plazaForm.controls['ipAddress'].dirty || plazaForm.controls['ipAddress'].touched)">
+            <div *ngIf="plazaForm.controls['ipAddress'].errors.pattern">
+              Enter valid IP Address
+            </div>
+          </div>
+          <button type="button" class="pop-over" data-container="body" [popover]="popIP" popoverTitle="Help
+" triggers="mouseenter:mouseleave" placement='left'>?</button>
+          <ng-template #popIP>
+            <ul>
+              <li>IP Address should be in valid format</li>
+              <li>Ex: 255.255.255.254</li>
+            </ul>
+          </ng-template>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group col-md-12 popover-field">
+          <label class="focused"> Description</label>
+          <textarea pattern="^[a-zA-Z0-9 ]*$" rows="2" class="form-control" placeholder="Description" maxlength="250" (keyup)="descriptionCharCount($event.target.value)"
+            formControlName="description" name="description"></textarea>
+          <div class="msg" *ngIf="plazaForm.controls['description'].invalid && (plazaForm.controls['description'].dirty || plazaForm.controls['description'].touched)">
+            <div *ngIf="plazaForm.controls['description'].errors.required">
+              Required.
+            </div>
+            <div *ngIf="plazaForm.controls['description'].errors.pattern">
+              Only alphanumerics and spaces are allowed
+            </div>
+          </div>
+          <button type="button" class="pop-over" data-container="body" [popover]="popDesc" popoverTitle="Help
+" triggers="mouseenter:mouseleave" placement='left'>?</button>
+          <ng-template #popDesc>
+            <ul>
+              <li>Description is required</li>
+              <li>It allows only alphabets, numbers and spaces</li>
+              <li>Description should be minimum of 1 and maximum of 250 characters in length</li>
+            </ul>
+          </ng-template>
+        </div>
+  <small class="pull-right"> Left: {{descCharLeft}}characters </small>
+      </div>
+
+      <div class="col-md-6">
+
+        <div class="form-group col-md-12 popover-field">
+          <label class="focused"> Price Mode </label>
+          <select class="form-control" formControlName="priceMode" name="priceMode">
+            <option selected='selected' value="">--Select--</option>
+            <option *ngFor="let pMode of priceModes" value="{{pMode.Key}}">{{pMode.Value}}</option>
+          </select>
+          <div class="msg" *ngIf="plazaForm.controls['priceMode'].invalid && (plazaForm.controls['priceMode'].dirty || plazaForm.controls['priceMode'].touched)">
+            <div *ngIf="plazaForm.controls['priceMode'].errors.required">
+              Required.
+            </div>
+          </div>
+          <button type="button" class="pop-over" data-container="body" [popover]="popPrice" popoverTitle="Help
+" triggers="mouseenter:mouseleave" placement='left' [ngStyle]="{'display': btnText!='Add' ? 'none':'show'}">?</button>
+          <ng-template #popPrice>
+            <ul>
+              <li>Price Mode is required</li>
+              <li>Select Price Mode</li>
+            </ul>
+          </ng-template>
+        </div>
+      </div>
+
+      <div class="clear">
+        <div class="col-md-6">
+          <div class="form-group col-md-12 popover-field">
+            <label class="focused"> Transaction Fee Mode </label>
+            <select class="form-control" formControlName="transFeeMode" name="transFeeMode">
+              <option selected='selected' value="">--Select--</option>
+              <option *ngFor="let tFeeMode of transactionFeeModes" value="{{tFeeMode.LookUpTypeCode}}">{{tFeeMode.LookUpTypeCodeDesc}}</option>
+            </select>
+            <div class="msg" *ngIf="plazaForm.controls['transFeeMode'].invalid && (plazaForm.controls['transFeeMode'].dirty || plazaForm.controls['transFeeMode'].touched)">
+              <div *ngIf="plazaForm.controls['transFeeMode'].errors.required">
+                Required.
+              </div>
+            </div>
+            <button type="button" class="pop-over" data-container="body" [popover]="popFeeMode" popoverTitle="Help
+" triggers="mouseenter:mouseleave" placement='left'>?</button>
+            <ng-template #popFeeMode>
+              <ul>
+                <li>Transaction Fee Mode is required</li>
+                <li>Select Transaction Fee Mode</li>
+              </ul>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+      <div class="form-group checkbox-inline col-md-6">
+        <div class="col-md-4 checkbox">
+          <input #saveCheckbox type="checkbox" id="saveCheckbox" name="active" formControlName="active" [checked]="active" (change)="checkActive(saveCheckbox.checked)">
+          <label for="saveCheckbox">
+            <span></span>Is Owned</label>
+        </div>
+        <div class="col-md-4 checkbox">
+          <input #saveCheckbox1 type="checkbox" id="saveCheckbox1" name="activer" formControlName="activer" [checked]="activer" (change)="checkActive1(saveCheckbox1.checked)">
+          <label for="saveCheckbox1">
+            <span></span>Is Non Revenue</label>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <button class="btn btn-default btn-search" (click)="Save(0);">
+          {{btnText}}
+        </button>
+        <button class="btn btn-default btn-search" (click)="Save(1);">
+          {{btnTextContinue}}
+        </button>
+        <button class="btn btn-default btn-reset" (click)="resetClick();">
+          Reset
+        </button>
+        <a href='javascript:;' class="btn btn-default btn-reset" (click)="cancelClick();">
+          Cancel
+        </a>
+      </div>
+
+    </div>
+  </form>
+</div>
+</div>
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

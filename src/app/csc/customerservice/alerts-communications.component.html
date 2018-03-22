@@ -1,0 +1,81 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Customer Service</a></li>
+        <li class="active">Alerts &amp; Communications</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Alerts &amp; Communications</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-account-info></app-account-info>
+  <div *ngIf='responseAlertsAndCommunications && responseAlertsAndCommunications.length'>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-bdr">
+          <h3>Configurable Alerts</h3>
+          <p class="pad-20">To Activate or Deactivate an option click on the button for each alert.</p>
+          <div class="table-default table-responsive">
+            <table class="table bordered checkbox-table">
+              <thead>
+                <tr>
+                  <th>ALERT TYPE</th>
+                  <th align='center'>SMS</th>
+                  <th>EMAIL</th>
+                  <th>MAIL</th>
+                  <th>NOT INTERESTED</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let res of responseAlertsAndCommunications;let id = index">
+                  <td>
+                    {{res.AlertTypeDesc}}
+                  </td>
+                  <td>
+                    <div class="slidecheck">
+                      <input type="checkbox" (change)="onChangeEventSMS(id,res.SMSFlag)" [(ngModel)]="res.SMSFlag" id="sms[{{id+1}}]" />
+                      <label for="sms[{{id+1}}]"></label>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="slidecheck">
+                      <input type="checkbox" (change)="onChangeEventEMAIL(id,res.EMAILFLAG)" [(ngModel)]="res.EMAILFLAG" id="email[{{id+1}}]" />
+                      <label for="email[{{id+1}}]"></label>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="slidecheck">
+                      <input type="checkbox" (change)="onChangeEventMAIL(id,res.MAILFlag)" [(ngModel)]="res.MAILFlag" id="mail[{{id+1}}]" />
+                      <label for="mail[{{id+1}}]"></label>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="slidecheck">
+                      <input type="checkbox" (change)="onChangeEventNot(id,res.NONEFLAG)" [(ngModel)]="res.NONEFLAG" id="not[{{id+1}}]" />
+                      <label for="not[{{id+1}}]"></label>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-md-12 m-t-20 text-right">
+            <input type="submit" class="btn btn-primary btn-search" [disabled]="disableButton" value="Save" (click)="save()">
+            <input type="button" class="btn btn-default btn-reset" value="Reset" (click)="reset()">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>

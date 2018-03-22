@@ -1,0 +1,63 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Payments</a></li>
+        <li class="active">Redeem Rewards Points</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1> Redeem Rewards Points </h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <app-account-info></app-account-info>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+    (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+  <div class="table-bdr">
+    <h3>Redeem Rewards</h3>
+    <div class="pad-10">
+      <form role="form" name="redeemRewardForm" [formGroup]="redeemRewardForm" novalidate>
+        <div class="row">
+          <div class="col-md-7 m-b-10">
+            <div class="row">
+              <div class="col-xs-6">
+                <h3> Total Reward Points:
+                  <strong> {{redeemPoints}} </strong>
+                </h3>
+              </div>
+              <div class="col-xs-6">
+                <h3> Redeem Value:
+                  <strong> $ {{redeemAmount}}  </strong>
+                </h3>
+              </div>
+            </div>
+          </div>
+          <div class="clear">
+            <div class="col-md-6 form-group">
+              <label> Points to Redeem: </label>
+              <input type="text" class="form-control" [(ngModel)]="redeemPointsEntered" pattern="[a-zA-Z0-9]*" (keyup)="verifyVlaue($event.target.value)"
+                id="txtRedeemReward" name="txtRedeemReward" formControlName="txtRedeemReward">
+              <div class="msg" *ngIf="redeemRewardForm.controls['txtRedeemReward'].hasError('required') && redeemRewardForm.controls['txtRedeemReward'].invalid && redeemRewardForm.controls['txtRedeemReward'].touched">
+                <div>required</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <button type="submit" id="btnRedeemReward" name="btnRedeemReward" [disabled]="isPaymentDisabled" (click)="redeemReward()"
+                  class="btn btn-primary btn-search">Redeem</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

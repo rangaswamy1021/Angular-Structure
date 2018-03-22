@@ -1,0 +1,509 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">TVC</a></li>
+        <li><a href="#">Create Account</a></li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Create Account</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<form role="form" name="createViolatorForm" [formGroup]="createViolatorForm" novalidate>
+  <div class="content">
+    <div class=" text-right">
+      <span id="" class="accno">Account #:{{accountId}}</span>
+      <button class="btn btn-primary btn-search" type="button" (click)='backClick()'>Back</button>
+    </div>
+    <!--personal details-->
+    <div class="panel panel-default m-t-20">
+      <div class="panel-heading">
+        Personal Details
+      </div>
+
+      <div class="panel-body bordered">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field ">
+              <label class=" focused"> Title </label>
+              <select class="form-control" formControlName="titleSelected">
+                <option label="Title" selected="selected" value="">Title</option>
+                <option *ngFor="let title of titles" value="{{title.Key}}"> {{title.Value}}</option>
+              </select>
+              <button type="button" class="pop-over" data-container="body" [popover]="poppTitle" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                tabindex="-1" placement="left">?</button>
+              <ng-template #poppTitle>
+                <ul>
+                  <li>Select Title</li>
+                </ul>
+              </ng-template>
+
+            </div>
+          </div>
+
+
+          <div class="col-md-6">
+            <div class="form-group col-md-6 popover-field ">
+              <label class=" focused"> Suffix </label>
+              <select class="form-control" formControlName="suffixSelected" (change)="selectSuffix()">
+              <option label="Suffix" selected="selected" value="">Suffix</option>
+              <option *ngFor="let suffix of suffixes" value="{{suffix.Key}}"> {{suffix.Value}}</option>
+             </select>
+              <button type="button" class="pop-over" data-container="body" [popover]="poppSKey" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                tabindex="-1" placement="left">?</button>
+              <ng-template #poppSKey>
+                <ul>
+                  <li>Select Suffix</li>
+                </ul>
+              </ng-template>
+            </div>
+           <div class="form-group col-md-6 popover-field " *ngIf='isSuffixOther'>
+                <label id="focused" for="other"> other </label>
+              <input type="text" class="form-control" id="other" placeholder="other" formControlName="suffixOther" maxlength="5">
+              <div class="msg" *ngIf="createViolatorForm.controls['suffixOther'].invalid && (createViolatorForm.controls['suffixOther'].dirty || createViolatorForm.controls['suffixOther'].touched)">
+                <div *ngIf="createViolatorForm.controls['suffixOther'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="createViolatorForm.controls['suffixOther'].errors.pattern">
+                  Only alphabets are allowed.
+                </div>
+                <div *ngIf="createViolatorForm.controls['suffixOther'].errors.maxlength">
+                  Maximum 5 characters are allowed.
+                </div>
+              </div>
+              <button type="button" class="pop-over" data-container="body" [popover]="poppSOther" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                tabindex="-1" placement="left">?</button>
+              <ng-template #poppSOther>
+                <ul>
+                  <li> Other suffix is required </li>
+                  <li> It allows only alphabets</li>
+                  <li> It allows minimum of 1 and maximum of 5 characters length</li>
+                </ul>
+              </ng-template>
+            </div>
+        </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label for="firstName"> First Name  </label>
+              <input type="text" class="form-control" id="firstName" placeholder="* First Name" formControlName="firstName" maxlength="=50">
+              <div class="msg" *ngIf="createViolatorForm.controls['firstName'].invalid && (createViolatorForm.controls['firstName'].dirty || createViolatorForm.controls['firstName'].touched)">
+                <div *ngIf="createViolatorForm.controls['firstName'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="createViolatorForm.controls['firstName'].errors.pattern">
+                  Only Alphabets and space are allowed.
+                </div>
+                <div *ngIf="createViolatorForm.controls['firstName'].errors.minlength">
+                  Minimum 2 characters are required.
+                </div>
+                <div *ngIf="createViolatorForm.controls['firstName'].errors.maxlength">
+                  Maximum 50 characters are allowed.
+                </div>
+              </div>
+              <button type="button" class="pop-over" data-container="body" [popover]="poppFName" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                tabindex="-1" placement="left">?</button>
+              <ng-template #poppFName>
+                <ul>
+                  <li>First Name is required</li>
+                  <li>It allows only alphabets and spaces</li>
+                  <li>It should be minimum 2 characters <br>and maximum 50 characters long.</li>
+                </ul>
+              </ng-template>
+
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+              <label for="middleName"> Middle Name  </label>
+              <input type="text" class="form-control" id="middleName" placeholder="MI" formControlName="middleName" maxlength="2">
+              <div class="msg" *ngIf="createViolatorForm.controls['middleName'].invalid && (createViolatorForm.controls['middleName'].dirty || createViolatorForm.controls['middleName'].touched)">
+                <div *ngIf="createViolatorForm.controls['middleName'].errors.pattern">
+                  Only Alphabets are allowed.
+                </div>
+                <div *ngIf="createViolatorForm.controls['middleName'].errors.maxlength">
+                  Maximum 2 characters are allowed.
+                </div>
+              </div>
+              <button type="button" class="pop-over" data-container="body" [popover]="poppMName" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                tabindex="-1" placement="left">?</button>
+              <ng-template #poppMName>
+                <ul>
+                  <li>It allows only alphabets</li>
+                  <li>Special Characters and spaces <br>are not allowed. It is maximum <br>2 characters long</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group col-md-12 popover-field">
+
+
+              <label for="lastName"> Last Name  </label>
+
+              <input type="text" class="form-control" id="lastName" placeholder="* Last Name" formControlName="lastName" maxlength="50">
+              <div class="msg" *ngIf="createViolatorForm.controls['lastName'].invalid && (createViolatorForm.controls['lastName'].dirty || createViolatorForm.controls['lastName'].touched)">
+                <div *ngIf="createViolatorForm.controls['lastName'].errors.required">
+                  Required.
+                </div>
+                <div *ngIf="createViolatorForm.controls['lastName'].errors.pattern">
+                  Only Alphabets, space and (-) are allowed.
+                </div>
+                <div *ngIf="createViolatorForm.controls['lastName'].errors.minlength">
+                  Minimum 2 characters are required.
+                </div>
+                <div *ngIf="createViolatorForm.controls['lastName'].errors.maxlength">
+                  Maximum 50 characters are allowed.
+                </div>
+              </div>
+              <button type="button" class="pop-over" data-container="body" [popover]="popplname" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                tabindex="-1" placement="left">?</button>
+              <ng-template #popplname>
+                <ul>
+                  <li>Last Name is required</li>
+                  <li>It allows only alphabets, spaces and (-).</li>
+                  <li>It should be minimum 2 characters <br>and maximum 50 characters long</li>
+                </ul>
+              </ng-template>
+
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group col-sm-12 popover-field">
+              <label class="focused"> Gender  </label>
+
+              <select class="form-control" formControlName="genderSelected">
+                          <option label="Gender" selected="selected" value="">Gender</option>
+                          <option *ngFor="let gender of genderTypes" value="{{gender.Key}}"> {{gender.Value}}</option>
+                        </select>
+              <button type="button" class="pop-over" data-container="body" [popover]="popGender" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                tabindex="-1" placement="left">?</button>
+              <ng-template #popGender>
+                <ul>
+                  <li> Select Gender.</li>
+                </ul>
+              </ng-template>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Contact Details
+      </div>
+      <div class="panel-body bordered">
+        <app-add-address [customerID]="0" [isEnable]="false"></app-add-address>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group col-sm-8 popover-field">
+              <label> Primary Email </label>
+              <input formControlName="primaryEmail" type="text" class="form-control" placeholder="Primary Email" (change)="checkPrimaryEmailExists()">
+              <div class="msg" *ngIf="createViolatorForm.controls['primaryEmail'].invalid && (createViolatorForm.controls['primaryEmail'].dirty || createViolatorForm.controls['primaryEmail'].touched)">
+                <!--<div *ngIf="createViolatorForm.controls['primaryEmail'].errors.required">
+                  Required.
+                </div>-->
+                <div *ngIf="createViolatorForm.controls['primaryEmail'].errors.pattern">
+                  Invalid email format.
+                </div>
+                <div *ngIf="createViolatorForm.controls['primaryEmail'].errors.minlength">
+                  Minimum 6 characters are required.
+                </div>
+                <div *ngIf="createViolatorForm.controls['primaryEmail'].errors.maxlength">
+                  Maximum 100 characters are allowed.
+                </div>
+              </div>
+              <div class="msg" *ngIf="createViolatorForm.controls['preferredEmail'].invalid && (createViolatorForm.controls['preferredEmail'].dirty || createViolatorForm.controls['preferredEmail'].touched)">
+                <div *ngIf="createViolatorForm.controls['preferredEmail'].errors.required">
+                  Preference required.
+                </div>
+              </div>
+              <button type="button" class="pop-over" data-container="body" [popover]="popprimary" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                placement="left" tabindex="-1">?</button>
+              <ng-template #popprimary>
+                <ul>
+                  <li>Any One Email is required.</li>
+                  <li>Primary Email allows alphanumerics with special characters (@, _, ., -, +)</li>
+                  <li>Spaces are not allowed.</li>
+                  <li>It should be minimum 6 characters and maximum 100 characters long.</li>
+                  <li>It should follow the format yourname@domain.com</li>
+                </ul>
+              </ng-template>
+            </div>
+            <div class="col-sm-4">
+              <div class="radio-inline m-t-30 col-sm-12">
+                <input type="radio" name="preferredEmail" id="preferredEmail1" value="PrimaryEmail" formControlName="preferredEmail" (change)="changeEmailValidation($event.target.value)">
+                <label for="preferredEmail1">Is Preferred? </label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group col-sm-8 popover-field">
+              <label> Secondary Email  </label>
+              <input formControlName="secondaryEmail" type="text" class="form-control" placeholder="Secondary Email" (change)="checkSecondaryEmailExists()">
+              <div class="msg" *ngIf="createViolatorForm.controls['secondaryEmail'].invalid && (createViolatorForm.controls['secondaryEmail'].dirty || createViolatorForm.controls['secondaryEmail'].touched)">
+                <!--<div *ngIf="createViolatorForm.controls['secondaryEmail'].errors.required">
+                  Required.
+                </div>-->
+                <div *ngIf="createViolatorForm.controls['secondaryEmail'].errors.pattern">
+                  Invalid email format.
+                </div>
+                <div *ngIf="createViolatorForm.controls['secondaryEmail'].errors.minlength">
+                  Minimum 6 characters are required.
+                </div>
+                <div *ngIf="createViolatorForm.controls['secondaryEmail'].errors.maxlength">
+                  Maximum 100 characters are allowed.
+                </div>
+              </div>
+              <div *ngIf="isSecondaryEmailError">{{secondaryEmailErrorMessage}}</div>
+              <button type="button" class="pop-over" data-container="body" [popover]="popsecondary" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                placement="left" tabindex="-1">?</button>
+              <ng-template #popsecondary>
+                <ul>
+                  <li>Any One Email is required.</li>
+                  <li>Secondary Email allows alphanumerics with special characters (@, _, ., -, +)</li>
+                  <li>Spaces are not allowed.</li>
+                  <li>It should be minimum 6 characters and maximum 100 characters long.</li>
+                  <li>It should follow the format yourname@domain.com</li>
+                </ul>
+              </ng-template>
+            </div>
+            <div class="col-sm-4">
+              <div class="radio-inline m-t-30 col-sm-12">
+                <input type="radio" name="preferredEmail" id="preferredEmail2" value="SecondaryEmail" formControlName="preferredEmail" (change)="changeEmailValidation($event.target.value)">
+                <label for="preferredEmail2">Is Preferred? </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group col-sm-8 popover-field">
+              <label>Day Phone # </label>
+              <input formControlName="dayPhone" id="dayPhone" type="text" class="form-control" (keydown)="formatPhone($event)" (change)="validateDayPhoneAllZeros()"
+                maxlength="14" placeholder="* Day Phone Number">
+              <div class="msg" *ngIf="createViolatorForm.controls['dayPhone'].invalid && (createViolatorForm.controls['dayPhone'].dirty || createViolatorForm.controls['dayPhone'].touched)">
+                <!--<div *ngIf="createViolatorForm.controls['dayPhone'].errors.required">
+                  Required.
+                </div>-->
+                <div *ngIf="createViolatorForm.controls['dayPhone'].errors.pattern">
+                  Invalid phone format.
+                </div>
+                <div *ngIf="createViolatorForm.controls['dayPhone'].errors.maxlength">
+                  Maximum 14 characters are allowed.
+                </div>
+              </div>
+              <div class="msg" *ngIf="createViolatorForm.controls['preferredPhone'].invalid && (createViolatorForm.controls['preferredPhone'].dirty || createViolatorForm.controls['preferredPhone'].touched)">
+                <div *ngIf="createViolatorForm.controls['preferredPhone'].errors.required"> Preference required.
+                </div>
+              </div>
+              <button type="button" class="pop-over" data-container="body" [popover]="popphone" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                tabindex="-1" placement="left">?</button>
+              <ng-template #popphone>
+                <ul>
+                  <li>Any One Phone # is required</li>
+                  <li>Day Phone allows only numbers</li>
+                </ul>
+              </ng-template>
+            </div>
+            <div class="col-sm-4">
+              <div class="radio-inline m-t-30 col-sm-12">
+                <input type="radio" name="preferredPhone" id="preferredPhoneD" value="DayPhone" formControlName="preferredPhone" (change)="changePhoneValidation($event.target.value)">
+                <label for="preferredPhoneD">Is Preferred? </label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group col-sm-8 popover-field">
+              <label>Evening Phone # </label>
+              <input type="text" formControlName="eveningPhone" id="eveningPhone" (keydown)="formatPhone($event)" (change)="validateEveningPhoneAllZeros()"
+                maxlength="14" class="form-control" placeholder="Evening Phone#">
+              <div class="msg" *ngIf="createViolatorForm.controls['eveningPhone'].invalid && (createViolatorForm.controls['eveningPhone'].dirty || createViolatorForm.controls['eveningPhone'].touched)">
+                <!--<div *ngIf="createViolatorForm.controls['eveningPhone'].errors.required">
+                  Required.
+                </div>-->
+                <div *ngIf="createViolatorForm.controls['eveningPhone'].errors.pattern">
+                  Invalid phone format.
+                </div>
+                <div *ngIf="createViolatorForm.controls['eveningPhone'].errors.maxlength">
+                  Maximum 14 characters are allowed.
+                </div>
+              </div>
+              <button type="button" class="pop-over" data-container="body" [popover]="popephone" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                tabindex="-1" placement="left">?</button>
+              <ng-template #popephone>
+                <ul>
+                  <li>Any One Phone # is required</li>
+                  <li>Evening Phone allows only numbers</li>
+                </ul>
+              </ng-template>
+            </div>
+            <div class="col-sm-4">
+              <div class="radio-inline m-t-30 col-sm-12">
+                <input type="radio" name="preferredPhone" id="preferredPhoneE" value="EveningPhone" formControlName="preferredPhone" (change)="changePhoneValidation($event.target.value)">
+                <label for="preferredPhoneE">Is Preferred? </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group col-sm-8 popover-field">
+              <label>Mobile Phone # </label>
+              <input formControlName="mobilePhone" id="mobilePhone" type="text" class="form-control" (keydown)="formatPhone($event)" (change)="validateMobilePhoneAllZeros()"
+                maxlength="14" placeholder="* Mobile Phone Number">
+              <div class="msg" *ngIf="createViolatorForm.controls['mobilePhone'].invalid && (createViolatorForm.controls['mobilePhone'].dirty || createViolatorForm.controls['mobilePhone'].touched)">
+                <!--<div *ngIf="createViolatorForm.controls['mobilePhone'].errors.required">
+                  Required.
+                </div>-->
+                <div *ngIf="createViolatorForm.controls['mobilePhone'].errors.pattern">
+                  Invalid phone format.
+                </div>
+                <div *ngIf="createViolatorForm.controls['mobilePhone'].errors.maxlength">
+                  Maximum 14 characters are allowed.
+                </div>
+              </div>
+              <button type="button" class="pop-over" data-container="body" [popover]="popmphone" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                tabindex="-1" placement="left">?</button>
+              <ng-template #popmphone>
+                <ul>
+                  <li>Any One Phone # is required</li>
+                  <li>Mobile Phone allows only numbers</li>
+                </ul>
+              </ng-template>
+            </div>
+            <div class="col-sm-4">
+              <div class="radio-inline m-t-30 col-sm-12">
+                <input type="radio" name="preferredPhone" id="preferredPhoneM" value="MobileNo" formControlName="preferredPhone" (change)="changePhoneValidation($event.target.value)">
+                <label for="preferredPhoneM">Is Preferred? </label>
+              </div>
+            </div>
+
+          </div>
+          <div class="col-md-2">
+            <div class="form-group col-sm-12 popover-field">
+              <label>Work Phone # </label>
+              <input formControlName="workPhone" id="workPhone" type="text" class="form-control" placeholder="Work Phone#" (keydown)="formatPhone($event)"
+                (change)="validateWorkPhoneAllZeros()" maxlength="14">
+              <div class="msg" *ngIf="createViolatorForm.controls['workPhone'].invalid && (createViolatorForm.controls['workPhone'].dirty || createViolatorForm.controls['workPhone'].touched)">
+                <!--<div *ngIf="createViolatorForm.controls['workPhone'].errors.required">
+                  Required.
+                </div>-->
+                <div *ngIf="createViolatorForm.controls['workPhone'].errors.pattern">
+                  Invalid phone format.
+                </div>
+                <div *ngIf="createViolatorForm.controls['workPhone'].errors.maxlength">
+                  Maximum 14 characters are allowed.
+                </div>
+              </div>
+              <button type="button" class="pop-over" data-container="body" [popover]="popwphone" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                tabindex="-1" placement="left">?</button>
+              <ng-template #popwphone>
+                <ul>
+                  <li>Any One Phone # is required</li>
+                  <li>Work Phone allows only numbers</li>
+                </ul>
+              </ng-template>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="row">
+              <div class="form-group col-sm-6 popover-field">
+                <label>ext :  </label>
+                <input type="text" class="form-control" id="ext" placeholder="Ext" formControlName="ext" maxlength="5" (change)="changeExtension()">
+                <div class="msg" *ngIf="createViolatorForm.controls['ext'].invalid && (createViolatorForm.controls['ext'].dirty || createViolatorForm.controls['ext'].touched)">
+                  <div *ngIf="createViolatorForm.controls['ext'].errors.pattern">
+                    Only numerics are allowed.
+                  </div>
+                  <div *ngIf="createViolatorForm.controls['ext'].errors.maxlength">
+                    Maximum 5 characters are allowed.
+                  </div>
+                </div>
+                <button type="button" class="pop-over" data-container="body" [popover]="popWP" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                  tabindex="-1" placement="left">?</button>
+                <ng-template #popWP>
+                  <ul>
+                    <li>Extension # allows only numbers</li>
+                  </ul>
+                </ng-template>
+              </div>
+              <div class="col-sm-6">
+                <div class="radio-inline m-t-30 col-sm-12">
+                  <input type="radio" name="preferredPhone" id="preferredPhone" value="WorkPhone" formControlName="preferredPhone" (change)="changePhoneValidation($event.target.value)">
+                  <label for="preferredPhone">Is Preferred? </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group col-sm-8 popover-field">
+              <label for="fax"> fax # </label>
+              <input type="text" class="form-control" id="fax" placeholder="Fax" formControlName="fax" (keydown)="formatPhone($event)"
+                (change)="validateFaxAllZeros()" maxlength="14">
+              <div class="msg" *ngIf="createViolatorForm.controls['fax'].invalid && (createViolatorForm.controls['fax'].dirty || createViolatorForm.controls['fax'].touched)">
+                <!--<div *ngIf="createViolatorForm.controls['fax'].errors.required">
+                  Required.
+                </div>-->
+                <div *ngIf="createViolatorForm.controls['fax'].errors.pattern">
+                  Invalid phone number.
+                </div>
+                <div *ngIf="createViolatorForm.controls['fax'].errors.maxlength">
+                  Maximum 14 characters are allowed.
+                </div>
+              </div>
+              <button type="button" class="pop-over" data-container="body" [popover]="popFX" popoverTitle="Help" triggers="mouseenter:mouseleave"
+                tabindex="-1" placement="left">?</button>
+              <ng-template #popFX>
+                <ul>
+                  <li>Fax allows only numbers</li>
+                </ul>
+              </ng-template>
+              <div *ngIf="isInvalidFax">Invalid phone number</div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-md-12 text-right">
+        <button class="btn btn-primary btn-search" [disabled]="disableButton" (click)="createViolator()"> Create Account </button>
+        <button class="btn btn-primary btn-reset" (click)="clearFields()"> Reset </button>
+      </div>
+    </div>
+  </div>
+
+</form>
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event, 1000)"></app-success-failure-alerts-message>

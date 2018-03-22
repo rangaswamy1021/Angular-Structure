@@ -1,0 +1,171 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">TVC</a></li>
+        <li class="active">Batch Invoice Details</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1> Batch Invoice Details </h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="panel panel-default" id="invoice-details">
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-12">
+          Invoice Details For Invoice# :{{invoiceResponse.InvoiceNumber}}
+          <div class="form-group">
+            <button type="submit" (click)="backToSearch()" class="btn btn-primary btn-search pull-right">Back</button>
+            <button type="submit" (click)="exit()" class="btn btn-primary btn-reset pull-right">Exit</button>
+            <div class="clear"> </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <table class="table">
+          <tr>
+            <td> Customer Name: </td>
+            <td> <strong> {{profileResponse.FirstName + " " + profileResponse.LastName}} </strong> </td>
+          </tr>
+          <tr>
+            <td class="text-left"> Account#: </td>
+            <td class="text-left"> <strong> {{invoiceRequest.AccountId}} </strong> </td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="col-md-offset-4 col-md-4">
+        <table class="table align-middle">
+          <tr>
+            <td width='120'> Invoice#: </td>
+            <td> <a class="links" (click)="downLoadFile(invoiceResponse.DocumentPath)">{{invoiceResponse.InvoiceNumber}} </a></td>
+          </tr>
+          <tr>
+            <td> Invoice Date: </td>
+            <td> <strong> {{invoiceResponse.InvoiceDate |customDateFormat}} </strong> </td>
+          </tr>
+          <tr>
+            <td> Invoice Period: </td>
+            <td> <strong> {{invoiceResponse.StartDate |customDateFormat }} - {{invoiceResponse.EndDate |customDateFormat }} </strong></td>
+          </tr>
+          <tr>
+            <td> Due Date: </td>
+            <td>
+              <div class="col-md-12">
+              <strong *ngIf='!isExtension'>{{invoiceResponse.DueDate |customDateFormat}}</strong>
+              <my-date-picker name="mydate" id="startDate" *ngIf="isExtension" [options]="myDatePickerOptions" [(ngModel)]="dueDateModel"
+                (inputFieldChanged)='onDateRangeFieldChanged($event)' placeholder="MM/DD/YYYY"></my-date-picker>
+              <div class="red" *ngIf="invalidDate">
+                <div> Invalid Date.</div>
+              </div>
+              </div>
+              <!--<input *ngIf="isExtension" type="text" [minDate]="minDate" [maxDate]="maxDate" bsDatepicker [(bsValue)]="bsValue" id="startDate"
+                [(ngModel)]="invoiceResponse.DueDate" name="startDate" style="max-width: 90px;
+                display: inline-block;
+                padding-left: 10px;
+                padding-right: 10px;
+                width: auto;
+                 margin-right: 5px;" class='table-input form-control'>-->
+              <div class="anchor-links" *ngIf='isPayLinkVisible'>
+                <a *ngIf='!isExtension' [ngClass]="{'disabletextbox': disableButton}" class="links" (click)="dueDateExtension()">Edit</a>
+                <a *ngIf="isExtension" class="links" (click)="submit()">Submit</a>
+                <a *ngIf="isExtension" class="links" (click)="cancel()">Cancel</a>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="invoiceResponse.OutstandingDue > 0">
+            <td> Hold Status </td>
+            <td>
+              <div class="anchor-links" *ngIf="isInvocieHoldExist"> Yes
+                <a class="links" style="margin-left:3px;" (click)="alertClick()">Remove Hold</a>
+              </div>
+              <div class="anchor-links" *ngIf="!isInvocieHoldExist"> No
+                <a class="links" style="margin-left:3px;" (click)="alertClick()"> Put On Hold </a>
+              </div>
+            </td>
+          </tr>
+
+        </table>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <table class="table" id="amount-panel">
+            <tbody>
+              <tr>
+                <td>
+                  <div class="panel panel-default">
+                    <div class="panel-body"> <span class="previous-balance"> Previous Balance </span> <br/>
+                      <span class="amount"> {{invoiceResponse.PreviousDue | currencycustom}} </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="amount-calc"> + </td>
+                <td>
+                  <div class="panel panel-default">
+                    <div class="panel-body"> <span class="billed-amount"> Billed Amount </span> <br/>
+                      <span class="amount">{{invoiceResponse.BilledAmount | currencycustom}} </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="amount-calc"> - </td>
+                <td>
+                  <div class="panel panel-default">
+                    <div class="panel-body"> <span style="color:#0068b3; font-size:14px; font-weight: bold;"> Payments </span> <br/>
+                      <span class="amount"> {{invoiceResponse.AmountPaid | currencycustom}} </span> </div>
+                  </div>
+                </td>
+                <td class="amount-calc"> + </td>
+                <td>
+                  <div class="panel panel-default">
+                    <div class="panel-body"> <span style="color:#0068b3; font-size:14px; font-weight: bold;"> Adjustments </span> <br/>
+                      <span class="amount">  {{invoiceResponse.AdjustmentAmount | currencycustom}} </span> </div>
+                  </div>
+                </td>
+                <td class="amount-calc"> = </td>
+                <td>
+                  <div class="panel panel-default">
+                    <div class="panel-body"> <span style="color:#f34352; font-size:14px; font-weight: bold;"> Invoice Amount </span> <br/> <span class="amount">{{invoiceResponse.BalanceDue | currencycustom}} </span>                      </div>
+                  </div>
+                </td>
+
+                <td>
+                  <div class="panel panel-default">
+                    <div class="panel-body"> <span style="color:#f34352; font-size:14px; font-weight: bold;"> Payments/Adjustments: </span>
+                      <span class="amount">{{invoiceResponse.TotalPmtAdjAmt | currencycustom}} </span><br/>
+                      <span style="color:#f34352; font-size:14px; font-weight: bold;"> Outstanding Due: </span>
+                      <span class="amount">{{invoiceResponse.OutstandingDue | currencycustom}} </span>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="form-group">
+            <div *ngIf='isPayLinkVisible'>
+              <button class="btn btn-default btn-xs pull-right btn-search " (click)="goToPayment(invoiceResponse)">Pay Now</button>
+              <div class="clear"> </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <app-invoice-fees [isFlagForBatch]="isFlagForBatchInv"></app-invoice-fees>
+      <app-invoice-trips [isFlagForBatch]="isFlagForBatchInv"></app-invoice-trips>
+      <app-invoice-payments></app-invoice-payments>
+      <app-recent-transactions [invoiceId]="invoiceIdForHistory"></app-recent-transactions>
+      <app-invoice-history [invoiceId]="invoiceIdForHistory"></app-invoice-history>
+
+    </div>
+  </div>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"
+    (onOk)="userAction($event)"></app-success-failure-alerts-message>
+</div>

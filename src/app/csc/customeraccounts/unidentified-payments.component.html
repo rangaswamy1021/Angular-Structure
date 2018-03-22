@@ -1,0 +1,541 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Customer Accounts</a></li>
+        <li class="active">Unidentified Payments</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Unidentified Payments</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <!--add button -->
+  <div class="row">
+    <div class="col-md-12 m-b-10">
+      <button class="btn btn-primary btn-search" (click)="addUnIdentifiedPayment()" [disabled]='disabledPayment'> <img src="assets/images/svg/add-file.svg" class="icon-svg1" alt=""> Add Unidentified Payment</button>
+    </div>
+  </div>
+  <!--add button end -->
+  <form role="form" name="paymentForm" [formGroup]="paymentForm" [hidden]='!addUnidentifiedVisible' (ngSubmit)="continueToPayment()"
+    novalidate>
+    <!--add unidentified payment steps -->
+    <div class="row add-uni-payment">
+      <div class="col-md-12">
+        <div class="table-bdr">
+          <h3>Add Unidentified Payment</h3>
+          <div class="payment-steps-2">
+            <div class="row m-t-20">
+              <div class="col-md-12">
+                <ul>
+                  <li class="done"><span>1</span>Unidentified Payment</li>
+                  <li class="active"><span>2</span>Verify Details</li>
+                  <li><span>3</span>Thank You</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group col-md-12 popover-field">
+                <label>Name</label>
+                <input type="text" class="form-control" id="fname" placeholder="Name" formControlName="fname" name="fname" maxlength="50">
+                <div class="msg" *ngIf="paymentForm.controls['fname'].invalid && (paymentForm.controls['fname'].dirty || paymentForm.controls['fname'].touched)">
+                  <div *ngIf="paymentForm.controls['fname'].errors.pattern">
+                    Only alphabets and space are allowed.
+                  </div>
+                  <div *ngIf="paymentForm.controls['fname'].errors.minlength && !paymentForm.controls['fname'].errors.pattern">
+                    Minimum 2 characters are required.
+                  </div>
+                  <div *ngIf="paymentForm.controls['fname'].errors.maxlength">
+                    Maximum 50 characters are allowed.
+                  </div>
+                </div>
+                <button type="button" class="pop-over" [popover]="poppname" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #poppname>
+                  <ul>
+                    <li>Name allows only alphabets and spaces.</li>
+                    <li>It should be minimum 2 maximum 50 characters long.</li>
+                  </ul>
+                </ng-template>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group col-md-12 popover-field">
+                <label class="focused">Address</label>
+                <textarea class="form-control" formControlName="address" name="address" placeholder="Address" maxlength="50"></textarea>
+                <div class="msg" *ngIf="paymentForm.controls['address'].invalid && (paymentForm.controls['address'].dirty || paymentForm.controls['address'].touched)">
+                  <div *ngIf="paymentForm.controls['address'].errors.pattern">
+                    Only alphanumeris,spaces and all special characters except (
+                    <>) are allowed.
+                  </div>
+                  <div *ngIf="paymentForm.controls['address'].errors.minlength">
+                    Minimum 1 characters are required.
+                  </div>
+                  <div *ngIf="paymentForm.controls['address'].errors.maxlength">
+                    Maximum 50 characters are allowed.
+                  </div>
+                </div>
+                <button type="button" class="pop-over" [popover]="poppAdd" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #poppAdd>
+                  <ul>
+                    <li>Address allows alphanumerics,spaces and all special characters except (
+                      <>).</li>
+                    <li>It should be minimum 1 maximum 50 characters long.</li>
+                  </ul>
+                </ng-template>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group col-md-12 popover-field">
+                <label>Amount</label>
+                <input type="text" class="form-control" id="" placeholder="Amount" formControlName="amount" name="amount" required>
+                <div class="msg" *ngIf="paymentForm.controls['amount'].invalid && (paymentForm.controls['amount'].dirty || paymentForm.controls['amount'].touched)">
+                  <div *ngIf="paymentForm.controls['amount'].errors.required">
+                    Required.
+                  </div>
+                  <div *ngIf="paymentForm.controls['amount'].errors.pattern">
+                    Allows only money format.
+                  </div>
+                  <div *ngIf="paymentForm.controls['amount'].errors.minlength">
+                    Minimum 1 characters are required.
+                  </div>
+                  <div *ngIf="paymentForm.controls['amount'].errors.maxlength">
+                    Maximum 10 characters are allowed.
+                  </div>
+                </div>
+                <button type="button" class="pop-over" [popover]="poppAmt" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                <ng-template #poppAmt>
+                  <ul>
+                    <li>Amount is required.</li>
+                    <li>Amount allows valid money format.</li>
+                    <li>It should be minimum 1 and maximum 10 numbers long.</li>
+                  </ul>
+                </ng-template>
+              </div>
+
+            </div>
+          </div>
+
+
+
+          <div class="row">
+            <div class="col-md-12">
+              <label style="display: inline-block; padding: 0 20px">Pay By</label>
+              <div style="display: inline-block;">
+                <div class="custom-control custom-radio radio-inline">
+                  <input type="radio" name="inlineRadioOptions" class="custom-control-input" id="Cheque" value="Cheque" (change)="changePayment($event.target.value)"
+                    formControlName="inlineRadioOptions">
+                  <label class="custom-control-description" for="Cheque"> Check </label>
+                </div>
+                <div class="custom-control custom-radio radio-inline">
+                  <input type="radio" name="inlineRadioOptions" id="MoneyOrder" class="custom-control-input" value="MoneyOrder" (change)="changePayment($event.target.value)"
+                    formControlName="inlineRadioOptions">
+                  <label class="custom-control-description" for="MoneyOrder">Money Order</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mode-of-pay" [ngSwitch]='payMode'>
+            <div class="check-details" *ngSwitchCase="'Cheque'">
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group col-sm-12 popover-field">
+                    <label>Check No #</label>
+                    <input type="text" class="form-control" id="" placeholder="Check No #" formControlName="checkNo" name="checkNo" required
+                      maxlength="15">
+                    <div class="msg" *ngIf="paymentForm.controls['checkNo'].invalid && (paymentForm.controls['checkNo'].dirty || paymentForm.controls['checkNo'].touched)">
+                      <div *ngIf="paymentForm.controls['checkNo'].errors.required">
+                        Required.
+                      </div>
+                      <div *ngIf="paymentForm.controls['checkNo'].errors.pattern ">
+                        Only numbers are allowed.
+                      </div>
+                      <div *ngIf="paymentForm.controls['checkNo'].errors.minlength && !paymentForm.controls['checkNo'].errors.pattern">
+                        Minimum 4 characters are required.
+                      </div>
+                      <div *ngIf="paymentForm.controls['checkNo'].errors.maxlength">
+                        Maximum 15 characters are allowed.
+                      </div>
+                    </div>
+                    <button type="button" class="pop-over" [popover]="poppCheck" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                    <ng-template #poppCheck>
+                      <ul>
+                        <li>Check # is required.</li>
+                        <li>It allows only numbers.</li>
+                        <li>It should be minimum 4 and maximum 15 numbers.</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group col-sm-12 popover-field">
+                    <label>Routing #</label>
+                    <input type="text" class="form-control" id="" placeholder="Routing #" formControlName="routing" name="routing" maxlength="15">
+                    <div class="msg" *ngIf="paymentForm.controls['routing'].invalid && (paymentForm.controls['routing'].dirty || paymentForm.controls['routing'].touched)">
+                      <div *ngIf="paymentForm.controls['routing'].errors.required">
+                        Required.
+                      </div>
+                      <div *ngIf="paymentForm.controls['routing'].errors.pattern">
+                        Only numbers are allowed.
+                      </div>
+                      <div *ngIf="paymentForm.controls['routing'].errors.minlength && !paymentForm.controls['routing'].errors.pattern">
+                        Minimum 9 characters are required.
+                      </div>
+                      <div *ngIf="paymentForm.controls['routing'].errors.maxlength">
+                        Maximum 15 characters are allowed.
+                      </div>
+                    </div>
+                    <button type="button" class="pop-over" [popover]="popRouting" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                    <ng-template #popRouting>
+                      <ul>
+                        <li>Routing # is required.</li>
+                        <li>It allows only numbers.</li>
+                        <li>It should be minimum 9 and maximum 15 numbers.</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group popover-field col-sm-12">
+                    <label  id="focused">Check Date</label>
+                    <my-date-picker name="mydate" placeholder="MM/DD/YYYY" [options]="myDatePickerOptions1" (inputFieldChanged)='onDateChanged1($event)'
+                      formControlName="checkDate"></my-date-picker>
+                    <div class="show-error" *ngIf="!invalid&&(paymentForm.controls['checkDate'].invalid && (paymentForm.controls['checkDate'].dirty || paymentForm.controls['checkDate'].touched))">
+                      <div *ngIf="paymentForm.controls['checkDate'].errors.required">
+                        Required.
+                      </div>
+                    </div>
+                    <div class="show-error" *ngIf='invalid'>
+                      <div> Invalid Date</div>
+                    </div>
+                    <button type="button" class="pop-over" [popover]="popCheckDate" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                    <ng-template #popCheckDate>
+                      <ul>
+                        <li>Check Date is required.</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+
+
+
+
+              <!--<div class="form-group">
+                  <label for="" class="col-sm-3 control-label">Check Date</label>
+                  <div class="col-sm-4">
+                    <div class="popover-field">
+                      <input type="text" class="form-control" placeholder=" " [minDate]="minDate" [maxDate]="maxDate" #dp="bsDatepicker" bsDatepicker
+                        [(bsValue)]="bsValue" formControlName="checkDate" name="checkDate">
+                      <div class="msg" *ngIf="paymentForm.controls['checkDate'].invalid && (paymentForm.controls['checkDate'].dirty || paymentForm.controls['checkDate'].touched)">
+                        <div *ngIf="paymentForm.controls['checkDate'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popCheckDate" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                      <ng-template #popCheckDate>
+                        <ul>
+                          <li>Check Date is required.</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>-->
+
+            </div>
+            <div class="money-details" *ngSwitchCase="'MoneyOrder'">
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group col-sm-12 popover-field">
+                    <label>Money Order #</label>
+                    <input type="text" class="form-control" id="" placeholder="Money Order #" formControlName="moneyOrder" name="moneyOrder"
+                      maxlength="15">
+                    <div class="msg" *ngIf="paymentForm.controls['moneyOrder'].invalid && (paymentForm.controls['moneyOrder'].dirty || paymentForm.controls['moneyOrder'].touched)">
+                      <div *ngIf="paymentForm.controls['moneyOrder'].errors.required">
+                        Required.
+                      </div>
+                      <div *ngIf="paymentForm.controls['moneyOrder'].errors.pattern">
+                        Only numbers allowed.
+                      </div>
+                      <div *ngIf="paymentForm.controls['moneyOrder'].errors.minlength && !paymentForm.controls['moneyOrder'].errors.pattern">
+                        Minimum 4 characters are required.
+                      </div>
+                      <div *ngIf="paymentForm.controls['moneyOrder'].errors.maxlength">
+                        Maximum 15 characters are allowed.
+                      </div>
+                    </div>
+                    <button type="button" class="pop-over" [popover]="popMoney" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                    <ng-template #popMoney>
+                      <ul>
+                        <li>Money Order # is required.</li>
+                        <li>It allows only numbers.</li>
+                        <li>It should be minimum 4 and maximum 15 numbers.</li>
+                      </ul>
+                    </ng-template>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group popover-field col-sm-12">
+                    <label for="Date Range" class="focused">Money Order Date</label>
+                    <div class="show-error" *ngIf="!invalidDate&&(paymentForm.controls['moDate'].invalid && (paymentForm.controls['moDate'].dirty || paymentForm.controls['moDate'].touched))">
+                      <div *ngIf="paymentForm.controls['moDate'].errors.required">
+                        Required.
+                      </div>
+                    </div>
+                    <my-date-picker name="mydate" [options]="myDatePickerOptions2" (inputFieldChanged)='onDateChanged2($event)'
+                      formControlName="moDate"></my-date-picker>
+                    <button type="button" class="pop-over" [popover]="popMoneyDate" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                    <ng-template #popMoneyDate>
+                      <ul>
+                        <li>Money Order Date is required.</li>
+                      </ul>
+                    </ng-template>
+                    <div class="show-error" *ngIf='invalidDate'>
+                      <div> Invalid Date</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+              <!--<div class="form-group">
+                  <label for="" class="col-sm-3 control-label">Money Order Date</label>
+                  <div class="col-sm-4">
+                    <div class="popover-field">
+                      <input type="text" class="form-control" placeholder=" " [minDate]="mominDate" [maxDate]="momaxDate" #dp="bsDatepicker" bsDatepicker
+                        [(bsValue)]="mobsValue" formControlName="moDate" name="moDate">
+                      <div class="msg" *ngIf="paymentForm.controls['moDate'].invalid && (paymentForm.controls['moDate'].dirty || paymentForm.controls['moDate'].touched)">
+                        <div *ngIf="paymentForm.controls['moDate'].errors.required">
+                          Required.
+                        </div>
+                      </div>
+                      <button type="button" class="pop-over" [popover]="popMoneyDate" popoverTitle="Help" triggers="mouseenter:mouseleave" placement="left">?</button>
+                      <ng-template #popMoneyDate>
+                        <ul>
+                          <li>Money Order Date is required.</li>
+                        </ul>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>-->
+
+
+            </div>
+          </div>
+
+          <div class="row m-b-20">
+            <div class="col-md-12">
+              <div class="form-group">
+            <div class="col-sm-12">
+              <button class="btn btn-primary btn-search" type="submit" [disabled]="disabledPayment">Continue</button>
+              <button class="btn btn-primary btn-reset" type="button" (click)="paymentClear()">Reset</button>
+              <button class="btn btn-primary btn-reset" type="button" (click)="paymentCancel()">Cancel</button>
+            </div>
+          </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <!--add unidentified payment steps end -->
+
+  <!-- Error messages -->
+  <div *ngIf="transferVisible">
+    <div class="row">
+      <div class="col-md-12">
+        <p class="text-right m-b-0"> <span class="glyphicon glyphicon-exclamation-sign" style="color:#448ccb" aria-hidden="true"></span> Enter input in
+          any of the fields below.</p>
+      </div>
+    </div>
+    <div class="table-bdr m-t-20">
+      <h3>Transfer Payments</h3>
+      <div class="row">
+        <div class="col-md-12">
+          <app-advance-search></app-advance-search>
+
+          <div class="col-md-12">
+            <div class="btns-groups form-group">
+              <button type="submit" class="btn btn-primary btn-search" (click)=onSubmit()>Search</button>
+              <button type="submit" class="btn btn-primary btn-reset" (click)=resetSearch()>Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--Transfer Payments end -->
+    </div>
+    <div class="table-bdr" *ngIf='searchResponse && searchResponse.length'>
+      <h3>Customer Details</h3>
+      <div class="pad-10">
+        <div *ngIf='searchResponse && searchResponse.length;else NoSearchBlock'>
+          <div class="table-responsive uiCDetails">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Account #</th>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Address</th>
+                  <th>Phone #</th>
+                  <th>Email Address</th>
+                  <th>Account Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let object of searchResponse | paginate: { itemsPerPage: apageItemNumber, currentPage: acurrentPage, totalItems: atotalRecordCount, id: 'second'  }">
+                  <td>
+                    <div class="custom-control custom-radio">
+                      <input type="radio" name="radio1" (click)="radioButtonSearch(object)" class="custom-control-input" [id]="object.AccountId">
+                      <label [for]="object.AccountId" class="custom-control-description"></label>
+                    </div>
+                  </td>
+                  <td>{{object.AccountId}} </td>
+                  <td>{{object.FirstName}}</td>
+                  <td> {{object.LastName}} </td>
+                  <td> {{object.FullAddress}} </td>
+                  <td class="nowrap"> {{object.Phone}} </td>
+                  <td> {{object.Email}} </td>
+                  <td>{{object.AccountStatusDesc}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="row page-info" style="margin-left: 0; margin-right: 0;">
+            <div class="col-md-6 text-left">
+              <p>Display {{astartItemNumber}} - {{aendItemNumber}} Records of {{atotalRecordCount}}</p>
+            </div>
+            <div class="col-md-6 text-right">
+              <pagination-controls (pageChange)="pageChangedforSearch($event)" id="second"></pagination-controls>
+            </div>
+          </div>
+        </div>
+        <ng-template #NoSearchBlock>
+          <div class="alert alert-info" role="alert">No records to display</div>
+        </ng-template>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6" *ngFor='let objTransfer of transferDetails'>
+        <div class="table-responsive">
+          <table class="table">
+            <tbody>
+              <tr *ngIf="anonymousPaymentInfo.AccountId>0">
+                <td> Account Id: </td>
+                <td> <strong> {{anonymousPaymentInfo.AccountId}} </strong> </td>
+              </tr>
+              <tr>
+                <td> Payment Type: </td>
+                <td *ngIf='objTransfer.PaymentType=="Cheque"'> <strong> Check </strong> </td>
+                <td *ngIf='objTransfer.PaymentType=="MoneyOrder"'> <strong> MoneyOrder </strong> </td>
+              </tr>
+              <tr>
+                <td> Payment Details: </td>
+                <td> <strong> {{objTransfer.ReferenceNumber}} </strong> </td>
+              </tr>
+              <tr>
+                <td> Payment Amount: </td>
+                <td> <strong> {{objTransfer.Amount | currency:'USD':true:'1.2-2'}} </strong> </td>
+              </tr>
+              <tr>
+                <td> Check/MO Date:</td>
+                <td> <strong> {{objTransfer.Date | date:dateformat}} </strong> </td>
+              </tr>
+              <tr>
+                <td> Payment Date:</td>
+                <td> <strong> {{objTransfer.ReceivedDate | customDateTimeFormat}}</strong> </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-primary btn-search" [disabled]="(disable)" (click)="continueToTransfer(objTransfer)"> Continue</button>
+          <button class="btn btn-primary btn-reset" (click)="transferCancel()"> Cancel</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!--Unidentified Payments table -->
+
+  <div class="table-bdr">
+    <h3>Unidentified Payments</h3>
+    <div class="pad-10">
+      <div *ngIf='unIdentifiedResponse && unIdentifiedResponse.length;else NoDetailsBlock'>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th *ngIf="hidePayment">Anonymous ID</th>
+                <th *ngIf="hidePayment">Payment ID</th>
+                <th *ngIf="hidePayment">Payment Date</th>
+                <th>Check/MO Date</th>
+                <th>Name</th>
+                <th>Payment Type</th>
+                <th>Payment Amount</th>
+                <th>Check/MO #</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let paymentResponse of unIdentifiedResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: currentPage, totalItems:totalRecordCount, id: 'first' } ">
+                <td *ngIf="hidePayment">{{paymentResponse.AnonymousID}}</td>
+                <td *ngIf="hidePayment">{{paymentResponse.PaymentID}}</td>
+                <td *ngIf="hidePayment">{{paymentResponse.ReceivedDate | customDateTimeFormat}}</td>
+                <td>{{paymentResponse.Date | date :dateformat}}</td>
+                <td>{{paymentResponse.Name}}</td>
+                <td>
+                  <div *ngIf='paymentResponse.PaymentType=="Cheque"'>Check </div>
+                  <div *ngIf='paymentResponse.PaymentType=="MoneyOrder"'> MoneyOrder </div>
+                </td>
+                <td>{{paymentResponse.Amount | currency:'USD':true:'1.2-2'}}</td>
+                <td>{{paymentResponse.ReferenceNumber}}</td>
+                <td><button [disabled]='disableTransfer' class="btn btn-default btn-xs btn-search" (click)="paymentTransfer(paymentResponse)">Transfer</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row page-info" style="margin-left: 0; margin-right: 0;">
+          <div class="col-md-6 text-left">
+            <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+          </div>
+          <div class="col-md-6 text-right">
+            <pagination-controls (pageChange)="pageChanged($event)" id="first"></pagination-controls>
+          </div>
+        </div>
+      </div>
+      <ng-template #NoDetailsBlock>
+        <div class="alert alert-info" role="alert">No records to display</div>
+      </ng-template>
+    </div>
+  </div>
+  <div id="alert-dialog" class="modal fade refund-request-modal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-body">
+        <div class=" status-message">
+          <div class="status-content">
+            <p>Customer status should be in Active</p>
+            <button class="btn btn-primary btn-search" data-dismiss="modal">OK</button>
+          </div>
+          <div class="clear"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Unidentified Payments table end -->
+</div>
+<app-blocked-list [blockListArray]="blockListDetails" (status)="continueToTransferPayment()"></app-blocked-list>
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event, 1000)"></app-success-failure-alerts-message>

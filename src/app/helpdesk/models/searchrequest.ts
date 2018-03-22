@@ -1,0 +1,43 @@
+export interface ISearchRequest {
+    ProblemType: string;
+    ProblemSource: string;
+    ProblemTitle: string;
+    ProblemAbstract: string;
+    DateOccurred: Date;
+    ReportedBy: number;
+    RecordedBy: number;
+    Severity: string;
+    Priority: string;
+    SubSystem: string;
+    UserName: string;
+    CustomerId: number;
+    FirstName: string;
+    LastName: string;
+    Email: string;
+    Mobile: string;
+    Phone: string;
+    TicketId: string;
+    startEffectiveDate: any;
+    endEffectiveDate: any;
+    ExpectedResolveDate: Date;
+    status: string;
+    TripIdCSV: string;
+    ProblemId: number;
+    IsParent: boolean;
+    IsAssigned: boolean;
+    OwnerId: number;
+    SortColumn: string;
+    SortDirection: number;
+    PageNumber: number;
+    PageSize: number;
+    IsFlag: boolean;
+    UserId: number;
+    LoginId: number;
+    IsSearch: boolean;
+    IsInternal: boolean;
+    IsPageLoad: boolean;
+    ActivitySource: string;
+    Keyword: string;
+    isSearchBoxSelected:boolean;
+    
+}

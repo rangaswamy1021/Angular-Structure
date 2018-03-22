@@ -1,0 +1,207 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">CSC</a></li>
+        <li><a href="#">Payments</a></li>
+        <li class="active">Account Adjustments</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Account Adjustments</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-account-info></app-account-info>
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+  <div class="table-bdr" *ngIf="boolShowHide">
+    <h3>Make Adjustments</h3>
+    <form class="pad-20" role="form" name="accountAdjustmentForm" [formGroup]="accountAdjustmentForm">
+      <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+          <div class="form-group col-sm-12 popover-field">
+            <label class="focused">Account #</label>
+            <input type="text" class="form-control" id="" formControlName="customerId" disabled="disabled">
+          </div>
+          <div class="form-group col-sm-12 popover-field">
+            <label>Amount ($)</label>
+            <input class="form-control" placeholder="* Amount" type="text" maxlength="8" formControlName="amount" id="txtAmount">
+            <div class="msg" *ngIf="accountAdjustmentForm.controls['amount'].invalid && (accountAdjustmentForm.controls['amount'].dirty || accountAdjustmentForm.controls['amount'].touched)">
+              <div *ngIf="accountAdjustmentForm.controls['amount'].errors.required">
+                Required.
+              </div>
+              <div *ngIf="accountAdjustmentForm.controls['amount'].errors.pattern">
+                Amount is invalid.
+              </div>
+            </div>
+            <button type="button" data-container="body" placement="left" class="pop-over" [popover]="popA" popoverTitle="Help" triggers="mouseenter:mouseleave">?</button>
+            <ng-template #popA>
+              Amount is required
+            </ng-template>
+          </div>
+          <div class="col-sm-12 m-t-10 m-b-10">
+            <label style="display: inline-block; padding-right: 20px;">Adjustment Type</label>
+            <div class="display-inline csc-search-radio">
+              <div class="custom-control custom-radio radio-inline" *ngFor="let entry of adjustmentType;let idx = index">
+                <input formControlName="rdoAdjustmentType" id="{{ entry.Value }}" (change)="onSelectionChange(entry.id)" type="radio" [(ngModel)]="Search"
+                  class="custom-control-input" [value]="entry.id">
+                <label class="custom-control-description" for="{{ entry.Value }}">{{ entry.Value }}
+                  </label>
+              </div>
+            </div>
+            <div class="msg" *ngIf="accountAdjustmentForm.controls['rdoAdjustmentType'].invalid && (accountAdjustmentForm.controls['rdoAdjustmentType'].dirty || accountAdjustmentForm.controls['rdoAdjustmentType'].touched)">
+              <div *ngIf="accountAdjustmentForm.controls['rdoAdjustmentType'].errors.required">
+                Required.
+              </div>
+            </div>
+          </div>
+          <div class="form-group col-sm-12 popover-field">
+            <label class="focused">Reason Code</label>
+            <select id="ddlReasonCode" placeholder="* Reason Code" class="form-control" formControlName="ddlReasonCode">
+                  <option value="">--Select--</option>
+                  <option *ngFor="let reasonCode of reasonCodes" value="{{reasonCode.TxnTypeDesc}}"> {{reasonCode.TxnTypeDesc}}</option>
+                </select>
+            <div class="msg" *ngIf="accountAdjustmentForm.controls['ddlReasonCode'].invalid && (accountAdjustmentForm.controls['ddlReasonCode'].dirty || accountAdjustmentForm.controls['ddlReasonCode'].touched)">
+              <div *ngIf="accountAdjustmentForm.controls['ddlReasonCode'].errors.required">
+                Required.
+              </div>
+            </div>
+            <button type="button" data-container="body" class="pop-over" [popover]="popRC" popoverTitle="Help" triggers="mouseenter:mouseleave"
+              placement="left">?</button>
+            <ng-template #popRC>
+              Code is required
+            </ng-template>
+          </div>
+          <div class="form-group col-sm-12 popover-field">
+            <label class="focused">Description</label>
+            <textarea name="" class="form-control" rows="3" formControlName="description" id="txtDescription" maxlength="255" (keyup)="descEvent($event)"></textarea>
+            <div class="msg" *ngIf="accountAdjustmentForm.controls['description'].invalid && (accountAdjustmentForm.controls['description'].dirty || accountAdjustmentForm.controls['description'].touched)">
+              <div *ngIf="accountAdjustmentForm.controls['description'].errors.required">
+                Required.
+              </div>
+            </div>
+            <button type="button" data-container="body" class="pop-over" placement="left" [popover]="popDesc" popoverTitle="Help" triggers="mouseenter:mouseleave">?</button>
+            <small class="text-count">Left: {{commentTextLength}} characters </small>
+            <ng-template #popDesc>
+              <ul>
+                <li>Description is required</li>
+                <li>It should be minimum 1 character and maximum 255 characters long</li>
+              </ul>
+            </ng-template>
+          </div>
+          <div class="col-md-8">
+            <div class="input-group">
+              <button type="submit" class="btn btn-primary btn-search" (click)="makeAdjustments()">Submit</button>
+              <button type="button" class="btn btn-default btn-reset" (click)="resetForm()">Reset</button>
+              <button type="button" class="btn btn-default btn-reset" (click)="cancel();">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <form role="form" name="searchForm" [formGroup]="searchForm" *ngIf="!boolShowHide">
+    <div class="alert alert-warning alert-dismissible" role="alert" *ngIf="errorBlock">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <p>{{errorMessage}}</p>
+    </div>
+    <div class="status-content" *ngIf="sucessBlock">
+      <p>{{sucessMessage}}</p>
+    </div>
+    <div class="row">
+      <div class="col-md-12 text-right">
+        <a style="margin-bottom:10px;" href='javascript:;' type="button" class="btn btn-primary btn-search" [ngClass]='{"disabletextbox":disableAdjustmentButton}'
+          (click)="populateAdjustmentBlock()" *ngIf="!boolShowHide">Make Adjustments</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 form-group">
+        <label for="Date Range" class="focused">Date</label>
+        <!--<input class="form-control" placeholder="Daterangepicker" bsDaterangepicker #dpr="bsDaterangepicker" name="bsRangeValue"
+              formControlName="bsRangeValue" [(ngModel)]="bsRangeValue">-->
+        <my-date-range-picker name="mydaterange" (inputFieldChanged)='onDateRangeFieldChanged($event)' placeholder="MM/DD/YYYY - MM/DD/YYYY"
+          [options]="myDateRangePickerOptions" formControlName="bsRangeValue"></my-date-range-picker>
+        <div class="show-error" *ngIf="!invalidDate && searchForm.controls['bsRangeValue'].invalid && (searchForm.controls['bsRangeValue'].dirty || searchForm.controls['bsRangeValue'].touched)">
+          <div *ngIf="searchForm.controls['bsRangeValue'].errors.required">
+            Date Range is required
+          </div>
+        </div>
+        <div class="show-error" *ngIf="invalidDate">
+          <div>Invalid Date Range</div>
+        </div>
+      </div>
+      <div class="col-md-12 m-b-20">
+        <button type="submit" [disabled]="disableSearchButton" class="btn btn-primary btn-search btn-sm" (click)="getAdjustmentDetails()">Search</button>
+        <button type="submit" (click)="resetSearch()" class="btn btn-default btn-reset btn-sm">Reset</button>
+      </div>
+    </div>
+  </form>
+  <div class="alert alert-info clear">
+    Last Adjustment done on: <strong> {{lastAdjustmentDate | customDateTimeFormat}}</strong>
+    <div style="float:right;"> Amount : <strong> {{lastAdjustmentAmount | currencycustom }} </strong> </div>
+  </div>
+  <div class="table-default" *ngIf='accountAdjustmentDetails && accountAdjustmentDetails.length;else NodetailsBlock'>
+    <table class="table table-bordered table-sm">
+      <thead class="nowrap">
+        <tr>
+          <th>
+            Account #</th>
+          <th>Date</th>
+          <th>Reason Code</th>
+          <th>Description</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor='let item of accountAdjustmentDetails | paginate: { itemsPerPage: pageItemNumber, currentPage: p,totalItems:totalRecordCount }'>
+          <td>{{item.CustomerId}}</td>
+          <td>{{item.AdjustmentDate | customDateTimeFormat}}</td>
+          <td>{{item.ReasonCode}}</td>
+          <td>{{item.AdjustmentReason}}</td>
+          <td class="text-right">{{item.Amount | currencycustom }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class=" page-info" *ngIf="accountAdjustmentDetails[0].ReCount>10">
+      <div class="col-md-6 text-left">
+        <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{dataLength}}</p>
+      </div>
+      <div class="col-md-6 text-right">
+        <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+      </div>
+    </div>
+  </div>
+  <ng-template #NodetailsBlock>
+    <div class="alert alert-info" role="alert">No details to display</div>
+  </ng-template>
+</div>
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>
+<!--Model For Alert-->
+<div id="confirm-dialog" class="modal fade refund-request-modal" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>Are you sure you want to proceed?</p>
+        <button class="btn btn-primary btn-search" type="button" (click)='doAdjustments();'>Ok</button>
+        <button class="btn btn-primary btn-reset" data-dismiss="modal">Cancel</button>
+        <div class="clear"></div>
+      </div>
+    </div>
+  </div>
+</div>

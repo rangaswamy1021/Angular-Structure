@@ -1,0 +1,79 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">SAC</a>
+        </li>
+        <li>
+          <a href="#">Configurations</a>
+        </li>
+        <li class="active">Low Balance and Replenishment Thresholds</li>
+      </ol>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Low Balance and Replenishment Thresholds</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgDesc]='msgDesc' (setFlag)="setOutputFlag($event)"></app-success-failure-alerts-message>
+  <form role="form" name="lowbalance" [formGroup]="lowbalance">
+    <div class="row">
+    <div class="col-md-5">
+      <div class="form-group col-md-12">
+        <label class="focused">balance type</label>
+        <select class="form-control" formControlName="amounttype" name="amounttype">
+          <option value='LOW'>Low Balance</option>
+          <option value='THRESHOLD'>Replenishment Threshold</option>
+        </select>
+      </div>
+    </div>
+  <div class="col-md-5">
+      <div class="form-group col-md-12">
+          <label class="focused">payment type</label>
+        <select class="form-control" formControlName="replenishtype" name="replenishtype">
+          <option value='CREDITCARD'>Credit Card</option>
+          <option value='CASH'>Cash</option>
+          <option value='ACH'>Ach</option>
+        </select>
+      </div>
+    </div>
+  
+   <div class="col-md-2">
+  <button type="submit" (click)="getLowBalanceandThresholdAmounts()" class="btn btn-primary btn-search">Get</button>
+    </div>
+      </div>
+  </form>
+  <div class="panel panel-default">
+    <!-- <div class="panel-heading">Set {{AmountType}} in {{ReplenishType}}</div> -->
+    <div class="panel-body">
+      <div class="table-responsive">
+          <div class="col-md-6">
+        <table class="table table-bdr">
+          <thead>
+            <tr>
+              <th>No. of Vehicles</th>
+              <th>Amount ($)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of response; let i = index">
+              <td>{{item.MinSlab}}-{{item.MaxSlab}}</td>
+              <td>
+                <input type="text" [(ngModel)]="item.Amount" (change)="onAmountChange($event,item,i)" class="form-control" style="width:20%">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+      <div class="col-md-6 text-right">
+        <button type="submit" (click)='onUpdateClick()' class="btn btn-primary btn-search">Update</button>
+        <button type="reset" class="btn btn-default btn-reset" (click)="reset()">Reset</button>
+      </div>
+    </div>
+  </div>
+</div>

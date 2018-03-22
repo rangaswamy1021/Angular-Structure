@@ -1,0 +1,485 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li>
+          <a href="#">IMC</a>
+        </li>
+        <li class="active">Set up</li>
+        <li class="active">Inventory Items</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Manage Inventory Items</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-success-failure-alerts-message [messageFlag]='msgFlag' [msgType]='msgType' [msgTitle]='msgTitle' [msgDesc]='msgDesc'
+  (setFlag)="setOutputFlag($event)" (onOk)="deleteItemsByItemId($event)"></app-success-failure-alerts-message>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <form role="form">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="row">
+            <div class="form-group col-md-12" name="searchForm" [formGroup]="searchForm">
+              <label> Item Name</label>
+              <input type="text" class="form-control" placeholder="Item Name" id="searchItem" name="searchItem" tabIndex="1" formControlName="searchItem"
+                maxlength="50">
+              <div class="msg" *ngIf="searchForm.controls['searchItem'].invalid && (searchForm.controls['searchItem'].dirty || searchForm.controls['searchItem'].touched)">
+                <div *ngIf="searchForm.controls['searchItem'].errors.required">
+                  Required.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8 m-t-10">
+          <button type="submit" class="btn btn-primary btn-search" tabindex="2" (click)="inventorySearchItemsClicked()" [disabled]="searchButton">Search</button>
+          <button type="reset" class="btn btn-primary btn-reset" tabindex="3" (click)="inventorySearchReset()">Reset</button>
+        </div>
+      </div>
+    </form>
+    <div class="row" [hidden]="!isSubmitted">
+      <div class="col-md-12">
+        <button (click)="addNewInventoryItemFlag()" tabindex="4" class="btn btn-primary btn-search" [disabled]="addItemsButton">
+          <i class="fa fa-plus-square-o fa-lg fa-fw" aria-hidden="true"></i>Add New Item</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div [hidden]="isSubmitted">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              {{items}}
+            </div>
+            <form role="form" name="addForm" [formGroup]="addForm">
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="row">
+                      <div class="form-group col-md-12 popover-field">
+                        <label class="focused"> Item Type</label>
+                        <select class="form-control" placeholder="Item Type" id="itemtype" name="itemtype" formControlName="itemtype" tabindex="4">
+                          <option selected="selected" value="">--Select--</option>
+                          <option *ngFor="let type of itemType" value="{{type.ItemTypeId}}">{{type.ItemTypeName}}</option>
+                        </select>
+                        <div class="msg" *ngIf="addForm.controls['itemtype'].invalid && (addForm.controls['itemtype'].dirty || addForm.controls['itemtype'].touched)">
+                          <div *ngIf="addForm.controls['itemtype'].errors.required">
+                            Required.
+                          </div>
+                        </div>
+                        <ng-template #popItemType>
+                          <ul>
+                            <li>ItemType is Mandatory</li>
+                            <li>Select ItemTypes</li>
+                          </ul>
+                        </ng-template>
+                        <button type="button" data-container="body" class="pop-over" [popover]="popItemType" popoverTitle="Help" placement="left"
+                          triggers="mouseenter:mouseleave">?
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="row">
+                      <div class="form-group col-md-12 popover-field">
+                        <label class="focused"> Protocol</label>
+                        <select class="form-control" placeholder="Protocols" id="protocol" name="protocol" formControlName="protocol" tabindex="5"
+                          (change)="inventoryProtocolChange($event.target.value)" *ngIf='protocol && protocol.length'>
+                          <option selected="selected" value="">--Select--</option>
+                          <option *ngFor="let protocol of protocol" value="{{protocol.LookUpTypeCode}}">{{protocol.LookUpTypeCode}}</option>
+                        </select>
+                        <div class="msg" *ngIf="addForm.controls['protocol'].invalid && (addForm.controls['protocol'].dirty || addForm.controls['protocol'].touched)">
+                          <div *ngIf="addForm.controls['protocol'].errors.required">
+                            Required.
+                          </div>
+                        </div>
+                        <ng-template #popProtocol>
+                          <ul>
+                            <li>Protocol is Mandatory</li>
+                            <li>Select Protocol</li>
+                          </ul>
+                        </ng-template>
+                        <button type="button" data-container="body" class="pop-over" [popover]="popProtocol" popoverTitle="Help" placement="left"
+                          triggers="mouseenter:mouseleave">?</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="row">
+                      <div class="form-group col-md-12 popover-field">
+                        <label class="focused"> Mounting</label>
+                        <select class="form-control" placeholder="Mounting" id="mounting" name="mounting" formControlName="mounting" tabindex="6">
+                          <option selected="selected" value="">--Select--</option>
+                          <option *ngFor="let itemmounting of commonResponse" value="{{itemmounting.Mounting}}">{{itemmounting.Mounting}}</option>
+                        </select>
+                        <div class="msg" *ngIf="addForm.controls['mounting'].invalid && (addForm.controls['mounting'].dirty || addForm.controls['mounting'].touched)">
+                          <div *ngIf="addForm.controls['mounting'].errors.required">
+                            Required.
+                          </div>
+                        </div>
+                        <ng-template #popMounting>
+                          <ul>
+                            <li>Mounting is Mandatory</li>
+                            <li>Select Mounting</li>
+                          </ul>
+                        </ng-template>
+                        <button type="button" data-container="body" class="pop-over" [popover]="popMounting" popoverTitle="Help" placement="left"
+                          triggers="mouseenter:mouseleave">?
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="row">
+                      <div class="form-group col-md-12 popover-field">
+                        <label> Item Code
+                          <span style="padding-left: 20px;">
+                            <span style="color:red;" *ngIf="itemCodeMessage">{{itemCodeMessage}}</span>
+                          </span>
+                        </label>
+                        <input type="text" class="form-control" placeholder="Item Code" id="itemCode" name="itemCode" formControlName="itemCode"
+                          (blur)="checkInventoryItemCode($event)" maxlength="15" tabindex="7">
+                        <div class="msg" *ngIf="addForm.controls['itemCode'].invalid && (addForm.controls['itemCode'].dirty || addForm.controls['itemCode'].touched)">
+                          <div *ngIf="addForm.controls['itemCode'].errors.required">
+                            Required.
+                          </div>
+                          <div *ngIf="addForm.controls['itemCode'].errors.minlength">
+                            Minimum 1 characters are required.
+                          </div>
+                          <div *ngIf="addForm.controls['itemCode'].errors.maxlength">
+                            Maximum 15 characters are allowed.
+                          </div>
+                          <div *ngIf="addForm.controls['itemCode'].errors.pattern">
+                            Initial space(s) not allowed and Only Alphabets allowed
+                          </div>
+                        </div>
+                        <ng-template #popItemCode>
+                          <ul>
+                            <li>ItemCode is Mandatory</li>
+                            <li>ItemCode allows alphabets only</li>
+                            <li>Spaces are not allowed</li>
+                            <li>It should be minimum 1 character and maximum 15 characters long</li>
+                          </ul>
+                        </ng-template>
+                        <button type="button" data-container="body" class="pop-over" [popover]="popItemCode" popoverTitle="Help" placement="left"
+                          triggers="mouseenter:mouseleave">?</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="row">
+                      <div class="form-group col-md-12 popover-field">
+                        <label> Item Name
+                          <span style="padding-left: 20px;">
+                            <span style="color:red;" *ngIf="itemNameMessage">{{itemNameMessage}}</span>
+                          </span>
+                        </label>
+                        <input type="text" class="form-control" placeholder="Item Name" id="itemName" name="itemName" formControlName="itemName"
+                          (blur)=" checkInventoryItemName($event)" maxlength="15" tabindex="8">
+                        <div class="msg" *ngIf="addForm.controls['itemName'].invalid && (addForm.controls['itemName'].dirty || addForm.controls['itemName'].touched)">
+                          <div *ngIf="addForm.controls['itemName'].errors.required">
+                            Required.
+                          </div>
+                          <div *ngIf="addForm.controls['itemName'].errors.minlength">
+                            Minimum 1 characters are required.
+                          </div>
+                          <div *ngIf="addForm.controls['itemName'].errors.maxlength">
+                            Maximum 15 characters are allowed.
+                          </div>
+                          <div *ngIf="addForm.controls['itemName'].errors.pattern">
+                            Initial space(s) not allowed and It Should Be AlphaNumaric.
+                          </div>
+                        </div>
+                        <ng-template #popItemName>
+                          <ul>
+                            <li>Item Name is mandatory</li>
+                            <li>Item Name allows Alphanumerics</li>
+                            <li>Spaces are allowed</li>
+                            <li>it should be minimum 1 character and maximum 15 characters long</li>
+                          </ul>
+                        </ng-template>
+                        <button type="button" data-container="body" class="pop-over" [popover]="popItemName" popoverTitle="Help" placement="left"
+                          triggers="mouseenter:mouseleave">?</button>
+
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="row">
+                      <div class="form-group col-md-12 popover-field">
+                        <label> Item Price
+                          <span style="color:red;" *ngIf="itemPriceMessage">{{itemPriceMessage}}</span>
+                        </label>
+                        <input type="text" class="form-control" placeholder="Item Price" id="itemPrice" name="itemPrice" formControlName="itemPrice"
+                          (blur)=" checkInventoryItemPrice($event)" maxlength="9" tabindex="9">
+                        <div class="msg" *ngIf="addForm.controls['itemPrice'].invalid && (addForm.controls['itemPrice'].dirty || addForm.controls['itemPrice'].touched)">
+                          <div *ngIf="addForm.controls['itemPrice'].errors.required">
+                            Required.
+                          </div>
+                          <div *ngIf="addForm.controls['itemPrice'].errors.pattern">
+                            Initial space(s) not allowed and Only numerics with two decimals allowed.
+                          </div>
+                        </div>
+                        <ng-template #popItemPrice>
+                          <ul>
+                            <li>Item Price is mandatory</li>
+                            <li>Item Price should be less than or equal to 1000.</li>
+                          </ul>
+                        </ng-template>
+                        <button type="button" data-container="body" class="pop-over" [popover]="popItemPrice" popoverTitle="Help" placement="left"
+                          triggers="mouseenter:mouseleave">?</button>
+
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="row">
+                      <div class="form-group col-md-12 popover-field">
+                        <label> Threshold</label>
+                        <input type="text" class="form-control" placeholder="Threshold" id="threshold" name="threshold" formControlName="threshold"
+                          maxlength="9" tabindex="10">
+                        <div class="msg" *ngIf="addForm.controls['threshold'].invalid && (addForm.controls['threshold'].dirty || addForm.controls['threshold'].touched)">
+                          <div *ngIf="addForm.controls['threshold'].errors.required">
+                            Required.
+                          </div>
+                          <div *ngIf="addForm.controls['threshold'].errors.pattern">
+                            Initial space(s) not allowed and It Should Be Numaric.
+                          </div>
+                        </div>
+
+                        <ng-template #popThreshold>
+                          <ul>
+                            <li>Threshold is mandatory</li>
+                            <li>Threshold allows numbers Only</li>
+                          </ul>
+                        </ng-template>
+                        <button type="button" class="pop-over" data-container="body" [popover]="popThreshold" popoverTitle="Help" placement="left"
+                          triggers="mouseenter:mouseleave">?</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="row">
+                      <div class="form-group col-md-12 popover-field">
+                        <label>Min Order Qty</label>
+                        <input type="text" class="form-control" placeholder="Min Order Qty" id="minOrderQty" name="minOrderQty" formControlName="minOrderQty"
+                          maxlength="6" tabindex="11">
+                        <div class="msg" *ngIf="addForm.controls['minOrderQty'].invalid && (addForm.controls['minOrderQty'].dirty || addForm.controls['minOrderQty'].touched)">
+                          <div *ngIf="addForm.controls['minOrderQty'].errors.required">
+                            Required.
+                          </div>
+                          <div *ngIf="addForm.controls['minOrderQty'].errors.pattern">
+                            Initial space(s) not allowed and It Should Be Numaric and greater than Zero
+                          </div>
+                        </div>
+                        <ng-template #popMinOrderQty>
+                          <ul>
+                            <li>Min Order Qty is mandatory</li>
+                            <li>Min Order Qty allows numbers</li>
+                          </ul>
+                        </ng-template>
+                        <button type="button" class="pop-over" data-container="body" [popover]="popMinOrderQty" popoverTitle="Help" placement="left"
+                          triggers="mouseenter:mouseleave">?</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="row">
+                      <div class="form-group col-md-12 popover-field">
+                        <label>Max Order Qty</label>
+                        <input type="text" class="form-control" placeholder="Max Order Qty " id="maxOrderQty" name="maxOrderQty" formControlName="maxOrderQty"
+                          maxlength="6" tabindex="12">
+                        <div class="msg" *ngIf="addForm.controls['maxOrderQty'].invalid && (addForm.controls['maxOrderQty'].dirty || addForm.controls['maxOrderQty'].touched)">
+                          <div *ngIf="addForm.controls['maxOrderQty'].errors.required">
+                            Required.
+                          </div>
+                          <div *ngIf="addForm.controls['maxOrderQty'].errors.pattern">
+                            Initial space(s) not allowed and It Should Be Numaric and greater than Zero
+                          </div>
+                        </div>
+
+
+                        <ng-template #popMaxOrderQty>
+                          <ul>
+                            <li>Max Order Qty is mandatory</li>
+                            <li>Max Order Qty allows numbers</li>
+                          </ul>
+                        </ng-template>
+                        <button type="button" class="pop-over" data-container="body" [popover]="popMaxOrderQty" popoverTitle="Help" placement="left"
+                          triggers="mouseenter:mouseleave">?</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="row">
+                      <div class="form-group col-md-12 popover-field">
+                        <label class="focused"> Description</label>
+                        <textarea class="form-control" placeholder="Description" id="description" name="description" formControlName="description"
+                          maxlength="150" tabindex="13" (keyup)="descEvent($event)"></textarea>
+                        <div class="msg" *ngIf="addForm.controls['description'].invalid && (addForm.controls['description'].dirty || addForm.controls['description'].touched)">
+                          <div *ngIf="addForm.controls['description'].errors.required">
+                            Required.
+                          </div>
+                          <div *ngIf="addForm.controls['description'].errors.minlength">
+                            Minimum 1 characters are required.
+                          </div>
+                          <div *ngIf="addForm.controls['description'].errors.maxlength">
+                            Maximum 150 characters are allowed.
+                          </div>
+                          <div *ngIf="addForm.controls['description'].errors.pattern">
+                            Initial space(s) not allowed
+                          </div>
+                        </div>
+                        <ng-template #popDescription>
+                          <ul>
+                            <li>Description allows Alphanumerics</li>
+                            <li>Special characters are also allowed</li>
+                            <li>It should be minimum 1 character and maximum 150 characters long</li>
+                          </ul>
+                        </ng-template>
+                        <button type="button" class="pop-over" data-container="body" [popover]="popDescription" popoverTitle="Help" placement="left"
+                          triggers="mouseenter:mouseleave">?</button>
+                        <span class="text-count">Left : {{desclength}} characters</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="row">
+                      <div class="form-group col-md-12 popover-field">
+                        <label class="focused"> Vendors</label>
+                        <select class="form-control" multiple formControlName="vendorList" tabindex="14">
+                          <option *ngFor="let vendor of vendors" value="{{vendor.VendorId}}">{{vendor.CompanyName}}</option>
+                        </select>
+                        <div class="msg" *ngIf="addForm.controls['vendorList'].invalid && (addForm.controls['vendorList'].dirty || addForm.controls['vendorList'].touched)">
+                          <div *ngIf="addForm.controls['vendorList'].errors.required">
+                            Required.
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <button class="btn btn-primary btn-search" *ngIf="isUpdateButtonEnabled" (click)="updateInventoryItems()" tabindex="16">Update </button>
+                    <button class="btn btn-primary btn-search" *ngIf="isDeleteButtonEnabled" (click)="deleteInventoryItemModel()" tabindex="17">Delete</button>
+                    <button class="btn btn-primary btn-search" *ngIf="isAddButtonEnabled" (click)="addInventoryItems()" tabindex="15">Add</button>
+                    <button class="btn btn-primary btn-reset" *ngIf="isResetButtonEnabled" (click)="addInventoryReset()" tabindex="18">Reset</button>&nbsp; &nbsp;
+                    <button class="btn btn-primary btn-reset" (click)="cancelFormMethod()" tabindex="19">Cancel </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 m-t-20">
+        <div class="table-bdr">
+          <h3>Item Results</h3>
+          <div *ngIf='itemResponse && itemResponse.length;else elseBlock'>
+            <div class="pad-10">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th (click)="sortDirection('PROTOCOL')" class="sorting-handle">Protocol
+                        <span *ngIf="gridArrowPROTOCOL">
+                          <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                        </span>
+                      </th>
+                      <th (click)="sortDirection('MOUNTING')" class="sorting-handle">Mounting
+                        <span *ngIf="gridArrowMOUNTING">
+                          <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                        </span>
+                      </th>
+                      <th (click)="sortDirection('ITEMTYPEDESC')" class="sorting-handle">Item Type
+                        <span *ngIf="gridArrowITEMTYPEDESC">
+                          <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                        </span>
+                      </th>
+                      <th (click)="sortDirection('ITEMCODE')" class="sorting-handle">Item Code
+                        <span *ngIf="gridArrowITEMCODE">
+                          <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                        </span>
+                      </th>
+                      <th (click)="sortDirection('ITEMNAME')" class="sorting-handle">Item Name
+                        <span *ngIf="gridArrowITEMNAME">
+                          <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                        </span>
+                      </th>
+                      <th (click)="sortDirection('ITEMDESC')" class="sorting-handle">Description
+                        <span *ngIf="gridArrowITEMDESC">
+                          <i class="fa fa-fw fa-lg" aria-hidden="true" [ngClass]='{"fa-sort-amount-asc":sortingDirection,"fa-sort-amount-desc":!sortingDirection}'></i>
+                        </span>
+                      </th>
+                      <th> Vendor Name</th>
+                      <th> Item Price</th>
+                      <th></th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf='itemResponse && itemResponse.length'>
+                    <tr *ngFor='let item of itemResponse | paginate: { itemsPerPage: pageItemNumber, currentPage: p, totalItems:totalRecordCount }'>
+                      <td> {{item.Protocol}} </td>
+                      <td>{{item.Mounting}} </td>
+                      <td> {{item.ItemTypedDesc}} </td>
+                      <td> {{item.ItemCode}} </td>
+                      <td> {{item.ItemName}} </td>
+                      <td> {{item.ItemDesc}}</td>
+                      <td> {{item.CompanyName}} </td>
+                      <td> {{item.ItemPrice | currencycustom}} </td>
+                      <td>
+                        <i *ngIf="disableEditLink" title="You can't edit items" class="fa fa-pencil-square-o fa-lg fa-fw link-disabled" aria-hidden="true"></i>
+                        <a *ngIf="!disableEditLink" (click)="editVendorsByItemId(item)" title="Edit" tabindex="20">
+                          <i class="fa fa-pencil-square-o fa-lg fa-fw" aria-hidden="true"></i>
+                        </a>
+                      </td>
+                      <td>
+                        <i *ngIf="disableDeleteLink" title="You can't delete items" class="fa fa-trash-o fa-fw fa-lg link-disabled" aria-hidden="true"></i>
+                        <a *ngIf="!disableDeleteLink" (click)="deleteVendorsByItemId(item)" title="Delete" tabindex="21">
+                          <i class="fa fa-trash-o fa-fw fa-lg" aria-hidden="true"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="row page-info" *ngIf='itemResponse && itemResponse.length > 0 && !isSearch'>
+                <div class="col-md-6 text-left">
+                  <p>Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+                </div>
+                <div class="col-md-6 text-right">
+                  <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>
+<ng-template #elseBlock>
+  <div>
+    <p class="alert alert-success m-t-10 m-l-10 m-r-10">
+      <i class="fa fa-info-circle fa-lg" aria-hidden="true"></i> No Items to display
+    </p>
+  </div>
+</ng-template>

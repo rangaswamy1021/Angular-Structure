@@ -1,0 +1,112 @@
+<div class="page-title-header">
+  <div class="row no-gutters">
+    <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="#">FMC</a></li>
+        <li><a href="#">Reconciliation</a></li>
+        <li class="active">Tag Deposits Reconciliation</li>
+      </ol>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Tag Deposits Reconciliation</h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="table-bdr">
+    <form role="form" name="tagdepositForm" [formGroup]="tagdepositForm">
+      <div class="panel-body">
+        <div class="row">
+          <div class="form-group col-md-6">
+            <label for="timePeriod" class="focused">Time Period</label>
+            <!--<input class="form-control disbale-to-write" formControlName="timePeriod" placeholder="Select Date Range" bsDaterangepicker
+                #dpr="bsDaterangepicker" name="timePeriod" [(ngModel)]="timePeriod" autocomplete="off">-->
+            <my-date-range-picker (inputFieldChanged)='onDateRangeFieldChanged($event)' name="timePeriod" [options]="myDateRangePickerOptions"
+              formControlName="timePeriod" placeholder="MM/DD/YYYY - MM/DD/YYYY"></my-date-range-picker>
+            <div class="show-error" *ngIf="!invalidDate && tagdepositForm.controls['timePeriod'].invalid && (tagdepositForm.controls['timePeriod'].dirty || tagdepositForm.controls['timePeriod'].touched)">
+              <div *ngIf="tagdepositForm.controls['timePeriod'].errors.required">
+                Required.
+              </div>
+            </div>
+            <div class="show-error" *ngIf="invalidDate">
+              <div>
+                Invalid Date Range
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group col-md-6 popover-field">
+            <label for="customerId">  Customer # </label>
+            <input type="text" class="form-control" placeholder="Customer" id="customer" name="customer" formControlName="customer">
+            <div class="msg" *ngIf="tagdepositForm.controls['customer'].invalid && (tagdepositForm.controls['customer'].dirty || tagdepositForm.controls['customer'].touched)">
+              <div *ngIf="tagdepositForm.controls['customer'].errors.pattern">
+                Only numarical values are allowed.
+              </div>
+            </div>
+            <button _ngcontent-c16="" class="pop-over" [popover]="popContent1" placement="left" data-container="body" popoverTitle="Help"
+              tabindex="-1" triggers="mouseenter:mouseleave" type="button" ng-reflect-popover="[object Object]" ng-reflect-popover-title="Help"
+              ng-reflect-triggers="mouseenter:mouseleave" ng-reflect-container="body">?</button>
+            <ng-template #popContent1>
+              <ul>
+                <li>CustomerId allows only numeric values</li>
+              </ul>
+            </ng-template>
+          </div>
+          <div class="col-md-12">
+            <button type="button" class="btn btn-primary btn-search" [disabled]="disableSearchButton" (click)="showReconciled()">Show Reconciled</button>
+            <button type="button" class="btn btn-primary btn-search" [disabled]="disableSearchButton" (click)="showUnreconciled()">Show Unreconciled</button>
+            <button type="button" class="btn btn-default btn-reset" (click)="onResetClick()" title="Reset">Reset</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="table-bdr" *ngIf="tableHide">
+    <h3> Tag Deposits Reconciliation - {{btnName}}</h3>
+    <div class="panel-body">
+      <table class="table bordered">
+        <thead *ngIf="tagdepositTransactionLength>= 1">
+          <tr>
+            <th>Customer #</th>
+            <th>Application</th>
+            <th>Finance </th>
+            <th>Variance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor=" let tagdeposits of tagdepositres | paginate: { itemsPerPage:pageItemNumber, currentPage: p, totalItems:totalRecordCount}">
+            <td>{{tagdeposits.CustomerId}}</td>
+            <td>{{tagdeposits.AppEndingBal | currencycustom}}</td>
+            <td>{{tagdeposits.FinEndingBal | currencycustom}}</td>
+            <td>{{tagdeposits.AppEndingBal-tagdeposits.FinEndingBal | currencycustom}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf="tagdepositTransactionLength == 0">
+        <div>No Records to display</div>
+      </div>
+    </div>
+    <div *ngIf="totalRecordCount >= 11">
+      <div class="row page-info" *ngIf="(this.tagdepositres && this.tagdepositres.length >0)">
+        <div class="col-md-6 text-left">
+          <p class="p-l-15">Display {{startItemNumber}} - {{endItemNumber}} Records of {{totalRecordCount}}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" id="pageloader" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="text-center">
+      <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color:#fff;"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>
